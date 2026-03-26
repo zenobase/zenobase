@@ -1,6 +1,7 @@
 package com.zenobase.controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DomainNode;
@@ -54,7 +55,7 @@ public class UpdateUserForm extends DomainNode {
 		return form;
 	}
 
-	public String getEmail() {
+	public @Nullable String getEmail() {
 		return getValue(EMAIL);
 	}
 
@@ -62,15 +63,15 @@ public class UpdateUserForm extends DomainNode {
 		return getValue(VERIFIED) == Boolean.TRUE;
 	}
 
-	public String getPassword() {
+	public @Nullable String getPassword() {
 		return getValue(PASSWORD);
 	}
 
-	public String getKey() {
+	public @Nullable String getKey() {
 		return getValue(KEY);
 	}
 
-	public String getExpires() {
+	public @Nullable String getExpires() {
 		return getValue(EXPIRES);
 	}
 
@@ -78,16 +79,16 @@ public class UpdateUserForm extends DomainNode {
 		return contains(QUOTA);
 	}
 
-	public Integer getQuota() {
+	public @Nullable Integer getQuota() {
 		Integer quota = getValue(QUOTA);
 		return quota != null && quota != QuotaManager.DEFAULT_QUOTA ? quota : null;
 	}
 
-	public Boolean isSuspended() {
+	public @Nullable Boolean isSuspended() {
 		return getValue(SUSPENDED);
 	}
 
-	public Boolean isOptedOut() {
+	public @Nullable Boolean isOptedOut() {
 		return getValue(OPTEDOUT);
 	}
 }

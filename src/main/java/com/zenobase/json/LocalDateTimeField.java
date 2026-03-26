@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.search.DecimalRangeConstraintBuilder;
 import com.zenobase.search.ExistsConstraintBuilder;
@@ -45,7 +46,7 @@ public class LocalDateTimeField extends Field<LocalDateTime> {
 	}
 
 	@Override
-	public JsonNode toJson(LocalDateTime value) {
+	public JsonNode toJson(@Nullable LocalDateTime value) {
 		if (value == null) {
 			return NullNode.getInstance();
 		}

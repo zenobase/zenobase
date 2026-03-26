@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 public class FacetOptions {
 
@@ -17,12 +18,12 @@ public class FacetOptions {
 		this.map = map;
 	}
 
-	public String get(String key) {
+	public @Nullable String get(String key) {
 		return get(key, String.class, null);
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T get(String key, Class<T> type, T defaultValue) {
+	public <T> @Nullable T get(String key, Class<T> type, @Nullable T defaultValue) {
 		String value = map.get(key);
 		if (value == null) {
 			return defaultValue;
@@ -64,6 +65,6 @@ public class FacetOptions {
 	}
 
 	private static boolean isEmpty(String value) {
-		return value == null || value.isEmpty() || "null".equals(value);
+		return value.isBlank() || "null".equals(value);
 	}
 }

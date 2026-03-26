@@ -25,7 +25,13 @@ public abstract class UserControllerTestSupport extends ControllerTestSupport {
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
 	protected final VerificationMailer mailer = mock(VerificationMailer.class);
 	protected final PaymentGateway payments = mock(PaymentGateway.class);
-	protected final User user = new User("tester");
+	protected final User user = newUser("tester");
+
+	private static User newUser(String name) {
+		User user = new User(name);
+		user.setEmail(name + "@example.com");
+		return user;
+	}
 
 	@Override
 	protected Module module() {

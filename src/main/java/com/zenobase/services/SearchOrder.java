@@ -1,6 +1,7 @@
 package com.zenobase.services;
 
-import com.google.common.base.Objects;
+import java.util.Objects;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.opensearch.client.opensearch._types.SortOrder;
@@ -34,7 +35,9 @@ public class SearchOrder {
 			asc = false;
 			s = s.substring(1);
 		}
-		return new SearchOrder(schema.getField(s).getPathForSorting(), asc);
+		var field = schema.getField(s);
+		Preconditions.checkArgument(field != null, "unknown field: %s", s);
+		return new SearchOrder(field.getPathForSorting(), asc);
 	}
 
 	@Override
@@ -48,7 +51,7 @@ public class SearchOrder {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(field, asc);
+		return Objects.hash(field, asc);
 	}
 
 	@Override

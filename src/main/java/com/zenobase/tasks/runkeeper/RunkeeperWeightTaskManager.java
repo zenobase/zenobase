@@ -2,6 +2,7 @@ package com.zenobase.tasks.runkeeper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
 
@@ -41,7 +42,7 @@ public class RunkeeperWeightTaskManager extends RunkeeperTaskManagerSupport {
 				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		Unit<Mass> unit = MoreObjects.firstNonNull(new UnitField<Mass>("unit").getValue(settings), Units.KG);
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "Body");
-		return new RunkeeperWeightTask(bucketId, principal, tag, unit, zone, marker);
+		return new RunkeeperWeightTask(bucketId, principal, tag, unit, zone, Objects.requireNonNull(marker));
 	}
 
 	@Override
@@ -67,7 +68,9 @@ public class RunkeeperWeightTaskManager extends RunkeeperTaskManagerSupport {
 						parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
 				for (Event event : result.getEvents()) {
 					if (from == null
-							|| event.getValue(Event.TIMESTAMP).toLocalDateTime().isAfter(from)) {
+							|| Objects.requireNonNull(event.getValue(Event.TIMESTAMP))
+									.toLocalDateTime()
+									.isAfter(from)) {
 						events.add(event);
 					}
 				}

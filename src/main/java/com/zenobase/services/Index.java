@@ -10,6 +10,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
 import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.OpType;
 import org.opensearch.client.opensearch._types.OpenSearchException;
@@ -181,7 +182,7 @@ public class Index {
 		}
 	}
 
-	private static String getFailureMessage(List<BulkResponseItem> items) {
+	private static @Nullable String getFailureMessage(List<BulkResponseItem> items) {
 		for (BulkResponseItem item : items) {
 			if (item.error() != null) {
 				return item.error().reason();
@@ -322,7 +323,7 @@ public class Index {
 		throw new RuntimeException(lastException);
 	}
 
-	public ObjectNode get(String id) {
+	public @Nullable ObjectNode get(String id) {
 		try {
 			GetResponse<ObjectNode> response =
 					client.get(g -> g.index(indexName).id(id), ObjectNode.class);

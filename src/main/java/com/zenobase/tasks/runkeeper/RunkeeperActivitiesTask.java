@@ -1,5 +1,6 @@
 package com.zenobase.tasks.runkeeper;
 
+import java.util.Objects;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
@@ -7,6 +8,7 @@ import javax.measure.unit.Unit;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Units;
 import com.zenobase.json.TokenField;
@@ -48,12 +50,12 @@ public class RunkeeperActivitiesTask extends Task {
 		return value != null ? DateTimeZone.forID(value) : DateTimeZone.UTC;
 	}
 
-	public Unit<Length> getDistanceUnit() {
+	public @Nullable Unit<Length> getDistanceUnit() {
 		return getSetting(LENGTH_UNIT);
 	}
 
 	public Unit<Length> getHeightUnit() {
-		return Units.isMetric(getDistanceUnit()) ? Units.M : Units.FT;
+		return Units.isMetric(Objects.requireNonNull(getDistanceUnit())) ? Units.M : Units.FT;
 	}
 
 	public Unit<Energy> getEnergyUnit() {

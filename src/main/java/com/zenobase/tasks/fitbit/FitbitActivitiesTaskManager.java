@@ -2,6 +2,7 @@ package com.zenobase.tasks.fitbit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -9,6 +10,7 @@ import com.google.common.base.MoreObjects;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -72,11 +74,12 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 				task, credentials, events, MoreObjects.firstNonNull(getMarker(events), task.getMarker()), token);
 	}
 
-	private static String getMarker(Iterable<Event> events) {
+	private static @Nullable String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
 			Duration duration = event.getValue(Event.DURATION);
-			DateTime time = event.getValue(Event.TIMESTAMP).plus(duration);
+			DateTime time =
+					Objects.requireNonNull(event.getValue(Event.TIMESTAMP)).plus(duration);
 			if (latest == null || time.isAfter(latest)) {
 				latest = time;
 			}

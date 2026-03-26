@@ -3,13 +3,14 @@ package com.zenobase.common;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import org.joda.time.ReadablePartial;
+import org.jspecify.annotations.Nullable;
 
 public class LocalDateTimeRangeParser extends RangeParser<ReadablePartial> {
 
 	private final LocalIntervalRangeParser parser = new LocalIntervalRangeParser();
 
 	@Override
-	public Range<ReadablePartial> parse(String value) {
+	public @Nullable Range<ReadablePartial> parse(String value) {
 		Range<LocalInterval> range = parser.parse(value);
 		return range != null ? toRange(range) : null;
 	}
@@ -37,7 +38,7 @@ public class LocalDateTimeRangeParser extends RangeParser<ReadablePartial> {
 	}
 
 	@Override
-	protected ReadablePartial getValue(String s) {
+	protected @Nullable ReadablePartial getValue(String s) {
 		throw new UnsupportedOperationException();
 	}
 }

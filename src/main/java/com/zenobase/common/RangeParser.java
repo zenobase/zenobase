@@ -1,13 +1,16 @@
 package com.zenobase.common;
 
+import java.util.Objects;
+
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
+import org.jspecify.annotations.Nullable;
 
 public abstract class RangeParser<T extends Comparable<T>> {
 
 	private static final String TO = "..";
 
-	public Range<T> parse(String value) {
+	public @Nullable Range<T> parse(String value) {
 		int p = value.indexOf(TO);
 		if (p == -1 || value.length() < 6) {
 			return null;
@@ -25,9 +28,9 @@ public abstract class RangeParser<T extends Comparable<T>> {
 		return toRange(lowerBound, lower, upper, upperBound);
 	}
 
-	private Range<T> toRange(BoundType lowerType, T lower, T upper, BoundType upperType) {
+	private Range<T> toRange(BoundType lowerType, @Nullable T lower, @Nullable T upper, BoundType upperType) {
 		if (lower == null) {
-			return Range.upTo(upper, upperType);
+			return Range.upTo(Objects.requireNonNull(upper), upperType);
 		} else if (upper == null) {
 			return Range.downTo(lower, lowerType);
 		} else {
@@ -35,7 +38,7 @@ public abstract class RangeParser<T extends Comparable<T>> {
 		}
 	}
 
-	private BoundType getBoundType(char symbol) {
+	private @Nullable BoundType getBoundType(char symbol) {
 		return switch (symbol) {
 			case '[', ']' -> BoundType.CLOSED;
 			case '(', ')' -> BoundType.OPEN;
@@ -43,9 +46,9 @@ public abstract class RangeParser<T extends Comparable<T>> {
 		};
 	}
 
-	private T getOptionalValue(String s) {
+	private @Nullable T getOptionalValue(String s) {
 		return "*".equals(s) ? null : getValue(s);
 	}
 
-	protected abstract T getValue(String s);
+	protected abstract @Nullable T getValue(String s);
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import org.jspecify.annotations.Nullable;
 
 public abstract class MapField<K, V> extends Field<Map.Entry<K, V>> {
 
@@ -42,7 +43,7 @@ public abstract class MapField<K, V> extends Field<Map.Entry<K, V>> {
 		return Maps.immutableEntry(get(node, keyField), get(node, valueField));
 	}
 
-	private static <T> T get(JsonNode node, Field<T> field) {
+	private static <T> @Nullable T get(JsonNode node, Field<T> field) {
 		return field.getValue((ObjectNode) node);
 	}
 
@@ -55,7 +56,7 @@ public abstract class MapField<K, V> extends Field<Map.Entry<K, V>> {
 	}
 
 	@Override
-	public JsonNode toJson(Map.Entry<K, V> entry) {
+	public JsonNode toJson(Map.@Nullable Entry<K, V> entry) {
 		Preconditions.checkNotNull(entry);
 		ObjectNode node = Nodes.newObject();
 		keyField.setValue(node, entry.getKey());

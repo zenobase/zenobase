@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -89,15 +90,15 @@ class MeasurementsResult {
 		return event;
 	}
 
-	private static <Q extends Quantity> DecimalMeasure<Q> getMeasure(JsonNode node, Unit<Q> unit) {
+	private static <Q extends Quantity> @Nullable DecimalMeasure<Q> getMeasure(JsonNode node, Unit<Q> unit) {
 		return node.isNumber() ? Measures.valueOf(node.decimalValue(), unit) : null;
 	}
 
-	private static Integer getInteger(JsonNode node) {
+	private static @Nullable Integer getInteger(JsonNode node) {
 		return node.isNumber() ? node.intValue() : null;
 	}
 
-	private static Rating getRating(JsonNode node) {
+	private static @Nullable Rating getRating(JsonNode node) {
 		return node.isNumber() ? Rating.valueOf(getRating(node.intValue())) : null;
 	}
 

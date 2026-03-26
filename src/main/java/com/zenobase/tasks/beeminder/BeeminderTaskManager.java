@@ -1,6 +1,7 @@
 package com.zenobase.tasks.beeminder;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -14,6 +15,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
@@ -65,11 +67,11 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 	}
 
 	@Override
-	public Command execute(Task task, OAuthCredentials credentials) {
+	public @Nullable Command execute(Task task, OAuthCredentials credentials) {
 		return execute(task.as(BeeminderTask.class), credentials);
 	}
 
-	private Command execute(BeeminderTask task, OAuthCredentials credentials) {
+	private @Nullable Command execute(BeeminderTask task, OAuthCredentials credentials) {
 		UserResult user = getUser(credentials);
 		if (!user.hasGoal(task.getGoal())) {
 			logger.warn("Can't run task {} because goal does not exist: {}", task.getId(), task.getGoal());
@@ -99,12 +101,24 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 	}
 
 	private ObjectNode find(
-			String bucketId, String keyField, String field, Unit<?> unit, DateTime from, String filter) {
+			String bucketId,
+			String keyField,
+			@Nullable String field,
+			Unit<?> unit,
+			DateTime from,
+			@Nullable String filter) {
 		events.refresh(bucketId);
 		SearchBuilderSupport search = new EventSearchBuilder()
 				.addFacet(new ListFacet(
 						FIELD_LATEST.getName(), 0, 1, '-' + Event.TIMESTAMP.getName(), null, Event.SCHEMA))
-				.addFacet(new LocalTimelineFacet(FIELD_STATS.getName(), keyField, field, "day", null, unit, null))
+				.addFacet(new LocalTimelineFacet(
+						FIELD_STATS.getName(),
+						keyField,
+						Objects.requireNonNullElse(field, keyField),
+						"day",
+						null,
+						unit,
+						null))
 				.addConstraint(
 						new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName())
 								.build(Range.greaterThan(from)),
@@ -115,7 +129,7 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 		return events.find(bucketId, search.buildSearch());
 	}
 
-	private static DateTime getLatest(ObjectNode result) {
+	private static @Nullable DateTime getLatest(ObjectNode result) {
 		for (ObjectNode node : FIELD_LATEST.getValues(result)) {
 			return Ordering.natural().max(new Event(node).getValues(Event.TIMESTAMP));
 		}
@@ -158,7 +172,7 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 		command.add(UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-				.set(Task.MARKER, task.getMarker(), marker != null ? marker.toString() : null)
+				.set(Task.MARKER, task.getMarker(), marker.toString())
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build());
 		return command;

@@ -70,10 +70,12 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 				streams.get("derived:com.google.calories.consumed:com.google.android.gms:merge_calories_consumed");
 		if (stream != null) {
 			getDataPoints(task, credentials, stream, point -> {
-				Event event = newEvent(point, task, streams);
 				BigDecimal value = point.getValue(0, BigDecimal.class);
-				event.setValue(Event.ENERGY, Measures.valueOf(value, Units.KCAL));
-				events.add(event);
+				if (value != null) {
+					Event event = newEvent(point, task, streams);
+					event.setValue(Event.ENERGY, Measures.valueOf(value, Units.KCAL));
+					events.add(event);
+				}
 			});
 		}
 		return events;

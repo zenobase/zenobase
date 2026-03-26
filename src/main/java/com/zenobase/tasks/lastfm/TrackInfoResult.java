@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Resource;
 
@@ -37,19 +38,18 @@ class TrackInfoResult {
 	}
 
 	private static Resource resourceValue(JsonNode node) {
-		String artistName = textValue(node.path("artist").path("name"));
-		String trackName = textValue(node.path("name"));
-		String url = textValue(node.path("url"));
-		Preconditions.checkNotNull(artistName, "missing artist name: %s", node);
-		Preconditions.checkNotNull(trackName, "missing track name: %s", node);
+		String artistName = Preconditions.checkNotNull(
+				textValue(node.path("artist").path("name")), "missing artist name: %s", node);
+		String trackName = Preconditions.checkNotNull(textValue(node.path("name")), "missing track name: %s", node);
+		String url = Preconditions.checkNotNull(textValue(node.path("url")), "missing url: %s", node);
 		return new Resource(artistName + " - " + trackName, url);
 	}
 
-	private static String textValue(JsonNode node) {
+	private static @Nullable String textValue(JsonNode node) {
 		return Strings.emptyToNull(node.textValue());
 	}
 
-	private static Duration durationValue(JsonNode node) {
+	private static @Nullable Duration durationValue(JsonNode node) {
 		long duration = node.asLong();
 		return duration > 0 ? Duration.millis(duration) : null;
 	}

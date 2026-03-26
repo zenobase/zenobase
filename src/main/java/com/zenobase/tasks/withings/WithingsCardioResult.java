@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
@@ -22,12 +23,12 @@ class WithingsCardioResult extends WithingsResult {
 
 	private final DateTimeZone timezone;
 
-	public WithingsCardioResult(ObjectNode node, Identity author, String tag, DateTimeZone timezone) {
+	public WithingsCardioResult(ObjectNode node, Identity author, @Nullable String tag, DateTimeZone timezone) {
 		super(node, author, tag);
 		this.timezone = timezone;
 	}
 
-	public String getMarker() {
+	public @Nullable String getMarker() {
 		return Strings.emptyToNull(node.path("body").path("updatetime").asText());
 	}
 
@@ -67,18 +68,18 @@ class WithingsCardioResult extends WithingsResult {
 		}
 	}
 
-	private static <Q extends Quantity> DecimalMeasure<Q> getDecimalMeasure(JsonNode node, Unit<Q> unit) {
+	private static @Nullable <Q extends Quantity> DecimalMeasure<Q> getDecimalMeasure(JsonNode node, Unit<Q> unit) {
 		BigDecimal value = getBigDecimal(node);
 		return value != null ? DecimalMeasure.valueOf(value, unit) : null;
 	}
 
-	private static BigDecimal getBigDecimal(JsonNode node) {
+	private static @Nullable BigDecimal getBigDecimal(JsonNode node) {
 		int value = node.path("value").intValue();
 		int scale = node.path("unit").intValue();
 		return value != 0 ? BigDecimal.valueOf(value, -scale) : null;
 	}
 
-	private static Percentage getPercentage(JsonNode node) {
+	private static @Nullable Percentage getPercentage(JsonNode node) {
 		BigDecimal value = getBigDecimal(node);
 		return value != null && value.signum() > -1 ? Percentage.valueOf(value) : null;
 	}

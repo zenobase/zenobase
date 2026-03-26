@@ -1,9 +1,12 @@
 package com.zenobase.tasks.withings;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -40,12 +43,12 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 	}
 
 	@Override
-	public Command authorize(Credentials credentials, ObjectNode config) {
+	public @Nullable Command authorize(Credentials credentials, ObjectNode config) {
 		Preconditions.checkState(!credentials.isAuthorized());
 		return authorize(credentials.as(OAuthCredentials.class), config);
 	}
 
-	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
+	private @Nullable Command authorize(OAuthCredentials credentials, ObjectNode config) {
 		String code = config.path("code").textValue();
 		if (code == null) {
 			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
@@ -66,12 +69,12 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 
 	private void reauthorize(OAuthCredentials credentials) {
 		String refreshToken;
-		if (credentials.getToken() instanceof ExpiringToken token) {
+		Token currentToken = Objects.requireNonNull(credentials.getToken());
+		if (currentToken instanceof ExpiringToken token) {
 			refreshToken = token.getRefreshToken();
 		} else {
 			logger.warn("Converting oauth1 token...");
-			refreshToken = credentials.getToken().getToken() + ":"
-					+ credentials.getToken().getSecret();
+			refreshToken = currentToken.getToken() + ":" + currentToken.getSecret();
 		}
 		var request = new OAuthRequest(Verb.POST, "https://wbsapi.withings.net/v2/oauth2");
 		request.addBodyParameter("action", "requesttoken");
@@ -93,7 +96,8 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 
 	@Override
 	public void sign(OAuthRequest request, OAuthCredentials credentials) {
-		request.addQuerystringParameter("access_token", credentials.getToken().getToken());
+		request.addQuerystringParameter(
+				"access_token", Objects.requireNonNull(credentials.getToken()).getToken());
 	}
 
 	@Override

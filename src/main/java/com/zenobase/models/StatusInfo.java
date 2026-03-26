@@ -33,7 +33,7 @@ public class StatusInfo extends DomainNode {
 	}
 
 	public long getCount() {
-		return getValue(COUNT);
+		return getValue(COUNT, 0L);
 	}
 
 	public HealthStatus getHealth() {
@@ -47,7 +47,7 @@ public class StatusInfo extends DomainNode {
 	}
 
 	public int getNodes() {
-		return getValue(NODES_DATA);
+		return getValue(NODES_DATA, 0);
 	}
 
 	public boolean isReadOnly() {

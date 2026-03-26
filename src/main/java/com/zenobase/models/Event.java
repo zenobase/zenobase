@@ -1,8 +1,11 @@
 package com.zenobase.models;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.BitsField;
@@ -117,20 +120,23 @@ public class Event extends DomainNode {
 
 	public Event(ObjectNode node) {
 		super(node);
+		if (getValue(ID) == null) {
+			setValue(ID, Generator.id());
+		}
 	}
 
 	@Override
 	public String getId() {
-		return getValue(ID);
+		return Objects.requireNonNull(getValue(ID));
 	}
 
 	@Override
-	public <T> void addValue(Field<T> field, T value) {
+	public <T> void addValue(Field<T> field, @Nullable T value) {
 		super.addValue(field, value);
 	}
 
 	@Override
-	public <T> T getValue(Field<T> field) {
+	public <T> @Nullable T getValue(Field<T> field) {
 		return super.getValue(field);
 	}
 
@@ -140,7 +146,7 @@ public class Event extends DomainNode {
 	}
 
 	@Override
-	public <T> void setValue(Field<T> field, T value) {
+	public <T> void setValue(Field<T> field, @Nullable T value) {
 		super.setValue(field, value);
 	}
 

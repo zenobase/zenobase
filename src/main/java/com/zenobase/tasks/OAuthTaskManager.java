@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -31,7 +32,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 	public abstract Task newTask(String bucketId, Identity principal, ObjectNode settings);
 
 	@Override
-	public Command execute(Task task) {
+	public @Nullable Command execute(Task task) {
 		try {
 			OAuthCredentials credentials = getCredentials(task.getPrincipal());
 			return credentials != null ? execute(task, credentials) : null;
@@ -44,7 +45,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 		return check(credentialsManager.find(principal));
 	}
 
-	private OAuthCredentials check(Credentials credentials) {
+	private OAuthCredentials check(@Nullable Credentials credentials) {
 		if (credentials == null) {
 			throw new MissingCredentialsException(credentialsManager.getType());
 		}
@@ -58,7 +59,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 		return credentials.as(OAuthCredentials.class);
 	}
 
-	public abstract Command execute(Task task, OAuthCredentials credentials);
+	public abstract @Nullable Command execute(Task task, OAuthCredentials credentials);
 
 	protected void reauthorize(OAuthCredentials credentials) {
 		credentialsManager.reauthorize(credentials);

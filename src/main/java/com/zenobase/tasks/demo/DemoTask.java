@@ -1,5 +1,7 @@
 package com.zenobase.tasks.demo;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.TokenField;
@@ -21,7 +23,7 @@ public class DemoTask extends Task {
 	}
 
 	public String getTag() {
-		return getSetting(TAG);
+		return Objects.requireNonNull(getSetting(TAG));
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.zenobase.tasks.oura;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
@@ -42,7 +43,7 @@ public class OuraSleepTaskManager extends OuraTaskManagerSupport {
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
 		}
-		DateTime begin = task.getBegin();
+		DateTime begin = Objects.requireNonNull(task.getBegin());
 		DateTime end = DateTime.now(begin.getZone()).plusDays(1);
 		List<Event> events = new ArrayList<>();
 		var request = new OAuthRequest(Verb.GET, HOST + "/v2/usercollection/sleep");
@@ -50,6 +51,6 @@ public class OuraSleepTaskManager extends OuraTaskManagerSupport {
 		request.addQuerystringParameter("end_date", end.toLocalDate().toString());
 		Response response = send(request, credentials);
 		events.addAll(new OuraSleepResult(parseObject(response), task.getPrincipal(), task.getTag()).getEvents());
-		return createCommand(task, credentials, events, token);
+		return createCommand(task, credentials, events, Objects.requireNonNull(token));
 	}
 }

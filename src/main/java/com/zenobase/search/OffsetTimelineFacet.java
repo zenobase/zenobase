@@ -3,6 +3,7 @@ package com.zenobase.search;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,6 +14,7 @@ import com.google.common.collect.Maps;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.CalendarInterval;
@@ -27,19 +29,19 @@ import com.zenobase.json.Nodes;
 
 public class OffsetTimelineFacet extends TimelineFacetSupport {
 
-	private final String interval;
-	private final Interval range;
+	private final @Nullable String interval;
+	private final @Nullable Interval range;
 	private final DateTimeZone timezone;
 
 	public OffsetTimelineFacet(
 			String id,
 			String keyField,
 			String valueField,
-			String interval,
-			String range,
+			@Nullable String interval,
+			@Nullable String range,
 			DateTimeZone timezone,
 			Unit<?> unit,
-			Query filter) {
+			@Nullable Query filter) {
 		super(id, keyField, valueField, unit, filter);
 		this.interval = interval;
 		this.range = !Strings.isNullOrEmpty(range) ? OffsetIntervals.valueOf(range) : null;
@@ -48,7 +50,7 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 
 	@Override
 	public void configure(SearchRequest.Builder builder) {
-		CalendarInterval calendarInterval = DateHistograms.parseInterval(interval);
+		CalendarInterval calendarInterval = DateHistograms.parseInterval(Objects.requireNonNull(interval));
 		String tz = timezone.toTimeZone().toZoneId().getId();
 		String f = getField();
 		Aggregation aggregation = Aggregation.of(a -> a.dateHistogram(dh ->
@@ -59,7 +61,7 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
-		Aggregate agg = getAggregate(response);
+		Aggregate agg = Objects.requireNonNull(getAggregate(response));
 		List<DateHistogramBucket> buckets = agg.dateHistogram().buckets().array();
 		Map<String, ObjectNode> counts = Collections.emptyMap();
 		if (!buckets.isEmpty()) {
@@ -74,8 +76,9 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 						entryNode.put("time", addOffset(bucketTime));
 						entryNode.put("count", bucket.docCount());
 						if (!keyField.equals(valueField) && bucket.docCount() > 0) {
-							StatsAggregate stats =
-									bucket.aggregations().get(getId()).stats();
+							StatsAggregate stats = Objects.requireNonNull(
+											bucket.aggregations().get(getId()))
+									.stats();
 							addValue(entryNode, "min", stats.min());
 							addValue(entryNode, "max", stats.max());
 							addValue(entryNode, "sum", stats.sum());
@@ -93,7 +96,7 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 		return time + (timezone != null ? timezone.getOffset(time) : 0);
 	}
 
-	private Interval getInterval(List<DateHistogramBucket> buckets) {
+	private @Nullable Interval getInterval(List<DateHistogramBucket> buckets) {
 		if (range != null) {
 			return range;
 		}
@@ -112,7 +115,7 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 		return new DateTime(time, timezone);
 	}
 
-	private Map<String, ObjectNode> getMap(Interval interval) {
+	private Map<String, ObjectNode> getMap(@Nullable Interval interval) {
 		Map<String, ObjectNode> counts = Maps.newTreeMap();
 		if (interval != null) {
 			for (DateTime time : OffsetIntervals.expand(interval.getStart(), interval.getEnd(), this.interval)) {

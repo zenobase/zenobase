@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.search.ConstraintBuilder;
 
@@ -28,12 +29,12 @@ public class NestedField<T> extends Field<T> {
 	}
 
 	@Override
-	public T getValue(JsonNode node) {
+	public @Nullable T getValue(JsonNode node) {
 		return field.getValue(node);
 	}
 
 	@Override
-	public JsonNode toJson(T value) {
+	public JsonNode toJson(@Nullable T value) {
 		return field.toJson(value);
 	}
 

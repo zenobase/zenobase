@@ -60,22 +60,6 @@ public class NodesTest {
 	}
 
 	@Test
-	public void testSize() {
-
-		Assertions.assertThat(Nodes.size(null)).as("null").isEqualTo(0);
-		Assertions.assertThat(Nodes.size(Nodes.newObject()))
-				.as("empty object node")
-				.isEqualTo(0);
-		Assertions.assertThat(Nodes.size(Nodes.newArray()))
-				.as("empty array node")
-				.isEqualTo(0);
-		Assertions.assertThat(Nodes.size(new IntNode(42))).as("int node").isEqualTo(0);
-		Assertions.assertThat(Nodes.size(Nodes.newObject("name", "Foo")))
-				.as("object node with one field")
-				.isEqualTo(1);
-	}
-
-	@Test
 	public void testParseEmptyString() {
 
 		assertThat(Nodes.read("")).isEqualTo(MissingNode.getInstance());

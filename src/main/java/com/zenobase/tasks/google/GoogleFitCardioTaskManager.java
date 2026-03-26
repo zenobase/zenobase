@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
@@ -43,7 +44,7 @@ public class GoogleFitCardioTaskManager extends GoogleFitTaskManagerSupport<Goog
 			if (!stream.getId().contains("derived")) {
 				getDataPoints(task, credentials, stream, point -> {
 					BigDecimal value = point.getValue(0, BigDecimal.class);
-					if (BigDecimal.ZERO.compareTo(value) < 0) {
+					if (value != null && BigDecimal.ZERO.compareTo(value) < 0) {
 						Event event = new Event();
 						event.addValue(Event.TAG, task.getTag());
 						event.setValue(Event.TIMESTAMP, point.getBegin());
@@ -51,7 +52,10 @@ public class GoogleFitCardioTaskManager extends GoogleFitTaskManagerSupport<Goog
 							event.addValue(Event.TIMESTAMP, point.getEnd());
 							event.setValue(Event.DURATION, point.getDuration());
 						}
-						event.setValue(Event.FREQUENCY, Measures.valueOf(Measures.round(value, 0), Units.BPM));
+						event.setValue(
+								Event.FREQUENCY,
+								Measures.valueOf(
+										Objects.requireNonNull(Measures.round(value, 0)), Units.BPM));
 						event.setValue(Event.AUTHOR, task.getPrincipal());
 						event.setValue(Event.SOURCE, stream.getSource());
 						events.add(event);

@@ -11,6 +11,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.IllegalInstantException;
 import org.joda.time.LocalDateTime;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -23,10 +24,10 @@ public class ProductivityResult {
 
 	private final ObjectNode node;
 	private final Identity author;
-	private final String tag;
+	private final @Nullable String tag;
 	private final DateTimeZone timezone;
 
-	public ProductivityResult(ObjectNode node, Identity author, String tag, DateTimeZone timezone) {
+	public ProductivityResult(ObjectNode node, Identity author, @Nullable String tag, DateTimeZone timezone) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;

@@ -2,6 +2,7 @@ package com.zenobase.json;
 
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -11,6 +12,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.search.ConstraintBuilder;
 
@@ -53,10 +55,10 @@ public abstract class Field<T> {
 		return schemaType;
 	}
 
-	public final T getValue(ObjectNode node) {
+	public final @Nullable T getValue(ObjectNode node) {
 		JsonNode fieldNode = node.get(name);
 		if (fieldNode != null && fieldNode.isArray() && fieldNode.size() > 0) {
-			return getValue(Iterables.getOnlyElement(fieldNode));
+			return getValue(Objects.requireNonNull(Iterables.getOnlyElement(fieldNode)));
 		}
 		if (fieldNode != null) {
 			return getValue(fieldNode);
@@ -69,10 +71,16 @@ public abstract class Field<T> {
 		JsonNode fieldNode = node.get(name);
 		if (fieldNode != null && fieldNode.isArray()) {
 			for (JsonNode element : fieldNode) {
-				values.add(getValue(element));
+				T value = getValue(element);
+				if (value != null) {
+					values.add(value);
+				}
 			}
 		} else if (fieldNode != null) {
-			values.add(getValue(fieldNode));
+			T value = getValue(fieldNode);
+			if (value != null) {
+				values.add(value);
+			}
 		}
 		return values.build();
 	}
@@ -90,7 +98,7 @@ public abstract class Field<T> {
 		return values.build();
 	}
 
-	protected abstract T getValue(JsonNode node);
+	protected abstract @Nullable T getValue(JsonNode node);
 
 	public final void addValue(ObjectNode node, T value) {
 		Preconditions.checkNotNull(value, "Can't add null value");
@@ -123,7 +131,7 @@ public abstract class Field<T> {
 		}
 	}
 
-	public final void setValue(ObjectNode node, T value) {
+	public final void setValue(ObjectNode node, @Nullable T value) {
 		if (value != null) {
 			node.set(name, toJson(value));
 		} else {
@@ -143,7 +151,7 @@ public abstract class Field<T> {
 		}
 	}
 
-	public abstract JsonNode toJson(T value);
+	public abstract JsonNode toJson(@Nullable T value);
 
 	public void createSchema(ObjectNode schema) {
 		configureSchema(schema.putObject(getName()));

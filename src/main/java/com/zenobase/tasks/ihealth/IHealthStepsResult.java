@@ -8,6 +8,7 @@ import javax.measure.unit.Unit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -40,11 +41,11 @@ class IHealthStepsResult extends IHealthResultSupport {
 		return event;
 	}
 
-	private Integer intValue(JsonNode node) {
+	private @Nullable Integer intValue(JsonNode node) {
 		return !isZero(node) ? node.intValue() : null;
 	}
 
-	private DecimalMeasure<Length> distanceValue(JsonNode node) {
+	private @Nullable DecimalMeasure<Length> distanceValue(JsonNode node) {
 		return !isZero(node)
 				? Measures.valueOf(node.decimalValue().setScale(2, RoundingMode.HALF_UP), getUnit())
 				: null;

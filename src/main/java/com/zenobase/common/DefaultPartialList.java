@@ -2,8 +2,8 @@ package com.zenobase.common;
 
 import java.util.AbstractList;
 import java.util.Collections;
+import java.util.Objects;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
@@ -55,6 +55,6 @@ public class DefaultPartialList<T> extends AbstractList<T> implements PartialLis
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(elements, total);
+		return Objects.hash(elements, total);
 	}
 }

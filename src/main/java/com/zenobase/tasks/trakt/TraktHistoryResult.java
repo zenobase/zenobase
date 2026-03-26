@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -19,10 +20,10 @@ class TraktHistoryResult {
 
 	private final JsonNode node;
 	private final Identity author;
-	private final DateTime after;
+	private final @Nullable DateTime after;
 	private final DateTimeZone zone;
 
-	public TraktHistoryResult(JsonNode node, Identity author, DateTime after, DateTimeZone zone) {
+	public TraktHistoryResult(JsonNode node, Identity author, @Nullable DateTime after, DateTimeZone zone) {
 		this.node = Preconditions.checkNotNull(node);
 		this.author = author;
 		this.after = after;
@@ -40,7 +41,7 @@ class TraktHistoryResult {
 		return events;
 	}
 
-	private Event newEvent(JsonNode node) {
+	private @Nullable Event newEvent(JsonNode node) {
 		DateTime t = dateTimeValue(node.path("watched_at"));
 		Event event = null;
 		if (t.isAfter(after)) {
@@ -80,7 +81,7 @@ class TraktHistoryResult {
 		return DateTime.parse(node.textValue()).withZone(zone);
 	}
 
-	private Duration durationValue(JsonNode node) {
+	private @Nullable Duration durationValue(JsonNode node) {
 		return node.intValue() > 0 ? Duration.standardMinutes(node.intValue()) : null;
 	}
 

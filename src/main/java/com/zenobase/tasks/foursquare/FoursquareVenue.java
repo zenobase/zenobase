@@ -3,17 +3,19 @@ package com.zenobase.tasks.foursquare;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 import com.zenobase.models.Resource;
 
 public class FoursquareVenue {
 
 	public static final FoursquareVenue UNKNOWN = new FoursquareVenue(null, "?");
 
-	private final String id;
+	private final @Nullable String id;
 	private final String name;
 	private final List<String> categories = new ArrayList<>();
 
-	public FoursquareVenue(String id, String name) {
+	public FoursquareVenue(@Nullable String id, String name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -26,7 +28,7 @@ public class FoursquareVenue {
 		return categories;
 	}
 
-	public Resource toResource() {
+	public @Nullable Resource toResource() {
 		return id != null ? new Resource(name, "https://foursquare.com/venue/" + id) : null;
 	}
 }

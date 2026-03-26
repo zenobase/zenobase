@@ -1,6 +1,7 @@
 package com.zenobase.common;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
@@ -9,6 +10,7 @@ import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
@@ -21,11 +23,11 @@ public class LocationMap {
 		locations.put(Range.closedOpen(begin, end), location);
 	}
 
-	public Location get(DateTime time) {
+	public @Nullable Location get(DateTime time) {
 		return locations.get(time);
 	}
 
-	public Location getFirst(Range<DateTime> time) {
+	public @Nullable Location getFirst(Range<DateTime> time) {
 		return Iterables.getFirst(locations.subRangeMap(time).asMapOfRanges().values(), null);
 	}
 
@@ -41,13 +43,14 @@ public class LocationMap {
 		locations.remove(Range.lessThan(olderThan));
 	}
 
-	public Event update(Event event) {
+	public @Nullable Event update(Event event) {
 		List<DateTime> times = event.getValues(Event.TIMESTAMP);
 		Preconditions.checkState(!times.isEmpty());
 		Location location = times.size() == 1
 				? get(times.get(0))
 				: getFirst(Range.closedOpen(
-						Ordering.natural().min(times), Ordering.natural().max(times)));
+						Objects.requireNonNull(Ordering.natural().min(times)),
+						Objects.requireNonNull(Ordering.natural().max(times))));
 		if (location == null) {
 			return null;
 		}

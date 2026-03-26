@@ -1,13 +1,14 @@
 package com.zenobase.tasks.mapmyfitness;
 
 import java.util.List;
+import java.util.Objects;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -40,10 +41,10 @@ abstract class MapMyFitnessTaskManagerSupport extends OAuthTaskManager {
 		return new UserResult(parseObject(response));
 	}
 
-	static String getMarker(Iterable<Event> events) {
+	static @Nullable String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
-			DateTime time = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
+			DateTime time = Objects.requireNonNull(Ordering.natural().max(event.getValues(Event.TIMESTAMP)));
 			if (latest == null || time.isAfter(latest)) {
 				latest = time;
 			}
@@ -57,7 +58,8 @@ abstract class MapMyFitnessTaskManagerSupport extends OAuthTaskManager {
 		return super.send(request, credentials);
 	}
 
-	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
+	protected Command createCommand(
+			Task task, OAuthCredentials credentials, List<Event> events, @Nullable Token expiredToken) {
 		var command = new CompoundCommand(
 				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
@@ -66,7 +68,7 @@ abstract class MapMyFitnessTaskManagerSupport extends OAuthTaskManager {
 				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build());
-		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+		if (!Objects.equals(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())

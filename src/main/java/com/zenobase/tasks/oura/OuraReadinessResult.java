@@ -5,16 +5,17 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 
 class OuraReadinessResult extends OuraResultSupport {
 
-	private final String tag;
+	private final @Nullable String tag;
 	private final DateTimeZone zone;
 
-	public OuraReadinessResult(JsonNode node, Identity author, String tag, DateTimeZone zone) {
+	public OuraReadinessResult(JsonNode node, Identity author, @Nullable String tag, DateTimeZone zone) {
 		super(node, author);
 		this.tag = tag;
 		this.zone = zone;

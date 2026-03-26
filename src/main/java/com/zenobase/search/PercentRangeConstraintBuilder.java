@@ -1,5 +1,6 @@
 package com.zenobase.search;
 
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 public class PercentRangeConstraintBuilder extends DecimalRangeConstraintBuilder {
@@ -9,7 +10,7 @@ public class PercentRangeConstraintBuilder extends DecimalRangeConstraintBuilder
 	}
 
 	@Override
-	public Query build(String value) {
+	public @Nullable Query build(String value) {
 		return super.build(value.replaceAll("%", ""));
 	}
 }

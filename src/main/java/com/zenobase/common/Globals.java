@@ -2,6 +2,7 @@ package com.zenobase.common;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
+import org.jspecify.annotations.Nullable;
 
 public class Globals {
 
@@ -13,7 +14,7 @@ public class Globals {
 		instances.putInstance(type, object);
 	}
 
-	public static synchronized <T> T get(Class<T> type) {
+	public static synchronized <T> @Nullable T get(Class<T> type) {
 		return instances.getInstance(type);
 	}
 }

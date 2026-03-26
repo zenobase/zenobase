@@ -6,6 +6,7 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 
 import com.google.common.base.MoreObjects;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.GeoLocation;
 import org.opensearch.client.opensearch._types.LatLonGeoLocation;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
@@ -24,7 +25,7 @@ public class DistanceConstraintBuilder extends ConstraintBuilder {
 	}
 
 	@Override
-	public Query build(String value) {
+	public @Nullable Query build(String value) {
 		Matcher m = PATTERN.matcher(value);
 		return m.matches() ? build(extractLocation(m), extractDistance(m)) : null;
 	}

@@ -1,6 +1,7 @@
 package com.zenobase.tasks.google;
 
-import com.google.common.base.Objects;
+import java.util.Objects;
+
 import com.google.common.base.Preconditions;
 
 import com.zenobase.models.Resource;
@@ -35,14 +36,14 @@ public class DataStream {
 	}
 
 	private boolean equals(DataStream that) {
-		return Objects.equal(that.id, id)
-				&& Objects.equal(that.dataType, dataType)
-				&& Objects.equal(that.source, source);
+		return Objects.equals(that.id, id)
+				&& Objects.equals(that.dataType, dataType)
+				&& Objects.equals(that.source, source);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(id, dataType, source);
+		return Objects.hash(id, dataType, source);
 	}
 
 	@Override

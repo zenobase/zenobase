@@ -1,8 +1,11 @@
 package com.zenobase.tasks;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.DateTimeField;
@@ -44,26 +47,26 @@ public class Credentials extends DomainNode {
 
 	@Override
 	public String getId() {
-		return getValue(ID);
+		return Objects.requireNonNull(getValue(ID));
 	}
 
 	public String getType() {
-		return getValue(TYPE);
+		return Objects.requireNonNull(getValue(TYPE));
 	}
 
 	public Identity getPrincipal() {
-		return getValue(PRINCIPAL);
+		return Objects.requireNonNull(getValue(PRINCIPAL));
 	}
 
 	public DateTime getCreated() {
-		return getValue(CREATED);
+		return Objects.requireNonNull(getValue(CREATED));
 	}
 
 	public boolean isAuthorized() {
 		return getValue(AUTHORIZATION_URL) == null;
 	}
 
-	public String getAuthorizationUrl() {
+	public @Nullable String getAuthorizationUrl() {
 		return getValue(AUTHORIZATION_URL);
 	}
 
@@ -71,7 +74,7 @@ public class Credentials extends DomainNode {
 		setValue(AUTHORIZATION_URL, authorizationUrl);
 	}
 
-	protected <T> T getCredential(Field<T> field) {
+	protected <T> @Nullable T getCredential(Field<T> field) {
 		return getValue(CREDENTIALS, field);
 	}
 

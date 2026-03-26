@@ -3,6 +3,7 @@ package com.zenobase.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.search.ExistsConstraintBuilder;
 
@@ -26,7 +27,7 @@ public class DateTimeField extends Field<DateTime> {
 	}
 
 	@Override
-	public JsonNode toJson(DateTime value) {
+	public JsonNode toJson(@Nullable DateTime value) {
 		return offset.toJson(value);
 	}
 

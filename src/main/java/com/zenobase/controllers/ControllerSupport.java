@@ -9,6 +9,7 @@ import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.oauth.Authorization;
@@ -23,7 +24,7 @@ public abstract class ControllerSupport implements CustomHeaders {
 		this.authContext = authContext;
 	}
 
-	protected Authorization getCurrentAuthorization(ServerRequest req) {
+	protected @Nullable Authorization getCurrentAuthorization(ServerRequest req) {
 		return authContext.current(req);
 	}
 
@@ -32,7 +33,7 @@ public abstract class ControllerSupport implements CustomHeaders {
 		return node != null ? node : Nodes.newObject();
 	}
 
-	protected static <T extends JsonNode> T body(ServerRequest req, Class<T> type) {
+	protected static <T extends JsonNode> @Nullable T body(ServerRequest req, Class<T> type) {
 		JsonNode node = req.content().as(JsonNode.class);
 		return type.isInstance(node) ? type.cast(node) : null;
 	}
@@ -116,7 +117,7 @@ public abstract class ControllerSupport implements CustomHeaders {
 
 	// Header helpers
 
-	protected static void setHeader(ServerResponse res, String name, String value) {
+	protected static void setHeader(ServerResponse res, String name, @Nullable String value) {
 		if (value != null) {
 			res.header(HeaderNames.create(name), value);
 		}

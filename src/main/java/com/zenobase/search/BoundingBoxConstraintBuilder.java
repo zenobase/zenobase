@@ -1,5 +1,6 @@
 package com.zenobase.search;
 
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.GeoBounds;
 import org.opensearch.client.opensearch._types.GeoLocation;
 import org.opensearch.client.opensearch._types.LatLonGeoLocation;
@@ -15,7 +16,7 @@ public class BoundingBoxConstraintBuilder extends ConstraintBuilder {
 	}
 
 	@Override
-	public Query build(String value) {
+	public @Nullable Query build(String value) {
 		String[] tokens = value.split(",");
 		return tokens.length == 4
 				? build(new Location(tokens[2], tokens[1]), new Location(tokens[0], tokens[3]))

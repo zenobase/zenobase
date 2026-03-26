@@ -2,6 +2,7 @@ package com.zenobase.tasks.strava;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Frequency;
@@ -14,6 +15,7 @@ import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Pace;
@@ -73,11 +75,11 @@ class StravaActivitiesResult {
 		return DateTime.parse(node.textValue()).withZone(zone);
 	}
 
-	private Duration durationValue(JsonNode node) {
+	private @Nullable Duration durationValue(JsonNode node) {
 		return node.isNumber() ? Duration.standardSeconds(node.intValue()) : null;
 	}
 
-	private Location locationValue(JsonNode node) {
+	private @Nullable Location locationValue(JsonNode node) {
 		if (node.isMissingNode() || node.isNull()) {
 			return null;
 		}
@@ -87,33 +89,45 @@ class StravaActivitiesResult {
 		return new Location(node.path(0).decimalValue(), node.path(1).decimalValue());
 	}
 
-	private DecimalMeasure<Length> distanceValue(JsonNode node, Unit<Length> unit, int scale) {
+	private @Nullable DecimalMeasure<Length> distanceValue(JsonNode node, Unit<Length> unit, int scale) {
 		return !isZero(node)
-				? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), scale), unit)
+				? Measures.valueOf(
+						Objects.requireNonNull(
+								Measures.round(Measures.convert(node.doubleValue(), unit), scale)),
+						unit)
 				: null;
 	}
 
-	private DecimalMeasure<Velocity> velocityValue(JsonNode node, Unit<Velocity> unit) {
+	private @Nullable DecimalMeasure<Velocity> velocityValue(JsonNode node, Unit<Velocity> unit) {
 		return !isZero(node)
-				? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), 1), unit)
+				? Measures.valueOf(
+						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)),
+						unit)
 				: null;
 	}
 
-	private DecimalMeasure<Pace> paceValue(JsonNode node, Unit<Pace> unit) {
+	private @Nullable DecimalMeasure<Pace> paceValue(JsonNode node, Unit<Pace> unit) {
 		return !isZero(node)
-				? Measures.valueOf(Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0), unit)
+				? Measures.valueOf(
+						Objects.requireNonNull(
+								Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0)),
+						unit)
 				: null;
 	}
 
-	private DecimalMeasure<Energy> energyValue(JsonNode node) {
-		return !isZero(node) ? Measures.valueOf(Measures.round(node.decimalValue(), 0), Units.KJ) : null;
+	private @Nullable DecimalMeasure<Energy> energyValue(JsonNode node) {
+		return !isZero(node)
+				? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue(), 0)), Units.KJ)
+				: null;
 	}
 
-	private DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
-		return !isZero(node) ? Measures.valueOf(Measures.round(node.decimalValue(), 0), Units.BPM) : null;
+	private @Nullable DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
+		return !isZero(node)
+				? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue(), 0)), Units.BPM)
+				: null;
 	}
 
-	private Resource resourceValue(JsonNode node) {
+	private @Nullable Resource resourceValue(JsonNode node) {
 		return !isZero(node) ? new Resource("Strava", "https://www.strava.com/activities/" + node.intValue()) : null;
 	}
 

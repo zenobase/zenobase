@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.json.TextField;
@@ -29,7 +30,7 @@ public class OpenGraph {
 		return url;
 	}
 
-	public String getTitle() {
+	public @Nullable String getTitle() {
 		String title = getOpenGraphTitle();
 		if (title == null) {
 			title = getMetaTitle();
@@ -40,17 +41,17 @@ public class OpenGraph {
 		return title;
 	}
 
-	private String getOpenGraphTitle() {
+	private @Nullable String getOpenGraphTitle() {
 		Element element = doc.select("meta[property=og:title]").first();
 		return element != null ? element.attr("content") : null;
 	}
 
-	private String getMetaTitle() {
+	private @Nullable String getMetaTitle() {
 		Element element = doc.select("meta[name=title]").first();
 		return element != null ? element.attr("content") : null;
 	}
 
-	private String getDocumentTitle() {
+	private @Nullable String getDocumentTitle() {
 		Element element = doc.select("title").first();
 		return element != null ? element.text() : null;
 	}

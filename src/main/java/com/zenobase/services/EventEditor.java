@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
 import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateEventCommand;
@@ -25,7 +26,7 @@ public abstract class EventEditor {
 	private final String bucketId;
 	private final Identity principal;
 	private final EventRepository events;
-	private DateTime last;
+	private @Nullable DateTime last;
 	private final List<Command> edits = new ArrayList<>();
 
 	public EventEditor(String bucketId, Identity principal, EventRepository events, DateTime last) {
@@ -61,9 +62,9 @@ public abstract class EventEditor {
 		return events.find(bucketId, search.buildSearch());
 	}
 
-	protected abstract Event edit(Event event);
+	protected abstract @Nullable Event edit(Event event);
 
-	public DateTime getLast() {
+	public @Nullable DateTime getLast() {
 		return last;
 	}
 

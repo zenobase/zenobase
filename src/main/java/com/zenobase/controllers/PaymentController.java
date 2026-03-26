@@ -1,5 +1,8 @@
 package com.zenobase.controllers;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
@@ -57,7 +60,7 @@ public class PaymentController extends ControllerSupport {
 			sendNotFound(res, "user not found");
 			return;
 		}
-		sendOk(res, Nodes.newObject("value", payments.token(user.getName())));
+		sendOk(res, Nodes.newObject("value", payments.token(Objects.requireNonNull(user.getName()))));
 	}
 
 	public void pay(ServerRequest req, ServerResponse res) {
@@ -80,18 +83,24 @@ public class PaymentController extends ControllerSupport {
 			return;
 		}
 		ObjectNode body = body(req);
-		if (body == null || body.size() == 0) {
+		if (body.isEmpty()) {
 			sendBadRequest(res, "missing payment data");
 			return;
 		}
 		var payment = new Payment(body);
-		Plan plan = Plan.getPlan(payment.getPrice());
+		BigDecimal price = payment.getPrice();
+		if (price == null) {
+			sendBadRequest(res, "missing price");
+			return;
+		}
+		Plan plan = Plan.getPlan(price);
 		if (plan == null) {
 			sendBadRequest(res, "no matching plan");
 			return;
 		}
 		if (hasData(user)) {
-			payments.subscribe(user.getName(), user.getEmail(), payment, plan);
+			payments.subscribe(
+					Objects.requireNonNull(user.getName()), Objects.requireNonNull(user.getEmail()), payment, plan);
 			dispatcher.dispatch(
 					new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), plan.getQuota()));
 		} else {
@@ -124,7 +133,7 @@ public class PaymentController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		payments.unsubscribe(user.getName());
+		payments.unsubscribe(Objects.requireNonNull(user.getName()));
 		dispatcher.dispatch(new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), null));
 		sendOk(res);
 	}

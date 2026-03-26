@@ -2,6 +2,7 @@ package com.zenobase.search;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMultimap;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 public class FilterParser {
@@ -12,7 +13,7 @@ public class FilterParser {
 		this.constraintBuilders = constraintBuilders;
 	}
 
-	public Query parse(String value) {
+	public @Nullable Query parse(@Nullable String value) {
 		return !Strings.isNullOrEmpty(value)
 				? new FilterBuilderSupport(constraintBuilders)
 						.addConstraints(value)

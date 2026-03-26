@@ -2,6 +2,7 @@ package com.zenobase.tasks.hexoskin;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Identity;
 
@@ -13,7 +14,8 @@ public class HexoskinActivitiesTask extends HexoskinTaskSupport {
 		super(node);
 	}
 
-	public HexoskinActivitiesTask(String bucketId, Identity principal, String tag, DateTimeZone zone, String marker) {
+	public HexoskinActivitiesTask(
+			String bucketId, Identity principal, @Nullable String tag, DateTimeZone zone, String marker) {
 		super(TYPE, bucketId, principal, tag, zone, marker);
 	}
 

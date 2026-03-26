@@ -1,8 +1,11 @@
 package com.zenobase.oauth;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.DateTimeField;
@@ -31,11 +34,11 @@ public class Authorization extends DomainNode {
 		this(principal, null, null);
 	}
 
-	public Authorization(Identity principal, Identity client, String scope) {
+	public Authorization(Identity principal, @Nullable Identity client, @Nullable String scope) {
 		this(principal, client, scope, DateTime.now(DateTimeZone.UTC));
 	}
 
-	public Authorization(Identity principal, Identity client, String scope, DateTime created) {
+	public Authorization(Identity principal, @Nullable Identity client, @Nullable String scope, DateTime created) {
 		setValue(ID, Generator.longId());
 		setValue(PRINCIPAL, principal);
 		setValue(CLIENT, client);
@@ -45,22 +48,22 @@ public class Authorization extends DomainNode {
 
 	@Override
 	public String getId() {
-		return getValue(ID);
+		return Objects.requireNonNull(getValue(ID));
 	}
 
 	public DateTime getCreated() {
-		return getValue(CREATED);
+		return Objects.requireNonNull(getValue(CREATED));
 	}
 
 	public Identity getPrincipal() {
-		return getValue(PRINCIPAL);
+		return Objects.requireNonNull(getValue(PRINCIPAL));
 	}
 
-	public Identity getClient() {
+	public @Nullable Identity getClient() {
 		return getValue(CLIENT);
 	}
 
-	public String getScope() {
+	public @Nullable String getScope() {
 		return getValue(SCOPE);
 	}
 

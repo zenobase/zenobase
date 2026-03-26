@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -85,18 +86,18 @@ public class SleepCloudResult {
 		return new DateTime(value, zone);
 	}
 
-	private Integer countValue(JsonNode node) {
+	private @Nullable Integer countValue(JsonNode node) {
 		int value = node.intValue();
 		return value > 0 ? value : null;
 	}
 
-	private Rating ratingValue(JsonNode node) {
+	private @Nullable Rating ratingValue(JsonNode node) {
 		double value = node.doubleValue();
 		Preconditions.checkArgument(value >= 0.0 && value <= 5.0, "Invalid rating: %s", node);
 		return value > 0.0 ? Rating.valueOf((int) (value * 20)) : null;
 	}
 
-	private Percentage percentageValue(JsonNode node) {
+	private @Nullable Percentage percentageValue(JsonNode node) {
 		double value = node.doubleValue();
 		Preconditions.checkArgument(value >= 0.0 && value <= 1.0, "Invalid percentage: %s", node);
 		return value > 0.0 ? Percentage.valueOf((int) (value * 100)) : null;

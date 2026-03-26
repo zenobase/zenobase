@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.DecimalNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.search.DecimalRangeConstraintBuilder;
 import com.zenobase.search.ExistsConstraintBuilder;
@@ -25,7 +26,7 @@ public class DecimalField extends Field<BigDecimal> {
 	}
 
 	@Override
-	public JsonNode toJson(BigDecimal value) {
+	public JsonNode toJson(@Nullable BigDecimal value) {
 		return value != null ? new DecimalNode(value) : NullNode.getInstance();
 	}
 }

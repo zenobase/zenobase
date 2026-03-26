@@ -8,6 +8,7 @@ import com.google.common.collect.Iterables;
 import org.junit.jupiter.api.Test;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
+import org.scribe.model.Token;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -27,6 +28,7 @@ public class NetatmoTaskManagerTest {
 		NetatmoCredentialsManager credentialsManager = mock(NetatmoCredentialsManager.class);
 		NetatmoTaskManager manager = spy(new NetatmoTaskManager(credentialsManager));
 		OAuthCredentials credentials = mock(OAuthCredentials.class);
+		when(credentials.getToken()).thenReturn(new Token("key", "secret"));
 
 		String bucketId = Generator.id();
 		Identity principal = new Identity();

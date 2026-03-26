@@ -2,6 +2,7 @@ package com.zenobase.tasks.google;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
@@ -20,7 +21,7 @@ public class GoogleFitCardioTask extends GoogleFitTaskSupport {
 		setSetting(TAG, tag);
 	}
 
-	public String getTag() {
+	public @Nullable String getTag() {
 		return getSetting(TAG);
 	}
 

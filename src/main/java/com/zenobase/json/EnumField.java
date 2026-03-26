@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.search.TermConstraintBuilder;
 
@@ -20,13 +21,13 @@ public class EnumField<E extends Enum<E>> extends Field<E> {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected E getValue(JsonNode node) {
+	protected @Nullable E getValue(JsonNode node) {
 		String value = node.textValue();
 		return value != null ? Enum.valueOf((Class<E>) getType(), value.toUpperCase()) : null;
 	}
 
 	@Override
-	public JsonNode toJson(E value) {
+	public JsonNode toJson(@Nullable E value) {
 		return value != null ? new TextNode(value.toString().toLowerCase()) : NullNode.getInstance();
 	}
 

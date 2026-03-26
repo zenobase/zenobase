@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.search.DecimalRangeConstraintBuilder;
 import com.zenobase.search.ExistsConstraintBuilder;
@@ -28,12 +29,12 @@ public class IntegerField extends Field<Integer> {
 	}
 
 	@Override
-	protected Integer getValue(JsonNode node) {
+	protected @Nullable Integer getValue(JsonNode node) {
 		return node.isNumber() ? node.intValue() : null;
 	}
 
 	@Override
-	public JsonNode toJson(Integer value) {
+	public JsonNode toJson(@Nullable Integer value) {
 		return value != null ? new IntNode(value) : NullNode.getInstance();
 	}
 

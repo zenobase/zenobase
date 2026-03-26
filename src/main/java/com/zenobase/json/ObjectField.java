@@ -3,6 +3,7 @@ package com.zenobase.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 public class ObjectField extends Field<ObjectNode> {
 
@@ -22,7 +23,7 @@ public class ObjectField extends Field<ObjectNode> {
 	}
 
 	@Override
-	public JsonNode toJson(ObjectNode value) {
+	public JsonNode toJson(@Nullable ObjectNode value) {
 		return value != null ? value : NullNode.getInstance();
 	}
 }

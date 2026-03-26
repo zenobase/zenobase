@@ -2,6 +2,7 @@ package com.zenobase.tasks.oura;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
@@ -45,7 +46,7 @@ public class OuraReadinessTaskManager extends OuraTaskManagerSupport {
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
 		}
-		DateTime begin = task.getBegin();
+		DateTime begin = Objects.requireNonNull(task.getBegin());
 		DateTime end = DateTime.now(begin.getZone()).plusDays(1);
 		List<Event> events = new ArrayList<>();
 		var request = new OAuthRequest(Verb.GET, HOST + "/v2/usercollection/daily_readiness");
@@ -55,6 +56,6 @@ public class OuraReadinessTaskManager extends OuraTaskManagerSupport {
 		events.addAll(
 				new OuraReadinessResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone())
 						.getEvents());
-		return createCommand(task, credentials, events, token);
+		return createCommand(task, credentials, events, Objects.requireNonNull(token));
 	}
 }

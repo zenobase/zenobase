@@ -1,6 +1,7 @@
 package com.zenobase.tasks.reporter;
 
-import com.google.common.base.Objects;
+import java.util.Objects;
+
 import com.google.common.base.Preconditions;
 
 public class Question {
@@ -33,12 +34,14 @@ public class Question {
 	}
 
 	private boolean equals(Question that) {
-		return Objects.equal(prompt, that.prompt) && Objects.equal(tag, that.tag) && Objects.equal(field, that.field);
+		return Objects.equals(prompt, that.prompt)
+				&& Objects.equals(tag, that.tag)
+				&& Objects.equals(field, that.field);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(prompt, tag, field);
+		return Objects.hash(prompt, tag, field);
 	}
 
 	@Override

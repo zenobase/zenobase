@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import jakarta.inject.Inject;
 import org.joda.time.LocalDate;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -38,7 +39,7 @@ public class FitbitCardioTaskManager extends FitbitTaskManagerSupport<FitbitCard
 	}
 
 	@Override
-	protected Command safeExecute(FitbitCardioTask task, OAuthCredentials credentials, Token token) {
+	protected @Nullable Command safeExecute(FitbitCardioTask task, OAuthCredentials credentials, Token token) {
 
 		List<Event> events = new ArrayList<>();
 		LocalDate syncDate = getLastDate(DeviceType.TRACKER, credentials);

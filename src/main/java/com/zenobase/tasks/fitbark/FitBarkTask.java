@@ -1,6 +1,9 @@
 package com.zenobase.tasks.fitbark;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
@@ -21,19 +24,19 @@ public class FitBarkTask extends Task {
 		this(bucketId, principal, name, hourly, null);
 	}
 
-	FitBarkTask(String bucketId, Identity principal, String name, boolean hourly, String marker) {
+	FitBarkTask(String bucketId, Identity principal, String name, boolean hourly, @Nullable String marker) {
 		super(TYPE, bucketId, principal);
 		setSetting(NAME, name);
 		setSetting(HOURLY, hourly);
 		setMarker(marker);
 	}
 
-	public String getName() {
+	public @Nullable String getName() {
 		return getSetting(NAME);
 	}
 
 	public boolean isHourly() {
-		return getSetting(HOURLY);
+		return Objects.requireNonNull(getSetting(HOURLY));
 	}
 
 	@Override

@@ -2,12 +2,13 @@ package com.zenobase.tasks.trakt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -57,7 +58,7 @@ public class TraktTaskManager extends OAuthTaskManager {
 		DateTime after = parseMarker(task.getMarker());
 		addEvents("movies", credentials, task, settings, after, events);
 		addEvents("episodes", credentials, task, settings, after, events);
-		return createCommand(task, credentials, events, token);
+		return createCommand(task, credentials, events, Objects.requireNonNull(token));
 	}
 
 	private TraktSettingsResult getSettings(OAuthCredentials credentials) {
@@ -71,7 +72,7 @@ public class TraktTaskManager extends OAuthTaskManager {
 			OAuthCredentials credentials,
 			TraktTask task,
 			TraktSettingsResult settings,
-			DateTime after,
+			@Nullable DateTime after,
 			List<Event> events) {
 		int limit = 10;
 		for (int page = 1; page < 100; ++page) {
@@ -90,18 +91,18 @@ public class TraktTaskManager extends OAuthTaskManager {
 		}
 	}
 
-	static DateTime parseMarker(String marker) {
+	static @Nullable DateTime parseMarker(@Nullable String marker) {
 		return marker != null ? DateTime.parse(marker) : null;
 	}
 
-	static String formatMarker(DateTime time) {
+	static @Nullable String formatMarker(@Nullable DateTime time) {
 		return time != null ? time.toString() : null;
 	}
 
-	static String getMarker(Iterable<Event> events) {
+	static @Nullable String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
-			DateTime time = event.getValue(Event.TIMESTAMP);
+			DateTime time = Objects.requireNonNull(event.getValue(Event.TIMESTAMP));
 			if (latest == null || time.isAfter(latest)) {
 				latest = time;
 			}
@@ -119,7 +120,7 @@ public class TraktTaskManager extends OAuthTaskManager {
 				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build());
-		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+		if (!Objects.equals(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())

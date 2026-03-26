@@ -1,5 +1,7 @@
 package com.zenobase.controllers;
 
+import java.util.Objects;
+
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
@@ -96,7 +98,7 @@ public class JournalController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
-		Command command = repository.find(form.getCommandId());
+		Command command = repository.find(Objects.requireNonNull(form.getCommandId()));
 		if (command == null) {
 			sendNotFound(res, "command not found");
 			return;

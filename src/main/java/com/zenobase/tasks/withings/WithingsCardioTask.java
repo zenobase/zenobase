@@ -2,6 +2,7 @@ package com.zenobase.tasks.withings;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
@@ -17,12 +18,12 @@ public class WithingsCardioTask extends Task {
 		super(node);
 	}
 
-	WithingsCardioTask(String bucketId, Identity principal, String marker) {
+	WithingsCardioTask(String bucketId, Identity principal, @Nullable String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 	}
 
-	public String getTag() {
+	public @Nullable String getTag() {
 		return getSetting(TAG);
 	}
 
@@ -36,7 +37,7 @@ public class WithingsCardioTask extends Task {
 	}
 
 	public void setTimezone(DateTimeZone timezone) {
-		setSetting(TIMEZONE, timezone != null ? timezone.getID() : null);
+		setSetting(TIMEZONE, timezone.getID());
 	}
 
 	@Override

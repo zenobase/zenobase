@@ -1,8 +1,11 @@
 package com.zenobase.json;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Alias;
 
@@ -30,15 +33,15 @@ public class AliasField extends Field<Alias> {
 	@Override
 	protected Alias getValue(JsonNode node) {
 		ObjectNode object = (ObjectNode) node;
-		return new Alias(idField.getValue(object), filterField.getValue(object));
+		return new Alias(Objects.requireNonNull(idField.getValue(object)), filterField.getValue(object));
 	}
 
 	@Override
-	public JsonNode toJson(Alias value) {
+	public JsonNode toJson(@Nullable Alias value) {
 		return value != null ? toJson(value.id(), value.filter()) : NullNode.getInstance();
 	}
 
-	private JsonNode toJson(String id, String filter) {
+	private JsonNode toJson(String id, @Nullable String filter) {
 		ObjectNode node = Nodes.newObject();
 		idField.setValue(node, id);
 		filterField.setValue(node, filter);

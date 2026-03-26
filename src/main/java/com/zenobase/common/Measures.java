@@ -3,12 +3,14 @@ package com.zenobase.common;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.Objects;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
 
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Doubles;
+import org.jspecify.annotations.Nullable;
 
 public class Measures {
 
@@ -38,34 +40,34 @@ public class Measures {
 				: measure.to((Unit<Q>) measure.getUnit().getStandardUnit(), MathContext.DECIMAL32);
 	}
 
-	public static BigDecimal convert(double value, Unit<?> unit) {
+	public static @Nullable BigDecimal convert(double value, Unit<?> unit) {
 		return round(
 				Units.isStandard(unit)
 						? value
 						: unit.getStandardUnit().getConverterTo(unit).convert(value));
 	}
 
-	public static BigDecimal round(double value) {
+	public static @Nullable BigDecimal round(double value) {
 		return round(value, 2);
 	}
 
-	public static BigDecimal round(double value, int scale) {
+	public static @Nullable BigDecimal round(double value, int scale) {
 		return Doubles.isFinite(value) ? round(new BigDecimal(value), scale) : null;
 	}
 
-	public static BigDecimal round(BigDecimal value) {
+	public static @Nullable BigDecimal round(@Nullable BigDecimal value) {
 		return round(value, 2);
 	}
 
-	public static BigDecimal round(BigDecimal value, int scale) {
+	public static @Nullable BigDecimal round(@Nullable BigDecimal value, int scale) {
 		return value != null ? value.setScale(scale, RoundingMode.HALF_UP) : null;
 	}
 
 	public static <Q extends Quantity> DecimalMeasure<Q> round(DecimalMeasure<Q> value) {
-		return round(value, 2);
+		return Objects.requireNonNull(round(value, 2));
 	}
 
-	public static <Q extends Quantity> DecimalMeasure<Q> round(DecimalMeasure<Q> value, int scale) {
+	public static <Q extends Quantity> @Nullable DecimalMeasure<Q> round(@Nullable DecimalMeasure<Q> value, int scale) {
 		return value != null ? new DecimalMeasure<>(round(value.getValue(), scale), value.getUnit()) : null;
 	}
 }

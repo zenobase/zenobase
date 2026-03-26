@@ -1,10 +1,13 @@
 package com.zenobase.tasks;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Minutes;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.DateTimeField;
@@ -48,26 +51,26 @@ public class Task extends DomainNode {
 
 	@Override
 	public String getId() {
-		return getValue(ID);
+		return Objects.requireNonNull(getValue(ID));
 	}
 
 	public String getType() {
-		return getValue(TYPE);
+		return Objects.requireNonNull(getValue(TYPE));
 	}
 
 	public String getBucketId() {
-		return getValue(BUCKET);
+		return Objects.requireNonNull(getValue(BUCKET));
 	}
 
 	public Identity getPrincipal() {
-		return getValue(PRINCIPAL);
+		return Objects.requireNonNull(getValue(PRINCIPAL));
 	}
 
 	public DateTime getCreated() {
-		return getValue(CREATED);
+		return Objects.requireNonNull(getValue(CREATED));
 	}
 
-	public DateTime getCompleted() {
+	public @Nullable DateTime getCompleted() {
 		return getValue(COMPLETED);
 	}
 
@@ -75,7 +78,7 @@ public class Task extends DomainNode {
 		setValue(COMPLETED, completed);
 	}
 
-	public Status getStatus() {
+	public @Nullable Status getStatus() {
 		return getValue(STATUS);
 	}
 
@@ -83,35 +86,35 @@ public class Task extends DomainNode {
 		setValue(STATUS, status);
 	}
 
-	public String getMarker() {
+	public @Nullable String getMarker() {
 		return getValue(MARKER);
 	}
 
-	public void setMarker(String marker) {
+	public void setMarker(@Nullable String marker) {
 		setValue(MARKER, marker);
 	}
 
-	public String getUndoId() {
+	public @Nullable String getUndoId() {
 		return getValue(UNDO);
 	}
 
-	public void setUndoId(String undoId) {
+	public void setUndoId(@Nullable String undoId) {
 		setValue(UNDO, undoId);
 	}
 
-	public ObjectNode getSettings() {
+	public @Nullable ObjectNode getSettings() {
 		return getValue(SETTINGS);
 	}
 
-	protected <T> T getSetting(Field<T> field) {
+	protected <T> @Nullable T getSetting(Field<T> field) {
 		return getValue(SETTINGS, field);
 	}
 
-	protected <T> Iterable<T> getSettings(Field<T> field) {
+	protected <T> @Nullable Iterable<T> getSettings(Field<T> field) {
 		return getValues(SETTINGS, field);
 	}
 
-	protected <T> void setSetting(Field<T> field, T value) {
+	protected <T> void setSetting(Field<T> field, @Nullable T value) {
 		setValue(SETTINGS, field, value);
 	}
 

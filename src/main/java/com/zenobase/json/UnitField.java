@@ -6,6 +6,7 @@ import javax.measure.unit.Unit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Units;
 
@@ -16,7 +17,7 @@ public class UnitField<Q extends Quantity> extends Field<Unit<Q>> {
 	}
 
 	@Override
-	protected Unit<Q> getValue(JsonNode node) {
+	protected @Nullable Unit<Q> getValue(JsonNode node) {
 		if (!node.isTextual()) {
 			return null;
 		}
@@ -24,7 +25,7 @@ public class UnitField<Q extends Quantity> extends Field<Unit<Q>> {
 	}
 
 	@Override
-	public JsonNode toJson(Unit<Q> value) {
+	public JsonNode toJson(@Nullable Unit<Q> value) {
 		return value != null ? new TextNode(value.toString()) : NullNode.getInstance();
 	}
 }

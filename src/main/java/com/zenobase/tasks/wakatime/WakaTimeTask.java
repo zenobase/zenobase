@@ -2,6 +2,7 @@ package com.zenobase.tasks.wakatime;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
@@ -16,18 +17,18 @@ public class WakaTimeTask extends Task {
 		super(node);
 	}
 
-	public WakaTimeTask(String bucketId, Identity principal, String tag, String marker) {
+	public WakaTimeTask(String bucketId, Identity principal, @Nullable String tag, String marker) {
 		super(TYPE, bucketId, principal);
 		setSetting(TAG, tag);
 		setMarker(marker);
 	}
 
-	public DateTime getBegin() {
+	public @Nullable DateTime getBegin() {
 		String marker = getMarker();
 		return marker != null ? DateTime.parse(marker) : null;
 	}
 
-	public String getTag() {
+	public @Nullable String getTag() {
 		return getSetting(TAG);
 	}
 

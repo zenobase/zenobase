@@ -1,6 +1,7 @@
 package com.zenobase.services;
 
 import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
@@ -27,7 +28,7 @@ public class AuthorizationQuery extends QuerySupport {
 		return this;
 	}
 
-	public AuthorizationQuery clientNotNull(Boolean notNull) {
+	public AuthorizationQuery clientNotNull(@Nullable Boolean notNull) {
 		if (notNull == Boolean.TRUE) {
 			notNull(Authorization.CLIENT);
 		} else if (notNull == Boolean.FALSE) {
@@ -36,7 +37,7 @@ public class AuthorizationQuery extends QuerySupport {
 		return this;
 	}
 
-	public AuthorizationQuery scopeEqualTo(String scope) {
+	public AuthorizationQuery scopeEqualTo(@Nullable String scope) {
 		equalTo(Authorization.SCOPE, scope);
 		return this;
 	}

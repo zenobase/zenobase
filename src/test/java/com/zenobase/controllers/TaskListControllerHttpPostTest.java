@@ -2,6 +2,7 @@ package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import io.helidon.webclient.http1.Http1ClientResponse;
@@ -30,8 +31,7 @@ public class TaskListControllerHttpPostTest extends TaskListControllerTestSuppor
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(registry.find(type)).thenReturn(manager);
-		when(manager.newTask(bucket.getId(), user.asIdentity(), form.getSettings()))
-				.thenReturn(task);
+		when(manager.newTask(eq(bucket.getId()), eq(user.asIdentity()), any())).thenReturn(task);
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		try (Http1ClientResponse result = call(form)) {
 			assertThat(result).hasStatus(201).hasContent(task.toJson());

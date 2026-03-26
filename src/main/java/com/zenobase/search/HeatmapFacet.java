@@ -1,11 +1,13 @@
 package com.zenobase.search;
 
+import java.util.Objects;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import org.jspecify.annotations.Nullable;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.io.GeohashUtils;
 import org.locationtech.spatial4j.shape.Point;
@@ -28,13 +30,19 @@ public class HeatmapFacet extends FilteredFacet {
 	public static final String TYPE = "heatmap";
 
 	private final String keyField;
-	private final String valueField;
+	private final @Nullable String valueField;
 	private final Unit<?> unit;
 	private final int precision;
 
-	private HeatmapFacet(String id, String keyField, String valueField, Unit<?> unit, int precision, Query filter) {
+	private HeatmapFacet(
+			String id,
+			String keyField,
+			@Nullable String valueField,
+			Unit<?> unit,
+			int precision,
+			@Nullable Query filter) {
 		super(id, filter);
-		Preconditions.checkArgument(precision >= 1 && precision <= 10, "invalid precision value: %d", precision);
+		Preconditions.checkArgument(precision >= 1 && precision <= 10, "invalid precision value: %s", precision);
 		this.keyField = keyField;
 		this.valueField = valueField;
 		this.unit = unit;
@@ -60,7 +68,7 @@ public class HeatmapFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Aggregate agg = getAggregate(response);
+		Aggregate agg = Objects.requireNonNull(getAggregate(response));
 		for (GeoHashGridBucket bucket : agg.geohashGrid().buckets().array()) {
 			Aggregate sumAgg = bucket.aggregations().get("sum");
 			double sumValue = sumAgg != null ? sumAgg.sum().value() : -1;
@@ -92,11 +100,11 @@ public class HeatmapFacet extends FilteredFacet {
 		return options -> {
 			String unit = options.get("unit");
 			return new HeatmapFacet(
-					options.get("id"),
-					options.get("field", String.class, Event.LOCATION.getName()),
+					Objects.requireNonNull(options.get("id")),
+					Objects.requireNonNull(options.get("field", String.class, Event.LOCATION.getName())),
 					options.get("value_field", String.class, null),
 					unit != null ? Units.valueOf(unit) : Unit.ONE,
-					options.get("precision", Integer.class, 8),
+					Objects.requireNonNull(options.get("precision", Integer.class, 8)),
 					filterParser.parse(options.get("filter")));
 		};
 	}

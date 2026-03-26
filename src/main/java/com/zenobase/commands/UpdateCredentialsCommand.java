@@ -1,8 +1,11 @@
 package com.zenobase.commands;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.JsonPatch;
 import com.zenobase.models.Identity;
@@ -28,7 +31,8 @@ public class UpdateCredentialsCommand extends UpdateCommandSupport {
 	}
 
 	public Credentials apply(Credentials credentials) {
-		return new Credentials(new JsonPatch(getFrom(), getTo()).apply(credentials.toJson()));
+		return new Credentials(new JsonPatch(Objects.requireNonNull(getFrom()), Objects.requireNonNull(getTo()))
+				.apply(credentials.toJson()));
 	}
 
 	@Override
@@ -54,7 +58,7 @@ public class UpdateCredentialsCommand extends UpdateCommandSupport {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			return switch (version) {
 				case 1 -> new UpdateCredentialsCommand(node);
 				default -> null;
@@ -74,7 +78,7 @@ public class UpdateCredentialsCommand extends UpdateCommandSupport {
 
 		@Override
 		public void executeTyped(UpdateCredentialsCommand command) {
-			Credentials credentials = repository.find(command.getObjectId());
+			Credentials credentials = repository.find(Objects.requireNonNull(command.getObjectId()));
 			Preconditions.checkNotNull(credentials, "Can't find credentials: %s", command.getObjectId());
 			repository.update(command.apply(credentials), command.getTimestamp());
 		}

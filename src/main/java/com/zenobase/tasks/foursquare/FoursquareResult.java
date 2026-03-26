@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.MoreObjects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -86,17 +87,17 @@ class FoursquareResult {
 			this.node = node;
 		}
 
-		public Resource getResource() {
+		public @Nullable Resource getResource() {
 			String title = node.path("name").textValue();
 			String url = MoreObjects.firstNonNull(node.path("url").textValue(), SOURCE.url());
 			return title != null ? new Resource(title, url) : null;
 		}
 
-		public Location getLocation() {
+		public @Nullable Location getLocation() {
 			return getLocation(node.path("location"));
 		}
 
-		private static Location getLocation(JsonNode node) {
+		private static @Nullable Location getLocation(JsonNode node) {
 			BigDecimal lat = node.path("lat").decimalValue();
 			BigDecimal lon = node.path("lng").decimalValue();
 			return !BigDecimal.ZERO.equals(lat) && !BigDecimal.ZERO.equals(lon) ? new Location(lat, lon) : null;

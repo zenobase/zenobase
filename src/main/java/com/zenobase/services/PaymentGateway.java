@@ -7,6 +7,7 @@ import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.ClientTokenRequest;
 import com.braintreegateway.CreditCard;
 import com.braintreegateway.CreditCardVerification;
+import com.braintreegateway.CreditCardVerification.Status;
 import com.braintreegateway.Customer;
 import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Environment;
@@ -21,6 +22,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +47,7 @@ public class PaymentGateway {
 		gateway = new BraintreeGateway(environment, merchantId, publicKey, privateKey);
 	}
 
-	public Customer findCustomer(String username) {
+	public @Nullable Customer findCustomer(String username) {
 		try {
 			return gateway.customer().find(username);
 		} catch (NotFoundException e) {
@@ -125,7 +127,7 @@ public class PaymentGateway {
 		return getStatus(result) == CreditCardVerification.Status.VERIFIED;
 	}
 
-	private static CreditCardVerification.Status getStatus(Result<? extends PaymentMethod> result) {
+	private static @Nullable Status getStatus(Result<? extends PaymentMethod> result) {
 		return result.getCreditCardVerification() != null
 				? result.getCreditCardVerification().getStatus()
 				: null;
@@ -148,7 +150,7 @@ public class PaymentGateway {
 		return msg.toString();
 	}
 
-	static Subscription getSubscription(Customer customer) {
+	static @Nullable Subscription getSubscription(Customer customer) {
 		List<Subscription> subscriptions = new ArrayList<>();
 		for (CreditCard card : customer.getCreditCards()) {
 			for (Subscription subscription : card.getSubscriptions()) {
@@ -159,7 +161,7 @@ public class PaymentGateway {
 		}
 		Preconditions.checkState(
 				subscriptions.size() <= 1,
-				"Expected at most one subscription for <%s> but got <%d>",
+				"Expected at most one subscription for <%s> but got <%s>",
 				customer.getId(),
 				subscriptions.size());
 		return Iterables.getOnlyElement(subscriptions, null);

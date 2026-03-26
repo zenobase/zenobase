@@ -6,6 +6,7 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Units;
 import com.zenobase.json.TokenField;
@@ -30,7 +31,7 @@ public class WithingsStepsTask extends Task {
 			String tag,
 			Unit<Length> lengthUnit,
 			Unit<Energy> energyUnit,
-			String marker) {
+			@Nullable String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);
@@ -38,16 +39,17 @@ public class WithingsStepsTask extends Task {
 		setSetting(ENERGY_UNIT, energyUnit);
 	}
 
-	public String getTag() {
+	public @Nullable String getTag() {
 		return getSetting(TAG);
 	}
 
-	public Unit<Length> getDistanceUnit() {
+	public @Nullable Unit<Length> getDistanceUnit() {
 		return getSetting(LENGTH_UNIT);
 	}
 
 	public Unit<Length> getHeightUnit() {
-		return Units.isMetric(getDistanceUnit()) ? Units.M : Units.FT;
+		Unit<Length> distanceUnit = getDistanceUnit();
+		return distanceUnit != null && Units.isMetric(distanceUnit) ? Units.M : Units.FT;
 	}
 
 	public Unit<Energy> getEnergyUnit() {

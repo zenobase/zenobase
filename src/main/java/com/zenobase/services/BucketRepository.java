@@ -2,12 +2,13 @@ package com.zenobase.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
@@ -54,7 +55,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 	}
 
 	public void update(Bucket from, Bucket to, DateTime timestamp) {
-		if (!Objects.equal(from.getAliases(), to.getAliases())) {
+		if (!Objects.equals(from.getAliases(), to.getAliases())) {
 			manager.updateAlias(EventRepository.INDEX_NAME, from.getId(), to.getAliases());
 		}
 		DomainNode.SEQ_NO.setValue(to.toJson(), DomainNode.SEQ_NO.getValue(from.toJson()));
@@ -80,7 +81,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 				.isEmpty();
 	}
 
-	public Bucket find(String bucketId) {
+	public @Nullable Bucket find(String bucketId) {
 		ObjectNode node = index.get(bucketId);
 		return node != null ? toObject(node) : null;
 	}

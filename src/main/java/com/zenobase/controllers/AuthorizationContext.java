@@ -3,6 +3,7 @@ package com.zenobase.controllers;
 import io.helidon.http.HeaderNames;
 import io.helidon.webserver.http.ServerRequest;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.AuthorizationRepository;
@@ -18,7 +19,7 @@ public class AuthorizationContext {
 		this.authorizations = authorizations;
 	}
 
-	public Authorization current(ServerRequest request) {
+	public @Nullable Authorization current(ServerRequest request) {
 		String token = request.query().first("code").orElse(null);
 		if (token == null) {
 			token = extractToken(
@@ -27,11 +28,11 @@ public class AuthorizationContext {
 		return token != null ? authorizations.find(token) : null;
 	}
 
-	static String extractToken(String header) {
-		return isOAuthHeader(header) ? header.substring(HEADER_PREFIX.length()) : null;
+	static @Nullable String extractToken(@Nullable String header) {
+		return header != null && isOAuthHeader(header) ? header.substring(HEADER_PREFIX.length()) : null;
 	}
 
-	private static boolean isOAuthHeader(String header) {
+	private static boolean isOAuthHeader(@Nullable String header) {
 		return header != null && header.startsWith(HEADER_PREFIX) && header.length() > HEADER_PREFIX.length();
 	}
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
@@ -75,7 +76,7 @@ public class EventRepository {
 		return getIndex(bucketId).delete(eventIds, false);
 	}
 
-	public Event find(String bucketId, String eventId) {
+	public @Nullable Event find(String bucketId, String eventId) {
 		ObjectNode node = getIndex(bucketId).get(eventId);
 		return node != null ? new Event(node) : null;
 	}
@@ -108,8 +109,11 @@ public class EventRepository {
 								.order(Collections.singletonMap("_count", SortOrder.Desc))))));
 		SearchResponse<ObjectNode> response = getIndex(bucketId).search(request);
 		List<String> terms = new ArrayList<>();
-		for (StringTermsBucket bucket :
-				response.aggregations().get(id).sterms().buckets().array()) {
+		var aggregation = response.aggregations().get(id);
+		if (aggregation == null) {
+			return terms;
+		}
+		for (StringTermsBucket bucket : aggregation.sterms().buckets().array()) {
 			terms.add(bucket.key());
 		}
 		return terms;

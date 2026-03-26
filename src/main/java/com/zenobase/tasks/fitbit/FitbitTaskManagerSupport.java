@@ -1,13 +1,14 @@
 package com.zenobase.tasks.fitbit;
 
 import java.util.List;
+import java.util.Objects;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.util.concurrent.RateLimiter;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -41,10 +42,9 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 	}
 
 	@Override
-	public final Command execute(Task task, OAuthCredentials credentials) {
-		Token token = credentials.getToken();
-		if (credentials.isExpired()
-				|| !Strings.isNullOrEmpty(credentials.getToken().getSecret())) {
+	public final @Nullable Command execute(Task task, OAuthCredentials credentials) {
+		Token token = Objects.requireNonNull(credentials.getToken());
+		if (credentials.isExpired() || !Strings.isNullOrEmpty(token.getSecret())) {
 			reauthorize(credentials);
 		}
 		try {
@@ -58,9 +58,9 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 		}
 	}
 
-	protected abstract Command safeExecute(T task, OAuthCredentials credentials, Token token);
+	protected abstract @Nullable Command safeExecute(T task, OAuthCredentials credentials, Token token);
 
-	protected LocalDate getLastDate(DeviceType deviceType, OAuthCredentials credentials) {
+	protected @Nullable LocalDate getLastDate(DeviceType deviceType, OAuthCredentials credentials) {
 		var request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/devices.json");
 		Response response = send(request, credentials);
 		return new FitbitDevicesResult(parseArray(response)).getLastDate(deviceType);
@@ -103,7 +103,7 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 				.set(Task.MARKER, task.getMarker(), marker)
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build());
-		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+		if (!Objects.equals(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())

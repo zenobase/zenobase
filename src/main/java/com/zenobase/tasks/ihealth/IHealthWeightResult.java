@@ -8,6 +8,7 @@ import javax.measure.unit.Unit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -38,7 +39,7 @@ class IHealthWeightResult extends IHealthResultSupport {
 		return event;
 	}
 
-	private DecimalMeasure<Mass> weightValue(JsonNode node) {
+	private @Nullable DecimalMeasure<Mass> weightValue(JsonNode node) {
 		return !isZero(node)
 				? Measures.valueOf(node.decimalValue().setScale(2, RoundingMode.HALF_UP), getUnit())
 				: null;

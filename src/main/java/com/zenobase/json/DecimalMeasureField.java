@@ -1,6 +1,7 @@
 package com.zenobase.json;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.search.ExistsConstraintBuilder;
@@ -45,16 +47,17 @@ public class DecimalMeasureField<Q extends Quantity> extends Field<DecimalMeasur
 	}
 
 	@Override
-	protected DecimalMeasure<Q> getValue(JsonNode node) {
+	protected @Nullable DecimalMeasure<Q> getValue(JsonNode node) {
 		return getDecimalMeasure((ObjectNode) node);
 	}
 
-	private DecimalMeasure<Q> getDecimalMeasure(ObjectNode node) {
-		return Measures.valueOf(VALUE.getValue(node), UNIT.getValue(node));
+	private @Nullable DecimalMeasure<Q> getDecimalMeasure(ObjectNode node) {
+		return Measures.valueOf(
+				Objects.requireNonNull(VALUE.getValue(node)), Objects.requireNonNull(UNIT.getValue(node)));
 	}
 
 	@Override
-	public JsonNode toJson(DecimalMeasure<Q> value) {
+	public JsonNode toJson(@Nullable DecimalMeasure<Q> value) {
 		return value != null ? toJson(value.getValue(), value.getUnit()) : NullNode.getInstance();
 	}
 
@@ -71,7 +74,7 @@ public class DecimalMeasureField<Q extends Quantity> extends Field<DecimalMeasur
 	public void prePersist(ObjectNode node) {
 		for (JsonNode childNode : getNodes(node)) {
 			ObjectNode fieldNode = (ObjectNode) childNode;
-			DecimalMeasure<Q> value = getDecimalMeasure(fieldNode);
+			DecimalMeasure<Q> value = Objects.requireNonNull(getDecimalMeasure(fieldNode));
 			VALUE_SI.setValue(fieldNode, Measures.toStandard(value).getValue());
 		}
 	}

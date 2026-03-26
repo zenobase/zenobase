@@ -1,5 +1,6 @@
 package com.zenobase.search;
 
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 public class ExistsConstraintBuilder extends ConstraintBuilder {
@@ -9,7 +10,7 @@ public class ExistsConstraintBuilder extends ConstraintBuilder {
 	}
 
 	@Override
-	public Query build(String value) {
+	public @Nullable Query build(String value) {
 		return "*".equals(value) ? Query.of(q -> q.exists(e -> e.field(getPath()))) : null;
 	}
 }

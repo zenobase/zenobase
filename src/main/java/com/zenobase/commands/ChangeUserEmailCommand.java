@@ -1,7 +1,10 @@
 package com.zenobase.commands;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
@@ -34,23 +37,23 @@ public class ChangeUserEmailCommand extends Command {
 	}
 
 	private String getUsername() {
-		return getParameter(USERNAME);
+		return Objects.requireNonNull(getParameter(USERNAME));
 	}
 
 	private String getFrom() {
-		return getParameter(FROM);
+		return Objects.requireNonNull(getParameter(FROM));
 	}
 
 	private String getTo() {
-		return getParameter(TO);
+		return Objects.requireNonNull(getParameter(TO));
 	}
 
-	private Boolean getFromVerified() {
-		return getParameter(FROM_VERIFIED);
+	private boolean getFromVerified() {
+		return Objects.requireNonNull(getParameter(FROM_VERIFIED));
 	}
 
-	private Boolean getToVerified() {
-		return getParameter(TO_VERIFIED);
+	private boolean getToVerified() {
+		return Objects.requireNonNull(getParameter(TO_VERIFIED));
 	}
 
 	@Override
@@ -72,7 +75,7 @@ public class ChangeUserEmailCommand extends Command {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			return switch (version) {
 				case 1 -> new ChangeUserEmailCommand(node);
 				default -> null;

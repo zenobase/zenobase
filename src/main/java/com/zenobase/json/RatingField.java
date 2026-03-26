@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Rating;
 import com.zenobase.search.ExistsConstraintBuilder;
@@ -25,7 +26,7 @@ public class RatingField extends Field<Rating> {
 	}
 
 	@Override
-	public JsonNode toJson(Rating value) {
+	public JsonNode toJson(@Nullable Rating value) {
 		return value != null ? new IntNode(value.value()) : NullNode.getInstance();
 	}
 

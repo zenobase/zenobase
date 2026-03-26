@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Location;
 
@@ -15,7 +16,7 @@ class RouteResult {
 		this.node = Preconditions.checkNotNull(node);
 	}
 
-	public Location getLocation() {
+	public @Nullable Location getLocation() {
 		JsonNode coordinatesNode = node.path("starting_location").path("coordinates");
 		if (coordinatesNode.isMissingNode()) {
 			return null;

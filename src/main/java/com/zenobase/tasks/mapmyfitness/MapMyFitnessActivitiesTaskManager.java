@@ -2,6 +2,7 @@ package com.zenobase.tasks.mapmyfitness;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.cache.Cache;
@@ -95,7 +96,7 @@ public class MapMyFitnessActivitiesTaskManager extends MapMyFitnessTaskManagerSu
 			if (workout.getRouteId() != null) {
 				OAuthRequest request = new OAuthRequest(Verb.GET, HOST + "/v7.0/route/" + workout.getRouteId() + "/");
 				Response response = send(request, credentials);
-				workout.setLocation(new RouteResult(parseObject(response)).getLocation());
+				workout.setLocation(Objects.requireNonNull(new RouteResult(parseObject(response)).getLocation()));
 			}
 		}
 	}

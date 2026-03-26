@@ -5,6 +5,7 @@ import javax.measure.Measurable;
 import javax.measure.quantity.Quantity;
 
 import com.google.common.collect.Range;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.MeasureRangeParser;
 import com.zenobase.common.Measures;
@@ -20,7 +21,7 @@ public class MeasureRangeConstraintBuilder extends RangeConstraintBuilderSupport
 	}
 
 	@Override
-	protected Range<Measurable<Quantity>> parseRange(String value) {
+	protected @Nullable Range<Measurable<Quantity>> parseRange(String value) {
 		return parser.parse(value);
 	}
 

@@ -2,6 +2,7 @@ package com.zenobase.tasks.withings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -11,6 +12,7 @@ import com.google.common.primitives.Ints;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,14 +29,15 @@ class WithingsSleepResult extends WithingsResult {
 	private final boolean useRanges;
 	private final DateTimeZone timezone;
 
-	public WithingsSleepResult(ObjectNode node, Identity author, String tag, boolean useRanges, DateTimeZone timezone) {
+	public WithingsSleepResult(
+			ObjectNode node, Identity author, @Nullable String tag, boolean useRanges, DateTimeZone timezone) {
 		super(node, author, tag);
 		this.useRanges = useRanges;
 		this.timezone = timezone;
 	}
 
 	public WithingsSleepResult(
-			List<Event> events, Identity author, String tag, boolean useRanges, DateTimeZone timezone) {
+			List<Event> events, Identity author, @Nullable String tag, boolean useRanges, DateTimeZone timezone) {
 		this(Nodes.newObject(), author, tag, useRanges, timezone);
 		this.events.addAll(events);
 	}
@@ -51,7 +54,7 @@ class WithingsSleepResult extends WithingsResult {
 		return events;
 	}
 
-	private Event getEvent(JsonNode node) {
+	private @Nullable Event getEvent(JsonNode node) {
 		DateTime begin = dateTimeValue(node.path("startdate"), timezone);
 		DateTime end = dateTimeValue(node.path("enddate"), timezone);
 		if (begin == null || end == null) {
@@ -71,7 +74,7 @@ class WithingsSleepResult extends WithingsResult {
 		return event;
 	}
 
-	private static DateTime dateTimeValue(JsonNode node, DateTimeZone timezone) {
+	private static @Nullable DateTime dateTimeValue(JsonNode node, DateTimeZone timezone) {
 		return !node.isMissingNode() ? new DateTime(node.longValue() * 1000L, timezone) : null;
 	}
 
@@ -92,7 +95,9 @@ class WithingsSleepResult extends WithingsResult {
 			Duration duration = event.getValue(Event.DURATION);
 			if (prev != null && end != null && end.equals(begin)) {
 				prev.setValue(Event.PERCENTAGE, meanPercentage(prev, event));
-				prev.setValue(Event.DURATION, prev.getValue(Event.DURATION).plus(duration));
+				prev.setValue(
+						Event.DURATION,
+						Objects.requireNonNull(prev.getValue(Event.DURATION)).plus(duration));
 				end = getEnd(event);
 				prev.setValues(Event.TIMESTAMP, List.of(getBegin(prev), end));
 				continue;
@@ -104,29 +109,32 @@ class WithingsSleepResult extends WithingsResult {
 		return new WithingsSleepResult(merged, author, tag, useRanges, timezone);
 	}
 
-	private static DateTime getBegin(Event event) {
+	private static @Nullable DateTime getBegin(Event event) {
 		return Ordering.natural().min(event.getValues(Event.TIMESTAMP));
 	}
 
-	private static DateTime getEnd(Event event) {
+	private static @Nullable DateTime getEnd(Event event) {
 		return Ordering.natural().max(event.getValues(Event.TIMESTAMP));
 	}
 
 	@Override
-	public String getMarker() {
+	public @Nullable String getMarker() {
 		return !getEvents().isEmpty()
-				? Ordering.natural()
-						.max(Iterables.getLast(getEvents()).getValues(Event.TIMESTAMP))
+				? Objects.requireNonNull(Ordering.natural()
+								.max(Objects.requireNonNull(Iterables.getLast(getEvents()))
+										.getValues(Event.TIMESTAMP)))
 						.toString()
 				: null;
 	}
 
 	private static Percentage meanPercentage(Event left, Event right) {
 		return mean(
-				left.getValue(Event.PERCENTAGE),
-				Ints.checkedCast(left.getValue(Event.DURATION).getStandardSeconds()),
-				right.getValue(Event.PERCENTAGE),
-				Ints.checkedCast(right.getValue(Event.DURATION).getStandardSeconds()));
+				Objects.requireNonNull(left.getValue(Event.PERCENTAGE)),
+				Ints.checkedCast(
+						Objects.requireNonNull(left.getValue(Event.DURATION)).getStandardSeconds()),
+				Objects.requireNonNull(right.getValue(Event.PERCENTAGE)),
+				Ints.checkedCast(
+						Objects.requireNonNull(right.getValue(Event.DURATION)).getStandardSeconds()));
 	}
 
 	private static Percentage mean(Percentage left, int leftWeight, Percentage right, int rightWeight) {

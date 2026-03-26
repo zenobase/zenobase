@@ -2,6 +2,7 @@ package com.zenobase.commands;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Identity;
 
@@ -37,7 +38,7 @@ public class SpendQuotaCommand extends Command {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			return switch (version) {
 				case 1 -> new SpendQuotaCommand(node);
 				default -> null;

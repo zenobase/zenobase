@@ -2,6 +2,7 @@ package com.zenobase.search;
 
 import com.google.common.collect.Range;
 import org.joda.time.ReadableInstant;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.OffsetDateTimeRangeParser;
 
@@ -14,7 +15,7 @@ public class OffsetDateTimeRangeConstraintBuilder extends RangeConstraintBuilder
 	}
 
 	@Override
-	protected Range<ReadableInstant> parseRange(String value) {
+	protected @Nullable Range<ReadableInstant> parseRange(String value) {
 		return parser.parse(value);
 	}
 

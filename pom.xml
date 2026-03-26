@@ -109,6 +109,13 @@
             <version>1.4.7</version>
         </dependency>
 
+        <!-- Nullability annotations -->
+        <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <!-- Utilities -->
         <dependency>
             <groupId>commons-codec</groupId>
@@ -232,7 +239,7 @@
                 <configuration>
                     <java>
                         <excludes>
-                            <exclude>src/main/java/com/zenobase/common/BCrypt.java</exclude>
+                            <exclude>src/main/java/org/mindrot/jbcrypt/BCrypt.java</exclude>
                         </excludes>
                         <palantirJavaFormat>
                             <version>2.89.0</version>
@@ -246,6 +253,29 @@
                             <spacesPerTab>4</spacesPerTab>
                         </indent>
                     </java>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-XDcompilePolicy=simple</arg>
+                        <arg>--should-stop=ifError=FLOW</arg>
+                        <arg>-Xplugin:ErrorProne -XepDisableAllChecks -XepOpt:NullAway:OnlyNullMarked=true -Xep:NullAway:ERROR -XepExcludedPaths:.*/src/test/.*|.*/org/mindrot/.*</arg>
+                    </compilerArgs>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>com.google.errorprone</groupId>
+                            <artifactId>error_prone_core</artifactId>
+                            <version>2.48.0</version>
+                        </path>
+                        <path>
+                            <groupId>com.uber.nullaway</groupId>
+                            <artifactId>nullaway</artifactId>
+                            <version>0.13.1</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>

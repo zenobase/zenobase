@@ -3,14 +3,15 @@ package com.zenobase.tasks.ihealth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -55,7 +56,7 @@ abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends O
 	}
 
 	private Command execute(T task, OAuthCredentials credentials) {
-		Token token = credentials.getToken();
+		Token token = Objects.requireNonNull(credentials.getToken());
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
 		}
@@ -68,7 +69,7 @@ abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends O
 
 	private void execute(
 			String resource, T task, ResultHandler<T> handler, OAuthCredentials credentials, List<Event> events) {
-		DateTime begin = task.getBegin();
+		DateTime begin = Objects.requireNonNull(task.getBegin());
 		DateTime end = DateTime.now();
 		for (int page = 1; page <= 50; ++page) {
 			String path = String.format("%s/user/%s/%s.json", HOST, credentials.getScope(), resource);
@@ -97,7 +98,7 @@ abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends O
 				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build());
-		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+		if (!Objects.equals(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
@@ -109,11 +110,11 @@ abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends O
 		return command;
 	}
 
-	private static String getMarker(Iterable<Event> events) {
+	private static @Nullable String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
 			DateTime time = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
-			if (latest == null || time.isAfter(latest)) {
+			if (time != null && (latest == null || time.isAfter(latest))) {
 				latest = time;
 			}
 		}

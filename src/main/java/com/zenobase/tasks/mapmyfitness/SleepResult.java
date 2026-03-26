@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -20,9 +21,9 @@ class SleepResult {
 
 	private final JsonNode node;
 	private final Identity author;
-	private final String tag;
+	private final @Nullable String tag;
 
-	public SleepResult(JsonNode node, Identity author, String tag) {
+	public SleepResult(JsonNode node, Identity author, @Nullable String tag) {
 		this.node = Preconditions.checkNotNull(node);
 		this.author = author;
 		this.tag = tag;

@@ -1,7 +1,10 @@
 package com.zenobase.commands;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +35,11 @@ public class UpdateBucketCommand extends Command {
 	}
 
 	private Bucket getFrom() {
-		return new Bucket(getParameter(FROM));
+		return new Bucket(Objects.requireNonNull(getParameter(FROM)));
 	}
 
 	private Bucket getTo() {
-		return new Bucket(getParameter(TO));
+		return new Bucket(Objects.requireNonNull(getParameter(TO)));
 	}
 
 	@Override
@@ -61,7 +64,7 @@ public class UpdateBucketCommand extends Command {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			var command = new UpdateBucketCommand(node);
 			return switch (version) {
 				case 5 -> command;

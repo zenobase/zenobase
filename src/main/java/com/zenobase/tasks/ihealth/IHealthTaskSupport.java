@@ -3,6 +3,7 @@ package com.zenobase.tasks.ihealth;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
@@ -18,19 +19,19 @@ abstract class IHealthTaskSupport extends Task {
 	}
 
 	protected IHealthTaskSupport(
-			String type, String bucketId, Identity principal, String tag, DateTimeZone zone, String marker) {
+			String type, String bucketId, Identity principal, @Nullable String tag, DateTimeZone zone, String marker) {
 		super(type, bucketId, principal);
 		setSetting(TAG, tag);
 		setSetting(TIMEZONE, zone.getID());
 		setMarker(marker);
 	}
 
-	public DateTime getBegin() {
+	public @Nullable DateTime getBegin() {
 		String marker = getMarker();
 		return marker != null ? DateTime.parse(marker) : null;
 	}
 
-	public String getTag() {
+	public @Nullable String getTag() {
 		return getSetting(TAG);
 	}
 

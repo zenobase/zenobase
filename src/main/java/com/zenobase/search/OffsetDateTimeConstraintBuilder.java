@@ -1,6 +1,7 @@
 package com.zenobase.search;
 
 import org.joda.time.Interval;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
@@ -15,11 +16,11 @@ public class OffsetDateTimeConstraintBuilder extends ConstraintBuilder {
 	}
 
 	@Override
-	public Query build(String value) {
+	public @Nullable Query build(String value) {
 		return OffsetDateTimeFormat.hasOffset(value) ? build(OffsetIntervals.valueOf(value)) : null;
 	}
 
-	private Query build(Interval interval) {
+	private @Nullable Query build(@Nullable Interval interval) {
 		if (interval == null) {
 			return null;
 		} else if (interval.toDurationMillis() > 1L) {

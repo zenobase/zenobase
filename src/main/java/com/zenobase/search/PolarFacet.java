@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
@@ -38,7 +40,8 @@ public class PolarFacet extends FilteredFacet {
 	private final Interval interval;
 	private final Unit<?> unit;
 
-	private PolarFacet(String id, String keyField, String valueField, Interval interval, Unit<?> unit, Query filter) {
+	private PolarFacet(
+			String id, String keyField, String valueField, Interval interval, Unit<?> unit, @Nullable Query filter) {
 		super(id, filter);
 		this.keyField = Preconditions.checkNotNull(keyField);
 		this.valueField = Preconditions.checkNotNull(valueField);
@@ -58,13 +61,15 @@ public class PolarFacet extends FilteredFacet {
 
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
-		Aggregate agg = getAggregate(response);
+		Aggregate agg = Objects.requireNonNull(getAggregate(response));
 		List<LongTermsBucket> buckets = agg.lterms().buckets().array();
 		Map<Integer, StatsAggregate> result = Collections.emptyMap();
 		if (!buckets.isEmpty()) {
 			result = interval.emptyMap();
 			for (LongTermsBucket bucket : buckets) {
-				StatsAggregate stats = bucket.aggregations().get(getId()).stats();
+				StatsAggregate stats = Objects.requireNonNull(
+								bucket.aggregations().get(getId()))
+						.stats();
 				result.put(bucket.key().signed().intValue(), stats);
 			}
 		}
@@ -93,7 +98,7 @@ public class PolarFacet extends FilteredFacet {
 		return node;
 	}
 
-	private void addValue(ObjectNode parent, String property, Double value) {
+	private void addValue(ObjectNode parent, String property, @Nullable Double value) {
 		if (value == null) {
 			return;
 		}
@@ -126,7 +131,7 @@ public class PolarFacet extends FilteredFacet {
 			}
 
 			private String getDayOfMonthSuffix(int n) {
-				Preconditions.checkArgument(n >= 1 && n <= 31, "Invalid day of month: %d", n);
+				Preconditions.checkArgument(n >= 1 && n <= 31, "Invalid day of month: %s", n);
 				if (n >= 11 && n <= 13) {
 					return "th";
 				}
@@ -173,10 +178,11 @@ public class PolarFacet extends FilteredFacet {
 		return options -> {
 			String unit = options.get("unit");
 			return new PolarFacet(
-					options.get("id"),
-					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
-					options.get("value_field", String.class, Event.TIMESTAMP.getName()),
-					Interval.valueOf(options.get("interval").toUpperCase()),
+					Objects.requireNonNull(options.get("id")),
+					Objects.requireNonNull(options.get("key_field", String.class, Event.TIMESTAMP.getName())),
+					Objects.requireNonNull(options.get("value_field", String.class, Event.TIMESTAMP.getName())),
+					Interval.valueOf(
+							Objects.requireNonNull(options.get("interval")).toUpperCase()),
 					unit != null ? Units.valueOf(unit) : Unit.ONE,
 					filterParser.parse(options.get("filter")));
 		};

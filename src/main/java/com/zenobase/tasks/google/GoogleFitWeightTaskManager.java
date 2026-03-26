@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
 
@@ -53,8 +54,10 @@ public class GoogleFitWeightTaskManager extends GoogleFitTaskManagerSupport<Goog
 					event.setValue(Event.TIMESTAMP, point.getBegin());
 				}
 				Unit<Mass> unit = task.isMetric() ? Units.KG : Units.LB;
-				BigDecimal value =
-						Measures.convert(point.getValue(0, BigDecimal.class).doubleValue(), unit);
+				BigDecimal value = Objects.requireNonNull(Measures.convert(
+						Objects.requireNonNull(point.getValue(0, BigDecimal.class))
+								.doubleValue(),
+						unit));
 				event.setValue(Event.WEIGHT, Measures.valueOf(value, unit));
 				event.setValue(Event.AUTHOR, task.getPrincipal());
 				DataStream origin = streams.get(point.getOrigin());

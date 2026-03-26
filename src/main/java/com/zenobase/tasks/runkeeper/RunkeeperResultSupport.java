@@ -10,6 +10,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -49,7 +50,7 @@ abstract class RunkeeperResultSupport {
 		return local.toDateTime(timezone);
 	}
 
-	protected Resource resourceValue(JsonNode node) {
+	protected @Nullable Resource resourceValue(JsonNode node) {
 		return node.isTextual() ? new Resource("RunKeeper", node.textValue()) : null;
 	}
 

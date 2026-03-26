@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.measure.DecimalMeasure;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,6 +17,7 @@ import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
@@ -26,7 +28,7 @@ class FitbitCardioIntradayResult extends FitbitResultSupport {
 	private final LocalDate date;
 
 	public FitbitCardioIntradayResult(
-			JsonNode node, String tag, Identity author, LocalDate date, DateTimeZone timezone) {
+			JsonNode node, @Nullable String tag, Identity author, LocalDate date, DateTimeZone timezone) {
 		super(node, tag, author, timezone);
 		this.date = date;
 	}
@@ -35,12 +37,12 @@ class FitbitCardioIntradayResult extends FitbitResultSupport {
 		List<Event> events = new ArrayList<>();
 		for (Map.Entry<DateTime, Collection<Integer>> entry :
 				valuesByHour().asMap().entrySet()) {
-			events.add(toEvent(entry.getKey(), mean(entry.getValue())));
+			events.add(toEvent(entry.getKey(), Objects.requireNonNull(mean(entry.getValue()))));
 		}
 		return events;
 	}
 
-	private static BigDecimal mean(Collection<Integer> values) {
+	private static @Nullable BigDecimal mean(Collection<Integer> values) {
 		int count = 0;
 		int sum = 0;
 		for (Integer value : values) {
@@ -62,15 +64,16 @@ class FitbitCardioIntradayResult extends FitbitResultSupport {
 		return values;
 	}
 
-	private DateTime toDateTimeFullHour(LocalTime local) {
+	private @Nullable DateTime toDateTimeFullHour(LocalTime local) {
 		return toDateTimeFullHour(date.toLocalDateTime(local)
 				.withMinuteOfHour(0)
 				.withSecondOfMinute(0)
 				.withMillisOfSecond(0));
 	}
 
-	private DateTime toDateTimeFullHour(LocalDateTime local) {
-		return !timezone.isLocalDateTimeGap(local) ? local.toDateTime(timezone) : null;
+	private @Nullable DateTime toDateTimeFullHour(LocalDateTime local) {
+		DateTimeZone tz = Objects.requireNonNull(timezone);
+		return !tz.isLocalDateTimeGap(local) ? local.toDateTime(tz) : null;
 	}
 
 	private Event toEvent(DateTime timestamp, BigDecimal value) {

@@ -1,5 +1,6 @@
 package com.zenobase.tasks.fitbit;
 
+import java.util.Objects;
 import javax.measure.quantity.Energy;
 import javax.measure.unit.Unit;
 
@@ -36,7 +37,7 @@ public class FitbitStepsTask extends Task {
 	}
 
 	public String getTag() {
-		return getSetting(TAG);
+		return Objects.requireNonNull(getSetting(TAG));
 	}
 
 	public boolean isHourly() {

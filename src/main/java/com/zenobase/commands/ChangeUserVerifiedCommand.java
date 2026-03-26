@@ -1,7 +1,10 @@
 package com.zenobase.commands;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
@@ -27,11 +30,11 @@ public class ChangeUserVerifiedCommand extends Command {
 	}
 
 	private String getName() {
-		return getParameter(USERNAME);
+		return Objects.requireNonNull(getParameter(USERNAME));
 	}
 
 	private boolean isVerified() {
-		return getParameter(VERIFIED);
+		return Objects.requireNonNull(getParameter(VERIFIED));
 	}
 
 	@Override
@@ -52,7 +55,7 @@ public class ChangeUserVerifiedCommand extends Command {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			return switch (version) {
 				case 1 -> new ChangeUserVerifiedCommand(node);
 				default -> null;
@@ -72,7 +75,7 @@ public class ChangeUserVerifiedCommand extends Command {
 
 		@Override
 		public void executeTyped(ChangeUserVerifiedCommand command) {
-			User user = repository.find(command.getName());
+			User user = Objects.requireNonNull(repository.find(command.getName()));
 			user.setVerified(command.isVerified());
 			repository.update(user, command.getTimestamp());
 		}

@@ -1,6 +1,7 @@
 package com.zenobase.mail;
 
-import com.google.common.base.Objects;
+import java.util.Objects;
+
 import com.google.common.base.Preconditions;
 
 public class Message {
@@ -38,6 +39,6 @@ public class Message {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(to, subject, text);
+		return Objects.hash(to, subject, text);
 	}
 }

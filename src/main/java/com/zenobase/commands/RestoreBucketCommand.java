@@ -1,7 +1,10 @@
 package com.zenobase.commands;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;
@@ -24,7 +27,7 @@ public class RestoreBucketCommand extends Command {
 	}
 
 	private Bucket getBucket() {
-		return new Bucket(getParameter(BUCKET));
+		return new Bucket(Objects.requireNonNull(getParameter(BUCKET)));
 	}
 
 	@Override
@@ -45,7 +48,7 @@ public class RestoreBucketCommand extends Command {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			return switch (version) {
 				case 1 -> new RestoreBucketCommand(node);
 				default -> null;

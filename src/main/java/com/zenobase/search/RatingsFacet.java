@@ -1,9 +1,12 @@
 package com.zenobase.search;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
@@ -23,7 +26,7 @@ public class RatingsFacet extends FilteredFacet {
 	private final String field;
 	private final double from, to, step;
 
-	public RatingsFacet(String id, String field, int scale, Query filter) {
+	public RatingsFacet(String id, String field, int scale, @Nullable Query filter) {
 		super(id, filter);
 		this.field = field;
 		step = Rating.MAX_VALUE / scale;
@@ -50,7 +53,7 @@ public class RatingsFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Aggregate agg = getAggregate(response);
+		Aggregate agg = Objects.requireNonNull(getAggregate(response));
 		for (RangeBucket entry :
 				ImmutableList.copyOf(agg.range().buckets().array()).reverse()) {
 			if (entry.docCount() > 0L) {
@@ -71,9 +74,9 @@ public class RatingsFacet extends FilteredFacet {
 
 	public static FacetBuilder builder(FilterParser filterParser) {
 		return options -> new RatingsFacet(
-				options.get("id"),
+				Objects.requireNonNull(options.get("id")),
 				Event.RATING.getName(),
-				options.get("scale", Integer.class, 5),
+				Objects.requireNonNull(options.get("scale", Integer.class, 5)),
 				filterParser.parse(options.get("filter")));
 	}
 }

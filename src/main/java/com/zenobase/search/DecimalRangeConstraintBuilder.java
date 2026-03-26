@@ -3,6 +3,7 @@ package com.zenobase.search;
 import java.math.BigDecimal;
 
 import com.google.common.collect.Range;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.DecimalRangeParser;
 
@@ -15,7 +16,7 @@ public class DecimalRangeConstraintBuilder extends RangeConstraintBuilderSupport
 	}
 
 	@Override
-	protected Range<BigDecimal> parseRange(String value) {
+	protected @Nullable Range<BigDecimal> parseRange(String value) {
 		return parser.parse(value);
 	}
 

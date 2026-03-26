@@ -1,6 +1,7 @@
 package com.zenobase.controllers;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -84,7 +85,7 @@ public class BucketController extends ControllerSupport {
 	}
 
 	private static JsonNode toLabel(Bucket bucket) {
-		return Nodes.newObject("label", bucket.getLabel());
+		return Nodes.newObject("label", Objects.requireNonNull(bucket.getLabel()));
 	}
 
 	static void setDefaultDashboard(Bucket bucket) {

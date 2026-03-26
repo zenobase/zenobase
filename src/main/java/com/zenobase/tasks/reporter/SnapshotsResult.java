@@ -13,6 +13,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,7 +108,7 @@ public class SnapshotsResult {
 		}
 	}
 
-	private String textValue(JsonNode tokenNode) {
+	private @Nullable String textValue(JsonNode tokenNode) {
 		if (tokenNode.isObject()) {
 			tokenNode = tokenNode.path("text");
 		}
@@ -124,7 +125,7 @@ public class SnapshotsResult {
 		return DateTime.parse(date, ISODateTimeFormat.dateTimeNoMillis().withOffsetParsed());
 	}
 
-	private Location locationValue(JsonNode node) {
+	private @Nullable Location locationValue(JsonNode node) {
 		JsonNode lat = node.path("latitude");
 		JsonNode lon = node.path("longitude");
 		return !lat.isMissingNode() && !lon.isMissingNode()
@@ -132,17 +133,17 @@ public class SnapshotsResult {
 				: null;
 	}
 
-	private DecimalMeasure<Temperature> temperatureValue(JsonNode node) {
+	private @Nullable DecimalMeasure<Temperature> temperatureValue(JsonNode node) {
 		BigDecimal value = node.isNumber() ? node.decimalValue() : null;
 		return value != null ? Measures.valueOf(value, Units.C) : null;
 	}
 
-	private DecimalMeasure<Pressure> pressureValue(JsonNode node) {
+	private @Nullable DecimalMeasure<Pressure> pressureValue(JsonNode node) {
 		BigDecimal value = node.isNumber() ? node.decimalValue() : null;
 		return value != null ? Measures.valueOf(value, Units.HPA) : null;
 	}
 
-	private DecimalMeasure<Dimensionless> soundValue(JsonNode node) {
+	private @Nullable DecimalMeasure<Dimensionless> soundValue(JsonNode node) {
 		BigDecimal value = node.isNumber() ? node.decimalValue() : null;
 		return value != null ? Measures.valueOf(value, Units.DB) : null;
 	}

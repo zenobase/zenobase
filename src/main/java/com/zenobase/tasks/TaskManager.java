@@ -1,6 +1,7 @@
 package com.zenobase.tasks;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.commands.Command;
 import com.zenobase.models.Identity;
@@ -19,5 +20,5 @@ public abstract class TaskManager {
 
 	public abstract Task newTask(String bucketId, Identity principal, ObjectNode settings);
 
-	public abstract Command execute(Task task);
+	public abstract @Nullable Command execute(Task task);
 }

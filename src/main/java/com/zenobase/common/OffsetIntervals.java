@@ -3,6 +3,7 @@ package com.zenobase.common;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
@@ -11,6 +12,7 @@ import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
+import org.jspecify.annotations.Nullable;
 
 public class OffsetIntervals extends DateTimeFormatSupport {
 
@@ -148,7 +150,7 @@ public class OffsetIntervals extends DateTimeFormatSupport {
 		throw new AssertionError();
 	}
 
-	public static Interval valueOf(String value) {
+	public static @Nullable Interval valueOf(String value) {
 		if (!value.isEmpty() && Character.isDigit(value.charAt(0))) {
 			value = value.replaceAll("Z", "+00:00");
 			for (IntervalType format : IntervalType.values()) {
@@ -160,14 +162,16 @@ public class OffsetIntervals extends DateTimeFormatSupport {
 		return null;
 	}
 
-	public static String toString(DateTime time, String interval) {
-		IntervalType format = IntervalType.valueOf(interval.toUpperCase());
+	public static String toString(DateTime time, @Nullable String interval) {
+		IntervalType format =
+				IntervalType.valueOf(Objects.requireNonNull(interval).toUpperCase());
 		Preconditions.checkNotNull(format, "Unsupported interval: %s", interval);
 		return format.toString(time);
 	}
 
-	public static List<DateTime> expand(DateTime start, DateTime end, String interval) {
-		IntervalType format = IntervalType.valueOf(interval.toUpperCase());
+	public static List<DateTime> expand(DateTime start, DateTime end, @Nullable String interval) {
+		IntervalType format =
+				IntervalType.valueOf(Objects.requireNonNull(interval).toUpperCase());
 		Preconditions.checkNotNull(format, "Unsupported interval: %s", interval);
 		return format.toList(new Interval(start, end));
 	}

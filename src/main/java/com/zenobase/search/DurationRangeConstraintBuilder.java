@@ -2,6 +2,7 @@ package com.zenobase.search;
 
 import com.google.common.collect.Range;
 import org.joda.time.ReadableDuration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.DurationRangeParser;
 
@@ -14,7 +15,7 @@ public class DurationRangeConstraintBuilder extends RangeConstraintBuilderSuppor
 	}
 
 	@Override
-	protected Range<ReadableDuration> parseRange(String value) {
+	protected @Nullable Range<ReadableDuration> parseRange(String value) {
 		return parser.parse(value);
 	}
 

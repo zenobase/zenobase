@@ -1,11 +1,13 @@
 package com.zenobase.json;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import org.jspecify.annotations.Nullable;
 
 public class DomainNode {
 
@@ -25,18 +27,18 @@ public class DomainNode {
 	}
 
 	public String getId() {
-		return getValue(ID);
+		return Objects.requireNonNull(getValue(ID));
 	}
 
 	public long getVersion() {
-		return getValue(VERSION);
+		return getValue(VERSION, 0L);
 	}
 
 	public void setVersion(long version) {
 		setValue(VERSION, version);
 	}
 
-	protected <T> T getValue(Field<T> field) {
+	protected <T> @Nullable T getValue(Field<T> field) {
 		return field.getValue(node);
 	}
 
@@ -48,7 +50,7 @@ public class DomainNode {
 		return field.getValues(node);
 	}
 
-	protected <T> void setValue(Field<T> field, T value) {
+	protected <T> void setValue(Field<T> field, @Nullable T value) {
 		field.setValue(node, value);
 	}
 
@@ -56,7 +58,7 @@ public class DomainNode {
 		field.setValues(node, values);
 	}
 
-	protected <T> void addValue(Field<T> field, T value) {
+	protected <T> void addValue(Field<T> field, @Nullable T value) {
 		if (value != null) {
 			field.addValue(node, value);
 		}
@@ -66,17 +68,17 @@ public class DomainNode {
 		return node.has(field.getName());
 	}
 
-	protected <T> T getValue(ObjectField parent, Field<T> child) {
+	protected <T> @Nullable T getValue(ObjectField parent, Field<T> child) {
 		ObjectNode node = getValue(parent);
 		return node != null ? child.getValue(node) : null;
 	}
 
-	protected <T> Iterable<T> getValues(ObjectField parent, Field<T> child) {
+	protected <T> @Nullable Iterable<T> getValues(ObjectField parent, Field<T> child) {
 		ObjectNode node = getValue(parent);
 		return node != null ? child.getValues(node) : null;
 	}
 
-	public <T> void setValue(ObjectField parent, Field<T> child, T value) {
+	public <T> void setValue(ObjectField parent, Field<T> child, @Nullable T value) {
 		ObjectNode node = getValue(parent);
 		if (node == null) {
 			node = Nodes.newObject();

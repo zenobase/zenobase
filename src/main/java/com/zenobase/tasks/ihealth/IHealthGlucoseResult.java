@@ -8,6 +8,7 @@ import javax.measure.quantity.VolumetricDensity;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -21,7 +22,7 @@ class IHealthGlucoseResult extends IHealthResultSupport {
 	private final String tag;
 	private final DateTimeZone zone;
 
-	public IHealthGlucoseResult(JsonNode node, Identity author, String tag, DateTimeZone zone) {
+	public IHealthGlucoseResult(JsonNode node, Identity author, @Nullable String tag, DateTimeZone zone) {
 		super("BGDataList", node, author);
 		this.tag = Preconditions.checkNotNull(tag);
 		this.zone = Preconditions.checkNotNull(zone);
@@ -40,7 +41,7 @@ class IHealthGlucoseResult extends IHealthResultSupport {
 		return event;
 	}
 
-	private DecimalMeasure<VolumetricDensity> concentrationValue(JsonNode node) {
+	private @Nullable DecimalMeasure<VolumetricDensity> concentrationValue(JsonNode node) {
 		BigDecimal value = node.decimalValue();
 		if (BigDecimal.ZERO.equals(value)) {
 			return null;

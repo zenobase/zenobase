@@ -3,6 +3,7 @@ package com.zenobase.models;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
@@ -12,6 +13,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.AliasField;
@@ -68,26 +70,26 @@ public class Bucket extends DomainNode {
 
 	@Override
 	public String getId() {
-		return getValue(ID);
+		return Objects.requireNonNull(getValue(ID));
 	}
 
-	public String getLabel() {
+	public @Nullable String getLabel() {
 		return getValue(LABEL);
 	}
 
-	public void setLabel(String label) {
+	public void setLabel(@Nullable String label) {
 		setValue(LABEL, label);
 	}
 
-	public String getDescription() {
+	public @Nullable String getDescription() {
 		return getValue(DESCRIPTION);
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(@Nullable String description) {
 		setValue(DESCRIPTION, description);
 	}
 
-	public DateTime getCreated() {
+	public @Nullable DateTime getCreated() {
 		return getValue(CREATED);
 	}
 
@@ -109,7 +111,7 @@ public class Bucket extends DomainNode {
 		return principals.build();
 	}
 
-	public boolean hasRole(Authorization auth, Role role) {
+	public boolean hasRole(@Nullable Authorization auth, Role role) {
 		ImmutableList<Entry<Identity, Role>> roles = getValues(ROLES);
 		if (auth != null && (auth.getScope() == null || auth.getScope().equals(getId()))) {
 			for (Map.Entry<Identity, Role> entry : roles) {

@@ -1,9 +1,11 @@
 package com.zenobase.commands;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.TokenField;
@@ -23,22 +25,23 @@ public class ChangeQuotaCommand extends Command {
 		checkType(TYPE);
 	}
 
-	public ChangeQuotaCommand(Identity principal, String username, Integer from, Integer to) {
+	public ChangeQuotaCommand(
+			Identity principal, @Nullable String username, @Nullable Integer from, @Nullable Integer to) {
 		super(TYPE, principal);
 		setParameter(USERNAME, username);
 		setParameter(FROM, from);
 		setParameter(TO, to);
 	}
 
-	private String getUsername() {
+	private @Nullable String getUsername() {
 		return getParameter(USERNAME);
 	}
 
-	private Integer getFrom() {
+	private @Nullable Integer getFrom() {
 		return getParameter(FROM);
 	}
 
-	private Integer getTo() {
+	private @Nullable Integer getTo() {
 		return getParameter(TO);
 	}
 
@@ -60,7 +63,7 @@ public class ChangeQuotaCommand extends Command {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			return switch (version) {
 				case 1 -> new ChangeQuotaCommand(node);
 				default -> null;
@@ -80,10 +83,10 @@ public class ChangeQuotaCommand extends Command {
 
 		@Override
 		public void executeTyped(ChangeQuotaCommand command) {
-			User user = repository.find(command.getUsername());
+			User user = repository.find(Objects.requireNonNull(command.getUsername()));
 			if (user != null) {
 				Preconditions.checkState(
-						Objects.equal(command.getFrom(), user.getQuota()),
+						Objects.equals(command.getFrom(), user.getQuota()),
 						"Conflict: Expected <%s> but got <%s>",
 						command.getFrom(),
 						user.getQuota());

@@ -2,11 +2,13 @@ package com.zenobase.tasks.foursquare;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
@@ -43,17 +45,18 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(FoursquareTask task, OAuthCredentials credentials) {
-		String marker = formatMarker(DateTime.now(DateTimeZone.UTC).minusMinutes(1));
+		String marker = Objects.requireNonNull(
+				formatMarker(DateTime.now(DateTimeZone.UTC).minusMinutes(1)));
 		List<Event> events = new ArrayList<>();
 		for (int offset = 0; execute(task, credentials, marker, offset, events); offset += LIMIT) {}
 		return createCommand(task, marker, events);
 	}
 
-	static DateTime parseMarker(String marker) {
+	static @Nullable DateTime parseMarker(@Nullable String marker) {
 		return marker != null ? DateTime.parse(marker) : null;
 	}
 
-	static String formatMarker(DateTime time) {
+	static @Nullable String formatMarker(@Nullable DateTime time) {
 		return time != null ? Long.toString(time.getMillis() / 1000) : null;
 	}
 

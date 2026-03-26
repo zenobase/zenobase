@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Identity;
 import com.zenobase.search.TermConstraintBuilder;
@@ -21,7 +22,7 @@ public class IdentityField extends Field<Identity> {
 	}
 
 	@Override
-	public JsonNode toJson(Identity value) {
+	public JsonNode toJson(@Nullable Identity value) {
 		return value != null ? new TextNode(value.getId()) : NullNode.getInstance();
 	}
 

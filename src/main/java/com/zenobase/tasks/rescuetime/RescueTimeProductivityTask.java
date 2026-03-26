@@ -5,6 +5,7 @@ import com.google.common.base.MoreObjects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
@@ -23,18 +24,23 @@ public class RescueTimeProductivityTask extends Task {
 	}
 
 	public RescueTimeProductivityTask(
-			String bucketId, Identity principal, String tag, String kind, String source, DateTimeZone timezone) {
+			String bucketId,
+			Identity principal,
+			@Nullable String tag,
+			@Nullable String kind,
+			@Nullable String source,
+			DateTimeZone timezone) {
 		this(bucketId, principal, tag, kind, source, timezone, null);
 	}
 
 	RescueTimeProductivityTask(
 			String bucketId,
 			Identity principal,
-			String tag,
-			String kind,
-			String source,
+			@Nullable String tag,
+			@Nullable String kind,
+			@Nullable String source,
 			DateTimeZone timezone,
-			String marker) {
+			@Nullable String marker) {
 		super(TYPE, bucketId, principal);
 		setSetting(TAG, tag);
 		setSetting(KIND, kind);
@@ -43,7 +49,7 @@ public class RescueTimeProductivityTask extends Task {
 		setMarker(marker);
 	}
 
-	public String getTag() {
+	public @Nullable String getTag() {
 		return getSetting(TAG);
 	}
 
@@ -51,7 +57,7 @@ public class RescueTimeProductivityTask extends Task {
 		return MoreObjects.firstNonNull(getSetting(KIND), "efficiency");
 	}
 
-	public String getSource() {
+	public @Nullable String getSource() {
 		return getSetting(SOURCE);
 	}
 
@@ -60,7 +66,7 @@ public class RescueTimeProductivityTask extends Task {
 		return value != null ? DateTimeZone.forID(value) : DateTimeZone.UTC;
 	}
 
-	public DateTime getLast() {
+	public @Nullable DateTime getLast() {
 		String marker = getMarker();
 		return marker != null
 				? DateTime.parse(marker, ISODateTimeFormat.dateTime().withOffsetParsed())

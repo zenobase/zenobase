@@ -7,13 +7,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 
 class FitbitCardioResult extends FitbitResultSupport {
 
-	public FitbitCardioResult(JsonNode node, String tag, Identity author, DateTimeZone timezone) {
+	public FitbitCardioResult(JsonNode node, @Nullable String tag, Identity author, DateTimeZone timezone) {
 		super(node, tag, author, timezone);
 	}
 

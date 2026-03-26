@@ -2,6 +2,7 @@ package com.zenobase.tasks.runkeeper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
@@ -40,7 +41,8 @@ public class RunkeeperActivitiesTaskManager extends RunkeeperTaskManagerSupport 
 		DateTimeZone zone = DateTimeZone.forID(
 				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		Unit<Length> lengthUnit = MoreObjects.firstNonNull(new UnitField<Length>("unit").getValue(settings), Units.KM);
-		return new RunkeeperActivitiesTask(bucketId, principal, zone, lengthUnit, Units.KCAL, marker);
+		return new RunkeeperActivitiesTask(
+				bucketId, principal, zone, lengthUnit, Units.KCAL, Objects.requireNonNull(marker));
 	}
 
 	@Override
@@ -65,12 +67,14 @@ public class RunkeeperActivitiesTaskManager extends RunkeeperTaskManagerSupport 
 				RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(
 						parseObject(response),
 						task.getPrincipal(),
-						task.getDistanceUnit(),
+						Objects.requireNonNull(task.getDistanceUnit()),
 						task.getEnergyUnit(),
 						task.getTimezone());
 				for (Event event : result.getEvents()) {
 					if (from == null
-							|| event.getValue(Event.TIMESTAMP).toLocalDateTime().isAfter(from)) {
+							|| Objects.requireNonNull(event.getValue(Event.TIMESTAMP))
+									.toLocalDateTime()
+									.isAfter(from)) {
 						events.add(event);
 					}
 				}
@@ -90,8 +94,9 @@ public class RunkeeperActivitiesTaskManager extends RunkeeperTaskManagerSupport 
 	}
 
 	private void addDetails(Event event, Unit<Length> heightUnit, OAuthCredentials credentials) {
-		var request =
-				new OAuthRequest(Verb.GET, host + event.getValue(Event.SOURCE).url());
+		var request = new OAuthRequest(
+				Verb.GET,
+				host + Objects.requireNonNull(event.getValue(Event.SOURCE)).url());
 		request.addHeader("Accept", "application/vnd.com.runkeeper.FitnessActivity+json");
 		Response response = send(request, credentials);
 		new RunkeeperActivityResult(parseObject(response), heightUnit).addDetails(event);

@@ -26,8 +26,14 @@ public abstract class PaymentControllerTestSupport extends ControllerTestSupport
 	protected final UserRepository users = mock(UserRepository.class);
 	protected final EventRepository events = mock(EventRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
-	protected final User user = new User("jdoe");
+	protected final User user = newUser("jdoe");
 	protected final Payment payment = new Payment(new BigDecimal("5.00"));
+
+	private static User newUser(String name) {
+		User user = new User(name);
+		user.setEmail(name + "@example.com");
+		return user;
+	}
 
 	@Override
 	protected Module module() {

@@ -1,9 +1,12 @@
 package com.zenobase.services;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.slf4j.Logger;
@@ -34,23 +37,23 @@ public class UserRepository extends RepositorySupport<User> {
 	}
 
 	public void store(User user, DateTime timestamp) {
-		index.store(user.getName(), user.toJson(), timestamp, true);
+		index.store(Objects.requireNonNull(user.getName()), user.toJson(), timestamp, true);
 	}
 
 	public void update(User user, DateTime timestamp) {
-		index.update(user.getName(), user.toJson(), timestamp, true);
+		index.update(Objects.requireNonNull(user.getName()), user.toJson(), timestamp, true);
 	}
 
 	public boolean delete(User user) {
-		return index.delete(user.getName(), true);
+		return index.delete(Objects.requireNonNull(user.getName()), true);
 	}
 
-	public User find(String name) {
+	public @Nullable User find(String name) {
 		ObjectNode node = index.get(name);
 		return node != null ? new User(node) : null;
 	}
 
-	public User find(Identity identity) {
+	public @Nullable User find(Identity identity) {
 		return Iterables.getOnlyElement(find(new UserQuery().principalEqualTo(identity), 0, 1), null);
 	}
 

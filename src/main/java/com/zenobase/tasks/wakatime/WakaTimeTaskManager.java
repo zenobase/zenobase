@@ -2,9 +2,9 @@ package com.zenobase.tasks.wakatime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
@@ -12,6 +12,7 @@ import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -57,7 +58,7 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
 		}
-		DateTime begin = task.getBegin();
+		DateTime begin = Objects.requireNonNull(task.getBegin());
 		LocalDate today = LocalDate.now(DateTimeZone.UTC).plusDays(1);
 		List<Event> events = new ArrayList<>();
 		for (LocalDate date = begin.toLocalDate(); !date.isAfter(today); date = date.plusDays(1)) {
@@ -68,7 +69,7 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 				Response response = send(request, credentials);
 				var result = new WakaTimeDurationsResult(parseObject(response), task.getPrincipal(), task.getTag());
 				for (Event event : result.getEvents()) {
-					if (event.getValue(Event.TIMESTAMP).isAfter(begin)) {
+					if (Objects.requireNonNull(event.getValue(Event.TIMESTAMP)).isAfter(begin)) {
 						events.add(event);
 					}
 				}
@@ -82,7 +83,7 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 				}
 			}
 		}
-		return createCommand(task, credentials, events, token);
+		return createCommand(task, credentials, events, Objects.requireNonNull(token));
 	}
 
 	@Override
@@ -99,7 +100,7 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build());
-		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+		if (!Objects.equals(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
@@ -111,10 +112,10 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 		return command;
 	}
 
-	private static String getMarker(Iterable<Event> events) {
+	private static @Nullable String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
-			DateTime time = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
+			DateTime time = Objects.requireNonNull(Ordering.natural().max(event.getValues(Event.TIMESTAMP)));
 			if (latest == null || time.isAfter(latest)) {
 				latest = time;
 			}

@@ -1,5 +1,6 @@
 package com.zenobase.common;
 
+import java.util.Objects;
 import java.util.Random;
 
 import com.google.common.collect.LinkedHashMultiset;
@@ -20,7 +21,7 @@ public class RandomElement<T> {
 		int sum = 0;
 		for (Multiset.Entry<T> entry : elements.entrySet()) {
 			if ((sum += entry.getCount()) >= r) {
-				return entry.getElement();
+				return Objects.requireNonNull(entry.getElement());
 			}
 		}
 		throw new AssertionError();

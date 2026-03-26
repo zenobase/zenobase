@@ -1,5 +1,6 @@
 package com.zenobase.services;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -42,8 +43,8 @@ public class BucketRefreshJob extends Job {
 		var counter = new AtomicInteger();
 		logger.warn("Refreshing buckets...");
 		buckets.find(new BucketQuery().isRefreshable(), bucket -> {
-			User owner = users.find(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)));
-			if (hasRefreshPrivilege(owner)) {
+			User owner = users.find(Objects.requireNonNull(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER))));
+			if (owner != null && hasRefreshPrivilege(owner)) {
 				try {
 					for (Task task : tasks.find(
 							new TaskQuery().bucketEqualTo(bucket.getId()), TaskQuery.orderByCreated(true), 0, 100)) {

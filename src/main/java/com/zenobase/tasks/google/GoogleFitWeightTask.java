@@ -1,7 +1,10 @@
 package com.zenobase.tasks.google;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
@@ -25,10 +28,10 @@ public class GoogleFitWeightTask extends GoogleFitTaskSupport {
 	}
 
 	public boolean isMetric() {
-		return getSetting(METRIC);
+		return Objects.requireNonNull(getSetting(METRIC));
 	}
 
-	public String getTag() {
+	public @Nullable String getTag() {
 		return getSetting(TAG);
 	}
 

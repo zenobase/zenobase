@@ -1,10 +1,12 @@
 package com.zenobase.json;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Location;
 import com.zenobase.search.BoundingBoxConstraintBuilder;
@@ -36,13 +38,13 @@ public class LocationField extends Field<Location> {
 		if (latNode == null || latNode.isNull() || lonNode == null || lonNode.isNull()) {
 			throw new IllegalArgumentException("Null coordinate in location: " + node);
 		}
-		BigDecimal lat = latitude.getValue(obj);
-		BigDecimal lon = longitude.getValue(obj);
+		BigDecimal lat = Objects.requireNonNull(latitude.getValue(obj));
+		BigDecimal lon = Objects.requireNonNull(longitude.getValue(obj));
 		return new Location(lat, lon);
 	}
 
 	@Override
-	public JsonNode toJson(Location value) {
+	public JsonNode toJson(@Nullable Location value) {
 		return value != null ? toJson(value.latitude(), value.longitude()) : NullNode.getInstance();
 	}
 

@@ -1,5 +1,7 @@
 package com.zenobase.services;
 
+import org.jspecify.annotations.Nullable;
+
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 
@@ -11,7 +13,7 @@ public class UserLookup {
 		this.repository = repository;
 	}
 
-	public Identity getIdentity(String userId) {
+	public @Nullable Identity getIdentity(String userId) {
 		if (isName(userId)) {
 			User user = find(userId);
 			return user != null ? user.asIdentity() : null;
@@ -19,11 +21,11 @@ public class UserLookup {
 		return new Identity(userId);
 	}
 
-	public User getUser(String userId) {
+	public @Nullable User getUser(String userId) {
 		return isName(userId) ? find(userId) : find(new Identity(userId));
 	}
 
-	private User find(String userId) {
+	private @Nullable User find(String userId) {
 		return repository.find(userId.substring(1));
 	}
 

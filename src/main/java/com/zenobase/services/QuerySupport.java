@@ -2,8 +2,10 @@ package com.zenobase.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.collect.Iterables;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 
@@ -15,7 +17,7 @@ public class QuerySupport {
 
 	protected QuerySupport() {}
 
-	protected QuerySupport equalTo(Field<?> field, Object value) {
+	protected QuerySupport equalTo(Field<?> field, @Nullable Object value) {
 		if (value != null) {
 			add(Query.of(q -> q.term(t -> t.field(field.getName()).value(toFieldValue(value)))));
 		} else {
@@ -61,7 +63,7 @@ public class QuerySupport {
 			return Query.of(q -> q.matchAll(m -> m));
 		}
 		if (constraints.size() == 1) {
-			return Iterables.getOnlyElement(constraints);
+			return Objects.requireNonNull(Iterables.getOnlyElement(constraints));
 		}
 		return Query.of(q -> q.bool(b -> b.must(constraints)));
 	}

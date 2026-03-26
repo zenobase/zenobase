@@ -4,8 +4,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.mindrot.jbcrypt.BCrypt;
 
-import com.zenobase.common.BCrypt;
 import com.zenobase.models.User;
 
 public class PasswordResetKey {

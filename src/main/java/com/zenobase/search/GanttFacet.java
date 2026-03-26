@@ -1,12 +1,14 @@
 package com.zenobase.search;
 
 import java.util.Collections;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
@@ -44,7 +46,7 @@ public class GanttFacet extends FilteredFacet {
 			String order,
 			int limit,
 			DateTimeZone timezone,
-			Query filter) {
+			@Nullable Query filter) {
 		super(id, filter);
 		this.keyField = keyField;
 		this.valueField = valueField;
@@ -75,9 +77,10 @@ public class GanttFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Aggregate agg = getAggregate(response);
+		Aggregate agg = Objects.requireNonNull(getAggregate(response));
 		for (StringTermsBucket bucket : agg.sterms().buckets().array()) {
-			StatsAggregate stats = bucket.aggregations().get(getId()).stats();
+			StatsAggregate stats =
+					Objects.requireNonNull(bucket.aggregations().get(getId())).stats();
 			DateTime first = asDateTime(stats.min());
 			if (first != null) {
 				ObjectNode entryNode = result.addObject();
@@ -90,18 +93,18 @@ public class GanttFacet extends FilteredFacet {
 		return result;
 	}
 
-	private DateTime asDateTime(Double value) {
+	private @Nullable DateTime asDateTime(@Nullable Double value) {
 		return value != null && !Double.isInfinite(value) ? new DateTime(value.longValue(), timezone) : null;
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
 		return options -> new GanttFacet(
-				options.get("id"),
-				options.get("field"),
-				options.get("key_field", String.class, Event.TIMESTAMP.getName()),
-				options.get("order", String.class, "-max"),
-				options.get("limit", Integer.class, 10),
-				options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
+				Objects.requireNonNull(options.get("id")),
+				Objects.requireNonNull(options.get("field")),
+				Objects.requireNonNull(options.get("key_field", String.class, Event.TIMESTAMP.getName())),
+				Objects.requireNonNull(options.get("order", String.class, "-max")),
+				Objects.requireNonNull(options.get("limit", Integer.class, 10)),
+				Objects.requireNonNull(options.get("timezone", DateTimeZone.class, DateTimeZone.UTC)),
 				filterParser.parse(options.get("filter")));
 	}
 }

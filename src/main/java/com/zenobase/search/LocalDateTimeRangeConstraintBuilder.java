@@ -4,6 +4,7 @@ import com.google.common.collect.Range;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.ReadablePartial;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.LocalDateTimeRangeParser;
 
@@ -16,7 +17,7 @@ public class LocalDateTimeRangeConstraintBuilder extends RangeConstraintBuilderS
 	}
 
 	@Override
-	protected Range<ReadablePartial> parseRange(String value) {
+	protected @Nullable Range<ReadablePartial> parseRange(String value) {
 		return parser.parse(value);
 	}
 

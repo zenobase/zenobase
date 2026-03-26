@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
@@ -26,11 +27,11 @@ public class SleepCloudTask extends Task {
 		setSetting(RANGES, true);
 	}
 
-	public String getTag() {
+	public @Nullable String getTag() {
 		return getSetting(TAG);
 	}
 
-	public DateTime getFrom() {
+	public @Nullable DateTime getFrom() {
 		String marker = getMarker();
 		return marker != null
 				? DateTime.parse(marker, ISODateTimeFormat.dateTime().withOffsetParsed())

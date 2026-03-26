@@ -5,6 +5,7 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.json.UnitField;
@@ -28,7 +29,7 @@ public class WithingsTemperatureTask extends Task {
 			String tag,
 			Unit<Temperature> unit,
 			DateTimeZone timezone,
-			String marker) {
+			@Nullable String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);
@@ -36,11 +37,11 @@ public class WithingsTemperatureTask extends Task {
 		setSetting(TIMEZONE, timezone.getID());
 	}
 
-	public String getTag() {
+	public @Nullable String getTag() {
 		return getSetting(TAG);
 	}
 
-	public Unit<Temperature> getUnit() {
+	public @Nullable Unit<Temperature> getUnit() {
 		return getSetting(UNIT);
 	}
 

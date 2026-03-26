@@ -1,11 +1,13 @@
 package com.zenobase.tasks.runkeeper;
 
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -24,18 +26,18 @@ abstract class RunkeeperTaskManagerSupport extends OAuthTaskManager {
 		super(type, credentialsManager);
 	}
 
-	protected static LocalDateTime parseMarker(String marker) {
+	protected static @Nullable LocalDateTime parseMarker(@Nullable String marker) {
 		return marker != null ? LocalDateTime.parse(marker.replaceAll("Z", "")) : null;
 	}
 
-	protected static String formatMarker(LocalDateTime time) {
+	protected static @Nullable String formatMarker(@Nullable LocalDateTime time) {
 		return time != null ? time.toString() : null;
 	}
 
-	protected static String getMarker(Iterable<Event> events) {
+	protected static @Nullable String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
-			DateTime time = event.getValue(Event.TIMESTAMP);
+			DateTime time = Objects.requireNonNull(event.getValue(Event.TIMESTAMP));
 			if (latest == null || time.isAfter(latest)) {
 				latest = time;
 			}

@@ -3,14 +3,15 @@ package com.zenobase.tasks.netatmo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.RateLimiter;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -58,18 +59,19 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			reauthorize(credentials);
 		}
 		List<Event> events = new ArrayList<>();
-		String to = formatMarker(DateTime.now(DateTimeZone.UTC).minusMinutes(1));
+		String to = Objects.requireNonNull(
+				formatMarker(DateTime.now(DateTimeZone.UTC).minusMinutes(1)));
 		for (Device device : getDevices(credentials, task.includeModules())) {
 			events.addAll(getEvents(task, credentials, device, to));
 		}
-		return createCommand(task, credentials, events, token);
+		return createCommand(task, credentials, events, Objects.requireNonNull(token));
 	}
 
-	static DateTime parseMarker(String marker) {
+	static @Nullable DateTime parseMarker(@Nullable String marker) {
 		return marker != null ? DateTime.parse(marker) : null;
 	}
 
-	static String formatMarker(DateTime time) {
+	static @Nullable String formatMarker(@Nullable DateTime time) {
 		return time != null ? Long.toString(time.getMillis() / 1000) : null;
 	}
 
@@ -131,7 +133,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			this.hourly = hourly;
 		}
 
-		public MeasurementsResult find(String from, String to) {
+		public MeasurementsResult find(@Nullable String from, String to) {
 			var request = new OAuthRequest(Verb.GET, "https://api.netatmo.com/api/getmeasure");
 			request.addQuerystringParameter("device_id", device.getId());
 			if (device.getModuleId() != null) {
@@ -164,7 +166,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 						events.isEmpty() ? task.getMarker() : getMarker(events, task.isHourly()))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build());
-		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+		if (!Objects.equals(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
@@ -176,8 +178,9 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		return command;
 	}
 
-	private static String getMarker(List<Event> events, boolean hourly) {
-		DateTime last = Iterables.getLast(events).getValue(Event.TIMESTAMP);
+	private static @Nullable String getMarker(List<Event> events, boolean hourly) {
+		DateTime last = Objects.requireNonNull(
+				Objects.requireNonNull(Iterables.getLast(events)).getValue(Event.TIMESTAMP));
 		return formatMarker(hourly ? last.plusHours(1) : last.plusSeconds(1));
 	}
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -15,7 +16,8 @@ class FitbitSleepResult extends FitbitResultSupport {
 
 	private final boolean useRanges;
 
-	public FitbitSleepResult(JsonNode node, String tag, Identity author, boolean useRanges, DateTimeZone timezone) {
+	public FitbitSleepResult(
+			JsonNode node, @Nullable String tag, Identity author, boolean useRanges, DateTimeZone timezone) {
 		super(node, tag, author, timezone);
 		this.useRanges = useRanges;
 	}

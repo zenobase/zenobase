@@ -8,6 +8,7 @@ import com.google.common.util.concurrent.RateLimiter;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
@@ -88,11 +89,11 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 		return command;
 	}
 
-	private static String getMarker(Iterable<Event> events) {
+	private static @Nullable String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
 			DateTime time = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
-			if (latest == null || time.isAfter(latest)) {
+			if (time != null && (latest == null || time.isAfter(latest))) {
 				latest = time;
 			}
 		}

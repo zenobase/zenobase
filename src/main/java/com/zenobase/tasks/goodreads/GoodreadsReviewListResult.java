@@ -2,12 +2,14 @@ package com.zenobase.tasks.goodreads;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
+import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -58,7 +60,7 @@ class GoodreadsReviewListResult extends XmlResultSupport {
 		return Integer.parseInt(selectText("/GoodreadsResponse/reviews/@end"));
 	}
 
-	public List<Event> getEvents(DateTime from) {
+	public List<Event> getEvents(@Nullable DateTime from) {
 		List<Event> events = new ArrayList<>();
 		NodeList reviewNodes = selectNodes("/GoodreadsResponse/reviews/review");
 		for (int i = 0; i < reviewNodes.getLength(); ++i) {
@@ -70,7 +72,7 @@ class GoodreadsReviewListResult extends XmlResultSupport {
 		return events;
 	}
 
-	private Event newEvent(Node node, DateTime from) {
+	private @Nullable Event newEvent(Node node, @Nullable DateTime from) {
 		DateTime begin = selectDateTime("started_at", node);
 		DateTime end = selectDateTime("read_at", node);
 		if (begin == null || end == null || from != null && !end.isAfter(from)) {
@@ -83,18 +85,18 @@ class GoodreadsReviewListResult extends XmlResultSupport {
 		event.setValue(Event.RATING, selectRating("rating", node));
 		event.setValue(Event.COUNT, selectInteger("book/num_pages", node));
 		String title = MoreObjects.firstNonNull(selectText("book/title", node), selectText("id", node));
-		event.setValue(Event.RESOURCE, new Resource(title, selectText("url", node)));
+		event.setValue(Event.RESOURCE, new Resource(title, Objects.requireNonNull(selectText("url", node))));
 		event.setValue(Event.SOURCE, SOURCE);
 		event.setValue(Event.AUTHOR, author);
 		return event;
 	}
 
-	private Rating selectRating(String path, Node node) {
+	private @Nullable Rating selectRating(String path, Node node) {
 		Integer value = selectInteger(path, node);
 		return value != null && value > 0 ? Rating.valueOf(value * 20) : null;
 	}
 
-	private Integer selectInteger(String path, Node node) {
+	private @Nullable Integer selectInteger(String path, Node node) {
 		String value = selectText(path, node);
 		return value != null ? Integer.parseInt(value) : null;
 	}
@@ -102,7 +104,7 @@ class GoodreadsReviewListResult extends XmlResultSupport {
 	/**
 	 * Parses dates like <pre>Sun Apr 01 20:57:22 -0700 2018</pre>
 	 */
-	private DateTime selectDateTime(String path, Node node) {
+	private @Nullable DateTime selectDateTime(String path, Node node) {
 		String value = selectText(path, node);
 		return value != null ? DateTime.parse(value, DATE_FORMAT) : null;
 	}

@@ -1,8 +1,11 @@
 package com.zenobase.json;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Resource;
 import com.zenobase.search.ExistsConstraintBuilder;
@@ -31,11 +34,13 @@ public class ResourceField extends Field<Resource> {
 
 	@Override
 	protected Resource getValue(JsonNode node) {
-		return new Resource(titleField.getValue((ObjectNode) node), urlField.getValue((ObjectNode) node));
+		return new Resource(
+				Objects.requireNonNull(titleField.getValue((ObjectNode) node)),
+				Objects.requireNonNull(urlField.getValue((ObjectNode) node)));
 	}
 
 	@Override
-	public JsonNode toJson(Resource value) {
+	public JsonNode toJson(@Nullable Resource value) {
 		return value != null ? toJson(value.title(), value.url()) : NullNode.getInstance();
 	}
 

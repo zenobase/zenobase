@@ -1,5 +1,7 @@
 package com.zenobase.controllers;
 
+import java.util.Objects;
+
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
@@ -70,7 +72,7 @@ public class AccountController extends ControllerSupport {
 			sendBadRequest(res, "invalid request body");
 			return;
 		}
-		if (users.exists(form.getUsername())) {
+		if (users.exists(Objects.requireNonNull(form.getUsername()))) {
 			sendConflict(res, "user exists");
 			return;
 		}
@@ -79,9 +81,9 @@ public class AccountController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
-		var user = new User(auth.getPrincipal().getId(), form.getUsername());
-		user.setEmail(form.getEmail());
-		user.setHashedPassword(User.hashPassword(form.getPassword()));
+		var user = new User(auth.getPrincipal().getId(), Objects.requireNonNull(form.getUsername()));
+		user.setEmail(Objects.requireNonNull(form.getEmail()));
+		user.setHashedPassword(User.hashPassword(Objects.requireNonNull(form.getPassword())));
 		user.setSuperuser(users.isEmpty());
 		String commandId = dispatcher.dispatch(new CreateUserCommand(auth.getPrincipal(), user));
 		mailer.send(user);
@@ -107,7 +109,7 @@ public class AccountController extends ControllerSupport {
 			return;
 		}
 		Command command = buildCloseAccountCommand(auth.getPrincipal(), user, auth);
-		payments.cancel(user.getName());
+		payments.cancel(Objects.requireNonNull(user.getName()));
 		String commandId = dispatcher.dispatch(command);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);

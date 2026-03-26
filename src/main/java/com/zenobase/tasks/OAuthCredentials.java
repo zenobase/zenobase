@@ -1,8 +1,11 @@
 package com.zenobase.tasks;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.Token;
 
 import com.zenobase.json.DateTimeField;
@@ -30,7 +33,7 @@ public class OAuthCredentials extends Credentials {
 		setToken(token);
 	}
 
-	public Token getToken() {
+	public @Nullable Token getToken() {
 		return getCredential(TOKEN);
 	}
 
@@ -38,7 +41,7 @@ public class OAuthCredentials extends Credentials {
 		setCredential(TOKEN, token);
 	}
 
-	public String getScope() {
+	public @Nullable String getScope() {
 		return getCredential(SCOPE);
 	}
 
@@ -47,8 +50,7 @@ public class OAuthCredentials extends Credentials {
 	}
 
 	public boolean isExpired() {
-		Token token = getToken();
-		return token instanceof ExpiringToken && ((ExpiringToken) token).isExpired();
+		return getToken() instanceof ExpiringToken token && token.isExpired();
 	}
 
 	private static class OAuthTokenField extends Field<Token> {
@@ -70,8 +72,13 @@ public class OAuthCredentials extends Credentials {
 		private Token getToken(ObjectNode node) {
 			return isExpiring(node)
 					? new ExpiringToken(
-							VALUE.getValue(node), SECRET.getValue(node), EXPIRES.getValue(node), REFRESH.getValue(node))
-					: new Token(VALUE.getValue(node), SECRET.getValue(node));
+							Objects.requireNonNull(VALUE.getValue(node)),
+							Objects.requireNonNull(SECRET.getValue(node)),
+							Objects.requireNonNull(EXPIRES.getValue(node)),
+							Objects.requireNonNull(REFRESH.getValue(node)))
+					: new Token(
+							Objects.requireNonNull(VALUE.getValue(node)),
+							Objects.requireNonNull(SECRET.getValue(node)));
 		}
 
 		private boolean isExpiring(ObjectNode node) {
@@ -79,7 +86,7 @@ public class OAuthCredentials extends Credentials {
 		}
 
 		@Override
-		public JsonNode toJson(Token value) {
+		public JsonNode toJson(@Nullable Token value) {
 			if (value == null) {
 				return NullNode.getInstance();
 			}

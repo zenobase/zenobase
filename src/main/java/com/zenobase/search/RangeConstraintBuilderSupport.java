@@ -3,6 +3,7 @@ package com.zenobase.search;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch._types.query_dsl.RangeQuery;
@@ -14,7 +15,7 @@ public abstract class RangeConstraintBuilderSupport<C extends Comparable<C>> ext
 	}
 
 	@Override
-	public Query build(String value) {
+	public @Nullable Query build(String value) {
 		Range<C> range = parseRange(value);
 		return range != null ? build(range) : null;
 	}
@@ -42,7 +43,7 @@ public abstract class RangeConstraintBuilderSupport<C extends Comparable<C>> ext
 		return Query.of(q -> q.range(builder.build()));
 	}
 
-	protected abstract Range<C> parseRange(String value);
+	protected abstract @Nullable Range<C> parseRange(String value);
 
 	protected abstract Object getValue(C value);
 

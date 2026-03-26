@@ -1,10 +1,12 @@
 package com.zenobase.tasks.withings;
 
+import java.util.Objects;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.json.UnitField;
@@ -23,7 +25,12 @@ public class WithingsWeightTask extends Task {
 	}
 
 	WithingsWeightTask(
-			String bucketId, Identity principal, String tag, Unit<Mass> unit, DateTimeZone timezone, String marker) {
+			String bucketId,
+			Identity principal,
+			String tag,
+			Unit<Mass> unit,
+			DateTimeZone timezone,
+			@Nullable String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);
@@ -32,11 +39,11 @@ public class WithingsWeightTask extends Task {
 	}
 
 	public String getTag() {
-		return getSetting(TAG);
+		return Objects.requireNonNull(getSetting(TAG));
 	}
 
 	public Unit<Mass> getUnit() {
-		return getSetting(UNIT);
+		return Objects.requireNonNull(getSetting(UNIT));
 	}
 
 	public DateTimeZone getTimezone() {

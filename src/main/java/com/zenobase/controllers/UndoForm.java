@@ -2,6 +2,7 @@ package com.zenobase.controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.TokenField;
@@ -18,7 +19,7 @@ public class UndoForm extends DomainNode {
 		super(node);
 	}
 
-	public String getCommandId() {
+	public @Nullable String getCommandId() {
 		return getValue(UNDO);
 	}
 

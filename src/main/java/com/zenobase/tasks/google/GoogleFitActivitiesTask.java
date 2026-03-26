@@ -1,6 +1,7 @@
 package com.zenobase.tasks.google;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.MoreObjects;
 import org.joda.time.DateTimeZone;
 
 import com.zenobase.json.BooleanField;
@@ -29,11 +30,11 @@ public class GoogleFitActivitiesTask extends GoogleFitTaskSupport {
 	}
 
 	public boolean isMetric() {
-		return getSetting(METRIC);
+		return MoreObjects.firstNonNull(getSetting(METRIC), false);
 	}
 
 	public boolean useDerived() {
-		return getSetting(DERIVED);
+		return MoreObjects.firstNonNull(getSetting(DERIVED), false);
 	}
 
 	@Override

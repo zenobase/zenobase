@@ -3,6 +3,7 @@ package com.zenobase.commands;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.Random;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
@@ -12,6 +13,7 @@ import com.google.common.io.Files;
 import com.google.common.io.LineProcessor;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.RandomElement;
 import com.zenobase.common.Units;
@@ -140,9 +142,9 @@ public class RandomEvent {
 	private static class Movie {
 
 		private final Resource resource;
-		private final Duration duration;
+		private final @Nullable Duration duration;
 
-		public Movie(String title, String url, Duration duration) {
+		public Movie(String title, String url, @Nullable Duration duration) {
 			this.resource = new Resource(title, url);
 			this.duration = duration;
 		}
@@ -151,7 +153,7 @@ public class RandomEvent {
 			return resource;
 		}
 
-		public Duration getDuration() {
+		public @Nullable Duration getDuration() {
 			return duration;
 		}
 	}
@@ -160,26 +162,28 @@ public class RandomEvent {
 
 		public RandomElement<Movie> parse(File source) {
 			try {
-				return Files.readLines(source, Charsets.UTF_8, new LineProcessor<RandomElement<Movie>>() {
-					private final RandomElement<Movie> resources = new RandomElement<>();
+				return Objects.requireNonNull(Files.readLines(
+						source, Charsets.UTF_8, new LineProcessor<RandomElement<Movie>>() {
+							private final RandomElement<Movie> resources = new RandomElement<>();
 
-					@Override
-					public boolean processLine(String line) {
-						String[] tokens = line.split("\t");
-						String title = String.format("%s (%d)", tokens[5], Integer.parseInt(tokens[11]));
-						String url = tokens[15];
-						Duration duration =
-								!tokens[10].isEmpty() ? Duration.standardMinutes(Integer.parseInt(tokens[10])) : null;
-						int weight = Integer.parseInt(tokens[13]);
-						resources.add(new Movie(title, url, duration), weight);
-						return true;
-					}
+							@Override
+							public boolean processLine(String line) {
+								String[] tokens = line.split("\t");
+								String title = String.format("%s (%d)", tokens[5], Integer.parseInt(tokens[11]));
+								String url = tokens[15];
+								Duration duration = !tokens[10].isEmpty()
+										? Duration.standardMinutes(Integer.parseInt(tokens[10]))
+										: null;
+								int weight = Integer.parseInt(tokens[13]);
+								resources.add(new Movie(title, url, duration), weight);
+								return true;
+							}
 
-					@Override
-					public RandomElement<Movie> getResult() {
-						return resources;
-					}
-				});
+							@Override
+							public RandomElement<Movie> getResult() {
+								return resources;
+							}
+						}));
 			} catch (IOException e) {
 				throw new AssertionError(e);
 			}

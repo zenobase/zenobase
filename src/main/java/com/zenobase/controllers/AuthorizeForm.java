@@ -1,6 +1,7 @@
 package com.zenobase.controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.IdentityField;
@@ -25,19 +26,19 @@ public class AuthorizeForm extends DomainNode {
 		setValue(SCOPE, scope);
 	}
 
-	public String getResponseType() {
+	public @Nullable String getResponseType() {
 		return getValue(RESPONSE_TYPE);
 	}
 
-	public Identity getClient() {
+	public @Nullable Identity getClient() {
 		return getValue(CLIENT_ID);
 	}
 
-	public String getRedirectUri() {
+	public @Nullable String getRedirectUri() {
 		return getValue(REDIRECT_URI);
 	}
 
-	public String getScope() {
+	public @Nullable String getScope() {
 		return getValue(SCOPE);
 	}
 }

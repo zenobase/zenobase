@@ -1,5 +1,6 @@
 package com.zenobase.tasks.beeminder;
 
+import java.util.Objects;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -7,6 +8,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Units;
 import com.zenobase.json.TokenField;
@@ -49,18 +51,18 @@ public class BeeminderTask extends Task {
 	}
 
 	public String getGoal() {
-		return getSetting(GOAL);
+		return Objects.requireNonNull(getSetting(GOAL));
 	}
 
 	public String getKeyField() {
-		return getSetting(KEY_FIELD);
+		return Objects.requireNonNull(getSetting(KEY_FIELD));
 	}
 
-	public String getFilter() {
+	public @Nullable String getFilter() {
 		return Strings.emptyToNull(getSetting(FILTER));
 	}
 
-	public String getField() {
+	public @Nullable String getField() {
 		return getSetting(FIELD);
 	}
 

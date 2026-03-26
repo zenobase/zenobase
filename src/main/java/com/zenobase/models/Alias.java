@@ -1,6 +1,8 @@
 package com.zenobase.models;
 
-public record Alias(String id, String filter) {
+import org.jspecify.annotations.Nullable;
+
+public record Alias(String id, @Nullable String filter) {
 
 	public Alias(String id) {
 		this(id, null);

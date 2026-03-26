@@ -1,7 +1,10 @@
 package com.zenobase.commands;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Identity;
@@ -19,12 +22,12 @@ public class CreateUserCommand extends Command {
 	}
 
 	public CreateUserCommand(Identity principal, User user) {
-		super(TYPE, principal, user.getCreated());
+		super(TYPE, principal, Objects.requireNonNull(user.getCreated()));
 		setParameter(USER, user.toJson());
 	}
 
 	public User getUser() {
-		return new User(getParameter(USER));
+		return new User(Objects.requireNonNull(getParameter(USER)));
 	}
 
 	@Override
@@ -45,7 +48,7 @@ public class CreateUserCommand extends Command {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			return switch (version) {
 				case 1 -> new CreateUserCommand(node);
 				default -> null;

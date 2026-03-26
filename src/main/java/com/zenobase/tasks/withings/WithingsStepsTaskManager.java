@@ -1,5 +1,6 @@
 package com.zenobase.tasks.withings;
 
+import java.util.Objects;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
@@ -8,6 +9,7 @@ import com.google.common.base.MoreObjects;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -34,7 +36,7 @@ public class WithingsStepsTaskManager extends WithingsTaskManagerSupport<Withing
 		return new WithingsStepsTask(bucketId, principal, tag, lengthUnit, Units.KCAL, marker);
 	}
 
-	private static String parseMarker(String marker) {
+	private static @Nullable String parseMarker(@Nullable String marker) {
 		return marker != null ? DateTime.parse(marker).toLocalDate().toString() : null;
 	}
 
@@ -45,8 +47,8 @@ public class WithingsStepsTaskManager extends WithingsTaskManagerSupport<Withing
 		var result = new WithingsStepsResult(
 				parseObject(response),
 				task.getPrincipal(),
-				task.getTag(),
-				task.getDistanceUnit(),
+				Objects.requireNonNull(task.getTag()),
+				Objects.requireNonNull(task.getDistanceUnit()),
 				task.getHeightUnit(),
 				task.getEnergyUnit());
 		checkStatus(result, request, credentials);

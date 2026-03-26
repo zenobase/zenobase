@@ -1,7 +1,9 @@
 package com.zenobase.commands;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
@@ -29,21 +31,25 @@ public abstract class UpdateCommandSupport extends Command {
 
 	protected abstract Command newInstance(Identity principal, String objectId, ObjectNode from, ObjectNode to);
 
-	protected String getObjectId() {
+	protected @Nullable String getObjectId() {
 		return getParameter(OBJECT_ID);
 	}
 
-	protected ObjectNode getFrom() {
+	protected @Nullable ObjectNode getFrom() {
 		return getParameter(FROM);
 	}
 
-	protected ObjectNode getTo() {
+	protected @Nullable ObjectNode getTo() {
 		return getParameter(TO);
 	}
 
 	@Override
 	public Command reverse(Identity principal) {
-		return newInstance(principal, getObjectId(), getTo(), getFrom());
+		return newInstance(
+				principal,
+				Objects.requireNonNull(getObjectId()),
+				Objects.requireNonNull(getTo()),
+				Objects.requireNonNull(getFrom()));
 	}
 
 	public abstract static class Builder {
@@ -53,8 +59,8 @@ public abstract class UpdateCommandSupport extends Command {
 		private ObjectNode fromLeaf = fromRoot;
 		private ObjectNode toLeaf = toRoot;
 
-		public <V> Builder set(Field<V> field, V fromValue, V toValue) {
-			if (!Objects.equal(fromValue, toValue)) {
+		public <V> Builder set(Field<V> field, @Nullable V fromValue, @Nullable V toValue) {
+			if (!Objects.equals(fromValue, toValue)) {
 				fromLeaf.set(field.getName(), field.toJson(fromValue));
 				toLeaf.set(field.getName(), field.toJson(toValue));
 			}

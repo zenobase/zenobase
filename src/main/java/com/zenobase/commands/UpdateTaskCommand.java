@@ -1,8 +1,11 @@
 package com.zenobase.commands;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.JsonPatch;
 import com.zenobase.models.Identity;
@@ -28,7 +31,8 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 	}
 
 	public Task apply(Task task) {
-		return new Task(new JsonPatch(getFrom(), getTo()).apply(task.toJson()));
+		return new Task(
+				new JsonPatch(Objects.requireNonNull(getFrom()), Objects.requireNonNull(getTo())).apply(task.toJson()));
 	}
 
 	@Override
@@ -53,7 +57,7 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			return switch (version) {
 				case 3 -> new UpdateTaskCommand(node);
 				default -> null;
@@ -73,7 +77,7 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 
 		@Override
 		public void executeTyped(UpdateTaskCommand command) {
-			Task task = repository.find(command.getObjectId());
+			Task task = repository.find(Objects.requireNonNull(command.getObjectId()));
 			Preconditions.checkNotNull(task, "Can't find task: %s", command.getObjectId());
 			repository.update(command.apply(task), command.getTimestamp());
 		}

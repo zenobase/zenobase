@@ -1,6 +1,7 @@
 package com.zenobase.tasks;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.commands.Command;
 import com.zenobase.models.Identity;
@@ -19,7 +20,7 @@ public abstract class CredentialsManager {
 
 	public abstract Credentials newCredentials(Identity principal);
 
-	public Command authorize(Credentials credentials, ObjectNode config) {
+	public @Nullable Command authorize(Credentials credentials, ObjectNode config) {
 		throw new UnsupportedOperationException();
 	}
 }

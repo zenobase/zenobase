@@ -1,6 +1,7 @@
 package com.zenobase.search;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
@@ -9,9 +10,9 @@ import org.opensearch.client.opensearch.core.SearchResponse;
 
 public abstract class FilteredFacet extends Facet {
 
-	private final Query filter;
+	private final @Nullable Query filter;
 
-	protected FilteredFacet(String id, Query filter) {
+	protected FilteredFacet(String id, @Nullable Query filter) {
 		super(id);
 		this.filter = filter;
 	}
@@ -26,8 +27,12 @@ public abstract class FilteredFacet extends Facet {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected Aggregate getAggregate(SearchResponse<ObjectNode> response) {
-		Aggregate agg = response.aggregations().get(getId());
+	protected @Nullable Aggregate getAggregate(SearchResponse<ObjectNode> response) {
+		var aggregations = response.aggregations();
+		if (aggregations == null) {
+			return null;
+		}
+		Aggregate agg = aggregations.get(getId());
 		if (agg != null && agg.isFilter()) {
 			return agg.filter().aggregations().get(getId());
 		}

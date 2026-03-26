@@ -1,5 +1,7 @@
 package com.zenobase.controllers;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
@@ -42,7 +44,7 @@ public class PasswordResetController extends ControllerSupport {
 			return;
 		}
 		String email = User.EMAIL.getValue(body);
-		if (!user.getEmail().equals(email)) {
+		if (!Objects.requireNonNull(user.getEmail()).equals(email)) {
 			sendBadRequest(res, "invalid email");
 			return;
 		}

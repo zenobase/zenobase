@@ -1,9 +1,12 @@
 package com.zenobase.tasks.ihealth;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthConstants;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;
@@ -46,12 +49,12 @@ public class IHealthCredentialsManager extends OAuthCredentialsManager {
 	}
 
 	@Override
-	public Command authorize(Credentials credentials, ObjectNode config) {
+	public @Nullable Command authorize(Credentials credentials, ObjectNode config) {
 		Preconditions.checkState(!credentials.isAuthorized());
 		return authorize(credentials.as(OAuthCredentials.class), config);
 	}
 
-	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
+	private @Nullable Command authorize(OAuthCredentials credentials, ObjectNode config) {
 		String code = config.path("code").textValue();
 		if (code == null) {
 			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
@@ -73,7 +76,8 @@ public class IHealthCredentialsManager extends OAuthCredentialsManager {
 
 	@Override
 	public void sign(OAuthRequest request, OAuthCredentials credentials) {
-		request.addQuerystringParameter("access_token", credentials.getToken().getToken());
+		request.addQuerystringParameter(
+				"access_token", Objects.requireNonNull(credentials.getToken()).getToken());
 		request.addQuerystringParameter("client_id", getApiKey());
 		request.addQuerystringParameter("client_secret", getApiSecret());
 		request.addQuerystringParameter("sc", sc);
@@ -89,7 +93,8 @@ public class IHealthCredentialsManager extends OAuthCredentialsManager {
 		request.addQuerystringParameter("UserID", credentials.getScope());
 		request.addQuerystringParameter("redirect_uri", buildCallback(callbackUrl, credentials));
 		request.addQuerystringParameter("response_type", "refresh_token");
-		request.addQuerystringParameter("refresh_token", ((ExpiringToken) credentials.getToken()).getRefreshToken());
+		request.addQuerystringParameter(
+				"refresh_token", ((ExpiringToken) Objects.requireNonNull(credentials.getToken())).getRefreshToken());
 		request.addQuerystringParameter(OAuthConstants.CLIENT_ID, getApiKey());
 		request.addQuerystringParameter(OAuthConstants.CLIENT_SECRET, getApiSecret());
 		credentials.setToken(new IHealthTokenExtractor().extract(request.send().getBody()));

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.jspecify.annotations.Nullable;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
@@ -33,12 +34,12 @@ public class GoodreadsCredentialsManager extends OAuthCredentialsManager {
 	}
 
 	@Override
-	public Command authorize(Credentials credentials, ObjectNode config) {
+	public @Nullable Command authorize(Credentials credentials, ObjectNode config) {
 		Preconditions.checkState(!credentials.isAuthorized());
 		return authorize(credentials.as(OAuthCredentials.class), config);
 	}
 
-	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
+	private @Nullable Command authorize(OAuthCredentials credentials, ObjectNode config) {
 		int result = config.path("authorize").asInt();
 		String code = config.path("oauth_token").textValue();
 		if (code == null || result != 1) {

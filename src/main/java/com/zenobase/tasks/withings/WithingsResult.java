@@ -3,6 +3,7 @@ package com.zenobase.tasks.withings;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -14,9 +15,9 @@ public abstract class WithingsResult {
 
 	protected final ObjectNode node;
 	protected final Identity author;
-	protected final String tag;
+	protected final @Nullable String tag;
 
-	public WithingsResult(ObjectNode node, Identity author, String tag) {
+	public WithingsResult(ObjectNode node, Identity author, @Nullable String tag) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;
@@ -26,7 +27,7 @@ public abstract class WithingsResult {
 		return node.path("status").isInt() ? node.path("status").intValue() : -1;
 	}
 
-	public abstract String getMarker();
+	public abstract @Nullable String getMarker();
 
 	public abstract List<Event> getEvents();
 }

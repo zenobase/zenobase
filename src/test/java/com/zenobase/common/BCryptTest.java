@@ -3,6 +3,7 @@ package com.zenobase.common;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class BCryptTest {
 

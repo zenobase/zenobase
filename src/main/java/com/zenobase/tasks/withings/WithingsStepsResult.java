@@ -3,6 +3,7 @@ package com.zenobase.tasks.withings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
@@ -16,6 +17,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
@@ -51,7 +53,8 @@ class WithingsStepsResult extends WithingsResult {
 		if (events.size() < 2) {
 			return Collections.emptyList();
 		}
-		events.sort((left, right) -> right.getValue(Event.TIMESTAMP).compareTo(left.getValue(Event.TIMESTAMP)));
+		events.sort((left, right) -> Objects.requireNonNull(right.getValue(Event.TIMESTAMP))
+				.compareTo(Objects.requireNonNull(left.getValue(Event.TIMESTAMP))));
 		return events.subList(1, events.size());
 	}
 
@@ -72,11 +75,11 @@ class WithingsStepsResult extends WithingsResult {
 	}
 
 	@Override
-	public String getMarker() {
+	public @Nullable String getMarker() {
 		List<Event> events = getEvents();
 		return !events.isEmpty()
-				? Iterables.getLast(events)
-						.getValue(Event.TIMESTAMP)
+				? Objects.requireNonNull(Objects.requireNonNull(Iterables.getLast(events))
+								.getValue(Event.TIMESTAMP))
 						.toLocalDate()
 						.plusDays(1)
 						.toString()
@@ -92,7 +95,9 @@ class WithingsStepsResult extends WithingsResult {
 		return DecimalMeasure.valueOf(node.decimalValue(), unit);
 	}
 
-	private static <Q extends Quantity> DecimalMeasure<Q> convertMeasureValue(JsonNode node, Unit<Q> unit) {
-		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
+	private static @Nullable <Q extends Quantity> DecimalMeasure<Q> convertMeasureValue(JsonNode node, Unit<Q> unit) {
+		return node.isNumber()
+				? Measures.valueOf(Objects.requireNonNull(Measures.convert(node.doubleValue(), unit)), unit)
+				: null;
 	}
 }

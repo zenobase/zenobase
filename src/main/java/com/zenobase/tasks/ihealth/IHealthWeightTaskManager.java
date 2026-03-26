@@ -1,5 +1,7 @@
 package com.zenobase.tasks.ihealth;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
@@ -20,7 +22,11 @@ public class IHealthWeightTaskManager extends IHealthTaskManagerSupport<IHealthW
 		register(
 				"weight",
 				sv,
-				(task, node) -> new IHealthWeightResult(node, task.getPrincipal(), task.getTag(), task.getTimezone()));
+				(task, node) -> new IHealthWeightResult(
+						node,
+						task.getPrincipal(),
+						Objects.requireNonNull(task.getTag()),
+						task.getTimezone()));
 	}
 
 	@Override

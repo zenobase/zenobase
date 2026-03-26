@@ -3,6 +3,7 @@ package com.zenobase.tasks.fitbit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.MoreObjects;
@@ -13,6 +14,7 @@ import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -49,15 +51,16 @@ class FitbitIntradayStepsResult extends FitbitResultSupport {
 		return values;
 	}
 
-	private DateTime toDateTimeFullHour(LocalTime local) {
+	private @Nullable DateTime toDateTimeFullHour(LocalTime local) {
 		return toDateTimeFullHour(date.toLocalDateTime(local)
 				.withMinuteOfHour(0)
 				.withSecondOfMinute(0)
 				.withMillisOfSecond(0));
 	}
 
-	private DateTime toDateTimeFullHour(LocalDateTime local) {
-		return !timezone.isLocalDateTimeGap(local) ? local.toDateTime(timezone) : null;
+	private @Nullable DateTime toDateTimeFullHour(LocalDateTime local) {
+		var tz = Objects.requireNonNull(timezone);
+		return !tz.isLocalDateTimeGap(local) ? local.toDateTime(tz) : null;
 	}
 
 	private Event toEvent(DateTime timestamp, int count) {

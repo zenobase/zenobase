@@ -1,6 +1,7 @@
 package com.zenobase.tasks.google;
 
 import com.google.common.collect.ImmutableMap;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @see <a href="https://developers.google.com/fit/rest/v1/reference/activity-types">Activity Types</a>
@@ -132,7 +133,7 @@ public class ActivityTypes {
 
 	private ActivityTypes() {}
 
-	public static String forID(int id) {
+	public static @Nullable String forID(int id) {
 		return TYPES.get(id);
 	}
 }

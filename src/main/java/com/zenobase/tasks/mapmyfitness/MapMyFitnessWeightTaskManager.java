@@ -2,6 +2,7 @@ package com.zenobase.tasks.mapmyfitness;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
@@ -59,6 +60,6 @@ public class MapMyFitnessWeightTaskManager extends MapMyFitnessTaskManagerSuppor
 			events.addAll(result.getEvents());
 			path = result.getNext();
 		}
-		return createCommand(task, credentials, events, token);
+		return createCommand(task, credentials, events, Objects.requireNonNull(token));
 	}
 }

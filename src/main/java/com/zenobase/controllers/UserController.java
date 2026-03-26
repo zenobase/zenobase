@@ -1,9 +1,12 @@
 package com.zenobase.controllers;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +72,7 @@ public class UserController extends ControllerSupport {
 		sendOk(res, toJson(user, auth));
 	}
 
-	private ObjectNode toJson(User user, Authorization auth) {
+	private ObjectNode toJson(User user, @Nullable Authorization auth) {
 		return auth != null
 						&& (auth.getScope() == null && user.is(auth.getPrincipal())
 								|| users.isSuperuser(auth.getPrincipal()))
@@ -128,14 +131,16 @@ public class UserController extends ControllerSupport {
 			sendBadRequest(res, "invalid email address");
 			return;
 		}
+		String userName = Objects.requireNonNull(user.getName());
+		String userEmail = Objects.requireNonNull(user.getEmail());
 		String commandId = dispatcher.dispatch(new ChangeUserEmailCommand(
 				auth.getPrincipal(),
-				user.getName(),
-				user.getEmail(),
-				email,
+				userName,
+				userEmail,
+				Objects.requireNonNull(email),
 				user.isVerified(),
-				user.isVerified() && user.getEmail().equals(email)));
-		mailer.send(user.getName(), email);
+				user.isVerified() && userEmail.equals(email)));
+		mailer.send(userName, Objects.requireNonNull(email));
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}
@@ -163,7 +168,10 @@ public class UserController extends ControllerSupport {
 		var auth = new Authorization(user.asIdentity(), null, null);
 		var command = new CompoundCommand(user.asIdentity(), "updated password", "reverted password");
 		command.add(new ChangeUserPasswordCommand(
-				user.asIdentity(), user.getName(), user.getHashedPassword(), User.hashPassword(password)));
+				user.asIdentity(),
+				Objects.requireNonNull(user.getName()),
+				Objects.requireNonNull(user.getHashedPassword()),
+				User.hashPassword(Objects.requireNonNull(password))));
 		command.add(new CreateAuthorizationCommand(user.asIdentity(), auth));
 		var query = new AuthorizationQuery().principalEqualTo(user.asIdentity()).clientIsNull();
 		authorizations.find(
@@ -183,7 +191,8 @@ public class UserController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		Command command = new SuspendUserCommand(auth.getPrincipal(), user.getName(), suspended);
+		Command command =
+				new SuspendUserCommand(auth.getPrincipal(), Objects.requireNonNull(user.getName()), suspended);
 		CompoundCommand commands = new CompoundCommand(
 				auth.getPrincipal(),
 				command.toString(),
@@ -210,12 +219,14 @@ public class UserController extends ControllerSupport {
 			sendBadRequest(res, "missing key");
 			return;
 		}
-		if (!new EmailVerificationKey(user.getName(), user.getEmail()).validate(key)) {
+		String userName = Objects.requireNonNull(user.getName());
+		String userEmail = Objects.requireNonNull(user.getEmail());
+		if (!new EmailVerificationKey(userName, userEmail).validate(key)) {
 			sendBadRequest(res, "invalid key");
 			return;
 		}
-		String commandId = dispatcher.dispatch(new ChangeUserVerifiedCommand(user.asIdentity(), user.getName(), true));
-		payments.update(user.getName(), user.getEmail());
+		String commandId = dispatcher.dispatch(new ChangeUserVerifiedCommand(user.asIdentity(), userName, true));
+		payments.update(userName, userEmail);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}
@@ -246,9 +257,9 @@ public class UserController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		Command c = form.isOptedOut()
-				? new OptOutCommand(auth.getPrincipal(), user.getName())
-				: new OptInCommand(auth.getPrincipal(), user.getName());
+		Command c = Objects.requireNonNull(form.isOptedOut())
+				? new OptOutCommand(auth.getPrincipal(), Objects.requireNonNull(user.getName()))
+				: new OptInCommand(auth.getPrincipal(), Objects.requireNonNull(user.getName()));
 		String commandId = dispatcher.dispatch(c);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);

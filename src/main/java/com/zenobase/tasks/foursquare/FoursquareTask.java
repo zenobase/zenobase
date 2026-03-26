@@ -1,6 +1,7 @@
 package com.zenobase.tasks.foursquare;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
@@ -17,7 +18,7 @@ public class FoursquareTask extends Task {
 		super(TYPE, bucketId, principal);
 	}
 
-	FoursquareTask(String bucketId, Identity principal, String marker) {
+	FoursquareTask(String bucketId, Identity principal, @Nullable String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 	}

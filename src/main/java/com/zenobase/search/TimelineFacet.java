@@ -1,8 +1,10 @@
 package com.zenobase.search;
 
+import java.util.Objects;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 import com.zenobase.common.Units;
@@ -18,9 +20,11 @@ public class TimelineFacet {
 
 			@Override
 			public Facet build(FacetOptions options) {
-				String id = options.get("id");
-				String keyField = options.get("key_field", String.class, Event.TIMESTAMP.getName());
-				String valueField = options.get("field", String.class, Event.TIMESTAMP.getName());
+				String id = Objects.requireNonNull(options.get("id"));
+				String keyField =
+						Objects.requireNonNull(options.get("key_field", String.class, Event.TIMESTAMP.getName()));
+				String valueField =
+						Objects.requireNonNull(options.get("field", String.class, Event.TIMESTAMP.getName()));
 				Unit<?> unit = getUnit(options.get("unit"));
 				String interval = options.get("interval", String.class, "month");
 				String range = options.get("range");
@@ -38,7 +42,7 @@ public class TimelineFacet {
 								filter);
 			}
 
-			private Unit<?> getUnit(String value) {
+			private Unit<?> getUnit(@Nullable String value) {
 				return value != null ? Units.valueOf(value) : Unit.ONE;
 			}
 

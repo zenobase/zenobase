@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Resource;
@@ -12,10 +13,10 @@ import com.zenobase.models.Resource;
 class TrackInfo {
 
 	private final Resource resource;
-	private final Duration duration;
+	private final @Nullable Duration duration;
 	private final List<String> tags = new ArrayList<>();
 
-	public TrackInfo(Resource resource, Duration duration) {
+	public TrackInfo(Resource resource, @Nullable Duration duration) {
 		this.resource = resource;
 		this.duration = duration;
 	}
@@ -24,7 +25,7 @@ class TrackInfo {
 		return resource;
 	}
 
-	public Duration getDuration() {
+	public @Nullable Duration getDuration() {
 		return duration;
 	}
 

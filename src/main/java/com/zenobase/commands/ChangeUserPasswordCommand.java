@@ -1,7 +1,10 @@
 package com.zenobase.commands;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
@@ -27,21 +30,25 @@ public class ChangeUserPasswordCommand extends Command {
 		setParameter(TO, to);
 	}
 
-	private String getUsername() {
+	private @Nullable String getUsername() {
 		return getParameter(USERNAME);
 	}
 
-	private String getFrom() {
+	private @Nullable String getFrom() {
 		return getParameter(FROM);
 	}
 
-	private String getTo() {
+	private @Nullable String getTo() {
 		return getParameter(TO);
 	}
 
 	@Override
 	public Command reverse(Identity principal) {
-		return new ChangeUserPasswordCommand(principal, getUsername(), getTo(), getFrom());
+		return new ChangeUserPasswordCommand(
+				principal,
+				Objects.requireNonNull(getUsername()),
+				Objects.requireNonNull(getTo()),
+				Objects.requireNonNull(getFrom()));
 	}
 
 	@Override
@@ -57,7 +64,7 @@ public class ChangeUserPasswordCommand extends Command {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			return switch (version) {
 				case 1 -> new ChangeUserPasswordCommand(node);
 				default -> null;
@@ -77,8 +84,8 @@ public class ChangeUserPasswordCommand extends Command {
 
 		@Override
 		public void executeTyped(ChangeUserPasswordCommand command) {
-			User user = repository.find(command.getUsername());
-			user.setHashedPassword(command.getTo());
+			User user = Objects.requireNonNull(repository.find(Objects.requireNonNull(command.getUsername())));
+			user.setHashedPassword(Objects.requireNonNull(command.getTo()));
 			repository.update(user, command.getTimestamp());
 		}
 	}

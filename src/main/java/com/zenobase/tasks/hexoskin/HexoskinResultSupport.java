@@ -2,6 +2,7 @@ package com.zenobase.tasks.hexoskin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Frequency;
@@ -14,6 +15,7 @@ import com.google.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -28,11 +30,12 @@ abstract class HexoskinResultSupport {
 
 	private final JsonNode node;
 	private final Identity author;
-	private final String tag;
+	private final @Nullable String tag;
 	private final DateTimeZone zone;
 	private final Unit<Length> distanceUnit;
 
-	public HexoskinResultSupport(JsonNode node, Identity author, String tag, DateTimeZone zone, boolean metric) {
+	public HexoskinResultSupport(
+			JsonNode node, Identity author, @Nullable String tag, DateTimeZone zone, boolean metric) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;
@@ -55,7 +58,7 @@ abstract class HexoskinResultSupport {
 		return events;
 	}
 
-	private Event newEvent(JsonNode node) {
+	private @Nullable Event newEvent(JsonNode node) {
 		if (ignore(node)) {
 			return null;
 		}
@@ -108,29 +111,36 @@ abstract class HexoskinResultSupport {
 				"https://my.hexoskin.com/en/activities/" + node.path("id").longValue());
 	}
 
-	private DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
-		return !isZero(node) ? Measures.valueOf(Measures.round(node.decimalValue(), 0), Units.BPM) : null;
-	}
-
-	private Integer intValue(JsonNode node) {
-		return !isZero(node) ? node.intValue() : null;
-	}
-
-	private Percentage percentageValue(JsonNode node) {
-		return !isZero(node) ? Percentage.valueOf(node.intValue()) : null;
-	}
-
-	private DecimalMeasure<Length> distanceValue(JsonNode node) {
-		return !isZero(node) && isPositive(node)
-				? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), distanceUnit), 2), distanceUnit)
+	private @Nullable DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
+		return !isZero(node)
+				? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue(), 0)), Units.BPM)
 				: null;
 	}
 
-	private DecimalMeasure<Energy> energyValue(JsonNode node) {
-		return !isZero(node) ? Measures.valueOf(Measures.round(node.decimalValue(), 0), Units.KCAL) : null;
+	private @Nullable Integer intValue(JsonNode node) {
+		return !isZero(node) ? node.intValue() : null;
 	}
 
-	private String textValue(JsonNode node) {
+	private @Nullable Percentage percentageValue(JsonNode node) {
+		return !isZero(node) ? Percentage.valueOf(node.intValue()) : null;
+	}
+
+	private @Nullable DecimalMeasure<Length> distanceValue(JsonNode node) {
+		return !isZero(node) && isPositive(node)
+				? Measures.valueOf(
+						Objects.requireNonNull(
+								Measures.round(Measures.convert(node.doubleValue(), distanceUnit), 2)),
+						distanceUnit)
+				: null;
+	}
+
+	private @Nullable DecimalMeasure<Energy> energyValue(JsonNode node) {
+		return !isZero(node)
+				? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue(), 0)), Units.KCAL)
+				: null;
+	}
+
+	private @Nullable String textValue(JsonNode node) {
 		return Strings.emptyToNull(node.textValue());
 	}
 

@@ -146,7 +146,7 @@ public class BucketListController extends ControllerSupport {
 			return;
 		}
 		var form = new CreateBucketForm(body(req));
-		Bucket bucket = form.getId() != null ? new Bucket(form.getId()) : new Bucket();
+		Bucket bucket = form.hasId() ? new Bucket(form.getId()) : new Bucket();
 		bucket.setLabel(form.getLabel());
 		bucket.setDescription(form.getDescription());
 		bucket.setWidgets(form.getWidgets());

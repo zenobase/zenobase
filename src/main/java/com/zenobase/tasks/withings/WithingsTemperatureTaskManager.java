@@ -8,6 +8,7 @@ import com.google.common.base.MoreObjects;
 import jakarta.inject.Inject;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -38,7 +39,7 @@ public class WithingsTemperatureTaskManager extends WithingsTaskManagerSupport<W
 		return new WithingsTemperatureTask(bucketId, principal, tag, unit, timezone, marker);
 	}
 
-	private static String parseMarker(String marker, DateTimeZone timezone) {
+	private static @Nullable String parseMarker(@Nullable String marker, DateTimeZone timezone) {
 		return marker != null
 				? Long.toString(LocalDateTime.parse(marker.replaceAll("Z", ""))
 								.toDateTime(timezone)

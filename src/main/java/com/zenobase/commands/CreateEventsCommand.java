@@ -2,11 +2,13 @@ package com.zenobase.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
@@ -40,7 +42,7 @@ public class CreateEventsCommand extends Command {
 	}
 
 	public String getBucketId() {
-		return getParameter(BUCKET_ID);
+		return Objects.requireNonNull(getParameter(BUCKET_ID));
 	}
 
 	public List<Event> getEvents() {
@@ -70,7 +72,7 @@ public class CreateEventsCommand extends Command {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			var command = new CreateEventsCommand(node);
 			return switch (version) {
 				case 1 -> command;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConstants;
 
@@ -24,7 +25,7 @@ public class OAuth2TokenExtractor implements AccessTokenExtractor {
 		return new ExpiringToken(token, "", expires, refreshToken);
 	}
 
-	private DateTime getDateTime(JsonNode node) {
+	private @Nullable DateTime getDateTime(JsonNode node) {
 		return node.isNumber() ? DateTime.now(DateTimeZone.UTC).plusSeconds(node.intValue()) : null;
 	}
 }

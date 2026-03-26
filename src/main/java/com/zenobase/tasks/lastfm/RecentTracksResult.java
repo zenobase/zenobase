@@ -9,6 +9,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -21,10 +22,10 @@ class RecentTracksResult {
 
 	private final ObjectNode node;
 	private final Identity author;
-	private final String tag;
+	private final @Nullable String tag;
 	private final DateTimeZone timezone;
 
-	public RecentTracksResult(ObjectNode node, Identity author, String tag, DateTimeZone timezone) {
+	public RecentTracksResult(ObjectNode node, Identity author, @Nullable String tag, DateTimeZone timezone) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;
@@ -56,7 +57,7 @@ class RecentTracksResult {
 		}
 	}
 
-	private DateTime dateTimeValue(JsonNode node) {
+	private @Nullable DateTime dateTimeValue(JsonNode node) {
 		long millis = node.asLong() * 1000;
 		return millis > 0 ? new DateTime(millis, timezone) : null;
 	}
@@ -70,7 +71,7 @@ class RecentTracksResult {
 		return new Resource(artist + " - " + name, url);
 	}
 
-	private static String textValue(JsonNode node) {
+	private static @Nullable String textValue(JsonNode node) {
 		return Strings.emptyToNull(node.textValue());
 	}
 

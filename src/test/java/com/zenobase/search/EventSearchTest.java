@@ -30,10 +30,10 @@ public class EventSearchTest {
 				.buildSearch();
 		Search c = new EventSearchBuilder()
 				.addFacet("id:c1,type:list")
-				.addFacet("id:c2,type:count")
+				.addFacet("id:c2,type:count,field:tag")
 				.buildSearch();
 		Search d = new EventSearchBuilder()
-				.addFacets(new String[] {"id:c1,type:list", "id:c2,type:count"})
+				.addFacets(new String[] {"id:c1,type:list", "id:c2,type:count,field:tag"})
 				.buildSearch();
 		Search e = new EventSearchBuilder().buildSearch();
 		Search f = new EventSearchBuilder()
@@ -42,7 +42,7 @@ public class EventSearchTest {
 				.buildSearch();
 		Search g = new EventSearchBuilder()
 				.addConstraint("tag:a")
-				.addFacet("id:c2,type:count")
+				.addFacet("id:c2,type:count,field:tag")
 				.buildSearch();
 		new EqualsTester()
 				.addEqualityGroup(a, b)

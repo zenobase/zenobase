@@ -1,6 +1,7 @@
 package com.zenobase.tasks.fitbit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
@@ -21,7 +22,7 @@ public class FitbitFoodTask extends Task {
 		setTag(tag);
 	}
 
-	public String getTag() {
+	public @Nullable String getTag() {
 		return getSetting(TAG);
 	}
 

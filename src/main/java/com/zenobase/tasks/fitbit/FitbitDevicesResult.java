@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,7 @@ class FitbitDevicesResult {
 	/**
 	 * @param deviceType TRACKER or SCALE
 	 */
-	public LocalDate getLastDate(DeviceType deviceType) {
+	public @Nullable LocalDate getLastDate(DeviceType deviceType) {
 		LocalDate latest = null;
 		for (JsonNode device : node) {
 			if (deviceType.name().equals(device.path("type").textValue())) {

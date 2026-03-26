@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -13,7 +14,7 @@ class IHealthSleepResult extends IHealthResultSupport {
 	private final String tag;
 	private final DateTimeZone zone;
 
-	public IHealthSleepResult(JsonNode node, Identity author, String tag, DateTimeZone zone) {
+	public IHealthSleepResult(JsonNode node, Identity author, @Nullable String tag, DateTimeZone zone) {
 		super("SRDataList", node, author);
 		this.tag = Preconditions.checkNotNull(tag);
 		this.zone = Preconditions.checkNotNull(zone);
@@ -34,7 +35,7 @@ class IHealthSleepResult extends IHealthResultSupport {
 		return event;
 	}
 
-	private Duration durationValue(JsonNode node) {
+	private @Nullable Duration durationValue(JsonNode node) {
 		double hours = node.doubleValue();
 		return hours > 0.0 ? Duration.standardMinutes(Math.round(hours * 60.0)) : null;
 	}

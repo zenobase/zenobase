@@ -6,6 +6,7 @@ import javax.mail.internet.InternetAddress;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.TokenField;
@@ -28,15 +29,15 @@ public class SignUpForm extends DomainNode {
 		setValue(EMAIL, email);
 	}
 
-	public String getUsername() {
+	public @Nullable String getUsername() {
 		return getValue(USERNAME);
 	}
 
-	public String getPassword() {
+	public @Nullable String getPassword() {
 		return getValue(PASSWORD);
 	}
 
-	public String getEmail() {
+	public @Nullable String getEmail() {
 		return getValue(EMAIL);
 	}
 
@@ -44,7 +45,7 @@ public class SignUpForm extends DomainNode {
 		return isValidUsername(getUsername()) && isValidPassword(getPassword()) && isValidEmail(getEmail());
 	}
 
-	public static boolean isValidUsername(String value) {
+	public static boolean isValidUsername(@Nullable String value) {
 		return !Strings.isNullOrEmpty(value)
 				&& !value.contains("zenobase")
 				&& !value.contains("admin")
@@ -52,13 +53,13 @@ public class SignUpForm extends DomainNode {
 				&& USERNAME_PATTERN.matcher(value).matches();
 	}
 
-	public static boolean isValidPassword(String value) {
+	public static boolean isValidPassword(@Nullable String value) {
 		return !Strings.isNullOrEmpty(value) && value.length() >= 8;
 	}
 
-	public static boolean isValidEmail(String value) {
+	public static boolean isValidEmail(@Nullable String value) {
 		try {
-			return value.indexOf('@') != -1 && InternetAddress.parse(value, true).length == 1;
+			return value != null && value.indexOf('@') != -1 && InternetAddress.parse(value, true).length == 1;
 		} catch (AddressException e) {
 			return false;
 		}

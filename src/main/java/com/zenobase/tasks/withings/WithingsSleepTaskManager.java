@@ -1,6 +1,7 @@
 package com.zenobase.tasks.withings;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
@@ -8,6 +9,7 @@ import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -37,7 +39,7 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 		return task;
 	}
 
-	private static String parseMarker(String marker, DateTimeZone timezone) {
+	private static @Nullable String parseMarker(@Nullable String marker, DateTimeZone timezone) {
 		return marker != null
 				? LocalDateTime.parse(marker.replaceAll("Z", ""))
 						.toDateTime(timezone)
@@ -50,7 +52,9 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 	Command safeExecute(WithingsSleepTask task, OAuthCredentials credentials, Token token) {
 		var result = new WithingsSleepResult(
 				List.of(), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
-		for (DateTime from = task.getFrom(); from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
+		for (DateTime from = Objects.requireNonNull(task.getFrom());
+				from.isBefore(DateTime.now());
+				from = from.plusWeeks(1)) {
 			result.add(execute(task, credentials, from));
 		}
 		return createCommand(task, credentials, token, result.merge());

@@ -1,6 +1,7 @@
 package com.zenobase.controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.DomainNode;
 import com.zenobase.tasks.Task;
@@ -16,15 +17,15 @@ public class CreateTaskForm extends DomainNode {
 		setValue(Task.BUCKET, bucketId);
 	}
 
-	public String getType() {
+	public @Nullable String getType() {
 		return getValue(Task.TYPE);
 	}
 
-	public String getBucketId() {
+	public @Nullable String getBucketId() {
 		return getValue(Task.BUCKET);
 	}
 
-	public ObjectNode getSettings() {
+	public @Nullable ObjectNode getSettings() {
 		return getValue(Task.SETTINGS);
 	}
 

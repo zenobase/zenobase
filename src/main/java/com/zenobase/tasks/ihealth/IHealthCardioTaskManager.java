@@ -1,5 +1,7 @@
 package com.zenobase.tasks.ihealth;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
@@ -22,13 +24,13 @@ public class IHealthCardioTaskManager extends IHealthTaskManagerSupport<IHealthC
 		register(
 				"bp",
 				svBp,
-				(task, node) ->
-						new IHealthBloodPressureResult(node, task.getPrincipal(), task.getTag(), task.getTimezone()));
+				(task, node) -> new IHealthBloodPressureResult(
+						node, task.getPrincipal(), Objects.requireNonNull(task.getTag()), task.getTimezone()));
 		register(
 				"spo2",
 				svSpO2,
-				(task, node) ->
-						new IHealthBloodOxygenResult(node, task.getPrincipal(), task.getTag(), task.getTimezone()));
+				(task, node) -> new IHealthBloodOxygenResult(
+						node, task.getPrincipal(), Objects.requireNonNull(task.getTag()), task.getTimezone()));
 	}
 
 	@Override

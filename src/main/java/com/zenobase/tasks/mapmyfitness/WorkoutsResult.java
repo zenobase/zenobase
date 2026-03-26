@@ -3,6 +3,7 @@ package com.zenobase.tasks.mapmyfitness;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
@@ -14,6 +15,7 @@ import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Pace;
@@ -75,36 +77,43 @@ class WorkoutsResult {
 		return DateTime.parse(value).withZone(zone);
 	}
 
-	private Duration durationValue(JsonNode node) {
+	private @Nullable Duration durationValue(JsonNode node) {
 		return !isZero(node) ? Duration.standardSeconds(node.longValue()) : null;
 	}
 
-	private Integer countValue(JsonNode node) {
+	private @Nullable Integer countValue(JsonNode node) {
 		return !isZero(node) ? node.intValue() : null;
 	}
 
-	private DecimalMeasure<Length> distanceValue(JsonNode node) {
+	private @Nullable DecimalMeasure<Length> distanceValue(JsonNode node) {
 		Unit<Length> unit = imperial ? Units.MI : Units.KM;
 		return !isZero(node)
-				? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), 1), unit)
+				? Measures.valueOf(
+						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)),
+						unit)
 				: null;
 	}
 
-	private DecimalMeasure<Velocity> velocityValue(JsonNode node) {
+	private @Nullable DecimalMeasure<Velocity> velocityValue(JsonNode node) {
 		Unit<Velocity> unit = imperial ? Units.MPH : Units.KMH;
 		return !isZero(node)
-				? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), 1), unit)
+				? Measures.valueOf(
+						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)),
+						unit)
 				: null;
 	}
 
-	private DecimalMeasure<Pace> paceValue(JsonNode node) {
+	private @Nullable DecimalMeasure<Pace> paceValue(JsonNode node) {
 		Unit<Pace> unit = imperial ? Units.S_PER_MI : Units.S_PER_KM;
 		return !isZero(node)
-				? Measures.valueOf(Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0), unit)
+				? Measures.valueOf(
+						Objects.requireNonNull(
+								Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0)),
+						unit)
 				: null;
 	}
 
-	private DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
+	private @Nullable DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
 		return !isZero(node) ? Measures.valueOf(BigDecimal.valueOf(node.intValue()), Units.BPM) : null;
 	}
 

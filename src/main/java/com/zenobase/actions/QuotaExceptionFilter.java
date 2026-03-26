@@ -19,7 +19,7 @@ public class QuotaExceptionFilter implements Filter {
 		try {
 			chain.proceed();
 		} catch (QuotaException e) {
-			ControllerSupport.sendForbidden(res, e.getMessage());
+			ControllerSupport.sendForbidden(res, String.valueOf(e.getMessage()));
 		}
 	}
 }

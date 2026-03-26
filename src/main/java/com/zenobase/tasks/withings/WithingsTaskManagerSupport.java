@@ -1,7 +1,8 @@
 package com.zenobase.tasks.withings;
 
+import java.util.Objects;
+
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.RateLimiter;
@@ -39,9 +40,8 @@ abstract class WithingsTaskManagerSupport<T extends Task> extends OAuthTaskManag
 
 	@Override
 	public Command execute(Task task, OAuthCredentials credentials) {
-		Token token = credentials.getToken();
-		if (credentials.isExpired()
-				|| !Strings.isNullOrEmpty(credentials.getToken().getSecret())) {
+		Token token = Objects.requireNonNull(credentials.getToken());
+		if (credentials.isExpired() || !Strings.isNullOrEmpty(token.getSecret())) {
 			reauthorize(credentials); // oauth1 token
 		}
 		return safeExecute(task.as(taskClass), credentials, token);
@@ -74,7 +74,7 @@ abstract class WithingsTaskManagerSupport<T extends Task> extends OAuthTaskManag
 				.set(Task.MARKER, task.getMarker(), MoreObjects.firstNonNull(result.getMarker(), task.getMarker()))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build());
-		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+		if (!Objects.equals(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())

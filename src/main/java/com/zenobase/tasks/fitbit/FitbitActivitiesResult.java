@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
@@ -26,7 +27,7 @@ class FitbitActivitiesResult extends FitbitResultSupport {
 		this.distanceUnit = distanceUnit;
 	}
 
-	public String next() {
+	public @Nullable String next() {
 		return Strings.emptyToNull(node.path("pagination").path("next").textValue());
 	}
 

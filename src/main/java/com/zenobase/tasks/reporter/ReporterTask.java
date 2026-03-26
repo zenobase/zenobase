@@ -2,6 +2,7 @@ package com.zenobase.tasks.reporter;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.LocalDate;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
@@ -25,11 +26,11 @@ public class ReporterTask extends Task {
 		setSetting(FOLDER, folder);
 	}
 
-	public String getFolder() {
+	public @Nullable String getFolder() {
 		return getSetting(FOLDER);
 	}
 
-	public LocalDate getFirstDate() {
+	public @Nullable LocalDate getFirstDate() {
 		String marker = getMarker();
 		return marker != null ? LocalDate.parse(marker) : null;
 	}

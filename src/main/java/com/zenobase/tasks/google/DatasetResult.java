@@ -9,6 +9,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 public class DatasetResult extends GoogleFitResultSupport {
 
@@ -52,7 +53,7 @@ public class DatasetResult extends GoogleFitResultSupport {
 		return values;
 	}
 
-	private static Object objectValue(JsonNode node) {
+	private static @Nullable Object objectValue(JsonNode node) {
 		if (node.has("fpVal")) {
 			return node.get("fpVal").decimalValue();
 		}

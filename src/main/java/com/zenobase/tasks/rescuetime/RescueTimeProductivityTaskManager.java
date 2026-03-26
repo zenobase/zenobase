@@ -2,6 +2,7 @@ package com.zenobase.tasks.rescuetime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
@@ -14,6 +15,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
@@ -49,7 +51,7 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		return task;
 	}
 
-	private static String parseMarker(String marker, DateTimeZone timezone) {
+	private static @Nullable String parseMarker(@Nullable String marker, DateTimeZone timezone) {
 		return marker != null
 				? LocalDateTime.parse(marker.replaceAll("Z", ""))
 						.toDateTime(timezone)
@@ -81,7 +83,7 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		return createCommand(task, events);
 	}
 
-	private List<Event> get(OAuthCredentials credentials, RescueTimeProductivityTask task, LocalDate date) {
+	private List<Event> get(OAuthCredentials credentials, RescueTimeProductivityTask task, @Nullable LocalDate date) {
 		rateLimit.acquire();
 		OAuthRequest request = newRequest(task.getKind(), task.getSource(), date);
 		Response response = send(request, credentials);
@@ -94,7 +96,7 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		return result.getEvents();
 	}
 
-	private OAuthRequest newRequest(String kind, String source, LocalDate date) {
+	private OAuthRequest newRequest(String kind, @Nullable String source, @Nullable LocalDate date) {
 		var request = new OAuthRequest(Verb.GET, "https://www.rescuetime.com/api/oauth/data");
 		request.addQuerystringParameter("format", "json");
 		request.addQuerystringParameter("operation", "select");
@@ -117,7 +119,8 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 	}
 
 	private void removeNotAfter(List<Event> events, DateTime last) {
-		events.removeIf(event -> !event.getValue(Event.TIMESTAMP).isAfter(last));
+		events.removeIf(event ->
+				!Objects.requireNonNull(event.getValue(Event.TIMESTAMP)).isAfter(last));
 	}
 
 	private Command createCommand(Task task, List<Event> events) {
@@ -129,7 +132,10 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 				.set(
 						Task.MARKER,
 						task.getMarker(),
-						events.isEmpty() ? task.getMarker() : getLast(events).toString())
+						events.isEmpty()
+								? task.getMarker()
+								: Objects.requireNonNull(getLast(events))
+										.toString())
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build());
 		if (!events.isEmpty()) {
@@ -138,13 +144,13 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		return command;
 	}
 
-	private static DateTime getFirst(List<Event> events) {
+	private static @Nullable DateTime getFirst(List<Event> events) {
 		Event first = Iterables.getFirst(events, null);
 		return first != null ? first.getValue(Event.TIMESTAMP) : null;
 	}
 
-	private static DateTime getLast(List<Event> events) {
+	private static @Nullable DateTime getLast(List<Event> events) {
 		Event latest = Iterables.getLast(events);
-		return latest.getValue(Event.TIMESTAMP);
+		return latest != null ? latest.getValue(Event.TIMESTAMP) : null;
 	}
 }

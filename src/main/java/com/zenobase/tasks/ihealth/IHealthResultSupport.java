@@ -13,6 +13,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -62,7 +63,7 @@ abstract class IHealthResultSupport {
 		return new DateTime(node.longValue() * 1000, DateTimeZone.UTC).withZoneRetainFields(zone);
 	}
 
-	protected Location locationValue(JsonNode node) {
+	protected @Nullable Location locationValue(JsonNode node) {
 		BigDecimal lat = node.path("Lat").decimalValue();
 		BigDecimal lon = node.path("Lon").decimalValue();
 		return isLatLon(lat) || isLatLon(lon) ? new Location(lat, lon) : null;
@@ -72,7 +73,7 @@ abstract class IHealthResultSupport {
 		return !BigDecimal.ZERO.equals(value) && !BigDecimal.ONE.equals(value.abs());
 	}
 
-	protected String textValue(JsonNode node) {
+	protected @Nullable String textValue(JsonNode node) {
 		String value = node.textValue();
 		if (value != null) {
 			value = value.strip();
@@ -80,15 +81,15 @@ abstract class IHealthResultSupport {
 		return Strings.emptyToNull(value);
 	}
 
-	protected Percentage percentageValue(JsonNode node) {
+	protected @Nullable Percentage percentageValue(JsonNode node) {
 		return !isZero(node) ? Percentage.valueOf(node.intValue()) : null;
 	}
 
-	protected DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
+	protected @Nullable DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
 		return !isZero(node) ? Measures.valueOf(node.decimalValue(), Units.BPM) : null;
 	}
 
-	protected DecimalMeasure<Energy> energyValue(JsonNode node) {
+	protected @Nullable DecimalMeasure<Energy> energyValue(JsonNode node) {
 		return !isZero(node)
 				? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.KCAL)
 				: null;

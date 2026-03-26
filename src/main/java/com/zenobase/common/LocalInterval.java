@@ -1,6 +1,7 @@
 package com.zenobase.common;
 
-import com.google.common.base.Objects;
+import java.util.Objects;
+
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
@@ -57,7 +58,7 @@ public class LocalInterval implements Comparable<LocalInterval> {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(start, end);
+		return Objects.hash(start, end);
 	}
 
 	@Override

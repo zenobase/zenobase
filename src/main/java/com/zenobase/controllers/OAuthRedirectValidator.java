@@ -2,6 +2,7 @@ package com.zenobase.controllers;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 import com.zenobase.models.User;
 
@@ -22,7 +23,7 @@ class OAuthRedirectValidator {
 	}
 
 	private boolean valid(URI uri) {
-		return isCustomScheme(uri) || isLocalhost(uri) || sameDomain(client.getEmail(), uri);
+		return isCustomScheme(uri) || isLocalhost(uri) || sameDomain(Objects.requireNonNull(client.getEmail()), uri);
 	}
 
 	private static boolean isCustomScheme(URI uri) {

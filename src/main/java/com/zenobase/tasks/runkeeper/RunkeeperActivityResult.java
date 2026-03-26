@@ -1,5 +1,6 @@
 package com.zenobase.tasks.runkeeper;
 
+import java.util.Objects;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Quantity;
@@ -7,6 +8,7 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -33,17 +35,19 @@ class RunkeeperActivityResult {
 		event.setValue(Event.LOCATION, locationValue(node.path("path")));
 	}
 
-	private static <Q extends Quantity> DecimalMeasure<Q> measureValue(JsonNode node, Unit<Q> unit) {
+	private static @Nullable <Q extends Quantity> DecimalMeasure<Q> measureValue(JsonNode node, Unit<Q> unit) {
 		return !isZero(node) ? Measures.valueOf(node.decimalValue(), unit) : null;
 	}
 
-	private static <Q extends Quantity> DecimalMeasure<Q> convertMeasureValue(JsonNode node, Unit<Q> unit) {
+	private static @Nullable <Q extends Quantity> DecimalMeasure<Q> convertMeasureValue(JsonNode node, Unit<Q> unit) {
 		return !isZero(node)
-				? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), 0), unit)
+				? Measures.valueOf(
+						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 0)),
+						unit)
 				: null;
 	}
 
-	private static Location locationValue(JsonNode path) {
+	private static @Nullable Location locationValue(JsonNode path) {
 		for (JsonNode node : path) {
 			if ("start".equals(node.path("type").textValue())) {
 				return new Location(

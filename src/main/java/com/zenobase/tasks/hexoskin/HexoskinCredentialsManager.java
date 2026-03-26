@@ -1,9 +1,12 @@
 package com.zenobase.tasks.hexoskin;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -37,12 +40,12 @@ public class HexoskinCredentialsManager extends OAuthCredentialsManager {
 	}
 
 	@Override
-	public Command authorize(Credentials credentials, ObjectNode config) {
+	public @Nullable Command authorize(Credentials credentials, ObjectNode config) {
 		Preconditions.checkState(!credentials.isAuthorized());
 		return authorize(credentials.as(OAuthCredentials.class), config);
 	}
 
-	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
+	private @Nullable Command authorize(OAuthCredentials credentials, ObjectNode config) {
 		String code = config.path("code").textValue();
 		if (code == null) {
 			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
@@ -66,8 +69,8 @@ public class HexoskinCredentialsManager extends OAuthCredentialsManager {
 		if (credentials.getToken() instanceof ExpiringToken token) {
 			refreshToken = token.getRefreshToken();
 		} else {
-			refreshToken = credentials.getToken().getToken() + ":"
-					+ credentials.getToken().getSecret();
+			Token t = Objects.requireNonNull(credentials.getToken());
+			refreshToken = t.getToken() + ":" + t.getSecret();
 		}
 		var request = new OAuthRequest(Verb.POST, "https://api.hexoskin.com/api/connect/oauth2/token/");
 		request.addBodyParameter("grant_type", "refresh_token");

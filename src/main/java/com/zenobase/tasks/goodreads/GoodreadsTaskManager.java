@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -14,6 +15,7 @@ import com.google.common.util.concurrent.RateLimiter;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
@@ -96,10 +98,10 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 	}
 
 	private static Document parseDocument(Response response) {
-		Preconditions.checkState(response.getCode() == 200, "Expected 200 but got <%s> for <%s>", response.getCode());
+		Preconditions.checkState(response.getCode() == 200, "Expected 200 but got <%s>", response.getCode());
 		Preconditions.checkState(
 				response.getHeader("Content-Type").startsWith("application/xml"),
-				"Expected application/xml but got <%s> for <%s>",
+				"Expected application/xml but got <%s>",
 				response.getHeader("Content-Type"));
 		try {
 			InputSource source = new InputSource(new StringReader(getBody(response)));
@@ -109,14 +111,14 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 		}
 	}
 
-	private static DateTime parseMarker(String marker) {
+	private static @Nullable DateTime parseMarker(@Nullable String marker) {
 		return marker != null ? DateTime.parse(marker) : null;
 	}
 
-	private static String getMarker(Iterable<Event> events) {
+	private static @Nullable String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
-			DateTime end = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
+			DateTime end = Objects.requireNonNull(Ordering.natural().max(event.getValues(Event.TIMESTAMP)));
 			if (latest == null || end.isAfter(latest)) {
 				latest = end.plusMillis(1);
 			}

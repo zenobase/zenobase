@@ -105,7 +105,7 @@ public class TaskController extends ControllerSupport {
 			return;
 		}
 		ObjectNode body = body(req);
-		if (Nodes.size(body) != 1) {
+		if (body.size() != 1) {
 			sendBadRequest(res, "no data");
 			return;
 		}

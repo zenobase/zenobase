@@ -49,8 +49,7 @@ public abstract class ClientSupport {
 	}
 
 	public void run() throws IOException {
-
-		if (token == null) {
+		if (token.isBlank()) {
 			System.err.format(
 					"%s/#/oauth/authorize?response_type=token&client_id=%s&redirect_uri=%s\n", host, apiKey, callback);
 			System.exit(1);

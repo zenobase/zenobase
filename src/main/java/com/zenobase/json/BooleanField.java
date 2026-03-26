@@ -3,6 +3,7 @@ package com.zenobase.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.search.TermConstraintBuilder;
 
@@ -19,7 +20,7 @@ public class BooleanField extends Field<Boolean> {
 	}
 
 	@Override
-	public JsonNode toJson(Boolean value) {
+	public JsonNode toJson(@Nullable Boolean value) {
 		return value != null ? BooleanNode.valueOf(value) : NullNode.getInstance();
 	}
 }

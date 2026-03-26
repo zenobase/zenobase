@@ -3,6 +3,7 @@ package com.zenobase.json;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.search.ConstraintBuilder;
 
@@ -28,7 +29,7 @@ public class Schema {
 		return typeName;
 	}
 
-	public Field<?> getField(String path) {
+	public @Nullable Field<?> getField(String path) {
 		return fields.get(path);
 	}
 

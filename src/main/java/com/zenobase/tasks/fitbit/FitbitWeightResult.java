@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -20,7 +21,12 @@ class FitbitWeightResult extends FitbitResultSupport {
 	private final Unit<Mass> weightUnit;
 
 	public FitbitWeightResult(
-			JsonNode node, String tag, Identity author, LocalDate date, DateTimeZone timezone, Unit<Mass> weightUnit) {
+			JsonNode node,
+			@Nullable String tag,
+			Identity author,
+			LocalDate date,
+			DateTimeZone timezone,
+			Unit<Mass> weightUnit) {
 		super(node, tag, author, timezone);
 		this.date = date;
 		this.weightUnit = weightUnit;

@@ -1,7 +1,10 @@
 package com.zenobase.commands;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
@@ -27,11 +30,11 @@ public class SuspendUserCommand extends Command {
 	}
 
 	private String getName() {
-		return getParameter(USERNAME);
+		return Objects.requireNonNull(getParameter(USERNAME));
 	}
 
 	private boolean isSuspend() {
-		return getParameter(SUSPEND);
+		return Objects.requireNonNull(getParameter(SUSPEND));
 	}
 
 	@Override
@@ -52,7 +55,7 @@ public class SuspendUserCommand extends Command {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			return switch (version) {
 				case 1 -> new SuspendUserCommand(node);
 				default -> null;

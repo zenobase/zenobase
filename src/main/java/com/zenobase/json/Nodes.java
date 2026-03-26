@@ -99,10 +99,6 @@ public class Nodes {
 		}
 	}
 
-	public static int size(JsonNode node) {
-		return node != null ? node.size() : 0;
-	}
-
 	/**
 	 * Pretty-prints a node.
 	 */

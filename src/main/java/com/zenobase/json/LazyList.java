@@ -1,9 +1,9 @@
 package com.zenobase.json;
 
 import java.util.AbstractList;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
 
 import com.zenobase.common.PartialList;
 
@@ -43,6 +43,6 @@ public abstract class LazyList<T extends DomainNode> extends AbstractList<T> imp
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(nodes);
+		return Objects.hash(nodes);
 	}
 }

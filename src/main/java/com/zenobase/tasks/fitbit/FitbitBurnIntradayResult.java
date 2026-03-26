@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.measure.DecimalMeasure;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,6 +17,7 @@ import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -26,7 +28,8 @@ class FitbitBurnIntradayResult extends FitbitResultSupport {
 
 	private final LocalDate date;
 
-	public FitbitBurnIntradayResult(JsonNode node, String tag, Identity author, LocalDate date, DateTimeZone timezone) {
+	public FitbitBurnIntradayResult(
+			JsonNode node, @Nullable String tag, Identity author, LocalDate date, DateTimeZone timezone) {
 		super(node, tag, author, timezone);
 		this.date = date;
 	}
@@ -60,15 +63,16 @@ class FitbitBurnIntradayResult extends FitbitResultSupport {
 		return values;
 	}
 
-	private DateTime toDateTimeFullHour(LocalTime local) {
+	private @Nullable DateTime toDateTimeFullHour(LocalTime local) {
 		return toDateTimeFullHour(date.toLocalDateTime(local)
 				.withMinuteOfHour(0)
 				.withSecondOfMinute(0)
 				.withMillisOfSecond(0));
 	}
 
-	private DateTime toDateTimeFullHour(LocalDateTime local) {
-		return !timezone.isLocalDateTimeGap(local) ? local.toDateTime(timezone) : null;
+	private @Nullable DateTime toDateTimeFullHour(LocalDateTime local) {
+		DateTimeZone tz = Objects.requireNonNull(timezone);
+		return !tz.isLocalDateTimeGap(local) ? local.toDateTime(tz) : null;
 	}
 
 	private Event toEvent(DateTime timestamp, BigDecimal value) {

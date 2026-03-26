@@ -1,6 +1,7 @@
 package com.zenobase.tasks.fitbit;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Frequency;
@@ -15,6 +16,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.DateTimeZones;
 import com.zenobase.common.Measures;
@@ -30,11 +32,12 @@ abstract class FitbitResultSupport {
 	public static final Resource SOURCE = new Resource("Fitbit", "https://fitbit.com/");
 
 	protected final JsonNode node;
-	protected final String tag;
+	protected final @Nullable String tag;
 	protected final Identity author;
-	protected final DateTimeZone timezone;
+	protected final @Nullable DateTimeZone timezone;
 
-	protected FitbitResultSupport(JsonNode node, String tag, Identity author, DateTimeZone timezone) {
+	protected FitbitResultSupport(
+			JsonNode node, @Nullable String tag, Identity author, @Nullable DateTimeZone timezone) {
 		this.node = node;
 		this.tag = tag;
 		this.author = author;
@@ -45,19 +48,19 @@ abstract class FitbitResultSupport {
 		return DateTimeZones.toDateTime(LocalDateTime.parse(item.textValue()), timezone);
 	}
 
-	protected static Duration durationValue(JsonNode node) {
+	protected static @Nullable Duration durationValue(JsonNode node) {
 		return !isZero(node) ? Duration.millis(node.longValue()) : null;
 	}
 
-	protected static DecimalMeasure<Length> lengthValue(JsonNode node, Unit<Length> unit) {
+	protected static @Nullable DecimalMeasure<Length> lengthValue(JsonNode node, Unit<Length> unit) {
 		return !isZero(node) ? DecimalMeasure.valueOf(node.decimalValue(), unit) : null;
 	}
 
-	protected static DecimalMeasure<Mass> weightValue(JsonNode node, Unit<Mass> unit) {
+	protected static @Nullable DecimalMeasure<Mass> weightValue(JsonNode node, Unit<Mass> unit) {
 		return !isZero(node) ? Measures.valueOf(node.decimalValue(), unit) : null;
 	}
 
-	protected static DecimalMeasure<Energy> energyValue(JsonNode node, Unit<Energy> unit) {
+	protected static @Nullable DecimalMeasure<Energy> energyValue(JsonNode node, Unit<Energy> unit) {
 		BigDecimal value = null;
 		if (node.isNumber()) {
 			value = node.decimalValue();
@@ -67,27 +70,29 @@ abstract class FitbitResultSupport {
 		return value != null ? DecimalMeasure.valueOf(value, unit) : null;
 	}
 
-	protected static Rating ratingValue(JsonNode node) {
+	protected static @Nullable Rating ratingValue(JsonNode node) {
 		return !isZero(node) ? Rating.valueOf(node.intValue()) : null;
 	}
 
-	protected static Percentage percentageValue(JsonNode node) {
+	protected static @Nullable Percentage percentageValue(JsonNode node) {
 		return !isZero(node) ? Percentage.valueOf(node.intValue()) : null;
 	}
 
-	protected static Integer countValue(JsonNode node) {
+	protected static @Nullable Integer countValue(JsonNode node) {
 		return !isZero(node) ? node.intValue() : null;
 	}
 
-	protected static DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
+	protected static @Nullable DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
 		return node.asInt() > 0 ? Measures.valueOf(BigDecimal.valueOf(node.asInt()), Units.BPM) : null;
 	}
 
-	protected static DecimalMeasure<Velocity> velocityValue(JsonNode node, Unit<Velocity> unit) {
-		return node.asInt() > 0 ? Measures.valueOf(Measures.round(node.decimalValue()), unit) : null;
+	protected static @Nullable DecimalMeasure<Velocity> velocityValue(JsonNode node, Unit<Velocity> unit) {
+		return node.asInt() > 0
+				? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue())), unit)
+				: null;
 	}
 
-	protected static DecimalMeasure<Pace> paceValue(JsonNode node, Unit<Pace> unit) {
+	protected static @Nullable DecimalMeasure<Pace> paceValue(JsonNode node, Unit<Pace> unit) {
 		return node.asInt() > 0 ? Measures.valueOf(BigDecimal.valueOf(node.asInt()), unit) : null;
 	}
 

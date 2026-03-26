@@ -13,6 +13,7 @@ import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -176,7 +177,7 @@ public class OAuthController extends ControllerSupport {
 		sendBadRequest(res, result);
 	}
 
-	private void grant(ServerResponse res, Identity principal, Identity client, String scope) {
+	private void grant(ServerResponse res, Identity principal, @Nullable Identity client, @Nullable String scope) {
 		Authorization auth = null;
 		if (client != null) {
 			AuthorizationQuery query = new AuthorizationQuery()

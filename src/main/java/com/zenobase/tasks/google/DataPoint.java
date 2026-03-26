@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 public class DataPoint {
 
@@ -49,16 +50,12 @@ public class DataPoint {
 		return values[i];
 	}
 
-	public <T> T getValue(int i, Class<T> type) {
+	public <T> @Nullable T getValue(int i, Class<T> type) {
 		return type.isInstance(values[i]) ? type.cast(values[i]) : null;
 	}
 
 	@Override
 	public String toString() {
-		String s = String.format("%s..%s %s %s", begin, end, dataType, Arrays.toString(values));
-		if (origin != null) {
-			s += " <- " + origin;
-		}
-		return s;
+		return String.format("%s..%s %s %s <- %s", begin, end, dataType, Arrays.toString(values), origin);
 	}
 }

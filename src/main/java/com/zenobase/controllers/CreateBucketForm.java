@@ -1,8 +1,10 @@
 package com.zenobase.controllers;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.DomainNode;
 import com.zenobase.models.Alias;
@@ -20,16 +22,20 @@ public class CreateBucketForm extends DomainNode {
 		setValues(Bucket.ALIASES, aliases);
 	}
 
-	@Override
-	public String getId() {
-		return getValue(Bucket.ID);
+	public boolean hasId() {
+		return contains(Bucket.ID);
 	}
 
-	public String getLabel() {
+	@Override
+	public String getId() {
+		return Objects.requireNonNull(getValue(Bucket.ID));
+	}
+
+	public @Nullable String getLabel() {
 		return getValue(Bucket.LABEL);
 	}
 
-	public String getDescription() {
+	public @Nullable String getDescription() {
 		return getValue(Bucket.DESCRIPTION);
 	}
 

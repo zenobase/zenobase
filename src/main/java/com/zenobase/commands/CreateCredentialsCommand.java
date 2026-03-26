@@ -1,7 +1,10 @@
 package com.zenobase.commands;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Identity;
@@ -24,7 +27,7 @@ public class CreateCredentialsCommand extends Command {
 	}
 
 	public Credentials getCredentials() {
-		return new Credentials(getParameter(CREDENTIALS));
+		return new Credentials(Objects.requireNonNull(getParameter(CREDENTIALS)));
 	}
 
 	@Override
@@ -46,7 +49,7 @@ public class CreateCredentialsCommand extends Command {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			return switch (version) {
 				case 1 -> new CreateCredentialsCommand(node);
 				default -> null;

@@ -2,6 +2,7 @@ package com.zenobase.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -132,13 +133,13 @@ public class CommandRebuild {
 		buckets.findAll(allBuckets::add);
 		runInParallel(
 				allBuckets,
-				bucket -> Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER))
+				bucket -> Objects.requireNonNull(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)))
 						.getId(),
 				bucket -> {
-					Identity owner = Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER));
+					Identity owner = Objects.requireNonNull(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)));
 					dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
 					if (!bucket.isVirtual()) {
-						rebuildEvents(events, owner, bucket.getId(), bucket.getCreated());
+						rebuildEvents(events, owner, bucket.getId(), Objects.requireNonNull(bucket.getCreated()));
 					}
 				},
 				Bucket::getId);

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.OffsetDateTimeFormat;
 import com.zenobase.search.EpochDateTimeConstraintBuilder;
@@ -30,7 +31,7 @@ public class OffsetDateTimeField extends Field<DateTime> {
 	}
 
 	@Override
-	public JsonNode toJson(DateTime value) {
+	public JsonNode toJson(@Nullable DateTime value) {
 		return value != null ? new TextNode(value.toString()) : NullNode.getInstance();
 	}
 

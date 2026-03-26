@@ -1,11 +1,12 @@
 package com.zenobase.tasks.oura;
 
 import java.util.List;
+import java.util.Objects;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.Ordering;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.Token;
 
 import com.zenobase.commands.Command;
@@ -36,7 +37,7 @@ abstract class OuraTaskManagerSupport extends OAuthTaskManager {
 				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build());
-		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+		if (!Objects.equals(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
@@ -48,11 +49,11 @@ abstract class OuraTaskManagerSupport extends OAuthTaskManager {
 		return command;
 	}
 
-	private static String getMarker(Iterable<Event> events) {
+	private static @Nullable String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
 			DateTime time = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
-			if (latest == null || time.isAfter(latest)) {
+			if (time != null && (latest == null || time.isAfter(latest))) {
 				latest = time;
 			}
 		}

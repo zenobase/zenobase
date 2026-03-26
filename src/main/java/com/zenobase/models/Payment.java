@@ -3,6 +3,7 @@ package com.zenobase.models;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.DecimalField;
 import com.zenobase.json.DomainNode;
@@ -21,16 +22,16 @@ public class Payment extends DomainNode {
 		this(price, null);
 	}
 
-	public Payment(BigDecimal price, String nonce) {
+	public Payment(BigDecimal price, @Nullable String nonce) {
 		setValue(PRICE, price);
 		setValue(NONCE, nonce);
 	}
 
-	public BigDecimal getPrice() {
+	public @Nullable BigDecimal getPrice() {
 		return getValue(PRICE);
 	}
 
-	public String getNonce() {
+	public @Nullable String getNonce() {
 		return getValue(NONCE);
 	}
 }

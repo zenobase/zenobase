@@ -1,6 +1,7 @@
 package com.zenobase.search;
 
 import com.google.common.collect.Range;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.PeriodRangeParser;
 import com.zenobase.common.StandardPeriod;
@@ -14,7 +15,7 @@ public class PeriodRangeConstraintBuilder extends RangeConstraintBuilderSupport<
 	}
 
 	@Override
-	protected Range<StandardPeriod> parseRange(String value) {
+	protected @Nullable Range<StandardPeriod> parseRange(String value) {
 		return parser.parse(value);
 	}
 

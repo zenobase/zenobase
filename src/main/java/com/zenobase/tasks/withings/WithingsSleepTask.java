@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
@@ -21,13 +22,13 @@ public class WithingsSleepTask extends Task {
 		super(node);
 	}
 
-	WithingsSleepTask(String bucketId, Identity principal, String marker) {
+	WithingsSleepTask(String bucketId, Identity principal, @Nullable String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(RANGES, true);
 	}
 
-	public String getTag() {
+	public @Nullable String getTag() {
 		return getSetting(TAG);
 	}
 
@@ -41,10 +42,10 @@ public class WithingsSleepTask extends Task {
 	}
 
 	public void setTimezone(DateTimeZone timezone) {
-		setSetting(TIMEZONE, timezone != null ? timezone.getID() : null);
+		setSetting(TIMEZONE, timezone.getID());
 	}
 
-	public DateTime getFrom() {
+	public @Nullable DateTime getFrom() {
 		String value = getMarker();
 		try {
 			return value != null ? DateTime.parse(value) : null;

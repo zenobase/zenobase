@@ -1,9 +1,12 @@
 package com.zenobase.services;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
@@ -44,7 +47,7 @@ public class CommandRepository extends RepositorySupport<Command> {
 		index.store(command.getId(), command.toJson(), DateTime.now(DateTimeZone.UTC), false);
 	}
 
-	public Command find(String id) {
+	public @Nullable Command find(String id) {
 		ObjectNode node = index.get(id);
 		return node != null ? toObject(node) : null;
 	}
@@ -88,11 +91,14 @@ public class CommandRepository extends RepositorySupport<Command> {
 								.aggregations(
 										id, Aggregation.of(sa -> sa.sum(sum -> sum.field(Command.COST.getName())))))));
 		SearchResponse<ObjectNode> response = index.search(request);
-		double value = response.aggregations()
-				.get(id)
-				.filter()
-				.aggregations()
-				.get(id)
+		var aggregations = response.aggregations();
+		if (aggregations == null) {
+			return 0;
+		}
+		double value = Objects.requireNonNull(Objects.requireNonNull(aggregations.get(id))
+						.filter()
+						.aggregations()
+						.get(id))
 				.sum()
 				.value();
 		return (int) value;

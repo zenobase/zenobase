@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.primitives.Doubles;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 import com.zenobase.common.Measures;
@@ -19,7 +20,8 @@ abstract class TimelineFacetSupport extends FilteredFacet {
 	protected final String valueField;
 	protected final Unit<?> unit;
 
-	protected TimelineFacetSupport(String id, String keyField, String valueField, Unit<?> unit, Query filter) {
+	protected TimelineFacetSupport(
+			String id, String keyField, String valueField, Unit<?> unit, @Nullable Query filter) {
 		super(id, filter);
 		this.keyField = keyField;
 		this.valueField = valueField;
@@ -39,7 +41,7 @@ abstract class TimelineFacetSupport extends FilteredFacet {
 	}
 
 	protected void addValue(ObjectNode parent, String property, Double value) {
-		if (value != null && Doubles.isFinite(value)) {
+		if (Doubles.isFinite(value)) {
 			if (unit != Unit.ONE) {
 				ObjectNode node = parent.putObject(property);
 				node.put("@value", Measures.convert(value, unit));

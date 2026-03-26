@@ -1,11 +1,13 @@
 package com.zenobase.search;
 
+import java.util.Objects;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.HistogramBucket;
@@ -27,7 +29,7 @@ public class HistogramFacet extends FilteredFacet {
 	private final double interval;
 	private final Unit<?> unit;
 
-	public HistogramFacet(String id, String field, double interval, Unit<?> unit, Query filter) {
+	public HistogramFacet(String id, String field, double interval, Unit<?> unit, @Nullable Query filter) {
 		super(id, filter);
 		this.field = field;
 		this.interval = interval;
@@ -45,7 +47,7 @@ public class HistogramFacet extends FilteredFacet {
 	}
 
 	private double getStandardInterval() {
-		if (unit == null || Units.isStandard(unit) || Units.C.equals(unit)) {
+		if (Units.isStandard(unit) || Units.C.equals(unit)) {
 			return interval;
 		}
 		if (Units.F.equals(unit)) {
@@ -68,7 +70,7 @@ public class HistogramFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Aggregate agg = getAggregate(response);
+		Aggregate agg = Objects.requireNonNull(getAggregate(response));
 		for (HistogramBucket bucket : Lists.reverse(agg.histogram().buckets().array())) {
 			if (bucket.docCount() > 0) {
 				ObjectNode entryNode = result.addObject();
@@ -95,9 +97,9 @@ public class HistogramFacet extends FilteredFacet {
 		return options -> {
 			String unit = options.get("unit");
 			return new HistogramFacet(
-					options.get("id"),
-					options.get("field"),
-					options.get("interval", Double.class, 10.0),
+					Objects.requireNonNull(options.get("id")),
+					Objects.requireNonNull(options.get("field")),
+					Objects.requireNonNull(options.get("interval", Double.class, 10.0)),
 					unit != null ? Units.valueOf(unit) : Unit.ONE,
 					filterParser.parse(options.get("filter")));
 		};

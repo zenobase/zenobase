@@ -2,6 +2,7 @@ package com.zenobase.search;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
@@ -16,11 +17,11 @@ public class LocalDateTimeConstraintBuilder extends ConstraintBuilder {
 	}
 
 	@Override
-	public Query build(String value) {
+	public @Nullable Query build(String value) {
 		return build(LocalIntervals.valueOf(value));
 	}
 
-	private Query build(LocalInterval interval) {
+	private @Nullable Query build(@Nullable LocalInterval interval) {
 		if (interval == null) {
 			return null;
 		} else if (interval.toDurationMillis() > 1L) {

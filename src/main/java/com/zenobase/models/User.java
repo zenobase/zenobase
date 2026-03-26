@@ -1,10 +1,14 @@
 package com.zenobase.models;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.MoreObjects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
+import org.mindrot.jbcrypt.BCrypt;
 
-import com.zenobase.common.BCrypt;
 import com.zenobase.common.Generator;
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DateTimeField;
@@ -41,7 +45,7 @@ public class User extends DomainNode {
 		this(id, name, DateTime.now(DateTimeZone.UTC));
 	}
 
-	public User(String id, String name, DateTime created) {
+	public User(String id, @Nullable String name, @Nullable DateTime created) {
 		setValue(ID, id);
 		setValue(NAME, name);
 		setValue(CREATED, created);
@@ -49,18 +53,18 @@ public class User extends DomainNode {
 
 	@Override
 	public String getId() {
-		return getValue(ID);
+		return Objects.requireNonNull(getValue(ID));
 	}
 
-	public String getName() {
+	public @Nullable String getName() {
 		return getValue(NAME);
 	}
 
-	public DateTime getCreated() {
+	public @Nullable DateTime getCreated() {
 		return getValue(CREATED);
 	}
 
-	public String getHashedPassword() {
+	public @Nullable String getHashedPassword() {
 		return getValue(PASSWORD);
 	}
 
@@ -77,10 +81,11 @@ public class User extends DomainNode {
 	}
 
 	public boolean passwordEquals(String password) {
-		return BCrypt.checkpw(password, getHashedPassword());
+		String hashed = getHashedPassword();
+		return hashed != null && BCrypt.checkpw(password, hashed);
 	}
 
-	public String getEmail() {
+	public @Nullable String getEmail() {
 		return getValue(EMAIL);
 	}
 
@@ -124,17 +129,17 @@ public class User extends DomainNode {
 		return getId().equals(identity.getId());
 	}
 
-	public Integer getQuota() {
+	public @Nullable Integer getQuota() {
 		return getValue(QUOTA);
 	}
 
-	public void setQuota(Integer quota) {
+	public void setQuota(@Nullable Integer quota) {
 		setValue(QUOTA, quota);
 	}
 
 	@Override
 	public String toString() {
-		return getName();
+		return MoreObjects.firstNonNull(getName(), getId());
 	}
 
 	public Identity asIdentity() {

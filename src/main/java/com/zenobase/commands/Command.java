@@ -1,11 +1,13 @@
 package com.zenobase.commands;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.CommandTypeField;
@@ -51,11 +53,11 @@ public class Command extends DomainNode {
 
 	@Override
 	public String getId() {
-		return getValue(ID);
+		return Objects.requireNonNull(getValue(ID));
 	}
 
 	public Command.Type getType() {
-		return getValue(TYPE);
+		return Objects.requireNonNull(getValue(TYPE));
 	}
 
 	public void setType(Command.Type type) {
@@ -67,27 +69,27 @@ public class Command extends DomainNode {
 	}
 
 	public Identity getPrincipal() {
-		return getValue(PRINCIPAL);
+		return Objects.requireNonNull(getValue(PRINCIPAL));
 	}
 
 	public DateTime getTimestamp() {
-		return getValue(TIMESTAMP);
+		return Objects.requireNonNull(getValue(TIMESTAMP));
 	}
 
-	protected <T> T getParameter(Field<T> field) {
-		return field.getValue(getValue(PARAMETERS));
+	protected <T> @Nullable T getParameter(Field<T> field) {
+		return field.getValue(Objects.requireNonNull(getValue(PARAMETERS)));
 	}
 
-	protected <T> void setParameter(Field<T> field, T value) {
-		field.setValue(getValue(PARAMETERS), value);
+	protected <T> void setParameter(Field<T> field, @Nullable T value) {
+		field.setValue(Objects.requireNonNull(getValue(PARAMETERS)), value);
 	}
 
 	protected <T> ImmutableList<T> getParameters(Field<T> field) {
-		return field.getValues(getValue(PARAMETERS));
+		return field.getValues(Objects.requireNonNull(getValue(PARAMETERS)));
 	}
 
 	protected <T> void addParameter(Field<T> field, T value) {
-		field.addValue(getValue(PARAMETERS), value);
+		field.addValue(Objects.requireNonNull(getValue(PARAMETERS)), value);
 	}
 
 	public int getCost() {
@@ -164,7 +166,7 @@ public class Command extends DomainNode {
 
 		@Override
 		public int hashCode() {
-			return Objects.hashCode(name, version);
+			return Objects.hash(name, version);
 		}
 
 		@Override

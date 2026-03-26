@@ -2,6 +2,7 @@ package com.zenobase.tasks.fitbit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
@@ -25,7 +26,7 @@ public class FitbitSleepTask extends Task {
 		setSetting(RANGES, true);
 	}
 
-	public String getTag() {
+	public @Nullable String getTag() {
 		return getSetting(TAG);
 	}
 

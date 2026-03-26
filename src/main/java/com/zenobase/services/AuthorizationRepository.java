@@ -3,6 +3,7 @@ package com.zenobase.services;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ public class AuthorizationRepository extends RepositorySupport<Authorization> {
 		return index.delete(authId, true);
 	}
 
-	public Authorization find(String authId) {
+	public @Nullable Authorization find(String authId) {
 		ObjectNode node = index.get(authId);
 		return node != null ? new Authorization(node) : null;
 	}

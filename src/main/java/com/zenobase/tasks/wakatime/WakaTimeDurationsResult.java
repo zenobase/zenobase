@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -19,10 +20,10 @@ class WakaTimeDurationsResult {
 
 	private final JsonNode node;
 	private final Identity author;
-	private final String tag;
+	private final @Nullable String tag;
 	private final DateTimeZone zone;
 
-	public WakaTimeDurationsResult(JsonNode node, Identity author, String tag) {
+	public WakaTimeDurationsResult(JsonNode node, Identity author, @Nullable String tag) {
 		this.node = Preconditions.checkNotNull(node);
 		this.author = Preconditions.checkNotNull(author);
 		this.tag = tag;
@@ -32,10 +33,7 @@ class WakaTimeDurationsResult {
 	public List<Event> getEvents() {
 		List<Event> events = new ArrayList<>();
 		for (JsonNode dataNode : node.path("data")) {
-			Event event = newEvent(dataNode);
-			if (event != null) {
-				events.add(event);
-			}
+			events.add(newEvent(dataNode));
 		}
 		return events;
 	}

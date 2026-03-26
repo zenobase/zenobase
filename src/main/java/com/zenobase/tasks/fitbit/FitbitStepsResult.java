@@ -12,6 +12,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -64,7 +65,7 @@ class FitbitStepsResult extends FitbitResultSupport {
 		return events;
 	}
 
-	private DecimalMeasure<Length> getDistance() {
+	private @Nullable DecimalMeasure<Length> getDistance() {
 		for (JsonNode distance : node.path("summary").path("distances")) {
 			if ("total".equals(distance.path("activity").textValue())) {
 				return lengthValue(distance.path("distance"), distanceUnit);

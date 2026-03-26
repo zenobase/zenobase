@@ -3,6 +3,7 @@ package com.zenobase.tasks.dropbox;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
@@ -17,7 +18,7 @@ public abstract class DropboxTaskManagerSupport extends OAuthTaskManager {
 		super(type, credentialsManager);
 	}
 
-	protected ListFolderResult list(OAuthCredentials credentials, String path, String cursor) {
+	protected ListFolderResult list(OAuthCredentials credentials, String path, @Nullable String cursor) {
 		OAuthRequest request;
 		if (cursor != null) {
 			request = new OAuthRequest(Verb.POST, "https://api.dropbox.com/2/files/list_folder/continue");

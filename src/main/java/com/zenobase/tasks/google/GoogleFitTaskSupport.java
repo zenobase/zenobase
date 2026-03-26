@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
@@ -18,9 +19,11 @@ abstract class GoogleFitTaskSupport extends Task {
 	}
 
 	public GoogleFitTaskSupport(
-			String type, String bucketId, Identity principal, DateTimeZone timezone, String marker) {
+			String type, String bucketId, Identity principal, @Nullable DateTimeZone timezone, String marker) {
 		super(type, bucketId, principal);
-		setSetting(TIMEZONE, timezone != null ? timezone.getID() : null);
+		if (timezone != null) {
+			setSetting(TIMEZONE, timezone.getID());
+		}
 		setMarker(marker);
 	}
 
@@ -29,7 +32,7 @@ abstract class GoogleFitTaskSupport extends Task {
 		return value != null ? DateTimeZone.forID(value) : DateTimeZone.UTC;
 	}
 
-	public DateTime getFrom() {
+	public @Nullable DateTime getFrom() {
 		String marker = getMarker();
 		return marker != null
 				? DateTime.parse(marker, ISODateTimeFormat.dateTime().withOffsetParsed())

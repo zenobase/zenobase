@@ -2,6 +2,7 @@ package com.zenobase.tasks.netatmo;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.models.Identity;
@@ -21,7 +22,7 @@ public class NetatmoTask extends Task {
 		this(bucketId, principal, includeModules, hourly, null);
 	}
 
-	NetatmoTask(String bucketId, Identity principal, boolean includeModules, boolean hourly, String marker) {
+	NetatmoTask(String bucketId, Identity principal, boolean includeModules, boolean hourly, @Nullable String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(MODULES, includeModules);

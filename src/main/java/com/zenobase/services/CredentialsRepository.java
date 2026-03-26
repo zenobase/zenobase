@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,12 +45,12 @@ public class CredentialsRepository extends RepositorySupport<Credentials> {
 		return index.delete(credentialsId, false);
 	}
 
-	public Credentials find(String credentialsId) {
+	public @Nullable Credentials find(String credentialsId) {
 		ObjectNode node = index.get(credentialsId);
 		return node != null ? new Credentials(node) : null;
 	}
 
-	public Credentials find(Identity principal, String type) {
+	public @Nullable Credentials find(Identity principal, String type) {
 		var query = new CredentialsQuery().principalEqualTo(principal).typeEqualTo(type);
 		PartialList<Credentials> results = find(query, 0, 2);
 		if (results.getTotal() > 1) {

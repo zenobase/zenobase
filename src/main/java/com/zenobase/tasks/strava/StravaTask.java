@@ -2,6 +2,7 @@ package com.zenobase.tasks.strava;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.models.Identity;
@@ -20,7 +21,7 @@ public class StravaTask extends Task {
 		this(bucketId, principal, metric, null);
 	}
 
-	StravaTask(String bucketId, Identity principal, boolean metric, String marker) {
+	StravaTask(String bucketId, Identity principal, boolean metric, @Nullable String marker) {
 		super(TYPE, bucketId, principal);
 		setSetting(METRIC, metric);
 		setMarker(marker);

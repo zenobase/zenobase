@@ -1,7 +1,8 @@
 package com.zenobase.search;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
@@ -87,7 +88,7 @@ public class Search {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(facets.toString(), toJsonStrings(must), toJsonStrings(mustNot));
+		return Objects.hash(facets.toString(), toJsonStrings(must), toJsonStrings(mustNot));
 	}
 
 	private static String toJsonStrings(ImmutableList<Query> queries) {

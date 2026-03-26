@@ -8,6 +8,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableMap;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,14 +84,14 @@ abstract class GoogleFitResultSupport {
 			CacheBuilder.newBuilder().maximumSize(100).build();
 
 	protected final JsonNode node;
-	protected final DateTimeZone zone;
+	protected final @Nullable DateTimeZone zone;
 
-	public GoogleFitResultSupport(JsonNode node, DateTimeZone zone) {
+	public GoogleFitResultSupport(JsonNode node, @Nullable DateTimeZone zone) {
 		this.node = node;
 		this.zone = zone;
 	}
 
-	protected String activityTypeValue(JsonNode node) {
+	protected @Nullable String activityTypeValue(JsonNode node) {
 		return node.isInt() ? ActivityTypes.forID(node.intValue()) : null;
 	}
 

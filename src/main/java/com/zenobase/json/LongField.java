@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.search.DecimalRangeConstraintBuilder;
 import com.zenobase.search.TermConstraintBuilder;
@@ -31,7 +32,7 @@ public class LongField extends Field<Long> {
 	}
 
 	@Override
-	public JsonNode toJson(Long value) {
+	public JsonNode toJson(@Nullable Long value) {
 		return value != null ? new LongNode(value) : NullNode.getInstance();
 	}
 

@@ -2,6 +2,7 @@ package com.zenobase.tasks.lastfm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
@@ -11,6 +12,7 @@ import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.slf4j.Logger;
@@ -52,7 +54,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 		return task;
 	}
 
-	private static String parseMarker(String marker, DateTimeZone timezone) {
+	private static @Nullable String parseMarker(String marker, DateTimeZone timezone) {
 		return marker != null
 				? Long.toString(LocalDateTime.parse(marker.replaceAll("Z", ""))
 								.toDateTime(timezone)
@@ -94,7 +96,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 
 	private LastFmRequest createRequest(LastFmTask task, DateTime now, OAuthCredentials credentials, int page) {
 		var request = new LastFmRequest();
-		request.addQuerystringParameter("user", credentials.getScope());
+		request.addQuerystringParameter("user", Objects.requireNonNull(credentials.getScope()));
 		request.addQuerystringParameter("method", "user.getrecenttracks");
 		request.addQuerystringParameter("extended", "0");
 		request.addQuerystringParameter("limit", "200");
@@ -109,8 +111,10 @@ public class LastFmTaskManager extends OAuthTaskManager {
 	private void resolveTracks(List<Event> events, OAuthCredentials credentials) {
 		for (Event event : events) {
 			Resource resource = event.getValue(Event.RESOURCE);
-			if (resource.url().startsWith(RecentTracksResult.MUSICBRAINZ_URL)) {
-				String mbid = resource.url().substring(resource.url().lastIndexOf('/') + 1);
+			if (Objects.requireNonNull(resource).url().startsWith(RecentTracksResult.MUSICBRAINZ_URL)) {
+				String mbid = Objects.requireNonNull(resource)
+						.url()
+						.substring(resource.url().lastIndexOf('/') + 1);
 				LastFmRequest request = createTrackInfoRequest(mbid);
 				Response response = send(request, credentials);
 				TrackInfoResult result = new TrackInfoResult(parse(response));

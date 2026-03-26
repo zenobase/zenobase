@@ -1,8 +1,11 @@
 package com.zenobase.search;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
@@ -21,9 +24,9 @@ public class ListFacet extends Facet {
 	private final int offset;
 	private final int limit;
 	private final SearchOrder order;
-	private final Query filter;
+	private final @Nullable Query filter;
 
-	public ListFacet(String id, int offset, int limit, String order, Query filter, Schema schema) {
+	public ListFacet(String id, int offset, int limit, String order, @Nullable Query filter, Schema schema) {
 		super(id);
 		this.offset = offset;
 		this.limit = limit;
@@ -60,10 +63,10 @@ public class ListFacet extends Facet {
 
 	public static FacetBuilder builder(FilterParser filterParser, Schema schema) {
 		return options -> new ListFacet(
-				options.get("id"),
-				options.get("offset", Integer.class, 0),
-				options.get("limit", Integer.class, 10),
-				options.get("order", String.class, "-timestamp"),
+				Objects.requireNonNull(options.get("id")),
+				Objects.requireNonNull(options.get("offset", Integer.class, 0)),
+				Objects.requireNonNull(options.get("limit", Integer.class, 10)),
+				Objects.requireNonNull(options.get("order", String.class, "-timestamp")),
 				filterParser.parse(options.get("filter")),
 				schema);
 	}

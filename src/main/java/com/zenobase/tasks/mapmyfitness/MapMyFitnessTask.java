@@ -1,6 +1,7 @@
 package com.zenobase.tasks.mapmyfitness;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
@@ -17,7 +18,7 @@ public class MapMyFitnessTask extends Task {
 		this(bucketId, principal, null);
 	}
 
-	MapMyFitnessTask(String bucketId, Identity principal, String marker) {
+	MapMyFitnessTask(String bucketId, Identity principal, @Nullable String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 	}

@@ -2,6 +2,7 @@ package com.zenobase.tasks.oura;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
@@ -41,19 +42,20 @@ public class OuraStepsTaskManager extends OuraTaskManagerSupport {
 	}
 
 	private Command execute(OuraStepsTask task, OAuthCredentials credentials) {
-		Token token = credentials.getToken();
+		Token token = Objects.requireNonNull(credentials.getToken());
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
 		}
-		DateTime begin = task.getBegin();
+		DateTime begin = Objects.requireNonNull(task.getBegin());
 		DateTime end = DateTime.now(begin.getZone()).plusDays(1);
 		List<Event> events = new ArrayList<>();
 		var request = new OAuthRequest(Verb.GET, HOST + "/v2/usercollection/daily_activity");
 		request.addQuerystringParameter("start_date", begin.toLocalDate().toString());
 		request.addQuerystringParameter("end_date", end.toLocalDate().toString());
 		Response response = send(request, credentials);
-		events.addAll(new OuraStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone())
-				.getEvents());
+		String tag = MoreObjects.firstNonNull(task.getTag(), "steps");
+		events.addAll(
+				new OuraStepsResult(parseObject(response), task.getPrincipal(), tag, task.getTimezone()).getEvents());
 		return createCommand(task, credentials, events, token);
 	}
 }

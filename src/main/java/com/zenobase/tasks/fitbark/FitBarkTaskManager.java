@@ -2,6 +2,7 @@ package com.zenobase.tasks.fitbark;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
@@ -10,6 +11,7 @@ import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
@@ -51,9 +53,10 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 
 	private Command execute(FitBarkTask task, OAuthCredentials credentials) {
 		List<Event> events = new ArrayList<>();
-		Dog dog = findDog(task.getName(), credentials);
+		Dog dog = findDog(Objects.requireNonNull(task.getName()), credentials);
 		if (dog != null) {
-			DateTime marker = Ordering.natural().max(parseMarker(task.getMarker()), dog.getCreated());
+			DateTime marker =
+					Objects.requireNonNull(Ordering.natural().max(parseMarker(task.getMarker()), dog.getCreated()));
 			LocalDate from = marker.toLocalDate();
 			while (!from.isAfter(dog.getModified().toLocalDate())) {
 				LocalDate to = task.isHourly() ? from.plusDays(7) : from.plusMonths(1);
@@ -85,7 +88,7 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 		return createCommand(task, events);
 	}
 
-	private Dog findDog(String name, OAuthCredentials credentials) {
+	private @Nullable Dog findDog(String name, OAuthCredentials credentials) {
 		var request = new OAuthRequest(Verb.GET, "https://app.fitbark.com/api/v2/dog_relations");
 		Response response = send(request, credentials);
 		for (Dog dog : new DogsResult(parse(response)).getDogs()) {
@@ -96,18 +99,18 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 		return null;
 	}
 
-	static DateTime parseMarker(String marker) {
+	static @Nullable DateTime parseMarker(@Nullable String marker) {
 		return marker != null ? DateTime.parse(marker) : null;
 	}
 
-	static String formatMarker(DateTime time) {
+	static @Nullable String formatMarker(@Nullable DateTime time) {
 		return time != null ? time.toString() : null;
 	}
 
-	static String getMarker(Iterable<Event> events) {
+	static @Nullable String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
-			DateTime time = event.getValue(Event.TIMESTAMP);
+			DateTime time = Objects.requireNonNull(event.getValue(Event.TIMESTAMP));
 			if (latest == null || time.isAfter(latest)) {
 				latest = time;
 			}

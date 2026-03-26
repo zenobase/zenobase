@@ -7,6 +7,7 @@ import javax.measure.unit.Unit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -39,7 +40,7 @@ class IHealthBloodPressureResult extends IHealthResultSupport {
 		return event;
 	}
 
-	private DecimalMeasure<Pressure> pressureValue(JsonNode node) {
+	private @Nullable DecimalMeasure<Pressure> pressureValue(JsonNode node) {
 		return !isZero(node) ? Measures.valueOf(node.decimalValue(), getUnit()) : null;
 	}
 

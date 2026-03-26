@@ -2,9 +2,9 @@ package com.zenobase.tasks.google;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
@@ -13,6 +13,7 @@ import com.google.common.collect.Range;
 import com.google.common.net.UrlEscapers;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -42,7 +43,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 	@Override
 	public Command execute(Task task, OAuthCredentials credentials) {
 
-		Token token = credentials.getToken();
+		Token token = Objects.requireNonNull(credentials.getToken());
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
 		}
@@ -69,7 +70,8 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 
 	protected List<DataPoint> getDataPoints(
 			GoogleFitTaskSupport task, OAuthCredentials credentials, DataStream stream) {
-		return getDataPoints(task.getFrom(), DateTime.now(), task.getTimezone(), credentials, stream);
+		return getDataPoints(
+				Objects.requireNonNull(task.getFrom()), DateTime.now(), task.getTimezone(), credentials, stream);
 	}
 
 	protected List<DataPoint> getDataPoints(
@@ -87,7 +89,13 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 
 	protected void getDataPoints(
 			GoogleFitTaskSupport task, OAuthCredentials credentials, DataStream stream, Consumer<DataPoint> consumer) {
-		getDataPoints(task.getFrom(), DateTime.now(), task.getTimezone(), credentials, stream, consumer);
+		getDataPoints(
+				Objects.requireNonNull(task.getFrom()),
+				DateTime.now(),
+				task.getTimezone(),
+				credentials,
+				stream,
+				consumer);
 	}
 
 	private void getDataPoints(
@@ -119,7 +127,9 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 
 	protected static Range<DateTime> getRange(Event event) {
 		ImmutableList<DateTime> values = event.getValues(Event.TIMESTAMP);
-		return Range.closed(Ordering.natural().min(values), Ordering.natural().max(values));
+		return Range.closed(
+				Objects.requireNonNull(Ordering.natural().min(values)),
+				Objects.requireNonNull(Ordering.natural().max(values)));
 	}
 
 	protected Iterable<DataStream> filter(Iterable<DataStream> streams, String... dataTypes) {
@@ -142,7 +152,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build());
-		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+		if (!Objects.equals(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
@@ -154,11 +164,11 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 		return command;
 	}
 
-	private static String getMarker(Iterable<Event> events) {
+	private static @Nullable String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
 			DateTime end = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
-			if (latest == null || end.isAfter(latest)) {
+			if (end != null && (latest == null || end.isAfter(latest))) {
 				latest = end.plusMillis(1);
 			}
 		}

@@ -2,6 +2,8 @@ package com.zenobase.models;
 
 import java.math.BigDecimal;
 
+import org.jspecify.annotations.Nullable;
+
 public enum Plan {
 	PERSONAL("personal", 3000000, new BigDecimal("5.00"));
 
@@ -27,7 +29,7 @@ public enum Plan {
 		return quota;
 	}
 
-	public static Plan getPlan(BigDecimal price) {
+	public static @Nullable Plan getPlan(BigDecimal price) {
 		return price.compareTo(PERSONAL.price) == 0 ? PERSONAL : null;
 	}
 }

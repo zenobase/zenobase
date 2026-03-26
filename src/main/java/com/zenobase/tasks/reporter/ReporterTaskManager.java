@@ -2,6 +2,7 @@ package com.zenobase.tasks.reporter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,6 +15,7 @@ import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -47,20 +49,22 @@ public class ReporterTaskManager extends DropboxTaskManagerSupport {
 	}
 
 	private Command execute(ReporterTask task, OAuthCredentials credentials) {
-		Configuration config = getConfiguration(credentials, task.getFolder());
-		SortedSet<LocalDate> dates = getDates(credentials, task.getFolder(), task.getFirstDate());
+		Configuration config = getConfiguration(credentials, Objects.requireNonNull(task.getFolder()));
+		SortedSet<LocalDate> dates =
+				getDates(credentials, Objects.requireNonNull(task.getFolder()), task.getFirstDate());
 		List<Event> events = new ArrayList<>();
 		for (LocalDate date : dates) {
-			getEvents(credentials, config, task.getPrincipal(), task.getFolder(), date, events);
+			getEvents(credentials, config, task.getPrincipal(), Objects.requireNonNull(task.getFolder()), date, events);
 		}
-		return createCommand(task, Iterables.getLast(dates, task.getFirstDate()), events);
+		return createCommand(task, Objects.requireNonNull(Iterables.getLast(dates, task.getFirstDate())), events);
 	}
 
 	private Configuration getConfiguration(OAuthCredentials credentials, String folder) {
 		return new ConfigurationResult(download(credentials, "/" + folder + "/zenobase-conf.json")).get();
 	}
 
-	private SortedSet<LocalDate> getDates(OAuthCredentials credentials, String folder, LocalDate firstDate) {
+	private SortedSet<LocalDate> getDates(
+			OAuthCredentials credentials, @Nullable String folder, @Nullable LocalDate firstDate) {
 		SortedSet<LocalDate> dates = Sets.newTreeSet();
 		ListFolderResult result;
 		String cursor = null;
@@ -77,7 +81,7 @@ public class ReporterTaskManager extends DropboxTaskManagerSupport {
 		return dates;
 	}
 
-	private static LocalDate parseLocalDate(String filename) {
+	private static @Nullable LocalDate parseLocalDate(String filename) {
 		Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2})-reporter-export\\.json");
 		Matcher m = p.matcher(filename);
 		return m.find() ? LocalDate.parse(m.group(1)) : null;

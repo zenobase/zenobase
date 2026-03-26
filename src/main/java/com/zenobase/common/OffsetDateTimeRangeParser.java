@@ -3,13 +3,14 @@ package com.zenobase.common;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import org.joda.time.ReadableInstant;
+import org.jspecify.annotations.Nullable;
 
 public class OffsetDateTimeRangeParser extends RangeParser<ReadableInstant> {
 
 	private final OffsetIntervalRangeParser parser = new OffsetIntervalRangeParser();
 
 	@Override
-	public Range<ReadableInstant> parse(String value) {
+	public @Nullable Range<ReadableInstant> parse(String value) {
 		Range<ComparableInterval> range = parser.parse(value);
 		return range != null ? toRange(range) : null;
 	}

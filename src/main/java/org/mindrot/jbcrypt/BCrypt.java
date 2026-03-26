@@ -1,4 +1,4 @@
-package com.zenobase.common;
+package org.mindrot.jbcrypt;
 
 // Copyright (c) 2006 Damien Miller <djm@mindrot.org>
 //

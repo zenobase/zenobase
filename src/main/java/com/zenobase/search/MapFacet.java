@@ -1,10 +1,13 @@
 package com.zenobase.search;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
+import org.jspecify.annotations.Nullable;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.io.GeohashUtils;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
@@ -27,9 +30,9 @@ public class MapFacet extends FilteredFacet {
 	private final String field;
 	private final int precision;
 
-	private MapFacet(String id, String field, double factor, Query filter) {
+	private MapFacet(String id, String field, double factor, @Nullable Query filter) {
 		super(id, filter);
-		Preconditions.checkArgument(factor >= 0.0 && factor <= 1.0, "invalid factor value: %d", factor);
+		Preconditions.checkArgument(factor >= 0.0 && factor <= 1.0, "invalid factor value: %s", factor);
 		this.field = field;
 		this.precision = 9 - Ints.checkedCast(Math.round(factor * 5)); // [1.0..0.0] -> [4..9];
 	}
@@ -44,7 +47,7 @@ public class MapFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Aggregate agg = getAggregate(response);
+		Aggregate agg = Objects.requireNonNull(getAggregate(response));
 		var builder = new GeoClusterBuilder();
 		for (GeoHashGridBucket bucket : agg.geohashGrid().buckets().array()) {
 			builder.add(bucket.docCount(), bucket.key(), GeohashUtils.decode(bucket.key(), SpatialContext.GEO));
@@ -65,9 +68,9 @@ public class MapFacet extends FilteredFacet {
 
 	public static FacetBuilder builder(FilterParser filterParser) {
 		return options -> new MapFacet(
-				options.get("id"),
-				options.get("field", String.class, Event.LOCATION.getName()),
-				options.get("factor", Double.class, 0.2),
+				Objects.requireNonNull(options.get("id")),
+				Objects.requireNonNull(options.get("field", String.class, Event.LOCATION.getName())),
+				Objects.requireNonNull(options.get("factor", Double.class, 0.2)),
 				filterParser.parse(options.get("filter")));
 	}
 }

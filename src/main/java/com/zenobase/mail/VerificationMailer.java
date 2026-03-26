@@ -1,5 +1,7 @@
 package com.zenobase.mail;
 
+import java.util.Objects;
+
 import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -19,7 +21,7 @@ public class VerificationMailer {
 	}
 
 	public void send(User user) {
-		send(user.getName(), user.getEmail());
+		send(Objects.requireNonNull(user.getName()), Objects.requireNonNull(user.getEmail()));
 	}
 
 	public void send(String username, String email) {

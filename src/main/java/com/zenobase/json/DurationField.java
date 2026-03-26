@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.search.DurationConstraintBuilder;
 import com.zenobase.search.DurationRangeConstraintBuilder;
@@ -24,7 +25,7 @@ public class DurationField extends Field<Duration> {
 	}
 
 	@Override
-	public JsonNode toJson(Duration value) {
+	public JsonNode toJson(@Nullable Duration value) {
 		return value != null ? new LongNode(value.getMillis()) : NullNode.getInstance();
 	}
 }

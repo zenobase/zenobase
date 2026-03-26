@@ -1,7 +1,10 @@
 package com.zenobase.commands;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,15 +39,15 @@ public class UpdateEventCommand extends Command {
 	}
 
 	private String getBucketId() {
-		return getParameter(BUCKET);
+		return Objects.requireNonNull(getParameter(BUCKET));
 	}
 
 	private Event getFrom() {
-		return new Event(getParameter(FROM));
+		return new Event(Objects.requireNonNull(getParameter(FROM)));
 	}
 
 	private Event getTo() {
-		return new Event(getParameter(TO));
+		return new Event(Objects.requireNonNull(getParameter(TO)));
 	}
 
 	@Override
@@ -69,7 +72,7 @@ public class UpdateEventCommand extends Command {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			var command = new UpdateEventCommand(node);
 			return switch (version) {
 				case 3 -> command;

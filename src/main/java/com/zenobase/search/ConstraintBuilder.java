@@ -1,5 +1,6 @@
 package com.zenobase.search;
 
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 public abstract class ConstraintBuilder {
@@ -14,5 +15,5 @@ public abstract class ConstraintBuilder {
 		return path;
 	}
 
-	public abstract Query build(String value);
+	public abstract @Nullable Query build(String value);
 }

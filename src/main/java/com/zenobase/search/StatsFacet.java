@@ -1,9 +1,11 @@
 package com.zenobase.search;
 
+import java.util.Objects;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.ExtendedStatsAggregate;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
@@ -23,7 +25,7 @@ public class StatsFacet extends FilteredFacet {
 	private final String field;
 	private final Unit<?> unit;
 
-	public StatsFacet(String id, String field, Unit<?> unit, Query filter) {
+	public StatsFacet(String id, String field, Unit<?> unit, @Nullable Query filter) {
 		super(id, filter);
 		this.field = field;
 		this.unit = unit;
@@ -38,7 +40,8 @@ public class StatsFacet extends FilteredFacet {
 
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
-		ExtendedStatsAggregate stats = getAggregate(response).extendedStats();
+		ExtendedStatsAggregate stats =
+				Objects.requireNonNull(getAggregate(response)).extendedStats();
 		ObjectNode node = Nodes.newObject();
 		node.put("count", stats.count());
 		if (stats.count() > 0) {
@@ -68,13 +71,13 @@ public class StatsFacet extends FilteredFacet {
 			@Override
 			public Facet build(FacetOptions options) {
 				return new StatsFacet(
-						options.get("id"),
-						options.get("field"),
+						Objects.requireNonNull(options.get("id")),
+						Objects.requireNonNull(options.get("field")),
 						getUnit(options.get("unit")),
 						filterParser.parse(options.get("filter")));
 			}
 
-			private Unit<?> getUnit(String value) {
+			private Unit<?> getUnit(@Nullable String value) {
 				return value != null ? Units.valueOf(value) : Unit.ONE;
 			}
 		};

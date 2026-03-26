@@ -3,6 +3,7 @@ package com.zenobase.services;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,7 @@ public class TaskRepository extends RepositorySupport<Task> {
 		return index.delete(taskId, false);
 	}
 
-	public Task find(String taskId) {
+	public @Nullable Task find(String taskId) {
 		ObjectNode node = index.get(taskId);
 		return node != null ? new Task(node) : null;
 	}

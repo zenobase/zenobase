@@ -2,10 +2,12 @@ package com.zenobase.search;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
@@ -26,7 +28,7 @@ public class CountFacet extends FilteredFacet {
 	private final int offset;
 	private final int limit;
 
-	private CountFacet(String id, String field, String order, int offset, int limit, Query filter) {
+	private CountFacet(String id, String field, String order, int offset, int limit, @Nullable Query filter) {
 		super(id, filter);
 		this.field = field;
 		this.order = order;
@@ -53,7 +55,7 @@ public class CountFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Aggregate agg = getAggregate(response);
+		Aggregate agg = Objects.requireNonNull(getAggregate(response));
 		List<StringTermsBucket> entries = agg.sterms().buckets().array();
 		if (offset < entries.size()) {
 			for (StringTermsBucket entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {
@@ -73,11 +75,11 @@ public class CountFacet extends FilteredFacet {
 
 	public static FacetBuilder builder(FilterParser filterParser) {
 		return options -> new CountFacet(
-				options.get("id"),
-				options.get("field"),
-				options.get("order", String.class, "-count"),
-				options.get("offset", Integer.class, 0),
-				options.get("limit", Integer.class, 10),
+				Objects.requireNonNull(options.get("id")),
+				Objects.requireNonNull(options.get("field")),
+				Objects.requireNonNull(options.get("order", String.class, "-count")),
+				Objects.requireNonNull(options.get("offset", Integer.class, 0)),
+				Objects.requireNonNull(options.get("limit", Integer.class, 10)),
 				filterParser.parse(options.get("filter")));
 	}
 }

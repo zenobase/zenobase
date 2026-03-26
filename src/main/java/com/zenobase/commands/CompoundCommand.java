@@ -2,10 +2,12 @@ package com.zenobase.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
@@ -18,10 +20,10 @@ public class CompoundCommand extends Command {
 	private static final TokenField UNDO_MESSAGE = new TokenField("undoMessage");
 	private static final ObjectField COMMANDS = new ObjectField("commands");
 
-	private CommandParserRegistry registry;
+	private @Nullable CommandParserRegistry registry;
 	private final List<Command> commands = new ArrayList<>();
 
-	CompoundCommand(ObjectNode node, CommandParserRegistry registry) {
+	CompoundCommand(ObjectNode node, @Nullable CommandParserRegistry registry) {
 		super(node);
 		checkType(TYPE);
 		this.registry = registry;
@@ -34,11 +36,11 @@ public class CompoundCommand extends Command {
 	}
 
 	private String getMessage() {
-		return getParameter(MESSAGE);
+		return Objects.requireNonNull(getParameter(MESSAGE));
 	}
 
 	private String getUndoMessage() {
-		return getParameter(UNDO_MESSAGE);
+		return Objects.requireNonNull(getParameter(UNDO_MESSAGE));
 	}
 
 	public void add(Command command) {
@@ -87,7 +89,7 @@ public class CompoundCommand extends Command {
 		}
 
 		@Override
-		public Command parse(ObjectNode node, int version) {
+		public @Nullable Command parse(ObjectNode node, int version) {
 			return switch (version) {
 				case 1 -> new CompoundCommand(node, getRegistry());
 				default -> null;

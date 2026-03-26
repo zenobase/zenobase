@@ -1,7 +1,10 @@
 package com.zenobase.search;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.GeoLocation;
 import org.opensearch.client.opensearch._types.TopLeftBottomRightGeoBounds;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
@@ -19,7 +22,7 @@ public class GeoBoundsFacet extends FilteredFacet {
 
 	private final String field;
 
-	private GeoBoundsFacet(String id, String field, Query filter) {
+	private GeoBoundsFacet(String id, String field, @Nullable Query filter) {
 		super(id, filter);
 		this.field = field;
 	}
@@ -32,7 +35,8 @@ public class GeoBoundsFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ObjectNode result = Nodes.newObject();
-		GeoBoundsAggregate bounds = getAggregate(response).geoBounds();
+		GeoBoundsAggregate bounds =
+				Objects.requireNonNull(getAggregate(response)).geoBounds();
 		if (bounds.bounds() != null
 				&& bounds.bounds()._kind() == org.opensearch.client.opensearch._types.GeoBounds.Kind.Tlbr) {
 			TopLeftBottomRightGeoBounds tlbr = bounds.bounds().tlbr();
@@ -50,8 +54,8 @@ public class GeoBoundsFacet extends FilteredFacet {
 
 	public static FacetBuilder builder(FilterParser filterParser) {
 		return options -> new GeoBoundsFacet(
-				options.get("id"),
-				options.get("field", String.class, Event.LOCATION.getName()),
+				Objects.requireNonNull(options.get("id")),
+				Objects.requireNonNull(options.get("field", String.class, Event.LOCATION.getName())),
 				filterParser.parse(options.get("filter")));
 	}
 }

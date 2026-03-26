@@ -1,11 +1,13 @@
 package com.zenobase.search;
 
 import java.util.Collections;
+import java.util.Objects;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
@@ -32,7 +34,13 @@ public class ScoreboardFacet extends FilteredFacet {
 	private final int limit;
 
 	private ScoreboardFacet(
-			String id, String termField, String valueField, Unit<?> unit, String order, int limit, Query filter) {
+			String id,
+			String termField,
+			String valueField,
+			Unit<?> unit,
+			String order,
+			int limit,
+			@Nullable Query filter) {
 		super(id, filter);
 		this.termField = termField;
 		this.valueField = valueField;
@@ -67,9 +75,10 @@ public class ScoreboardFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Aggregate agg = getAggregate(response);
+		Aggregate agg = Objects.requireNonNull(getAggregate(response));
 		for (StringTermsBucket bucket : agg.sterms().buckets().array()) {
-			ExtendedStatsAggregate stats = bucket.aggregations().get(getId()).extendedStats();
+			ExtendedStatsAggregate stats =
+					Objects.requireNonNull(bucket.aggregations().get(getId())).extendedStats();
 			if (stats.count() > 0) {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", bucket.key());
@@ -100,12 +109,12 @@ public class ScoreboardFacet extends FilteredFacet {
 		return options -> {
 			String unit = options.get("unit");
 			return new ScoreboardFacet(
-					options.get("id"),
-					options.get("key_field"),
-					options.get("value_field"),
+					Objects.requireNonNull(options.get("id")),
+					Objects.requireNonNull(options.get("key_field")),
+					Objects.requireNonNull(options.get("value_field")),
 					unit != null ? Units.valueOf(unit) : Unit.ONE,
-					options.get("order", String.class, "-count"),
-					options.get("limit", Integer.class, 10),
+					Objects.requireNonNull(options.get("order", String.class, "-count")),
+					Objects.requireNonNull(options.get("limit", Integer.class, 10)),
 					filterParser.parse(options.get("filter")));
 		};
 	}

@@ -8,6 +8,7 @@ import javax.measure.unit.Unit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -19,7 +20,7 @@ class IHealthFoodResult extends IHealthResultSupport {
 	private final String tag;
 	private final DateTimeZone zone;
 
-	public IHealthFoodResult(JsonNode node, Identity author, String tag, DateTimeZone zone) {
+	public IHealthFoodResult(JsonNode node, Identity author, @Nullable String tag, DateTimeZone zone) {
 		super("FoodDataList", node, author);
 		this.tag = Preconditions.checkNotNull(tag);
 		this.zone = Preconditions.checkNotNull(zone);
@@ -43,7 +44,7 @@ class IHealthFoodResult extends IHealthResultSupport {
 		return event;
 	}
 
-	private DecimalMeasure<Mass> weightValue(JsonNode node) {
+	private @Nullable DecimalMeasure<Mass> weightValue(JsonNode node) {
 		return !isZero(node)
 				? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), getUnit())
 				: null;

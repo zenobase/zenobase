@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -21,17 +22,21 @@ import com.zenobase.models.Identity;
 
 class WithingsTemperatureResult extends WithingsResult {
 
-	private final Unit<Temperature> unit;
+	private final @Nullable Unit<Temperature> unit;
 	private final DateTimeZone timezone;
 
 	public WithingsTemperatureResult(
-			ObjectNode node, Identity author, String tag, Unit<Temperature> unit, DateTimeZone timezone) {
+			ObjectNode node,
+			Identity author,
+			@Nullable String tag,
+			@Nullable Unit<Temperature> unit,
+			DateTimeZone timezone) {
 		super(node, author, tag);
 		this.unit = unit;
 		this.timezone = timezone;
 	}
 
-	public String getMarker() {
+	public @Nullable String getMarker() {
 		return Strings.emptyToNull(node.path("body").path("updatetime").asText());
 	}
 
@@ -60,12 +65,16 @@ class WithingsTemperatureResult extends WithingsResult {
 		}
 	}
 
-	private static DecimalMeasure<Temperature> getDecimalMeasure(JsonNode measure, Unit<Temperature> unit) {
+	private static @Nullable DecimalMeasure<Temperature> getDecimalMeasure(
+			JsonNode measure, @Nullable Unit<Temperature> unit) {
 		BigDecimal value = getBigDecimal(measure);
-		return value != null ? Measures.round(Measures.valueOf(value, Units.C).to(unit, new MathContext(5)), 3) : null;
+		if (value == null || unit == null) {
+			return null;
+		}
+		return Measures.round(Measures.valueOf(value, Units.C).to(unit, new MathContext(5)), 3);
 	}
 
-	private static BigDecimal getBigDecimal(JsonNode node) {
+	private static @Nullable BigDecimal getBigDecimal(JsonNode node) {
 		int value = node.path("value").intValue();
 		int scale = node.path("unit").intValue();
 		return value != 0 ? BigDecimal.valueOf(value, -scale) : null;

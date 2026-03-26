@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -13,17 +14,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.Nodes;
 
 public class SpreadsheetPrinter {
 
 	private final CSVWriter writer;
-	private ImmutableList<Field> fields;
+	private @Nullable ImmutableList<Field> fields;
 
 	public SpreadsheetPrinter(Writer out) {
 		writer = new CSVWriter(out, ',', '"', '"', "\n");
@@ -33,7 +34,7 @@ public class SpreadsheetPrinter {
 
 		private final ImmutableList<String> path;
 
-		public Field(Field parent, String field) {
+		public Field(@Nullable Field parent, String field) {
 			ImmutableList.Builder<String> builder = ImmutableList.builder();
 			if (parent != null) {
 				builder.addAll(parent.path);
@@ -62,7 +63,7 @@ public class SpreadsheetPrinter {
 		}
 
 		private boolean equals(Field that) {
-			return Objects.equal(path, that.path);
+			return Objects.equals(path, that.path);
 		}
 
 		@Override
@@ -85,7 +86,7 @@ public class SpreadsheetPrinter {
 		return ImmutableList.copyOf(fields);
 	}
 
-	private static void getFields(ObjectNode node, Set<Field> fields, Field parent) {
+	private static void getFields(ObjectNode node, Set<Field> fields, @Nullable Field parent) {
 		for (Iterator<Map.Entry<String, JsonNode>> i = node.fields(); i.hasNext(); ) {
 			Map.Entry<String, JsonNode> entry = i.next();
 			Field field = new Field(parent, entry.getKey());
@@ -134,7 +135,7 @@ public class SpreadsheetPrinter {
 	}
 
 	private String[] toRow(ObjectNode node) {
-		List<String> row = new ArrayList<>(fields.size());
+		List<String> row = new ArrayList<>(Objects.requireNonNull(fields).size());
 		for (Field field : fields) {
 			row.add(toString(field.get(node)));
 		}

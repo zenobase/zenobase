@@ -1,8 +1,7 @@
 package com.zenobase.controllers;
 
 import com.google.common.base.Joiner;
-
-import com.zenobase.common.BCrypt;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class EmailVerificationKey {
 

@@ -12,6 +12,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import com.google.common.base.Strings;
+import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -35,11 +36,11 @@ public class XmlResultSupport {
 		}
 	}
 
-	protected String selectText(String path) {
+	protected @Nullable String selectText(String path) {
 		return selectText(path, document);
 	}
 
-	protected String selectText(String path, Object node) {
+	protected @Nullable String selectText(String path, Object node) {
 		try {
 			XPath xpath = XPATH_FACTORY.newXPath();
 			String text = xpath.evaluate(path, node);

@@ -1,5 +1,7 @@
 package com.zenobase.tasks.ihealth;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
@@ -20,8 +22,8 @@ public class IHealthActivitiesTaskManager extends IHealthTaskManagerSupport<IHea
 		register(
 				"sport",
 				sv,
-				(task, node) ->
-						new IHealthActivitiesResult(node, task.getPrincipal(), task.getTag(), task.getTimezone()));
+				(task, node) -> new IHealthActivitiesResult(
+						node, task.getPrincipal(), Objects.requireNonNull(task.getTag()), task.getTimezone()));
 	}
 
 	@Override

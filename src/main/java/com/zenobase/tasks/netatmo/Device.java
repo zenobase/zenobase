@@ -6,13 +6,14 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Location;
 
 public class Device {
 
 	private final String id;
-	private final String moduleId;
+	private final @Nullable String moduleId;
 	private final String label;
 	private final DateTime created;
 	private final DateTime updated;
@@ -26,7 +27,7 @@ public class Device {
 
 	public Device(
 			String id,
-			String moduleId,
+			@Nullable String moduleId,
 			String label,
 			DateTime created,
 			DateTime updated,
@@ -45,7 +46,7 @@ public class Device {
 		return id;
 	}
 
-	public String getModuleId() {
+	public @Nullable String getModuleId() {
 		return moduleId;
 	}
 

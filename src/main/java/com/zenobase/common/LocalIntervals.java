@@ -10,6 +10,7 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
+import org.jspecify.annotations.Nullable;
 
 public class LocalIntervals extends DateTimeFormatSupport {
 
@@ -132,7 +133,7 @@ public class LocalIntervals extends DateTimeFormatSupport {
 		throw new AssertionError();
 	}
 
-	public static LocalInterval valueOf(String value) {
+	public static @Nullable LocalInterval valueOf(String value) {
 		if (!value.isEmpty() && Character.isDigit(value.charAt(0))) {
 			for (IntervalType format : IntervalType.values()) {
 				if (value.length() == format.length) {

@@ -2,14 +2,15 @@ package com.zenobase.tasks.sleepcloud;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Ordering;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -66,14 +67,17 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 				request.addQuerystringParameter("cursor", cursor);
 			}
 			Response response = send(request, credentials);
-			var result =
-					new SleepCloudResult(task.getTag(), task.getPrincipal(), task.useRanges(), parseObject(response));
+			var result = new SleepCloudResult(
+					Objects.requireNonNull(task.getTag()),
+					task.getPrincipal(),
+					task.useRanges(),
+					parseObject(response));
 			if (!events.addAll(result.getEvents())) {
 				break;
 			}
 			cursor = result.getCursor();
 		} while (cursor != null);
-		return createCommand(task, credentials, events, token);
+		return createCommand(task, credentials, events, Objects.requireNonNull(token));
 	}
 
 	private Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
@@ -84,7 +88,7 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build());
-		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+		if (!Objects.equals(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
@@ -96,10 +100,10 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 		return command;
 	}
 
-	private static String getMarker(Iterable<Event> events) {
+	private static @Nullable String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
-			DateTime end = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
+			DateTime end = Objects.requireNonNull(Ordering.natural().max(event.getValues(Event.TIMESTAMP)));
 			if (latest == null || end.isAfter(latest)) {
 				latest = end;
 			}

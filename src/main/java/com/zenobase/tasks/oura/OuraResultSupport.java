@@ -13,6 +13,7 @@ import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -45,7 +46,7 @@ abstract class OuraResultSupport {
 		return events;
 	}
 
-	protected abstract Event newEvent(JsonNode node);
+	protected abstract @Nullable Event newEvent(JsonNode node);
 
 	protected DateTime dateTimeValue(JsonNode node) {
 		Preconditions.checkState(node.isTextual(), "expected a node with a time: <%s>", node);
@@ -57,35 +58,35 @@ abstract class OuraResultSupport {
 		return LocalDate.parse(node.textValue());
 	}
 
-	protected Duration durationValue(JsonNode node) {
+	protected @Nullable Duration durationValue(JsonNode node) {
 		return !isZero(node) ? Duration.standardSeconds(node.intValue()) : null;
 	}
 
-	protected Integer intValue(JsonNode node) {
+	protected @Nullable Integer intValue(JsonNode node) {
 		return !isZero(node) ? node.intValue() : null;
 	}
 
-	protected DecimalMeasure<Length> distanceValue(JsonNode node) {
+	protected @Nullable DecimalMeasure<Length> distanceValue(JsonNode node) {
 		return !isZero(node) ? Measures.valueOf(node.decimalValue(), Units.MI) : null;
 	}
 
-	protected DecimalMeasure<Energy> energyValue(JsonNode node) {
+	protected @Nullable DecimalMeasure<Energy> energyValue(JsonNode node) {
 		return !isZero(node)
 				? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.KCAL)
 				: null;
 	}
 
-	protected DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
+	protected @Nullable DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
 		return !isZero(node)
 				? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.BPM)
 				: null;
 	}
 
-	protected Rating ratingValue(JsonNode node) {
+	protected @Nullable Rating ratingValue(JsonNode node) {
 		return !isZero(node) ? Rating.valueOf(node.intValue()) : null;
 	}
 
-	protected Percentage percentageValue(JsonNode node) {
+	protected @Nullable Percentage percentageValue(JsonNode node) {
 		return !isZero(node) ? Percentage.valueOf(node.intValue()) : null;
 	}
 

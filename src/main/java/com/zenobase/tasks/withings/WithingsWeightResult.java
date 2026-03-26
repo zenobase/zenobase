@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
@@ -30,7 +32,7 @@ class WithingsWeightResult extends WithingsResult {
 		this.timezone = timezone;
 	}
 
-	public String getMarker() {
+	public @Nullable String getMarker() {
 		return Strings.emptyToNull(node.path("body").path("updatetime").asText());
 	}
 
@@ -55,7 +57,8 @@ class WithingsWeightResult extends WithingsResult {
 					++count;
 				}
 				case 6 -> { // fat %
-					event.setValue(Event.PERCENTAGE, Percentage.valueOf(getBigDecimal(measure)));
+					event.setValue(
+							Event.PERCENTAGE, Percentage.valueOf(Objects.requireNonNull(getBigDecimal(measure))));
 					++count;
 				}
 			}
@@ -67,12 +70,12 @@ class WithingsWeightResult extends WithingsResult {
 		}
 	}
 
-	private static DecimalMeasure<Mass> getDecimalMeasure(JsonNode measure, Unit<Mass> unit) {
+	private static @Nullable DecimalMeasure<Mass> getDecimalMeasure(JsonNode measure, Unit<Mass> unit) {
 		BigDecimal value = getBigDecimal(measure);
 		return value != null ? new DecimalMeasure<>(value, Units.KG).to(unit, new MathContext(5)) : null;
 	}
 
-	private static BigDecimal getBigDecimal(JsonNode node) {
+	private static @Nullable BigDecimal getBigDecimal(JsonNode node) {
 		int value = node.path("value").intValue();
 		int scale = node.path("unit").intValue();
 		return value != 0 ? BigDecimal.valueOf(value, -scale) : null;

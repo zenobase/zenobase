@@ -1,9 +1,12 @@
 package com.zenobase.tasks.beeminder;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
@@ -38,12 +41,12 @@ public class BeeminderCredentialsManager extends OAuthCredentialsManager {
 	}
 
 	@Override
-	public Command authorize(Credentials credentials, ObjectNode config) {
+	public @Nullable Command authorize(Credentials credentials, ObjectNode config) {
 		Preconditions.checkState(!credentials.isAuthorized());
 		return authorize(credentials.as(OAuthCredentials.class), config);
 	}
 
-	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
+	private @Nullable Command authorize(OAuthCredentials credentials, ObjectNode config) {
 		String code = config.path("access_token").textValue();
 		if (code == null) {
 			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
@@ -64,10 +67,13 @@ public class BeeminderCredentialsManager extends OAuthCredentialsManager {
 	@Override
 	public void sign(OAuthRequest request, OAuthCredentials credentials) {
 		if (request.getVerb() == Verb.POST) {
-			request.addBodyParameter("access_token", credentials.getToken().getToken());
+			request.addBodyParameter(
+					"access_token",
+					Objects.requireNonNull(credentials.getToken()).getToken());
 		} else if (request.getVerb() == Verb.GET) {
 			request.addQuerystringParameter(
-					"access_token", credentials.getToken().getToken());
+					"access_token",
+					Objects.requireNonNull(credentials.getToken()).getToken());
 		} else {
 			throw new UnsupportedOperationException();
 		}
