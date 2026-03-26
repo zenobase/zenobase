@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class QueryConstraintBuilderTest {
 
@@ -15,28 +17,9 @@ public class QueryConstraintBuilderTest {
 		assertThat(c.value()).as("value").isEqualTo("bar:baz");
 	}
 
-	@Test
-	public void testMissingColon() {
-		assertThatThrownBy(() -> QueryConstraint.parse("foobar")).isInstanceOf(IllegalArgumentException.class);
-	}
-
-	@Test
-	public void testMissingField() {
-		assertThatThrownBy(() -> QueryConstraint.parse(":bar")).isInstanceOf(IllegalArgumentException.class);
-	}
-
-	@Test
-	public void testMissingValue() {
-		assertThatThrownBy(() -> QueryConstraint.parse("foo:")).isInstanceOf(IllegalArgumentException.class);
-	}
-
-	@Test
-	public void testEmpty() {
-		assertThatThrownBy(() -> QueryConstraint.parse("")).isInstanceOf(IllegalArgumentException.class);
-	}
-
-	@Test
-	public void testNull() {
-		assertThatThrownBy(() -> QueryConstraint.parse("")).isInstanceOf(IllegalArgumentException.class);
+	@ParameterizedTest
+	@ValueSource(strings = {"foobar", ":bar", "foo:", ""})
+	public void testInvalidInput(String input) {
+		assertThatThrownBy(() -> QueryConstraint.parse(input)).isInstanceOf(IllegalArgumentException.class);
 	}
 }
