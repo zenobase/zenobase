@@ -1,10 +1,9 @@
 package com.zenobase.tasks.beeminder;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
@@ -25,7 +24,11 @@ public class BeeminderCredentialsManager extends OAuthCredentialsManager {
 	public static final String TYPE = "beeminder";
 
 	@Inject
-	public BeeminderCredentialsManager(CredentialsRepository integrations, @Named("beeminder.api.key") String apiKey, @Named("beeminder.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
+	public BeeminderCredentialsManager(
+			CredentialsRepository integrations,
+			@Named("beeminder.api.key") String apiKey,
+			@Named("beeminder.api.secret") String apiSecret,
+			@Named("oauth.hostname") String callbackUrl) {
 		super(TYPE, integrations, new BeeminderApi(), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -43,15 +46,14 @@ public class BeeminderCredentialsManager extends OAuthCredentialsManager {
 	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
 		String code = config.path("access_token").textValue();
 		if (code == null) {
-			logger.warn("Couldn't obtain {} credentials <{}>: {}",
-				credentials.getType(), credentials.getId(), config);
+			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
 			return null;
 		}
 		return UpdateCredentialsCommand.builder(credentials)
-			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-			.with(Credentials.CREDENTIALS)
-			.set(OAuthCredentials.TOKEN, credentials.getToken(), new Token(code, ""))
-			.build();
+				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, credentials.getToken(), new Token(code, ""))
+				.build();
 	}
 
 	@Override
@@ -64,7 +66,8 @@ public class BeeminderCredentialsManager extends OAuthCredentialsManager {
 		if (request.getVerb() == Verb.POST) {
 			request.addBodyParameter("access_token", credentials.getToken().getToken());
 		} else if (request.getVerb() == Verb.GET) {
-			request.addQuerystringParameter("access_token", credentials.getToken().getToken());
+			request.addQuerystringParameter(
+					"access_token", credentials.getToken().getToken());
 		} else {
 			throw new UnsupportedOperationException();
 		}

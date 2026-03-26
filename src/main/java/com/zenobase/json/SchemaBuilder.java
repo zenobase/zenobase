@@ -15,8 +15,7 @@ public class SchemaBuilder {
 	private final ObjectNode schema = Nodes.newObject();
 	private final ObjectNode properties;
 	private final ImmutableMap.Builder<String, Field<?>> fields = ImmutableMap.builder();
-	private final ImmutableMultimap.Builder<String, ConstraintBuilder> constraintBuilders =
-		ImmutableMultimap.builder();
+	private final ImmutableMultimap.Builder<String, ConstraintBuilder> constraintBuilders = ImmutableMultimap.builder();
 
 	public SchemaBuilder(String typeName) {
 		this.typeName = typeName;

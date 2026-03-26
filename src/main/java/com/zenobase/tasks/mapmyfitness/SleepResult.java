@@ -1,7 +1,7 @@
 package com.zenobase.tasks.mapmyfitness;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
@@ -48,7 +48,11 @@ class SleepResult {
 		event.addValue(Event.TIMESTAMP, begin);
 		event.addValue(Event.TIMESTAMP, end);
 		event.setValue(Event.DURATION, new Duration(begin, end));
-		event.setValue(Event.PERCENTAGE, percentageValue(node.path("aggregates").path("sum"), node.path("aggregates").path("details").path("awake").path("sum")));
+		event.setValue(
+				Event.PERCENTAGE,
+				percentageValue(
+						node.path("aggregates").path("sum"),
+						node.path("aggregates").path("details").path("awake").path("sum")));
 		event.setValue(Event.SOURCE, SOURCE);
 		event.setValue(Event.AUTHOR, author);
 		return event;

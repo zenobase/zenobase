@@ -1,5 +1,8 @@
 package com.zenobase;
 
+import java.time.Duration;
+import java.util.Set;
+
 import com.google.common.base.Strings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -13,9 +16,6 @@ import io.helidon.config.ConfigSources;
 import io.helidon.webserver.WebServer;
 import io.helidon.webserver.cors.CorsFeature;
 import io.helidon.webserver.cors.CorsPathConfig;
-
-import java.time.Duration;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,31 +57,31 @@ public class Main {
 	public static void main(String[] args) {
 		String overridePath = System.getProperty("config.file", "conf/application-local.yaml");
 		Config config = Config.builder()
-			.addSource(ConfigSources.environmentVariables())
-			.addSource(ConfigSources.file(overridePath).optional())
-			.addSource(ConfigSources.classpath("application.yaml"))
-			.build();
+				.addSource(ConfigSources.environmentVariables())
+				.addSource(ConfigSources.file(overridePath).optional())
+				.addSource(ConfigSources.classpath("application.yaml"))
+				.build();
 		Injector injector = createInjector(config);
 
 		Globals.put(Injector.class, injector);
 
 		String allowedOrigin = config.get("cors.allowed.origin").asString().orElse("https://zenobase.com");
 		WebServer server = WebServer.builder()
-			.config(config.get("server"))
-			.addFeature(CorsFeature.builder()
-				.addPath(CorsPathConfig.builder()
-					.pathPattern("/{+}")
-					.allowOrigins(Set.of(allowedOrigin))
-					.allowMethods(Set.of("GET", "POST", "PUT", "DELETE", "OPTIONS"))
-					.allowHeaders(Set.of("*"))
-					.exposeHeaders(Set.of("Link", "Location", "X-Command-ID", "X-Credentials"))
-					.allowCredentials(true)
-					.maxAge(Duration.ofSeconds(3600))
-					.build())
-				.build())
-			.routing(routing -> Routing.buildRouting(routing, injector))
-			.build()
-			.start();
+				.config(config.get("server"))
+				.addFeature(CorsFeature.builder()
+						.addPath(CorsPathConfig.builder()
+								.pathPattern("/{+}")
+								.allowOrigins(Set.of(allowedOrigin))
+								.allowMethods(Set.of("GET", "POST", "PUT", "DELETE", "OPTIONS"))
+								.allowHeaders(Set.of("*"))
+								.exposeHeaders(Set.of("Link", "Location", "X-Command-ID", "X-Credentials"))
+								.allowCredentials(true)
+								.maxAge(Duration.ofSeconds(3600))
+								.build())
+						.build())
+				.routing(routing -> Routing.buildRouting(routing, injector))
+				.build()
+				.start();
 
 		logger.info("Server started on port {}", server.port());
 
@@ -117,7 +117,8 @@ public class Main {
 		if (replayConfigured || rebuildConfigured) {
 			UserRepository users = injector.getInstance(UserRepository.class);
 			if (!users.isEmpty()) {
-				throw new IllegalStateException("Migration incomplete: replay/rebuild is configured but target domain already has data");
+				throw new IllegalStateException(
+						"Migration incomplete: replay/rebuild is configured but target domain already has data");
 			}
 			if (replayConfigured) {
 				injector.getInstance(CommandReplay.class).replay();
@@ -208,7 +209,8 @@ public class Main {
 			parsers.addBinding().to(CreateAuthorizationCommand.Parser.class);
 			parsers.addBinding().to(DeleteAuthorizationCommand.Parser.class);
 
-			Multibinder<CommandHandler<?>> handlers = Multibinder.newSetBinder(binder(), new TypeLiteral<CommandHandler<?>>() {});
+			Multibinder<CommandHandler<?>> handlers =
+					Multibinder.newSetBinder(binder(), new TypeLiteral<CommandHandler<?>>() {});
 			handlers.addBinding().to(CreateBucketCommand.Handler.class);
 			handlers.addBinding().to(DeleteBucketCommand.Handler.class);
 			handlers.addBinding().to(RestoreBucketCommand.Handler.class);
@@ -237,7 +239,8 @@ public class Main {
 			handlers.addBinding().to(CreateAuthorizationCommand.Handler.class);
 			handlers.addBinding().to(DeleteAuthorizationCommand.Handler.class);
 
-			Multibinder<CredentialsManager> credentials = Multibinder.newSetBinder(binder(), new TypeLiteral<CredentialsManager>() {});
+			Multibinder<CredentialsManager> credentials =
+					Multibinder.newSetBinder(binder(), new TypeLiteral<CredentialsManager>() {});
 			credentials.addBinding().to(DemoCredentialsManager.class);
 			bindIfConfigured("fitbit", FitbitCredentialsManager.class, credentials);
 			bindIfConfigured("foursquare", FoursquareCredentialsManager.class, credentials);

@@ -27,8 +27,8 @@ abstract class WithingsTaskManagerSupport<T extends Task> extends OAuthTaskManag
 
 	private static final RateLimiter RATE_LIMITER = RateLimiter.create(2);
 
-	private static final ImmutableSet<Integer> RESPONSE_CODES_UNAUTHORIZED =
-		ImmutableSet.of(100, 101, 102, 214, 401, 402, 2553, 2555); // https://developer.withings.com/oauth2/#section/Response-status
+	private static final ImmutableSet<Integer> RESPONSE_CODES_UNAUTHORIZED = ImmutableSet.of(
+			100, 101, 102, 214, 401, 402, 2553, 2555); // https://developer.withings.com/oauth2/#section/Response-status
 
 	private final Class<T> taskClass;
 
@@ -40,7 +40,8 @@ abstract class WithingsTaskManagerSupport<T extends Task> extends OAuthTaskManag
 	@Override
 	public Command execute(Task task, OAuthCredentials credentials) {
 		Token token = credentials.getToken();
-		if (credentials.isExpired() || !Strings.isNullOrEmpty(credentials.getToken().getSecret())) {
+		if (credentials.isExpired()
+				|| !Strings.isNullOrEmpty(credentials.getToken().getSecret())) {
 			reauthorize(credentials); // oauth1 token
 		}
 		return safeExecute(task.as(taskClass), credentials, token);
@@ -63,19 +64,21 @@ abstract class WithingsTaskManagerSupport<T extends Task> extends OAuthTaskManag
 		}
 	}
 
-	protected Command createCommand(Task task, OAuthCredentials credentials, Token expiredToken, WithingsResult result) {
-		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+	protected Command createCommand(
+			Task task, OAuthCredentials credentials, Token expiredToken, WithingsResult result) {
+		var command = new CompoundCommand(
+				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), MoreObjects.firstNonNull(result.getMarker(), task.getMarker()))
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(Task.MARKER, task.getMarker(), MoreObjects.firstNonNull(result.getMarker(), task.getMarker()))
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		if (!Objects.equal(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
-				.build());
+					.with(Credentials.CREDENTIALS)
+					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+					.build());
 		}
 		if (!result.getEvents().isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), result.getEvents()));

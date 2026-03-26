@@ -17,7 +17,11 @@ public class IHealthBloodPressureResultTest extends ResultTestSupport {
 	public void test() {
 
 		String tag = "Cardio";
-		IHealthBloodPressureResult result = new IHealthBloodPressureResult(readObject("IHealthBloodPressureResultTest.json"), TESTER, tag, DateTimeZone.forID("America/Los_Angeles"));
+		IHealthBloodPressureResult result = new IHealthBloodPressureResult(
+				readObject("IHealthBloodPressureResultTest.json"),
+				TESTER,
+				tag,
+				DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.isSuccess()).isTrue();
 		assertThat(result.hasNext()).isFalse();
 		List<Event> events = result.getEvents();
@@ -25,7 +29,8 @@ public class IHealthBloodPressureResultTest extends ResultTestSupport {
 
 		assertThat(events.get(0).getValue(Event.TAG)).isEqualTo(tag);
 		assertThat(events.get(0).getValue(Event.TIMESTAMP)).isEqualTo(dateTime("2014-12-11T08:55:56-08:00"));
-		assertThat(events.get(0).getValues(Event.PRESSURE)).containsExactly(Measures.valueOf("50 mmHg"), Measures.valueOf("100 mmHg"));
+		assertThat(events.get(0).getValues(Event.PRESSURE))
+				.containsExactly(Measures.valueOf("50 mmHg"), Measures.valueOf("100 mmHg"));
 		assertThat(events.get(0).getValue(Event.FREQUENCY)).isEqualTo(Measures.valueOf("60 bpm"));
 		assertThat(events.get(0).getValue(Event.LOCATION)).isNull();
 		assertThat(events.get(0).getValue(Event.NOTE)).isEqualTo("testing");

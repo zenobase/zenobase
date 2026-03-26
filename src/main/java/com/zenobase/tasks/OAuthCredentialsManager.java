@@ -27,7 +27,13 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 	private final String apiSecret;
 	private final String callbackUrl;
 
-	protected OAuthCredentialsManager(String type, CredentialsRepository repository, Api provider, String apiKey, String apiSecret, String callbackUrl) {
+	protected OAuthCredentialsManager(
+			String type,
+			CredentialsRepository repository,
+			Api provider,
+			String apiKey,
+			String apiSecret,
+			String callbackUrl) {
 		super(type);
 		this.repository = repository;
 		this.provider = provider;
@@ -66,9 +72,9 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 
 	@Override
 	public Command authorize(Credentials credentials, ObjectNode config) {
-		return config.size() != 0 ?
-			authorize(credentials.as(OAuthCredentials.class), config) :
-			deauthorize(credentials.as(OAuthCredentials.class));
+		return config.size() != 0
+				? authorize(credentials.as(OAuthCredentials.class), config)
+				: deauthorize(credentials.as(OAuthCredentials.class));
 	}
 
 	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
@@ -76,18 +82,20 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 		String token = config.path("oauth_token").textValue();
 		String verifier = config.path("oauth_verifier").asText();
 		if (token == null) {
-			logger.warn("Couldn't obtain {} credentials <{}>: {}",
-				credentials.getType(), credentials.getId(), config);
+			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
 			return null;
 		}
-		Preconditions.checkState(credentials.getToken().getToken().equals(token),
-			"Token matches in credentials %s, expected %s, got %s",
-			credentials.getId(), credentials.getToken().getToken(), token);
+		Preconditions.checkState(
+				credentials.getToken().getToken().equals(token),
+				"Token matches in credentials %s, expected %s, got %s",
+				credentials.getId(),
+				credentials.getToken().getToken(),
+				token);
 		return UpdateCredentialsCommand.builder(credentials)
-			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-			.with(Credentials.CREDENTIALS)
-			.set(OAuthCredentials.TOKEN, credentials.getToken(), getAccessToken(credentials, verifier))
-			.build();
+				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, credentials.getToken(), getAccessToken(credentials, verifier))
+				.build();
 	}
 
 	public void reauthorize(Credentials credentials) {
@@ -97,10 +105,13 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 	private Command deauthorize(OAuthCredentials credentials) {
 		Token token = getRequestToken(credentials);
 		return UpdateCredentialsCommand.builder(credentials)
-			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), getService(credentials).getAuthorizationUrl(token))
-			.with(Credentials.CREDENTIALS)
-			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-			.build();
+				.set(
+						Credentials.AUTHORIZATION_URL,
+						credentials.getAuthorizationUrl(),
+						getService(credentials).getAuthorizationUrl(token))
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+				.build();
 	}
 
 	protected Token getAccessToken(OAuthCredentials credentials, String verifier) {
@@ -110,7 +121,6 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 	public Response send(OAuthRequest request, OAuthCredentials credentials) {
 		sign(request, credentials);
 		return request.send();
-
 	}
 
 	protected void sign(OAuthRequest request, OAuthCredentials credentials) {
@@ -119,19 +129,17 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 
 	protected OAuthService getService(OAuthCredentials credentials) {
 		var builder = new ServiceBuilder()
-			.provider(provider)
-			.apiKey(apiKey)
-			.apiSecret(apiSecret)
-			.callback(buildCallback(callbackUrl, credentials));
+				.provider(provider)
+				.apiKey(apiKey)
+				.apiSecret(apiSecret)
+				.callback(buildCallback(callbackUrl, credentials));
 		configure(builder);
 		return builder.build();
 	}
 
 	protected String buildCallback(String baseUrl, OAuthCredentials credentials) {
-		return baseUrl  + "/oauth/callback/" + credentials.getId();
+		return baseUrl + "/oauth/callback/" + credentials.getId();
 	}
 
-	protected void configure(ServiceBuilder builder) {
-
-	}
+	protected void configure(ServiceBuilder builder) {}
 }

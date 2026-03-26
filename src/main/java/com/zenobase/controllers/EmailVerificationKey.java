@@ -19,8 +19,7 @@ public class EmailVerificationKey {
 	}
 
 	public boolean validate(String key) {
-		return key.length() > 50 &&
-			BCrypt.checkpw(concatenate(), key);
+		return key.length() > 50 && BCrypt.checkpw(concatenate(), key);
 	}
 
 	private String concatenate() {

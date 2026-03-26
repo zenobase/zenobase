@@ -1,8 +1,7 @@
 package com.zenobase.tasks.fitbit;
 
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
@@ -44,8 +43,12 @@ class FitbitActivitiesResult extends FitbitResultSupport {
 				event.setValue(Event.DURATION, duration);
 				event.setValue(Event.COUNT, countValue(item.path("steps")));
 				event.setValue(Event.DISTANCE, distance);
-				event.setValue(Event.VELOCITY, velocityValue(item.path("speed"), Units.isMetric(distanceUnit) ? Units.KMH : Units.MPH));
-				event.setValue(Event.PACE, paceValue(item.path("pace"), Units.isMetric(distanceUnit) ? Units.S_PER_KM : Units.S_PER_MI));
+				event.setValue(
+						Event.VELOCITY,
+						velocityValue(item.path("speed"), Units.isMetric(distanceUnit) ? Units.KMH : Units.MPH));
+				event.setValue(
+						Event.PACE,
+						paceValue(item.path("pace"), Units.isMetric(distanceUnit) ? Units.S_PER_KM : Units.S_PER_MI));
 				event.setValue(Event.ENERGY, energyValue(item.path("calories"), Units.KCAL));
 				event.setValue(Event.FREQUENCY, frequencyValue(item.path("averageHeartRate")));
 				event.setValue(Event.AUTHOR, author);

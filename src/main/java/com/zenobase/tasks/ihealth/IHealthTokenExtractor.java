@@ -15,7 +15,8 @@ class IHealthTokenExtractor implements AccessTokenExtractor {
 		ObjectNode node = Nodes.readObject(response);
 		String token = node.path("AccessToken").textValue();
 		String refreshToken = node.path("RefreshToken").textValue();
-		DateTime expires = DateTime.now(DateTimeZone.UTC).plusSeconds(node.path("Expires").intValue());
+		DateTime expires =
+				DateTime.now(DateTimeZone.UTC).plusSeconds(node.path("Expires").intValue());
 		String userId = node.path("UserID").textValue();
 		return new IHealthToken(token, "", expires, refreshToken, userId);
 	}

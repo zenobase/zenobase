@@ -1,9 +1,8 @@
 package com.zenobase.tasks.reporter;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Pressure;
@@ -129,7 +128,8 @@ public class SnapshotsResult {
 		JsonNode lat = node.path("latitude");
 		JsonNode lon = node.path("longitude");
 		return !lat.isMissingNode() && !lon.isMissingNode()
-			? new Location(lat.decimalValue(), lon.decimalValue()) : null;
+				? new Location(lat.decimalValue(), lon.decimalValue())
+				: null;
 	}
 
 	private DecimalMeasure<Temperature> temperatureValue(JsonNode node) {

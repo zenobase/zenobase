@@ -1,13 +1,11 @@
 package com.zenobase.tasks.fitbit;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import jakarta.inject.Inject;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import jakarta.inject.Inject;
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -52,15 +50,33 @@ public class FitbitStepsTaskManager extends FitbitTaskManagerSupport<FitbitSteps
 		for (LocalDate date = fromDate; date.isBefore(syncDate); date = date.plusDays(1)) {
 			try {
 				if (task.isHourly()) {
-					OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/steps/date/" + date + "/1d/15min.json");
+					OAuthRequest request = new OAuthRequest(
+							Verb.GET,
+							"https://api.fitbit.com/1/user/-/activities/steps/date/" + date + "/1d/15min.json");
 					Response response = send(request, credentials);
-					events.addAll(new FitbitIntradayStepsResult(parseObject(response), task.getTag(), task.getPrincipal(),date, profile.getTimezone()).getEvents());
+					events.addAll(new FitbitIntradayStepsResult(
+									parseObject(response),
+									task.getTag(),
+									task.getPrincipal(),
+									date,
+									profile.getTimezone())
+							.getEvents());
 				} else {
-					OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/date/" + date + ".json");
+					OAuthRequest request = new OAuthRequest(
+							Verb.GET, "https://api.fitbit.com/1/user/-/activities/date/" + date + ".json");
 					request.addHeader("Accept-Language", profile.getDistanceLocale());
 					Response response = send(request, credentials);
-					events.addAll(new FitbitStepsResult(parseObject(response), task.getTag(), task.getPrincipal(), date, profile.getTimezone(),
-						profile.getDistanceUnit(), profile.getHeightUnit(), task.getEnergyUnit(), task.includeBMR()).getEvents());
+					events.addAll(new FitbitStepsResult(
+									parseObject(response),
+									task.getTag(),
+									task.getPrincipal(),
+									date,
+									profile.getTimezone(),
+									profile.getDistanceUnit(),
+									profile.getHeightUnit(),
+									task.getEnergyUnit(),
+									task.includeBMR())
+							.getEvents());
 				}
 			} catch (InvalidStatusException e) {
 				if (e.getStatus() == 429) { // reached rate limit

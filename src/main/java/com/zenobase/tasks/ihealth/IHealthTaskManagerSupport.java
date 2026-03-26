@@ -1,8 +1,8 @@
 package com.zenobase.tasks.ihealth;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
@@ -66,7 +66,8 @@ abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends O
 		return createCommand(task, credentials, events, token);
 	}
 
-	private void execute(String resource, T task, ResultHandler<T> handler, OAuthCredentials credentials, List<Event> events) {
+	private void execute(
+			String resource, T task, ResultHandler<T> handler, OAuthCredentials credentials, List<Event> events) {
 		DateTime begin = task.getBegin();
 		DateTime end = DateTime.now();
 		for (int page = 1; page <= 50; ++page) {
@@ -88,18 +89,19 @@ abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends O
 	}
 
 	private Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
-		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(
+				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		if (!Objects.equal(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
-				.build());
+					.with(Credentials.CREDENTIALS)
+					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+					.build());
 		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));

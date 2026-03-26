@@ -30,8 +30,7 @@ public class Identity {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof Identity &&
-			equals((Identity) that);
+		return that instanceof Identity && equals((Identity) that);
 	}
 
 	private boolean equals(Identity that) {

@@ -6,7 +6,6 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 
 import com.zenobase.common.Units;
 import com.zenobase.json.TokenField;
@@ -25,7 +24,13 @@ public class WithingsStepsTask extends Task {
 		super(node);
 	}
 
-	WithingsStepsTask(String bucketId, Identity principal, String tag, Unit<Length> lengthUnit, Unit<Energy> energyUnit, String marker) {
+	WithingsStepsTask(
+			String bucketId,
+			Identity principal,
+			String tag,
+			Unit<Length> lengthUnit,
+			Unit<Energy> energyUnit,
+			String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);

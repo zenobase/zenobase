@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.util.concurrent.Uninterruptibles;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -47,10 +46,10 @@ public class DemoTaskManager extends TaskManager {
 		event.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
 		event.setValue(Event.TAG, task.getTag());
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		return command;
 	}

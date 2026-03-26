@@ -1,7 +1,6 @@
 package com.zenobase.services;
 
 import jakarta.inject.Inject;
-
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
@@ -29,7 +28,12 @@ public class AuthorizationExpirationJob extends Job {
 	@Override
 	public void run() {
 		logger.info("Expiring authorizations...");
-		var query = new AuthorizationQuery().createdBefore(DateTime.now().minus(MAX_AGE)).clientIsNull();
-		authorizations.find(query, authorization -> dispatcher.dispatch(new DeleteAuthorizationCommand(authorization.getPrincipal(), authorization)));
+		var query = new AuthorizationQuery()
+				.createdBefore(DateTime.now().minus(MAX_AGE))
+				.clientIsNull();
+		authorizations.find(
+				query,
+				authorization -> dispatcher.dispatch(
+						new DeleteAuthorizationCommand(authorization.getPrincipal(), authorization)));
 	}
 }

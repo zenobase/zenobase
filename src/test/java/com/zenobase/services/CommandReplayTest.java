@@ -1,5 +1,7 @@
 package com.zenobase.services;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -15,8 +17,6 @@ import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.commands.TestCommand;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
-
-import static org.junit.Assert.assertEquals;
 
 public class CommandReplayTest extends OpenSearchTestSupport {
 
@@ -35,9 +35,11 @@ public class CommandReplayTest extends OpenSearchTestSupport {
 
 		new UserRepository(getManager()).store(user, DateTime.now());
 		new CommandReplay("", parsers, dispatcher)
-			.replay(getManager(), new IdentitiesFilterBuilder(
-				new UserRepository(getManager()), new AuthorizationRepository(getManager()))
-				.deterministic(true));
+				.replay(
+						getManager(),
+						new IdentitiesFilterBuilder(
+										new UserRepository(getManager()), new AuthorizationRepository(getManager()))
+								.deterministic(true));
 
 		InOrder dispatchOrder = Mockito.inOrder(dispatcher);
 		for (Command command : commandsToReplay) {
@@ -46,14 +48,16 @@ public class CommandReplayTest extends OpenSearchTestSupport {
 		for (Command command : commandsToDiscard) {
 			Mockito.verify(dispatcher).discard(command);
 		}
-		assertEquals(commandsToReplay.size() + commandsToDiscard.size(),
-			Mockito.mockingDetails(dispatcher).getInvocations().size());
+		assertEquals(
+				commandsToReplay.size() + commandsToDiscard.size(),
+				Mockito.mockingDetails(dispatcher).getInvocations().size());
 	}
 
 	private List<Command> newCommands(int count, Identity principal) {
 		List<Command> commands = Lists.newArrayList();
 		for (int i = 0; i < count; ++i) {
-			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
+			Uninterruptibles.sleepUninterruptibly(
+					5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
 			commands.add(new TestCommand(principal, String.format("Command #%s", i + 1)));
 		}
 		return commands;

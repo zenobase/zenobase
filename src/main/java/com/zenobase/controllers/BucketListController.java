@@ -2,12 +2,11 @@ package com.zenobase.controllers;
 
 import java.io.OutputStreamWriter;
 
-import jakarta.inject.Inject;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.common.PartialList;
@@ -32,8 +31,12 @@ public class BucketListController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-    public BucketListController(AuthorizationContext auth, CommandDispatcher dispatcher,
-    	BucketRepository buckets, EventRepository events, UserRepository users) {
+	public BucketListController(
+			AuthorizationContext auth,
+			CommandDispatcher dispatcher,
+			BucketRepository buckets,
+			EventRepository events,
+			UserRepository users) {
 
 		super(auth);
 		this.dispatcher = dispatcher;
@@ -46,50 +49,54 @@ public class BucketListController extends ControllerSupport {
 		String q = req.query().first("q").orElse(null);
 		int offset = Integer.parseInt(req.query().first("offset").orElse("0"));
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
-    	Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
+		Authorization auth = getCurrentAuthorization(req);
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
 		if (auth.getScope() != null) {
-    		sendForbidden(res);
-    		return;
+			sendForbidden(res);
+			return;
 		}
 		if (!users.isSuperuser(auth.getPrincipal())) {
 			sendForbidden(res);
 			return;
 		}
-    	if (limit == Integer.MAX_VALUE) {
-    		findAllStreaming(res);
-    		return;
-    	}
-    	BucketQuery query = new BucketQuery();
-    	if (q != null) {
-    		query = query.queryString(q);
-    	}
-    	sendOk(res, BucketList.toJson(buckets.find(query, BucketQuery.DEFAULT_ORDER, offset, limit), events));
-    }
+		if (limit == Integer.MAX_VALUE) {
+			findAllStreaming(res);
+			return;
+		}
+		BucketQuery query = new BucketQuery();
+		if (q != null) {
+			query = query.queryString(q);
+		}
+		sendOk(res, BucketList.toJson(buckets.find(query, BucketQuery.DEFAULT_ORDER, offset, limit), events));
+	}
 
-    private void findAllStreaming(ServerResponse res) {
-    	setHeader(res, "Content-Type", "text/plain");
-    	try (var writer = new OutputStreamWriter(res.outputStream())) {
-    		buckets.findAll(bucket -> {
-    			try {
-    				writer.write(toString(bucket));
-    			} catch (java.io.IOException e) {
-    				throw new RuntimeException(e);
-    			}
-    		});
-    	} catch (java.io.IOException e) {
-    		throw new RuntimeException(e);
-    	}
+	private void findAllStreaming(ServerResponse res) {
+		setHeader(res, "Content-Type", "text/plain");
+		try (var writer = new OutputStreamWriter(res.outputStream())) {
+			buckets.findAll(bucket -> {
+				try {
+					writer.write(toString(bucket));
+				} catch (java.io.IOException e) {
+					throw new RuntimeException(e);
+				}
+			});
+		} catch (java.io.IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private String toString(Bucket bucket) {
-		return Joiner.on('\t').join(bucket.getId(),
-			Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)),
-			bucket.hasRole(new Authorization(Identity.PUBLIC), Role.VIEWER) ? "published" : "unpublished",
-			bucket.getCreated(), events.size(bucket.getId()), "\n");
+		return Joiner.on('\t')
+				.join(
+						bucket.getId(),
+						Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)),
+						bucket.hasRole(new Authorization(Identity.PUBLIC), Role.VIEWER) ? "published" : "unpublished",
+						bucket.getCreated(),
+						events.size(bucket.getId()),
+						"\n");
 	}
 
 	public void findByUser(ServerRequest req, ServerResponse res) {
@@ -97,8 +104,10 @@ public class BucketListController extends ControllerSupport {
 		String order = req.query().first("order").orElse(null);
 		int offset = Integer.parseInt(req.query().first("offset").orElse("0"));
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
-		boolean labelsOnly = Boolean.parseBoolean(req.query().first("labelsOnly").orElse("false"));
-		boolean includeArchived = Boolean.parseBoolean(req.query().first("includeArchived").orElse("false"));
+		boolean labelsOnly =
+				Boolean.parseBoolean(req.query().first("labelsOnly").orElse("false"));
+		boolean includeArchived =
+				Boolean.parseBoolean(req.query().first("includeArchived").orElse("false"));
 		if (offset < 0 || offset > 1000) {
 			sendBadRequest(res, "expected offset in [0..1000]");
 			return;
@@ -107,15 +116,15 @@ public class BucketListController extends ControllerSupport {
 			sendBadRequest(res, "expected limit in [0..100]");
 			return;
 		}
-    	Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
-    	if (auth.getScope() != null) {
-    		sendForbidden(res);
-    		return;
-    	}
+		Authorization auth = getCurrentAuthorization(req);
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
+		if (auth.getScope() != null) {
+			sendForbidden(res);
+			return;
+		}
 		Identity principal = new UserLookup(users).getIdentity(userId);
 		if (principal == null) {
 			sendNotFound(res, "user not found");
@@ -126,16 +135,16 @@ public class BucketListController extends ControllerSupport {
 			return;
 		}
 		var query = new BucketQuery().principalEqualTo(principal).includeArchived(includeArchived);
-        PartialList<Bucket> found = buckets.find(query, SearchOrder.valueOf(order, Bucket.SCHEMA), offset, limit);
+		PartialList<Bucket> found = buckets.find(query, SearchOrder.valueOf(order, Bucket.SCHEMA), offset, limit);
 		sendOk(res, labelsOnly ? BucketList.toJsonLabelsOnly(found) : BucketList.toJson(found, events));
-    }
+	}
 
-    public void post(ServerRequest req, ServerResponse res) {
-    	Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null || auth.getScope() != null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
+	public void post(ServerRequest req, ServerResponse res) {
+		Authorization auth = getCurrentAuthorization(req);
+		if (auth == null || auth.getScope() != null) {
+			sendUnauthorized(res);
+			return;
+		}
 		var form = new CreateBucketForm(body(req));
 		Bucket bucket = form.getId() != null ? new Bucket(form.getId()) : new Bucket();
 		bucket.setLabel(form.getLabel());
@@ -151,9 +160,9 @@ public class BucketListController extends ControllerSupport {
 			sendBadRequest(res, "one or more aliases are invalid");
 			return;
 		}
-    	String commandId = dispatcher.dispatch(new CreateBucketCommand(auth.getPrincipal(), bucket));
-        setHeader(res, LOCATION, "/buckets/" + bucket.getId());
+		String commandId = dispatcher.dispatch(new CreateBucketCommand(auth.getPrincipal(), bucket));
+		setHeader(res, LOCATION, "/buckets/" + bucket.getId());
 		setHeader(res, COMMAND_ID, commandId);
-        sendCreated(res, bucket.toJson());
-    }
+		sendCreated(res, bucket.toJson());
+	}
 }

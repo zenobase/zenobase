@@ -2,10 +2,8 @@ package com.zenobase.tasks.goodreads;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.List;
 import java.util.ArrayList;
-
-import jakarta.inject.Inject;
+import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -13,6 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
@@ -75,7 +74,8 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 		return new GoodreadsUserResult(parseDocument(response));
 	}
 
-	private GoodreadsReviewListResult getReviewList(OAuthCredentials credentials, GoodreadsTask task, String userId, int page) {
+	private GoodreadsReviewListResult getReviewList(
+			OAuthCredentials credentials, GoodreadsTask task, String userId, int page) {
 		var request = new OAuthRequest(Verb.GET, HOST + "/review/list.xml");
 		request.addQuerystringParameter("v", "2");
 		request.addQuerystringParameter("id", userId);
@@ -96,10 +96,11 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 	}
 
 	private static Document parseDocument(Response response) {
-		Preconditions.checkState(response.getCode() == 200,
-			"Expected 200 but got <%s> for <%s>", response.getCode());
-		Preconditions.checkState(response.getHeader("Content-Type").startsWith("application/xml"),
-			"Expected application/xml but got <%s> for <%s>", response.getHeader("Content-Type"));
+		Preconditions.checkState(response.getCode() == 200, "Expected 200 but got <%s> for <%s>", response.getCode());
+		Preconditions.checkState(
+				response.getHeader("Content-Type").startsWith("application/xml"),
+				"Expected application/xml but got <%s> for <%s>",
+				response.getHeader("Content-Type"));
 		try {
 			InputSource source = new InputSource(new StringReader(getBody(response)));
 			return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(source);
@@ -124,13 +125,14 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 	}
 
 	private Command createCommand(Task task, List<Event> events) {
-		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(
+				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}

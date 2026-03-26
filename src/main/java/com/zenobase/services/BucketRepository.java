@@ -1,18 +1,16 @@
 package com.zenobase.services;
 
-import jakarta.inject.Inject;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import jakarta.inject.Inject;
+import org.joda.time.DateTime;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
 import org.opensearch.client.opensearch.core.SearchRequest;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +47,10 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 	}
 
 	public void realias(Bucket bucket) {
-		manager.createAlias(EventRepository.INDEX_NAME, bucket.getId(), bucket.isVirtual() ? bucket.getAliases() : new ArrayList<>(List.of(new Alias(bucket.getId()))));
+		manager.createAlias(
+				EventRepository.INDEX_NAME,
+				bucket.getId(),
+				bucket.isVirtual() ? bucket.getAliases() : new ArrayList<>(List.of(new Alias(bucket.getId()))));
 	}
 
 	public void update(Bucket from, Bucket to, DateTime timestamp) {
@@ -74,7 +75,9 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 	 * Returns <code>true</code> if a bucket is aliased from another bucket.
 	 */
 	public boolean isAliased(String bucketId) {
-		return !index.find(Query.of(q -> q.term(t -> t.field(Bucket.ALIASES + ".@id").value(FieldValue.of(bucketId))))).isEmpty();
+		return !index.find(Query.of(
+						q -> q.term(t -> t.field(Bucket.ALIASES + ".@id").value(FieldValue.of(bucketId)))))
+				.isEmpty();
 	}
 
 	public Bucket find(String bucketId) {
@@ -88,9 +91,13 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 
 	public PartialList<Bucket> find(BucketQuery query, SearchOrder order, int offset, int limit) {
 		SearchRequest.Builder builder = new SearchRequest.Builder()
-			.index(index.getIndexName())
-			.query(query.build()).version(true).seqNoPrimaryTerm(true).from(offset).size(limit)
-			.trackTotalHits(t -> t.enabled(true));
+				.index(index.getIndexName())
+				.query(query.build())
+				.version(true)
+				.seqNoPrimaryTerm(true)
+				.from(offset)
+				.size(limit)
+				.trackTotalHits(t -> t.enabled(true));
 		order.apply(builder);
 		return new BucketList(index.find(builder.build()));
 	}

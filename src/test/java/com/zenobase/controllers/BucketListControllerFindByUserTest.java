@@ -23,7 +23,8 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 	public void test() {
 		PartialList<Bucket> list = DefaultPartialList.of();
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()), ORDER_BY, 0, 10)).thenReturn(list);
+		when(buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()), ORDER_BY, 0, 10))
+				.thenReturn(list);
 		try (Http1ClientResponse result = call(user.getId(), ORDER_BY, 0, 10)) {
 			assertThat(result).hasStatus(200).hasContent(BucketList.toJson(list, events));
 		}
@@ -33,7 +34,8 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 	public void testLabelsOnly() {
 		PartialList<Bucket> list = DefaultPartialList.of();
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()), ORDER_BY, 0, 10)).thenReturn(list);
+		when(buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()), ORDER_BY, 0, 10))
+				.thenReturn(list);
 		try (Http1ClientResponse result = call(user.getId(), ORDER_BY, 0, 10, true, true)) {
 			assertThat(result).hasStatus(200).hasContent(BucketList.toJsonLabelsOnly(list));
 		}
@@ -43,7 +45,9 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 	public void testExcludeArchived() {
 		PartialList<Bucket> list = DefaultPartialList.of();
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()).includeArchived(false), ORDER_BY, 0, 10)).thenReturn(list);
+		when(buckets.find(
+						new BucketQuery().principalEqualTo(user.asIdentity()).includeArchived(false), ORDER_BY, 0, 10))
+				.thenReturn(list);
 		try (Http1ClientResponse result = call(user.getId(), ORDER_BY, 0, 10, true, false)) {
 			assertThat(result).hasStatus(200).hasContent(BucketList.toJsonLabelsOnly(list));
 		}
@@ -55,7 +59,8 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 		PartialList<Bucket> list = DefaultPartialList.of();
 		when(auth.current(any())).thenReturn(new Authorization(superuser));
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()), ORDER_BY, 0, 10)).thenReturn(list);
+		when(buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()), ORDER_BY, 0, 10))
+				.thenReturn(list);
 		try (Http1ClientResponse result = call(user.getId(), ORDER_BY, 0, 10)) {
 			assertThat(result).hasStatus(200).hasContent(BucketList.toJson(list, events));
 		}
@@ -124,13 +129,14 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 		return call(userId, order, offset, limit, false, true);
 	}
 
-	private Http1ClientResponse call(String userId, SearchOrder order, int offset, int limit, boolean labelsOnly, boolean includeArchived) {
+	private Http1ClientResponse call(
+			String userId, SearchOrder order, int offset, int limit, boolean labelsOnly, boolean includeArchived) {
 		return client.get("/users/" + userId + "/buckets/")
-			.queryParam("order", String.valueOf(order))
-			.queryParam("offset", String.valueOf(offset))
-			.queryParam("limit", String.valueOf(limit))
-			.queryParam("labelsOnly", String.valueOf(labelsOnly))
-			.queryParam("includeArchived", String.valueOf(includeArchived))
-			.request();
+				.queryParam("order", String.valueOf(order))
+				.queryParam("offset", String.valueOf(offset))
+				.queryParam("limit", String.valueOf(limit))
+				.queryParam("labelsOnly", String.valueOf(labelsOnly))
+				.queryParam("includeArchived", String.valueOf(includeArchived))
+				.request();
 	}
 }

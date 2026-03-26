@@ -36,9 +36,7 @@ public class ResourceField extends Field<Resource> {
 
 	@Override
 	public JsonNode toJson(Resource value) {
-		return value != null
-			? toJson(value.title(), value.url())
-			: NullNode.getInstance();
+		return value != null ? toJson(value.title(), value.url()) : NullNode.getInstance();
 	}
 
 	private JsonNode toJson(String title, String url) {

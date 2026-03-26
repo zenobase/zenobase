@@ -1,17 +1,16 @@
 package com.zenobase.tasks.reporter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.ArrayList;
-
-import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -61,7 +60,6 @@ public class ReporterTaskManager extends DropboxTaskManagerSupport {
 		return new ConfigurationResult(download(credentials, "/" + folder + "/zenobase-conf.json")).get();
 	}
 
-
 	private SortedSet<LocalDate> getDates(OAuthCredentials credentials, String folder, LocalDate firstDate) {
 		SortedSet<LocalDate> dates = Sets.newTreeSet();
 		ListFolderResult result;
@@ -85,7 +83,13 @@ public class ReporterTaskManager extends DropboxTaskManagerSupport {
 		return m.find() ? LocalDate.parse(m.group(1)) : null;
 	}
 
-	private void getEvents(OAuthCredentials credentials, Configuration config, Identity author, String folder, LocalDate date, List<Event> events) {
+	private void getEvents(
+			OAuthCredentials credentials,
+			Configuration config,
+			Identity author,
+			String folder,
+			LocalDate date,
+			List<Event> events) {
 		String path = String.format("/%s/%s-reporter-export.json", folder, date);
 		events.addAll(new SnapshotsResult(config, author, download(credentials, path)).getEvents());
 	}
@@ -93,11 +97,11 @@ public class ReporterTaskManager extends DropboxTaskManagerSupport {
 	private Command createCommand(Task task, LocalDate marker, List<Event> events) {
 		var command = new CompoundCommand(task.getPrincipal(), "ran reporter task", "reverted reporter task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), marker != null ? marker.toString() : null)
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(Task.MARKER, task.getMarker(), marker != null ? marker.toString() : null)
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}

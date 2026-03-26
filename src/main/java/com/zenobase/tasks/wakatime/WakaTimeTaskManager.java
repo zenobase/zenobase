@@ -1,15 +1,14 @@
 package com.zenobase.tasks.wakatime;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import jakarta.inject.Inject;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -17,7 +16,6 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
-
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -75,7 +73,9 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 					}
 				}
 			} catch (InvalidStatusException e) {
-				if (e.getStatus() == 402 && date.isBefore(today.minusWeeks(2))) { // free WakaTime accounts are limited to 2 weeks of history
+				if (e.getStatus() == 402
+						&& date.isBefore(
+								today.minusWeeks(2))) { // free WakaTime accounts are limited to 2 weeks of history
 					date = today.minusWeeks(2);
 				} else {
 					throw e;
@@ -91,18 +91,19 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 	}
 
 	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
-		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(
+				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		if (!Objects.equal(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
-				.build());
+					.with(Credentials.CREDENTIALS)
+					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+					.build());
 		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));

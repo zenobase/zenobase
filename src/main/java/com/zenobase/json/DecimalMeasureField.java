@@ -1,7 +1,6 @@
 package com.zenobase.json;
 
 import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
@@ -56,9 +55,7 @@ public class DecimalMeasureField<Q extends Quantity> extends Field<DecimalMeasur
 
 	@Override
 	public JsonNode toJson(DecimalMeasure<Q> value) {
-		return value != null
-			? toJson(value.getValue(), value.getUnit())
-			: NullNode.getInstance();
+		return value != null ? toJson(value.getValue(), value.getUnit()) : NullNode.getInstance();
 	}
 
 	private static JsonNode toJson(BigDecimal value, Unit<?> unit) {

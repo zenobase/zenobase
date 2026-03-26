@@ -1,12 +1,11 @@
 package com.zenobase.tasks.foursquare;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 

@@ -72,7 +72,6 @@ public class JsonDiffTest {
 	@Test
 	public void testObjectToValue() {
 
-
 		ObjectNode original = Nodes.newObject();
 		ObjectNode nested = Nodes.newObject();
 		nested.put("value", 1);

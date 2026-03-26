@@ -1,7 +1,7 @@
 package com.zenobase.tasks.trakt;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
@@ -91,7 +91,7 @@ class TraktHistoryResult {
 		Preconditions.checkNotNull(title, "Missing title: %s", node);
 		Preconditions.checkState(id > 0, "Missing trakt id: %s", node);
 		if (year > 0) {
-		    title = String.format("%s (%d)", title, year);
+			title = String.format("%s (%d)", title, year);
 		}
 		return new Resource(title, "https://trakt.tv/search/trakt/" + id + "?id_type=movie");
 	}

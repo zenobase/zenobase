@@ -1,7 +1,7 @@
 package com.zenobase.tasks.fitbark;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -44,9 +44,9 @@ class ActivitySeriesResult {
 	private void addRecord(JsonNode node, List<Event> events) {
 		String date = node.path("date").textValue().replace(' ', 'T');
 		boolean hourly = date.length() > 10;
-		DateTime t = hourly ?
-			LocalDateTime.parse(date).toDateTime(zone) :
-			LocalDate.parse(date).toDateTimeAtStartOfDay(zone);
+		DateTime t = hourly
+				? LocalDateTime.parse(date).toDateTime(zone)
+				: LocalDate.parse(date).toDateTimeAtStartOfDay(zone);
 		if (t.isAfter(previous)) {
 			Event event = new Event();
 			event.addValue(Event.TAG, tag);

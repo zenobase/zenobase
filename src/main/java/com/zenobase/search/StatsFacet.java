@@ -4,7 +4,6 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.ExtendedStatsAggregate;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
@@ -43,10 +42,10 @@ public class StatsFacet extends FilteredFacet {
 		ObjectNode node = Nodes.newObject();
 		node.put("count", stats.count());
 		if (stats.count() > 0) {
-			put(node, "min",  stats.min());
-			put(node, "max",  stats.max());
-			put(node, "sum",  stats.sum());
-			put(node, "avg",  stats.avg());
+			put(node, "min", stats.min());
+			put(node, "max", stats.max());
+			put(node, "sum", stats.sum());
+			put(node, "avg", stats.avg());
 			put(node, "stdev", stats.stdDeviation());
 		}
 		return node;
@@ -69,10 +68,10 @@ public class StatsFacet extends FilteredFacet {
 			@Override
 			public Facet build(FacetOptions options) {
 				return new StatsFacet(
-					options.get("id"),
-					options.get("field"),
-					getUnit(options.get("unit")),
-					filterParser.parse(options.get("filter")));
+						options.get("id"),
+						options.get("field"),
+						getUnit(options.get("unit")),
+						filterParser.parse(options.get("filter")));
 			}
 
 			private Unit<?> getUnit(String value) {

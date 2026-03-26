@@ -17,7 +17,8 @@ public class GoogleFitWeightTask extends GoogleFitTaskSupport {
 		super(node);
 	}
 
-	public GoogleFitWeightTask(String bucketId, Identity principal, DateTimeZone timezone, boolean metric, String tag, String marker) {
+	public GoogleFitWeightTask(
+			String bucketId, Identity principal, DateTimeZone timezone, boolean metric, String tag, String marker) {
 		super(TYPE, bucketId, principal, timezone, marker);
 		setSetting(METRIC, metric);
 		setSetting(TAG, tag);

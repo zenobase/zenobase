@@ -17,7 +17,8 @@ abstract class GoogleFitTaskSupport extends Task {
 		super(node);
 	}
 
-	public GoogleFitTaskSupport(String type, String bucketId, Identity principal, DateTimeZone timezone, String marker) {
+	public GoogleFitTaskSupport(
+			String type, String bucketId, Identity principal, DateTimeZone timezone, String marker) {
 		super(type, bucketId, principal);
 		setSetting(TIMEZONE, timezone != null ? timezone.getID() : null);
 		setMarker(marker);
@@ -30,6 +31,8 @@ abstract class GoogleFitTaskSupport extends Task {
 
 	public DateTime getFrom() {
 		String marker = getMarker();
-		return marker != null ? DateTime.parse(marker, ISODateTimeFormat.dateTime().withOffsetParsed()) : null;
+		return marker != null
+				? DateTime.parse(marker, ISODateTimeFormat.dateTime().withOffsetParsed())
+				: null;
 	}
 }

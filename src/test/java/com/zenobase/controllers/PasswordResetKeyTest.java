@@ -20,7 +20,8 @@ public class PasswordResetKeyTest {
 	@Test
 	public void testValidKey() {
 		PasswordResetKey key = new PasswordResetKey(user);
-		assertThat(new PasswordResetKey(user, key.getExpirationToken()).validate(key.getKey())).isTrue();
+		assertThat(new PasswordResetKey(user, key.getExpirationToken()).validate(key.getKey()))
+				.isTrue();
 	}
 
 	@Test
@@ -28,13 +29,15 @@ public class PasswordResetKeyTest {
 		PasswordResetKey key = new PasswordResetKey(user);
 		User other = user.copy();
 		user.setPassword("123secret");
-		assertThat(new PasswordResetKey(other, key.getExpirationToken()).validate(key.getKey())).isFalse();
+		assertThat(new PasswordResetKey(other, key.getExpirationToken()).validate(key.getKey()))
+				.isFalse();
 	}
 
 	@Test
 	public void testExpiredKey() {
 		PasswordResetKey key = new PasswordResetKey(user, DateTime.now().minusHours(1));
-		assertThat(new PasswordResetKey(user, key.getExpirationToken()).validate(key.getKey())).isFalse();
+		assertThat(new PasswordResetKey(user, key.getExpirationToken()).validate(key.getKey()))
+				.isFalse();
 	}
 
 	@Test

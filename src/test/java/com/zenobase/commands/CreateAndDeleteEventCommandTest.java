@@ -15,8 +15,7 @@ public class CreateAndDeleteEventCommandTest {
 
 	private final EventRepository repository = mock(EventRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new CreateEventCommand.Handler(repository),
-		new DeleteEventCommand.Handler(repository));
+			new CreateEventCommand.Handler(repository), new DeleteEventCommand.Handler(repository));
 
 	@Test
 	public void test() {

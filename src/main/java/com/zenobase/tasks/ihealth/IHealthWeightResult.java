@@ -1,7 +1,6 @@
 package com.zenobase.tasks.ihealth;
 
 import java.math.RoundingMode;
-
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
@@ -40,7 +39,9 @@ class IHealthWeightResult extends IHealthResultSupport {
 	}
 
 	private DecimalMeasure<Mass> weightValue(JsonNode node) {
-		return !isZero(node) ? Measures.valueOf(node.decimalValue().setScale(2, RoundingMode.HALF_UP), getUnit()) : null;
+		return !isZero(node)
+				? Measures.valueOf(node.decimalValue().setScale(2, RoundingMode.HALF_UP), getUnit())
+				: null;
 	}
 
 	private Unit<Mass> getUnit() {

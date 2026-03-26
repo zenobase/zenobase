@@ -37,9 +37,7 @@ public class PasswordResetKey {
 	}
 
 	public boolean validate(String key) {
-		return key.length() > 50 &&
-			expires.isAfter(System.currentTimeMillis()) &&
-			BCrypt.checkpw(concatenate(), key);
+		return key.length() > 50 && expires.isAfter(System.currentTimeMillis()) && BCrypt.checkpw(concatenate(), key);
 	}
 
 	private String concatenate() {

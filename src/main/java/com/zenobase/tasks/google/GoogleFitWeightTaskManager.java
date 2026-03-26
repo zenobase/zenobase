@@ -1,17 +1,15 @@
 package com.zenobase.tasks.google;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
-
-import jakarta.inject.Inject;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -31,7 +29,8 @@ public class GoogleFitWeightTaskManager extends GoogleFitTaskManagerSupport<Goog
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		DateTimeZone zone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone zone = DateTimeZone.forID(
+				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		DateTime begin = DateTime.parse(settings.path("marker").textValue()).withZoneRetainFields(zone);
 		boolean metric = settings.path("metric").booleanValue();
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "Weight");
@@ -39,7 +38,8 @@ public class GoogleFitWeightTaskManager extends GoogleFitTaskManagerSupport<Goog
 	}
 
 	@Override
-	protected List<Event> createEvents(GoogleFitWeightTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
+	protected List<Event> createEvents(
+			GoogleFitWeightTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
 		List<Event> events = new ArrayList<>();
 		DataStream stream = streams.get("derived:com.google.weight:com.google.android.gms:merge_weight");
 		if (stream != null) {
@@ -53,7 +53,8 @@ public class GoogleFitWeightTaskManager extends GoogleFitTaskManagerSupport<Goog
 					event.setValue(Event.TIMESTAMP, point.getBegin());
 				}
 				Unit<Mass> unit = task.isMetric() ? Units.KG : Units.LB;
-				BigDecimal value = Measures.convert(point.getValue(0, BigDecimal.class).doubleValue(), unit);
+				BigDecimal value =
+						Measures.convert(point.getValue(0, BigDecimal.class).doubleValue(), unit);
 				event.setValue(Event.WEIGHT, Measures.valueOf(value, unit));
 				event.setValue(Event.AUTHOR, task.getPrincipal());
 				DataStream origin = streams.get(point.getOrigin());

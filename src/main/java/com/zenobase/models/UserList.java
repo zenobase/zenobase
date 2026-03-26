@@ -20,12 +20,12 @@ public class UserList extends LazyList<User> {
 	}
 
 	public static ObjectNode toJson(PartialList<User> users) {
-    	ObjectNode resultNode = Nodes.newObject();
-    	TOTAL.setValue(resultNode, Ints.checkedCast(users.getTotal()));
-    	ArrayNode usersNode = resultNode.putArray("users");
-    	for (User user : users) {
-    		usersNode.add(new UserProfile(user).toJson());
-    	}
+		ObjectNode resultNode = Nodes.newObject();
+		TOTAL.setValue(resultNode, Ints.checkedCast(users.getTotal()));
+		ArrayNode usersNode = resultNode.putArray("users");
+		for (User user : users) {
+			usersNode.add(new UserProfile(user).toJson());
+		}
 		return resultNode;
 	}
 }

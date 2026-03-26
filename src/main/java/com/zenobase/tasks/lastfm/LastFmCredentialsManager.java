@@ -1,10 +1,9 @@
 package com.zenobase.tasks.lastfm;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -29,7 +28,11 @@ public class LastFmCredentialsManager extends OAuthCredentialsManager {
 	private final Signature signature;
 
 	@Inject
-	public LastFmCredentialsManager(CredentialsRepository repository, @Named("lastfm.api.key") String apiKey, @Named("lastfm.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
+	public LastFmCredentialsManager(
+			CredentialsRepository repository,
+			@Named("lastfm.api.key") String apiKey,
+			@Named("lastfm.api.secret") String apiSecret,
+			@Named("oauth.hostname") String callbackUrl) {
 		super(TYPE, repository, new LastFmApi(), apiKey, apiSecret, callbackUrl);
 		this.apiKey = apiKey;
 		this.signature = new Signature(apiSecret);
@@ -49,17 +52,16 @@ public class LastFmCredentialsManager extends OAuthCredentialsManager {
 	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
 		String code = config.path("token").textValue();
 		if (code == null) {
-			logger.warn("Couldn't obtain {} credentials <{}>: {}",
-				credentials.getType(), credentials.getId(), config);
+			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
 			return null;
 		}
 		LastFmToken token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-			.with(Credentials.CREDENTIALS)
-			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-			.set(OAuthCredentials.SCOPE, credentials.getScope(), token.getScope())
-			.build();
+				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+				.set(OAuthCredentials.SCOPE, credentials.getScope(), token.getScope())
+				.build();
 	}
 
 	@Override

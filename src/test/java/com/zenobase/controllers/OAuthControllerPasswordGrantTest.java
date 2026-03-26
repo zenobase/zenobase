@@ -31,7 +31,8 @@ public class OAuthControllerPasswordGrantTest extends OAuthControllerTestSupport
 		when(users.find(user.getName())).thenReturn(user);
 		ArgumentCaptor<CreateAuthorizationCommand> arg = ArgumentCaptor.forClass(CreateAuthorizationCommand.class);
 		when(dispatcher.dispatch(arg.capture())).thenReturn("c");
-		try (Http1ClientResponse result = call(new TokenForm(OAuthController.GRANT_TYPE_PASSWORD, user.getName(), password))) {
+		try (Http1ClientResponse result =
+				call(new TokenForm(OAuthController.GRANT_TYPE_PASSWORD, user.getName(), password))) {
 			assertGranted(result);
 			assertExpires(result, 31 * 24 * 60 * 60);
 			Authorization auth = arg.getValue().getAuthorization();
@@ -47,7 +48,8 @@ public class OAuthControllerPasswordGrantTest extends OAuthControllerTestSupport
 		when(users.find(user.getName())).thenReturn(user);
 		ArgumentCaptor<CreateAuthorizationCommand> arg = ArgumentCaptor.forClass(CreateAuthorizationCommand.class);
 		when(dispatcher.dispatch(arg.capture())).thenReturn("c");
-		try (Http1ClientResponse result = call(new TokenForm(OAuthController.GRANT_TYPE_PASSWORD, user.getName(), password).toJson())) {
+		try (Http1ClientResponse result =
+				call(new TokenForm(OAuthController.GRANT_TYPE_PASSWORD, user.getName(), password).toJson())) {
 			assertGranted(result);
 			assertExpires(result, 31 * 24 * 60 * 60);
 			Authorization auth = arg.getValue().getAuthorization();
@@ -67,14 +69,16 @@ public class OAuthControllerPasswordGrantTest extends OAuthControllerTestSupport
 
 	@Test
 	public void testMissingPassword() {
-		try (Http1ClientResponse result = call(new TokenForm(OAuthController.GRANT_TYPE_PASSWORD, user.getName(), null))) {
+		try (Http1ClientResponse result =
+				call(new TokenForm(OAuthController.GRANT_TYPE_PASSWORD, user.getName(), null))) {
 			assertDenied(result, OAuthController.INVALID_REQUEST);
 		}
 	}
 
 	@Test
 	public void testUnknownUser() {
-		try (Http1ClientResponse result = call(new TokenForm(OAuthController.GRANT_TYPE_PASSWORD, user.getName(), password))) {
+		try (Http1ClientResponse result =
+				call(new TokenForm(OAuthController.GRANT_TYPE_PASSWORD, user.getName(), password))) {
 			assertDenied(result, OAuthController.ACCESS_DENIED);
 		}
 	}
@@ -83,7 +87,8 @@ public class OAuthControllerPasswordGrantTest extends OAuthControllerTestSupport
 	public void testSuspendedUser() {
 		user.setSuspended(true);
 		when(users.find(user.getName())).thenReturn(user);
-		try (Http1ClientResponse result = call(new TokenForm(OAuthController.GRANT_TYPE_PASSWORD, user.getName(), password))) {
+		try (Http1ClientResponse result =
+				call(new TokenForm(OAuthController.GRANT_TYPE_PASSWORD, user.getName(), password))) {
 			assertDenied(result, OAuthController.ACCESS_DENIED);
 		}
 	}
@@ -91,7 +96,8 @@ public class OAuthControllerPasswordGrantTest extends OAuthControllerTestSupport
 	@Test
 	public void testBadPassword() {
 		when(users.find(user.getName())).thenReturn(user);
-		try (Http1ClientResponse result = call(new TokenForm(OAuthController.GRANT_TYPE_PASSWORD, user.getName(), "forgotten"))) {
+		try (Http1ClientResponse result =
+				call(new TokenForm(OAuthController.GRANT_TYPE_PASSWORD, user.getName(), "forgotten"))) {
 			assertDenied(result, OAuthController.ACCESS_DENIED);
 		}
 	}
@@ -106,8 +112,8 @@ public class OAuthControllerPasswordGrantTest extends OAuthControllerTestSupport
 
 	private Http1ClientResponse call(TokenForm form) {
 		return client.post("/oauth/token")
-			.header(HeaderNames.CONTENT_TYPE, "application/x-www-form-urlencoded")
-			.submit(toFormString(form));
+				.header(HeaderNames.CONTENT_TYPE, "application/x-www-form-urlencoded")
+				.submit(toFormString(form));
 	}
 
 	private Http1ClientResponse call(JsonNode node) {

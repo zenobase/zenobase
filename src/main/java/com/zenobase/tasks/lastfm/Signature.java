@@ -1,9 +1,9 @@
 package com.zenobase.tasks.lastfm;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
@@ -19,7 +19,9 @@ public class Signature {
 	}
 
 	public String sign(Map<String, String> params) {
-		String hash = Hashing.md5().hashString(toString(params) + secret, Charsets.UTF_8).toString();
+		String hash = Hashing.md5()
+				.hashString(toString(params) + secret, Charsets.UTF_8)
+				.toString();
 		Preconditions.checkState(hash.length() == 32, "Expected 32 chars in hash but got: " + hash);
 		return hash;
 	}

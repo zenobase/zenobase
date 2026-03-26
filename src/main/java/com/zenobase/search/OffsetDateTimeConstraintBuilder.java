@@ -1,11 +1,9 @@
 package com.zenobase.search;
 
+import org.joda.time.Interval;
 import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.opensearch.client.opensearch._types.query_dsl.RangeQuery;
-import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
-import org.joda.time.Interval;
 
 import com.zenobase.common.OffsetDateTimeFormat;
 import com.zenobase.common.OffsetIntervals;
@@ -27,9 +25,8 @@ public class OffsetDateTimeConstraintBuilder extends ConstraintBuilder {
 		} else if (interval.toDurationMillis() > 1L) {
 			String gte = interval.getStart().toString();
 			String lt = interval.getEnd().toString();
-			return Query.of(q -> q.range(r -> r.field(getPath())
-				.gte(JsonData.of(gte))
-				.lt(JsonData.of(lt))));
+			return Query.of(
+					q -> q.range(r -> r.field(getPath()).gte(JsonData.of(gte)).lt(JsonData.of(lt))));
 		} else {
 			String val = interval.getStart().toString();
 			return Query.of(q -> q.term(t -> t.field(getPath()).value(FieldValue.of(val))));

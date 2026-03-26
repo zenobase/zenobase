@@ -1,7 +1,6 @@
 package com.zenobase.tasks.ihealth;
 
 import java.math.RoundingMode;
-
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
@@ -46,7 +45,9 @@ class IHealthStepsResult extends IHealthResultSupport {
 	}
 
 	private DecimalMeasure<Length> distanceValue(JsonNode node) {
-		return !isZero(node) ? Measures.valueOf(node.decimalValue().setScale(2, RoundingMode.HALF_UP), getUnit()) : null;
+		return !isZero(node)
+				? Measures.valueOf(node.decimalValue().setScale(2, RoundingMode.HALF_UP), getUnit())
+				: null;
 	}
 
 	private Unit<Length> getUnit() {

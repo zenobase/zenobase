@@ -28,7 +28,8 @@ class RunkeeperActivityResult {
 		event.setValue(Event.NOTE, node.path("notes").textValue());
 		event.setValue(Event.HEIGHT, convertMeasureValue(node.path("climb"), unit));
 		event.setValue(Event.FREQUENCY, measureValue(node.path("average_heart_rate"), Units.BPM));
-		event.setValue(Event.SOURCE, new Resource("RunKeeper", node.path("activity").textValue()));
+		event.setValue(
+				Event.SOURCE, new Resource("RunKeeper", node.path("activity").textValue()));
 		event.setValue(Event.LOCATION, locationValue(node.path("path")));
 	}
 
@@ -37,13 +38,17 @@ class RunkeeperActivityResult {
 	}
 
 	private static <Q extends Quantity> DecimalMeasure<Q> convertMeasureValue(JsonNode node, Unit<Q> unit) {
-		return !isZero(node) ? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), 0), unit) : null;
+		return !isZero(node)
+				? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), 0), unit)
+				: null;
 	}
 
 	private static Location locationValue(JsonNode path) {
 		for (JsonNode node : path) {
 			if ("start".equals(node.path("type").textValue())) {
-				return new Location(node.path("latitude").decimalValue(), node.path("longitude").decimalValue());
+				return new Location(
+						node.path("latitude").decimalValue(),
+						node.path("longitude").decimalValue());
 			}
 		}
 		return null;

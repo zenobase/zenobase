@@ -1,15 +1,13 @@
 package com.zenobase.tasks.google;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
-
-import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -29,14 +27,16 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		DateTimeZone zone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone zone = DateTimeZone.forID(
+				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		DateTime begin = DateTime.parse(settings.path("marker").textValue()).withZoneRetainFields(zone);
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "Food");
 		return new GoogleFitFoodTask(bucketId, principal, zone, tag, begin.toString());
 	}
 
 	@Override
-	protected List<Event> createEvents(GoogleFitFoodTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
+	protected List<Event> createEvents(
+			GoogleFitFoodTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
 		List<Event> events = createEventsFromNutritionStreams(task, credentials, streams);
 		if (events.isEmpty()) {
 			events = createEventsFromLegacyStream(task, credentials, streams);
@@ -44,7 +44,8 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 		return events;
 	}
 
-	private List<Event> createEventsFromNutritionStreams(GoogleFitFoodTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
+	private List<Event> createEventsFromNutritionStreams(
+			GoogleFitFoodTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
 		List<Event> events = new ArrayList<>();
 		for (DataStream stream : filter(streams.values(), "com.google.nutrition")) {
 			getDataPoints(task, credentials, stream, point -> {
@@ -62,9 +63,11 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 		return events;
 	}
 
-	private List<Event> createEventsFromLegacyStream(GoogleFitFoodTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
+	private List<Event> createEventsFromLegacyStream(
+			GoogleFitFoodTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
 		List<Event> events = new ArrayList<>();
-		DataStream stream = streams.get("derived:com.google.calories.consumed:com.google.android.gms:merge_calories_consumed");
+		DataStream stream =
+				streams.get("derived:com.google.calories.consumed:com.google.android.gms:merge_calories_consumed");
 		if (stream != null) {
 			getDataPoints(task, credentials, stream, point -> {
 				Event event = newEvent(point, task, streams);

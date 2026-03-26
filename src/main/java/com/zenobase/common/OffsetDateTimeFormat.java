@@ -15,32 +15,30 @@ import org.joda.time.format.DateTimeFormatterBuilder;
 public class OffsetDateTimeFormat extends DateTimeFormatSupport {
 
 	private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
-		.append(yearElement())
-		.appendOptional(monthElement().getParser())
-		.appendOptional(dayOfMonthElement().getParser())
-		.appendOptional(weekofYearElement().getParser())
-		.appendLiteral('T')
-		.appendOptional(hourElement().getParser())
-		.appendOptional(minuteElement().getParser())
-		.appendOptional(secondElement().getParser())
-		.appendOptional(millisElement().getParser())
-		.append(offsetElement())
-		.toFormatter()
-		.withOffsetParsed();
+			.append(yearElement())
+			.appendOptional(monthElement().getParser())
+			.appendOptional(dayOfMonthElement().getParser())
+			.appendOptional(weekofYearElement().getParser())
+			.appendLiteral('T')
+			.appendOptional(hourElement().getParser())
+			.appendOptional(minuteElement().getParser())
+			.appendOptional(secondElement().getParser())
+			.appendOptional(millisElement().getParser())
+			.append(offsetElement())
+			.toFormatter()
+			.withOffsetParsed();
 
 	private static final DateTimeFormatter PARSER_WEEK = new DateTimeFormatterBuilder()
-		.append(weekyearElement())
-		.appendOptional(weekofYearElement().getParser())
-		.appendLiteral('T')
-		.append(offsetElement())
-		.toFormatter()
-		.withOffsetParsed();
+			.append(weekyearElement())
+			.appendOptional(weekofYearElement().getParser())
+			.appendLiteral('T')
+			.append(offsetElement())
+			.toFormatter()
+			.withOffsetParsed();
 
 	public static DateTime parse(String s) {
 		Preconditions.checkArgument(s.equals(s.toUpperCase()), "Invalid timestamp casing: %s", s);
-		return s.contains("W")
-			? PARSER_WEEK.parseDateTime(s)
-			: PARSER.parseDateTime(s);
+		return s.contains("W") ? PARSER_WEEK.parseDateTime(s) : PARSER.parseDateTime(s);
 	}
 
 	private static final Pattern TIMEZONE_OFFSET = Pattern.compile("Z|[+-]\\d\\d:\\d\\d");

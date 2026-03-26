@@ -2,11 +2,10 @@ package com.zenobase.tasks.mapmyfitness;
 
 import java.util.List;
 
-import jakarta.inject.Inject;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
@@ -59,18 +58,19 @@ abstract class MapMyFitnessTaskManagerSupport extends OAuthTaskManager {
 	}
 
 	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
-		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(
+				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		if (!Objects.equal(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
-				.build());
+					.with(Credentials.CREDENTIALS)
+					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+					.build());
 		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));

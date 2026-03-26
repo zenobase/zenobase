@@ -1,11 +1,10 @@
 package com.zenobase.tasks.fitbit;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
-
 import javax.measure.DecimalMeasure;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,14 +25,16 @@ class FitbitCardioIntradayResult extends FitbitResultSupport {
 
 	private final LocalDate date;
 
-	public FitbitCardioIntradayResult(JsonNode node, String tag, Identity author, LocalDate date, DateTimeZone timezone) {
+	public FitbitCardioIntradayResult(
+			JsonNode node, String tag, Identity author, LocalDate date, DateTimeZone timezone) {
 		super(node, tag, author, timezone);
 		this.date = date;
 	}
 
 	public List<Event> getEvents() {
 		List<Event> events = new ArrayList<>();
-		for (Map.Entry<DateTime, Collection<Integer>> entry : valuesByHour().asMap().entrySet()) {
+		for (Map.Entry<DateTime, Collection<Integer>> entry :
+				valuesByHour().asMap().entrySet()) {
 			events.add(toEvent(entry.getKey(), mean(entry.getValue())));
 		}
 		return events;
@@ -52,7 +53,8 @@ class FitbitCardioIntradayResult extends FitbitResultSupport {
 	private Multimap<DateTime, Integer> valuesByHour() {
 		Multimap<DateTime, Integer> values = LinkedListMultimap.create();
 		for (JsonNode recordNode : node.path("activities-heart-intraday").path("dataset")) {
-			DateTime hour = toDateTimeFullHour(LocalTime.parse(recordNode.path("time").textValue()));
+			DateTime hour =
+					toDateTimeFullHour(LocalTime.parse(recordNode.path("time").textValue()));
 			if (hour != null) {
 				values.put(hour, recordNode.path("value").intValue());
 			}
@@ -61,7 +63,10 @@ class FitbitCardioIntradayResult extends FitbitResultSupport {
 	}
 
 	private DateTime toDateTimeFullHour(LocalTime local) {
-		return toDateTimeFullHour(date.toLocalDateTime(local).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0));
+		return toDateTimeFullHour(date.toLocalDateTime(local)
+				.withMinuteOfHour(0)
+				.withSecondOfMinute(0)
+				.withMillisOfSecond(0));
 	}
 
 	private DateTime toDateTimeFullHour(LocalDateTime local) {

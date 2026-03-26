@@ -1,16 +1,16 @@
 package com.zenobase.commands;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.zenobase.json.ObjectField;
-import com.zenobase.json.DomainNode;
-import com.zenobase.models.Bucket;
-import com.zenobase.models.Identity;
-import com.zenobase.services.BucketRepository;
+import jakarta.inject.Inject;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.inject.Inject;
+import com.zenobase.json.DomainNode;
+import com.zenobase.json.ObjectField;
+import com.zenobase.models.Bucket;
+import com.zenobase.models.Identity;
+import com.zenobase.services.BucketRepository;
 
 public class UpdateBucketCommand extends Command {
 
@@ -88,11 +88,15 @@ public class UpdateBucketCommand extends Command {
 				if (e.status() != 409) throw e;
 				Bucket current = repository.find(command.getTo().getId());
 				if (current != null && current.getVersion() < command.getTo().getVersion()) {
-					logger.warn("Recovering from a bucket version conflict: {} -> {}...", command.getTo().getVersion(), current.getVersion());
+					logger.warn(
+							"Recovering from a bucket version conflict: {} -> {}...",
+							command.getTo().getVersion(),
+							current.getVersion());
 					Bucket correctedFrom = command.getFrom().copy();
 					correctedFrom.setVersion(current.getVersion());
 					DomainNode.SEQ_NO.setValue(correctedFrom.toJson(), DomainNode.SEQ_NO.getValue(current.toJson()));
-					DomainNode.PRIMARY_TERM.setValue(correctedFrom.toJson(), DomainNode.PRIMARY_TERM.getValue(current.toJson()));
+					DomainNode.PRIMARY_TERM.setValue(
+							correctedFrom.toJson(), DomainNode.PRIMARY_TERM.getValue(current.toJson()));
 					command.setParameter(FROM, correctedFrom.toJson());
 					Bucket correctedTo = command.getTo().copy();
 					correctedTo.setVersion(current.getVersion());
@@ -105,7 +109,10 @@ public class UpdateBucketCommand extends Command {
 		}
 
 		private void update(UpdateBucketCommand command) {
-			repository.update(command.getFrom(), command.getTo().copy(), command.getTimestamp()); // copy to prevent the version number from being incremented
+			repository.update(
+					command.getFrom(),
+					command.getTo().copy(),
+					command.getTimestamp()); // copy to prevent the version number from being incremented
 		}
 	}
 }

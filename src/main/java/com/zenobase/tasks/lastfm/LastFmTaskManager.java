@@ -1,15 +1,13 @@
 package com.zenobase.tasks.lastfm;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import jakarta.inject.Inject;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.RateLimiter;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
@@ -44,7 +42,8 @@ public class LastFmTaskManager extends OAuthTaskManager {
 
 	@Override
 	public LastFmTask newTask(String bucketId, Identity principal, ObjectNode settings) {
-		DateTimeZone timezone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone timezone = DateTimeZone.forID(
+				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "body");
 		var task = new LastFmTask(bucketId, principal, marker);
@@ -54,7 +53,12 @@ public class LastFmTaskManager extends OAuthTaskManager {
 	}
 
 	private static String parseMarker(String marker, DateTimeZone timezone) {
-		return marker != null ? Long.toString(LocalDateTime.parse(marker.replaceAll("Z", "")).toDateTime(timezone).getMillis() / 1000) : null;
+		return marker != null
+				? Long.toString(LocalDateTime.parse(marker.replaceAll("Z", ""))
+								.toDateTime(timezone)
+								.getMillis()
+						/ 1000)
+				: null;
 	}
 
 	@Override
@@ -69,7 +73,8 @@ public class LastFmTaskManager extends OAuthTaskManager {
 			for (int page = 1; page < 10; ++page) {
 				LastFmRequest request = createRequest(task, now, credentials, page);
 				Response response = send(request, credentials);
-				RecentTracksResult result = new RecentTracksResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
+				RecentTracksResult result = new RecentTracksResult(
+						parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
 				Preconditions.checkState(result.isSuccess(), "Request for %s failed", request.getCompleteUrl());
 				events.addAll(result.getEvents());
 				if (!result.hasNext()) {
@@ -130,17 +135,16 @@ public class LastFmTaskManager extends OAuthTaskManager {
 		RATE_LIMIT.acquire();
 		request.addQuerystringParameter("format", "json");
 		return super.send(request, credentials);
-
 	}
 
 	private static Command createCommand(Task task, List<Event> events, DateTime to) {
 		var command = new CompoundCommand(task.getPrincipal(), "ran lastfm task", "reverted lastfm task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), Long.toString(to.getMillis() / 1000))
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(Task.MARKER, task.getMarker(), Long.toString(to.getMillis() / 1000))
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}

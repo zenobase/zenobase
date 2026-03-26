@@ -18,7 +18,8 @@ public class OAuthControllerClientCredentialsGrantTest extends OAuthControllerTe
 	public void test() {
 		ArgumentCaptor<CreateAuthorizationCommand> arg = ArgumentCaptor.forClass(CreateAuthorizationCommand.class);
 		when(dispatcher.dispatch(arg.capture())).thenReturn("c");
-		try (Http1ClientResponse result = call(new TokenForm(OAuthController.GRANT_TYPE_CLIENT_CREDENTIALS, null, null))) {
+		try (Http1ClientResponse result =
+				call(new TokenForm(OAuthController.GRANT_TYPE_CLIENT_CREDENTIALS, null, null))) {
 			assertGranted(result);
 			Authorization auth = arg.getValue().getAuthorization();
 			assertThat(auth.getId()).isNotNull();
@@ -32,7 +33,8 @@ public class OAuthControllerClientCredentialsGrantTest extends OAuthControllerTe
 	public void testWithJson() {
 		ArgumentCaptor<CreateAuthorizationCommand> arg = ArgumentCaptor.forClass(CreateAuthorizationCommand.class);
 		when(dispatcher.dispatch(arg.capture())).thenReturn("c");
-		try (Http1ClientResponse result = call(new TokenForm(OAuthController.GRANT_TYPE_CLIENT_CREDENTIALS, null, null).toJson())) {
+		try (Http1ClientResponse result =
+				call(new TokenForm(OAuthController.GRANT_TYPE_CLIENT_CREDENTIALS, null, null).toJson())) {
 			assertGranted(result);
 			Authorization auth = arg.getValue().getAuthorization();
 			assertThat(auth.getId()).isNotNull();
@@ -44,8 +46,8 @@ public class OAuthControllerClientCredentialsGrantTest extends OAuthControllerTe
 
 	private Http1ClientResponse call(TokenForm form) {
 		return client.post("/oauth/token")
-			.header(HeaderNames.CONTENT_TYPE, "application/x-www-form-urlencoded")
-			.submit(toFormString(form));
+				.header(HeaderNames.CONTENT_TYPE, "application/x-www-form-urlencoded")
+				.submit(toFormString(form));
 	}
 
 	private Http1ClientResponse call(JsonNode node) {

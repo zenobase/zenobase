@@ -13,9 +13,7 @@ public class TokenForm {
 	private String username;
 	private String password;
 
-	public TokenForm() {
-
-	}
+	public TokenForm() {}
 
 	public TokenForm(String grant_type, String username, String password) {
 		this.grant_type = grant_type;

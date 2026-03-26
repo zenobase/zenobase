@@ -2,13 +2,12 @@ package com.zenobase.controllers;
 
 import java.util.List;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.opensearch.client.opensearch._types.OpenSearchException;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.DeleteAuthorizationCommand;
@@ -37,9 +36,13 @@ public class BucketController extends ControllerSupport {
 	private final TaskRepository tasks;
 
 	@Inject
-	public BucketController(AuthorizationContext security, CommandDispatcher dispatcher,
-		BucketRepository buckets, UserRepository users, AuthorizationRepository authorizations,
-		TaskRepository tasks) {
+	public BucketController(
+			AuthorizationContext security,
+			CommandDispatcher dispatcher,
+			BucketRepository buckets,
+			UserRepository users,
+			AuthorizationRepository authorizations,
+			TaskRepository tasks) {
 
 		super(security);
 		this.dispatcher = dispatcher;
@@ -66,19 +69,19 @@ public class BucketController extends ControllerSupport {
 			sendNotFound(res);
 			return;
 		}
-    	if (!bucket.hasRole(auth, Role.VIEWER)) {
-    		if (auth == null) {
-    			sendUnauthorized(res);
-    		} else {
-    			sendForbidden(res);
-    		}
-    		return;
-    	}
+		if (!bucket.hasRole(auth, Role.VIEWER)) {
+			if (auth == null) {
+				sendUnauthorized(res);
+			} else {
+				sendForbidden(res);
+			}
+			return;
+		}
 		if (bucket.getWidgets().isEmpty()) {
 			setDefaultDashboard(bucket);
 		}
-    	sendOk(res, labelOnly ? toLabel(bucket) : bucket.toJson());
-    }
+		sendOk(res, labelOnly ? toLabel(bucket) : bucket.toJson());
+	}
 
 	private static JsonNode toLabel(Bucket bucket) {
 		return Nodes.newObject("label", bucket.getLabel());
@@ -90,11 +93,11 @@ public class BucketController extends ControllerSupport {
 
 	private static class DefaultDashboard {
 
-		public List<ObjectNode> widgets(){
+		public List<ObjectNode> widgets() {
 			return List.of(timeline(), list(), count());
 		}
 
-		private ObjectNode list(){
+		private ObjectNode list() {
 			ObjectNode widget = Nodes.newObject();
 			widget.put("id", "events");
 			widget.put("label", "Latest");
@@ -106,7 +109,7 @@ public class BucketController extends ControllerSupport {
 			return widget;
 		}
 
-		private ObjectNode timeline(){
+		private ObjectNode timeline() {
 			ObjectNode widget = Nodes.newObject();
 			widget.put("id", "timeline");
 			widget.put("label", "Timeline");
@@ -117,7 +120,7 @@ public class BucketController extends ControllerSupport {
 			return widget;
 		}
 
-		private ObjectNode count(){
+		private ObjectNode count() {
 			ObjectNode widget = Nodes.newObject();
 			widget.put("id", "tags");
 			widget.put("label", "Tags");
@@ -137,16 +140,16 @@ public class BucketController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
-    	Bucket bucket = buckets.find(bucketId);
-    	if (bucket == null) {
-    		sendNotFound(res, "bucket not found");
-    		return;
-    	}
-    	if (!bucket.hasRole(auth, Role.OWNER)) {
-    		sendForbidden(res);
-    		return;
-    	}
-    	Bucket updated = new Bucket(body(req));
+		Bucket bucket = buckets.find(bucketId);
+		if (bucket == null) {
+			sendNotFound(res, "bucket not found");
+			return;
+		}
+		if (!bucket.hasRole(auth, Role.OWNER)) {
+			sendForbidden(res);
+			return;
+		}
+		Bucket updated = new Bucket(body(req));
 		if (!updated.valid()) {
 			sendBadRequest(res, "bucket not valid");
 			return;
@@ -172,7 +175,7 @@ public class BucketController extends ControllerSupport {
 		}
 		try {
 			String commandId = dispatcher.dispatch(new UpdateBucketCommand(auth.getPrincipal(), bucket, updated));
-    		setHeader(res, COMMAND_ID, commandId);
+			setHeader(res, COMMAND_ID, commandId);
 			sendNoContent(res);
 		} catch (OpenSearchException e) {
 			if (e.status() == 409) {
@@ -181,34 +184,39 @@ public class BucketController extends ControllerSupport {
 			}
 			throw e;
 		}
-    }
+	}
 
 	public void delete(ServerRequest req, ServerResponse res) {
 		String bucketId = req.path().pathParameters().get("bucketId");
-    	Authorization auth = getCurrentAuthorization(req);
+		Authorization auth = getCurrentAuthorization(req);
 		if (auth == null) {
 			sendUnauthorized(res);
 			return;
 		}
-    	Bucket bucket = buckets.find(bucketId);
-    	if (bucket == null) {
-    		sendNotFound(res);
-    		return;
-    	}
-    	if (!bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
-    		sendForbidden(res);
-    		return;
-    	}
-    	if (buckets.isAliased(bucketId)) {
-    		sendConflict(res, "bucket is aliased");
-    		return;
-    	}
-    	CompoundCommand command = new CompoundCommand(auth.getPrincipal(), "deleted bucket and associated data", "restored bucket and associated data");
-    	authorizations.find(new AuthorizationQuery().scopeEqualTo(bucket.getId()), authorization -> command.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization)));
-    	tasks.find(new TaskQuery().bucketEqualTo(bucketId), task -> command.add(new DeleteTaskCommand(auth.getPrincipal(), task)));
-    	command.add(new DeleteBucketCommand(auth.getPrincipal(), bucket));
-    	String commandId = dispatcher.dispatch(command.unwrap());
+		Bucket bucket = buckets.find(bucketId);
+		if (bucket == null) {
+			sendNotFound(res);
+			return;
+		}
+		if (!bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
+			sendForbidden(res);
+			return;
+		}
+		if (buckets.isAliased(bucketId)) {
+			sendConflict(res, "bucket is aliased");
+			return;
+		}
+		CompoundCommand command = new CompoundCommand(
+				auth.getPrincipal(), "deleted bucket and associated data", "restored bucket and associated data");
+		authorizations.find(
+				new AuthorizationQuery().scopeEqualTo(bucket.getId()),
+				authorization -> command.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization)));
+		tasks.find(
+				new TaskQuery().bucketEqualTo(bucketId),
+				task -> command.add(new DeleteTaskCommand(auth.getPrincipal(), task)));
+		command.add(new DeleteBucketCommand(auth.getPrincipal(), bucket));
+		String commandId = dispatcher.dispatch(command.unwrap());
 		setHeader(res, COMMAND_ID, commandId);
-    	sendNoContent(res);
-    }
+		sendNoContent(res);
+	}
 }

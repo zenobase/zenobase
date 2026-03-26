@@ -97,7 +97,8 @@ public class CredentialsRepositoryTest extends OpenSearchTestSupport {
 		for (int i = 0; i < size; ++i) {
 			Credentials credentials = new Credentials(TYPE, ME);
 			credentialsList.add(credentials);
-			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
+			Uninterruptibles.sleepUninterruptibly(
+					5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
 			store(credentials);
 		}
 		return Lists.reverse(credentialsList);

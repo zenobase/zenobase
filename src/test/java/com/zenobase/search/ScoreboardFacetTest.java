@@ -3,7 +3,6 @@ package com.zenobase.search;
 import static com.zenobase.testing.NodeAssert.assertThat;
 
 import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Length;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Before;
@@ -41,8 +40,9 @@ public class ScoreboardFacetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s",
-			FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.DISTANCE, "km", "-sum");
+		addFacet(
+				"id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s",
+				FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.DISTANCE, "km", "-sum");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -72,8 +72,7 @@ public class ScoreboardFacetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,key_field:%s,value_field:%s",
-			FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.COUNT);
+		addFacet("id:%s,type:%s,key_field:%s,value_field:%s", FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.COUNT);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -99,8 +98,9 @@ public class ScoreboardFacetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,filter:%s",
-			FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.COUNT, "tag:walk");
+		addFacet(
+				"id:%s,type:%s,key_field:%s,value_field:%s,filter:%s",
+				FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.COUNT, "tag:walk");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -116,7 +116,9 @@ public class ScoreboardFacetTest extends FacetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.DISTANCE, "km", "sum");
+		addFacet(
+				"id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s",
+				FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.DISTANCE, "km", "sum");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);

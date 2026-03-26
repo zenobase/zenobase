@@ -26,14 +26,14 @@ public class OffsetDateTimeRangeParser extends RangeParser<ReadableInstant> {
 
 	private static ReadableInstant getLower(Range<ComparableInterval> range) {
 		return range.lowerBoundType() == BoundType.CLOSED
-			? range.lowerEndpoint().getStart()
-			: range.lowerEndpoint().getEnd();
+				? range.lowerEndpoint().getStart()
+				: range.lowerEndpoint().getEnd();
 	}
 
 	private static ReadableInstant getUpper(Range<ComparableInterval> range) {
 		return range.upperBoundType() == BoundType.OPEN
-			? range.upperEndpoint().getStart()
-			: range.upperEndpoint().getEnd();
+				? range.upperEndpoint().getStart()
+				: range.upperEndpoint().getEnd();
 	}
 
 	@Override

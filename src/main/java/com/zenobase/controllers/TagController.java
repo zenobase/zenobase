@@ -1,9 +1,8 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
@@ -33,14 +32,14 @@ public class TagController extends ControllerSupport {
 			sendNotFound(res);
 			return;
 		}
-    	if (!bucket.hasRole(auth, Role.VIEWER)) {
-    		if (auth == null) {
-    			sendUnauthorized(res);
-    		} else {
-    			sendForbidden(res);
-    		}
-    		return;
-    	}
-    	sendOk(res, Nodes.newArray(events.terms(bucketId, Event.TAG.getName())));
-    }
+		if (!bucket.hasRole(auth, Role.VIEWER)) {
+			if (auth == null) {
+				sendUnauthorized(res);
+			} else {
+				sendForbidden(res);
+			}
+			return;
+		}
+		sendOk(res, Nodes.newArray(events.terms(bucketId, Event.TAG.getName())));
+	}
 }

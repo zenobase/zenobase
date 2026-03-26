@@ -21,7 +21,8 @@ public class FitbitIntradayStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		FitbitIntradayStepsResult result = new FitbitIntradayStepsResult(readObject("FitbitIntradayStepsResultTest.json"), TAG, TESTER, DATE, TIMEZONE);
+		FitbitIntradayStepsResult result = new FitbitIntradayStepsResult(
+				readObject("FitbitIntradayStepsResultTest.json"), TAG, TESTER, DATE, TIMEZONE);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(24);
 		Event expected = new Event(events.get(0).getId());
@@ -37,7 +38,8 @@ public class FitbitIntradayStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void testEmpty() {
-		FitbitIntradayStepsResult result = new FitbitIntradayStepsResult(Nodes.newObject(), TAG, TESTER, DATE, TIMEZONE);
+		FitbitIntradayStepsResult result =
+				new FitbitIntradayStepsResult(Nodes.newObject(), TAG, TESTER, DATE, TIMEZONE);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").isEmpty();
 	}

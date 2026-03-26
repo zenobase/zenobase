@@ -1,9 +1,8 @@
 package com.zenobase.tasks.oura;
 
 import java.math.RoundingMode;
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Frequency;
@@ -71,11 +70,15 @@ abstract class OuraResultSupport {
 	}
 
 	protected DecimalMeasure<Energy> energyValue(JsonNode node) {
-		return !isZero(node) ? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.KCAL) : null;
+		return !isZero(node)
+				? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.KCAL)
+				: null;
 	}
 
 	protected DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
-		return !isZero(node) ? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.BPM) : null;
+		return !isZero(node)
+				? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.BPM)
+				: null;
 	}
 
 	protected Rating ratingValue(JsonNode node) {

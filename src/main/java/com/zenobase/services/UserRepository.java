@@ -1,12 +1,11 @@
 package com.zenobase.services;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
+import jakarta.inject.Inject;
+import org.joda.time.DateTime;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch.core.SearchRequest;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,15 +55,14 @@ public class UserRepository extends RepositorySupport<User> {
 	}
 
 	public PartialList<User> find(UserQuery query, int offset, int limit) {
-		SearchRequest request = SearchRequest.of(s -> s
-			.index(index.getIndexName())
-			.query(query.build())
-			.sort(so -> so.field(f -> f.field(User.NAME.getName()).order(SortOrder.Asc)))
-			.from(offset).size(limit)
-			.trackTotalHits(t -> t.enabled(true))
-			.version(true)
-			.seqNoPrimaryTerm(true)
-		);
+		SearchRequest request = SearchRequest.of(s -> s.index(index.getIndexName())
+				.query(query.build())
+				.sort(so -> so.field(f -> f.field(User.NAME.getName()).order(SortOrder.Asc)))
+				.from(offset)
+				.size(limit)
+				.trackTotalHits(t -> t.enabled(true))
+				.version(true)
+				.seqNoPrimaryTerm(true));
 		return new UserList(index.find(request));
 	}
 

@@ -10,12 +10,14 @@ public class EmailVerificationKeyTest {
 
 	@Test
 	public void testValidKey() {
-		assertThat(new EmailVerificationKey("jdoe", "jdoe@zenobase.com").validate(key.getKey())).isTrue();
+		assertThat(new EmailVerificationKey("jdoe", "jdoe@zenobase.com").validate(key.getKey()))
+				.isTrue();
 	}
 
 	@Test
 	public void testInvalidKey() {
-		assertThat(new EmailVerificationKey("jdoe", "jdoe@zenobase.org").validate(key.getKey())).isFalse();
+		assertThat(new EmailVerificationKey("jdoe", "jdoe@zenobase.org").validate(key.getKey()))
+				.isFalse();
 	}
 
 	@Test

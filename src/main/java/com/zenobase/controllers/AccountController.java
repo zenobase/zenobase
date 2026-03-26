@@ -1,9 +1,8 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -43,10 +42,16 @@ public class AccountController extends ControllerSupport {
 	private final PaymentGateway payments;
 
 	@Inject
-	public AccountController(AuthorizationContext security, UserRepository users,
-		BucketRepository buckets, TaskRepository tasks, CredentialsRepository credentials,
-		AuthorizationRepository authorizations, CommandDispatcher dispatcher, VerificationMailer mailer,
-		PaymentGateway payments) {
+	public AccountController(
+			AuthorizationContext security,
+			UserRepository users,
+			BucketRepository buckets,
+			TaskRepository tasks,
+			CredentialsRepository credentials,
+			AuthorizationRepository authorizations,
+			CommandDispatcher dispatcher,
+			VerificationMailer mailer,
+			PaymentGateway payments) {
 
 		super(security);
 		this.users = users;
@@ -80,7 +85,7 @@ public class AccountController extends ControllerSupport {
 		user.setSuperuser(users.isEmpty());
 		String commandId = dispatcher.dispatch(new CreateUserCommand(auth.getPrincipal(), user));
 		mailer.send(user);
-        setHeader(res, LOCATION, "/users/" + user.getName());
+		setHeader(res, LOCATION, "/users/" + user.getName());
 		setHeader(res, COMMAND_ID, commandId);
 		sendCreated(res, new UserProfile(user).toJson());
 	}
@@ -109,18 +114,31 @@ public class AccountController extends ControllerSupport {
 	}
 
 	public Command buildCloseAccountCommand(Identity principal, User user, Authorization current) {
-		var command = new CompoundCommand(principal, String.format("closed account %s", user.getName()), String.format("reopened account %s", user.getName()));
+		var command = new CompoundCommand(
+				principal,
+				String.format("closed account %s", user.getName()),
+				String.format("reopened account %s", user.getName()));
 		command.add(new DeleteUserCommand(principal, user));
-		buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(true), bucket -> command.add(new DeleteBucketCommand(principal, bucket)));
-		buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(false), bucket -> command.add(new DeleteBucketCommand(principal, bucket)));
-    	tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()), task -> command.add(new DeleteTaskCommand(principal, task)));
-    	authorizations.find(new AuthorizationQuery().principalEqualTo(user.asIdentity()), authorization -> {
+		buckets.find(
+				new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(true),
+				bucket -> command.add(new DeleteBucketCommand(principal, bucket)));
+		buckets.find(
+				new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(false),
+				bucket -> command.add(new DeleteBucketCommand(principal, bucket)));
+		tasks.find(
+				new TaskQuery().principalEqualTo(user.asIdentity()),
+				task -> command.add(new DeleteTaskCommand(principal, task)));
+		authorizations.find(new AuthorizationQuery().principalEqualTo(user.asIdentity()), authorization -> {
 			if (!current.getId().equals(authorization.getId())) {
 				command.add(new DeleteAuthorizationCommand(principal, authorization));
 			}
 		});
-    	authorizations.find(new AuthorizationQuery().clientEqualTo(user.asIdentity()), authorization -> command.add(new DeleteAuthorizationCommand(principal, authorization)));
-    	credentials.find(new CredentialsQuery().principalEqualTo(user.asIdentity()), credentials -> command.add(new DeleteCredentialsCommand(principal, credentials)));
+		authorizations.find(
+				new AuthorizationQuery().clientEqualTo(user.asIdentity()),
+				authorization -> command.add(new DeleteAuthorizationCommand(principal, authorization)));
+		credentials.find(
+				new CredentialsQuery().principalEqualTo(user.asIdentity()),
+				credentials -> command.add(new DeleteCredentialsCommand(principal, credentials)));
 		return command;
 	}
 }

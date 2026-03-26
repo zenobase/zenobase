@@ -20,14 +20,13 @@ public class SnapshotList extends LazyList<Snapshot> {
 		return new Snapshot(node);
 	}
 
-
 	public static ObjectNode toJson(PartialList<Snapshot> snapshots) {
-    	ObjectNode resultNode = Nodes.newObject();
-    	TOTAL.setValue(resultNode, Ints.checkedCast(snapshots.getTotal()));
-    	ArrayNode snapshotsNode = resultNode.putArray("snapshots");
-    	for (Snapshot snapshot : snapshots) {
-    		snapshotsNode.add(snapshot.toJson());
-    	}
+		ObjectNode resultNode = Nodes.newObject();
+		TOTAL.setValue(resultNode, Ints.checkedCast(snapshots.getTotal()));
+		ArrayNode snapshotsNode = resultNode.putArray("snapshots");
+		for (Snapshot snapshot : snapshots) {
+			snapshotsNode.add(snapshot.toJson());
+		}
 		return resultNode;
 	}
 }

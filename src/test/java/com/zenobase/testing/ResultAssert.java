@@ -43,7 +43,8 @@ public class ResultAssert {
 	}
 
 	public ResultAssert hasHeader(String name, String value) {
-		Assertions.assertThat(response.headers().first(HeaderNames.create(name)).orElse(null)).isEqualTo(value);
+		Assertions.assertThat(response.headers().first(HeaderNames.create(name)).orElse(null))
+				.isEqualTo(value);
 		return this;
 	}
 

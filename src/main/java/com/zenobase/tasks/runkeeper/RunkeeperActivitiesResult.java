@@ -1,7 +1,6 @@
 package com.zenobase.tasks.runkeeper;
 
 import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
@@ -24,7 +23,8 @@ class RunkeeperActivitiesResult extends RunkeeperResultSupport {
 	private final Unit<Length> lengthUnit;
 	private final Unit<Energy> energyUnit;
 
-	public RunkeeperActivitiesResult(JsonNode node, Identity author, Unit<Length> lengthUnit, Unit<Energy> energyUnit, DateTimeZone timezone) {
+	public RunkeeperActivitiesResult(
+			JsonNode node, Identity author, Unit<Length> lengthUnit, Unit<Energy> energyUnit, DateTimeZone timezone) {
 		super(node, author, timezone);
 		this.lengthUnit = lengthUnit;
 		this.energyUnit = energyUnit;
@@ -36,7 +36,8 @@ class RunkeeperActivitiesResult extends RunkeeperResultSupport {
 		Duration duration = durationValue(node.path("duration"));
 		DecimalMeasure<Length> distance = distanceValue(node.path("total_distance"));
 		event.addValue(Event.TAG, node.path("type").textValue());
-		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("start_time"), dateTimeZoneValue(node.path("utc_offset"))));
+		event.setValue(
+				Event.TIMESTAMP, dateTimeValue(node.path("start_time"), dateTimeZoneValue(node.path("utc_offset"))));
 		event.setValue(Event.DURATION, duration);
 		event.setValue(Event.DISTANCE, distance);
 		if (distance != null && duration != null) {
@@ -58,7 +59,9 @@ class RunkeeperActivitiesResult extends RunkeeperResultSupport {
 	}
 
 	private Duration durationValue(JsonNode node) {
-		return !isZero(node) ? Duration.millis(node.decimalValue().movePointRight(3).longValue()) : null;
+		return !isZero(node)
+				? Duration.millis(node.decimalValue().movePointRight(3).longValue())
+				: null;
 	}
 
 	private DecimalMeasure<Length> distanceValue(JsonNode node) {

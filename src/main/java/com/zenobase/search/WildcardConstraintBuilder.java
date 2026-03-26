@@ -1,7 +1,6 @@
 package com.zenobase.search;
 
 import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.opensearch.client.opensearch._types.query_dsl.WildcardQuery;
 
 public class WildcardConstraintBuilder extends ConstraintBuilder {
 
@@ -11,7 +10,9 @@ public class WildcardConstraintBuilder extends ConstraintBuilder {
 
 	@Override
 	public Query build(String value) {
-		return containsWildcard(value) ? Query.of(q -> q.wildcard(w -> w.field(getPath()).value(value))) : null;
+		return containsWildcard(value)
+				? Query.of(q -> q.wildcard(w -> w.field(getPath()).value(value)))
+				: null;
 	}
 
 	private static boolean containsWildcard(String value) {

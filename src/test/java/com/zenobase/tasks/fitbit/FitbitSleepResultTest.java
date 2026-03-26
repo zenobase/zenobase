@@ -19,7 +19,8 @@ public class FitbitSleepResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		FitbitSleepResult result = new FitbitSleepResult(readObject("FitbitSleepResultTest.json"), TAG, TESTER, true, DateTimeZone.forOffsetHours(-8));
+		FitbitSleepResult result = new FitbitSleepResult(
+				readObject("FitbitSleepResultTest.json"), TAG, TESTER, true, DateTimeZone.forOffsetHours(-8));
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());
@@ -35,7 +36,8 @@ public class FitbitSleepResultTest extends ResultTestSupport {
 
 	@Test
 	public void testEmpty() {
-		FitbitSleepResult result = new FitbitSleepResult(Nodes.newObject(), TAG, TESTER, true, DateTimeZone.forOffsetHours(-8));
+		FitbitSleepResult result =
+				new FitbitSleepResult(Nodes.newObject(), TAG, TESTER, true, DateTimeZone.forOffsetHours(-8));
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(0);
 	}

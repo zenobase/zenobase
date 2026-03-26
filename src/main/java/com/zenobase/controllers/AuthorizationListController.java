@@ -1,9 +1,8 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
@@ -19,7 +18,8 @@ public class AuthorizationListController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-	public AuthorizationListController(AuthorizationContext security, AuthorizationRepository authorizations, UserRepository users) {
+	public AuthorizationListController(
+			AuthorizationContext security, AuthorizationRepository authorizations, UserRepository users) {
 		super(security);
 		this.authorizations = authorizations;
 		this.users = users;
@@ -31,14 +31,14 @@ public class AuthorizationListController extends ControllerSupport {
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
 
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
-    	if (auth.getScope() != null) {
-    		sendForbidden(res);
-    		return;
-    	}
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
+		if (auth.getScope() != null) {
+			sendForbidden(res);
+			return;
+		}
 		if (!users.isSuperuser(auth.getPrincipal())) {
 			sendForbidden(res);
 			return;
@@ -48,11 +48,13 @@ public class AuthorizationListController extends ControllerSupport {
 			query = query.queryString(q);
 		}
 		sendOk(res, AuthorizationList.toJson(authorizations.find(query, offset, limit)));
-    }
+	}
 
 	public void findByUser(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
-		Boolean hasClient = req.query().first("has_client").isPresent() ? Boolean.valueOf(req.query().first("has_client").get()) : null;
+		Boolean hasClient = req.query().first("has_client").isPresent()
+				? Boolean.valueOf(req.query().first("has_client").get())
+				: null;
 		String q = req.query().first("q").orElse(null);
 		int offset = Integer.parseInt(req.query().first("offset").orElse("0"));
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
@@ -66,14 +68,14 @@ public class AuthorizationListController extends ControllerSupport {
 			return;
 		}
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
-    	if (auth.getScope() != null) {
-    		sendForbidden(res);
-    		return;
-    	}
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
+		if (auth.getScope() != null) {
+			sendForbidden(res);
+			return;
+		}
 		Identity principal = new UserLookup(users).getIdentity(userId);
 		if (principal == null) {
 			sendNotFound(res, "user not found");
@@ -83,12 +85,10 @@ public class AuthorizationListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		var query = new AuthorizationQuery()
-			.principalEqualTo(principal)
-			.clientNotNull(hasClient);
+		var query = new AuthorizationQuery().principalEqualTo(principal).clientNotNull(hasClient);
 		if (q != null) {
 			query = query.queryString(q);
 		}
 		sendOk(res, AuthorizationList.toJson(authorizations.find(query, offset, limit)));
-    }
+	}
 }

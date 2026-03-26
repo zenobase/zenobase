@@ -5,9 +5,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.inject.Inject;
-
 import com.google.common.collect.ImmutableList;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -47,8 +46,8 @@ public class Scheduler {
 
 	private void schedule(LocalTime begin, Period repeat, Runnable runnable) {
 		Duration initialDelay = nextExecution(DateTime.now(DateTimeZone.UTC), begin, repeat);
-		executor.scheduleAtFixedRate(runnable,
-			initialDelay.getMillis(), toDurationMillis(repeat), TimeUnit.MILLISECONDS);
+		executor.scheduleAtFixedRate(
+				runnable, initialDelay.getMillis(), toDurationMillis(repeat), TimeUnit.MILLISECONDS);
 	}
 
 	static Duration nextExecution(DateTime now, LocalTime begin, Period repeat) {

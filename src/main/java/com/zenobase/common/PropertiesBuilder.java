@@ -14,5 +14,4 @@ public class PropertiesBuilder {
 	public Properties build() {
 		return new Properties(properties);
 	}
-
 }

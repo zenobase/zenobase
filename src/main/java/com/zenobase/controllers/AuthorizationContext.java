@@ -1,9 +1,8 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import io.helidon.http.HeaderNames;
 import io.helidon.webserver.http.ServerRequest;
+import jakarta.inject.Inject;
 
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.AuthorizationRepository;
@@ -22,7 +21,8 @@ public class AuthorizationContext {
 	public Authorization current(ServerRequest request) {
 		String token = request.query().first("code").orElse(null);
 		if (token == null) {
-			token = extractToken(request.headers().first(HeaderNames.AUTHORIZATION).orElse(null));
+			token = extractToken(
+					request.headers().first(HeaderNames.AUTHORIZATION).orElse(null));
 		}
 		return token != null ? authorizations.find(token) : null;
 	}
@@ -32,8 +32,6 @@ public class AuthorizationContext {
 	}
 
 	private static boolean isOAuthHeader(String header) {
-		return header != null
-			&& header.startsWith(HEADER_PREFIX)
-			&& header.length() > HEADER_PREFIX.length();
+		return header != null && header.startsWith(HEADER_PREFIX) && header.length() > HEADER_PREFIX.length();
 	}
 }

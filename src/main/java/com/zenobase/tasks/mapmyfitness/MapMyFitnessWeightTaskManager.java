@@ -1,13 +1,11 @@
 package com.zenobase.tasks.mapmyfitness;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import jakarta.inject.Inject;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -56,7 +54,8 @@ public class MapMyFitnessWeightTaskManager extends MapMyFitnessTaskManagerSuppor
 				request.addQuerystringParameter("target_start_datetime", from);
 			}
 			Response response = send(request, credentials);
-			WeightResult result = new WeightResult(parseObject(response), task.getPrincipal(), task.getTag(), user.isImperial());
+			WeightResult result =
+					new WeightResult(parseObject(response), task.getPrincipal(), task.getTag(), user.isImperial());
 			events.addAll(result.getEvents());
 			path = result.getNext();
 		}

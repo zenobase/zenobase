@@ -3,10 +3,7 @@ package com.zenobase.tasks.fitbit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Energy;
-import javax.measure.quantity.Length;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -26,7 +23,16 @@ public class FitbitStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		FitbitStepsResult result = new FitbitStepsResult(readObject("FitbitStepsResultTest.json"), TAG, TESTER, DATE, TIMEZONE, Units.MI, Units.FT, Units.KCAL, true);
+		FitbitStepsResult result = new FitbitStepsResult(
+				readObject("FitbitStepsResultTest.json"),
+				TAG,
+				TESTER,
+				DATE,
+				TIMEZONE,
+				Units.MI,
+				Units.FT,
+				Units.KCAL,
+				true);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());
@@ -44,7 +50,8 @@ public class FitbitStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void testEmpty() {
-		FitbitStepsResult result = new FitbitStepsResult(Nodes.newObject(), TAG, TESTER, DATE, TIMEZONE, Units.MI, Units.FT, Units.KCAL, false);
+		FitbitStepsResult result = new FitbitStepsResult(
+				Nodes.newObject(), TAG, TESTER, DATE, TIMEZONE, Units.MI, Units.FT, Units.KCAL, false);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").isEmpty();
 	}

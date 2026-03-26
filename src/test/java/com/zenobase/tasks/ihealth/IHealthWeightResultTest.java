@@ -18,7 +18,8 @@ public class IHealthWeightResultTest extends ResultTestSupport {
 	public void test() {
 
 		String tag = "Weight";
-		IHealthWeightResult result = new IHealthWeightResult(readObject("IHealthWeightResultTest.json"), TESTER, tag, DateTimeZone.forID("America/Los_Angeles"));
+		IHealthWeightResult result = new IHealthWeightResult(
+				readObject("IHealthWeightResultTest.json"), TESTER, tag, DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.isSuccess()).isTrue();
 		assertThat(result.hasNext()).isFalse();
 		List<Event> events = result.getEvents();

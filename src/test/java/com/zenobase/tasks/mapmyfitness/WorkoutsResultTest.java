@@ -3,7 +3,6 @@ package com.zenobase.tasks.mapmyfitness;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import javax.measure.DecimalMeasure;
 
 import org.joda.time.Duration;
@@ -30,8 +29,8 @@ public class WorkoutsResultTest extends ResultTestSupport {
 		e1.setValue(Event.DURATION, Duration.standardSeconds(2992));
 		e1.setValue(Event.COUNT, 1000);
 		e1.setValue(Event.DISTANCE, DecimalMeasure.valueOf("3.3 mi"));
-		e1.setValue(Event.VELOCITY,  DecimalMeasure.valueOf("4.0 mph"));
-		e1.setValue(Event.PACE,  DecimalMeasure.valueOf("895 s/mi"));
+		e1.setValue(Event.VELOCITY, DecimalMeasure.valueOf("4.0 mph"));
+		e1.setValue(Event.PACE, DecimalMeasure.valueOf("895 s/mi"));
 		e1.setValue(Event.FREQUENCY, DecimalMeasure.valueOf("115 bpm"));
 		e1.setValue(Event.AUTHOR, TESTER);
 		e1.setValue(Event.SOURCE, new Resource("MapMyFitness", "https://www.mapmyfitness.com/workout/547836386"));

@@ -3,7 +3,6 @@ package com.zenobase.tasks.netatmo;
 import java.util.Set;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import org.joda.time.DateTime;
@@ -20,11 +19,19 @@ public class Device {
 	private final Location location;
 	private final Set<String> types;
 
-	public Device(String id, String label, DateTime created, DateTime updated, Location location, Iterable<String> types) {
+	public Device(
+			String id, String label, DateTime created, DateTime updated, Location location, Iterable<String> types) {
 		this(id, null, label, created, updated, location, types);
 	}
 
-	public Device(String id, String moduleId, String label, DateTime created, DateTime updated, Location location, Iterable<String> types) {
+	public Device(
+			String id,
+			String moduleId,
+			String label,
+			DateTime created,
+			DateTime updated,
+			Location location,
+			Iterable<String> types) {
 		this.id = Preconditions.checkNotNull(id);
 		this.moduleId = moduleId;
 		this.label = Preconditions.checkNotNull(label);
@@ -59,16 +66,16 @@ public class Device {
 	}
 
 	public boolean supports(String type) {
-	    return types.contains(type);
+		return types.contains(type);
 	}
 
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
-			.add("id", id)
-			.add("label", label)
-			.add("timestamp", updated)
-			.add("location", location)
-			.toString();
+				.add("id", id)
+				.add("label", label)
+				.add("timestamp", updated)
+				.add("location", location)
+				.toString();
 	}
 }

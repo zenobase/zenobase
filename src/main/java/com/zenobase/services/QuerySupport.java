@@ -1,18 +1,11 @@
 package com.zenobase.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import java.util.ArrayList;
-
 import com.google.common.collect.Iterables;
-import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
-import org.opensearch.client.opensearch._types.query_dsl.ExistsQuery;
-import org.opensearch.client.opensearch._types.query_dsl.MatchAllQuery;
-import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.opensearch.client.opensearch._types.query_dsl.QueryStringQuery;
-import org.opensearch.client.opensearch._types.query_dsl.RangeQuery;
-import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
 import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 import com.zenobase.json.Field;
 
@@ -20,9 +13,7 @@ public class QuerySupport {
 
 	private final List<Query> constraints = new ArrayList<>();
 
-	protected QuerySupport() {
-
-	}
+	protected QuerySupport() {}
 
 	protected QuerySupport equalTo(Field<?> field, Object value) {
 		if (value != null) {
@@ -34,7 +25,8 @@ public class QuerySupport {
 	}
 
 	protected QuerySupport notEqualTo(Field<?> field, Object value) {
-		add(Query.of(q -> q.bool(b -> b.mustNot(Query.of(q2 -> q2.term(t -> t.field(field.getName()).value(toFieldValue(value))))))));
+		add(Query.of(q -> q.bool(b ->
+				b.mustNot(Query.of(q2 -> q2.term(t -> t.field(field.getName()).value(toFieldValue(value))))))));
 		return this;
 	}
 
@@ -50,7 +42,8 @@ public class QuerySupport {
 
 	protected QuerySupport lessThan(Field<?> field, Object value) {
 		Object jsonValue = value instanceof org.joda.time.DateTime ? value.toString() : value;
-		add(Query.of(q -> q.range(r -> r.field(field.getName()).lt(org.opensearch.client.json.JsonData.of(jsonValue)))));
+		add(Query.of(
+				q -> q.range(r -> r.field(field.getName()).lt(org.opensearch.client.json.JsonData.of(jsonValue)))));
 		return this;
 	}
 
@@ -75,8 +68,7 @@ public class QuerySupport {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof QuerySupport qs
-			&& equals(qs);
+		return that instanceof QuerySupport qs && equals(qs);
 	}
 
 	private boolean equals(QuerySupport that) {
@@ -107,5 +99,4 @@ public class QuerySupport {
 			default -> FieldValue.of(value.toString());
 		};
 	}
-
 }

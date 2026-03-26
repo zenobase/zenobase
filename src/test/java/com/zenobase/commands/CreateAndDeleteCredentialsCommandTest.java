@@ -12,8 +12,7 @@ public class CreateAndDeleteCredentialsCommandTest {
 
 	private final CredentialsRepository repository = mock(CredentialsRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new CreateCredentialsCommand.Handler(repository),
-		new DeleteCredentialsCommand.Handler(repository));
+			new CreateCredentialsCommand.Handler(repository), new DeleteCredentialsCommand.Handler(repository));
 
 	@Test
 	public void test() {

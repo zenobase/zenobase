@@ -3,7 +3,6 @@ package com.zenobase.common;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
 
 import org.junit.Test;
@@ -91,7 +90,7 @@ public class MeasuresTest {
 		assertThatIsEqualTo("133.322 Pa", "1 mmHg");
 		assertThatIsEqualTo("3386.388 Pa", "1 inHg");
 		assertThatIsEqualTo("6894.757 Pa", "1 psi");
-        assertThatIsEqualTo("98.0665 Pa", "1 cm_wg");
+		assertThatIsEqualTo("98.0665 Pa", "1 cm_wg");
 	}
 
 	@Test

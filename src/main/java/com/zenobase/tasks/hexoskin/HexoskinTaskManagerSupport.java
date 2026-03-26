@@ -1,7 +1,7 @@
 package com.zenobase.tasks.hexoskin;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
@@ -41,7 +41,7 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 	private Command execute(T task, OAuthCredentials credentials) {
 		HexoskinProfileResult profile = getProfile(credentials);
 		List<Event> events = new ArrayList<>();
-		for (String path = getPath(task); path != null;) {
+		for (String path = getPath(task); path != null; ) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, HOST + path);
 			Response response = send(request, credentials);
 			HexoskinResultSupport result = parse(response, profile, task);
@@ -68,17 +68,20 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 	}
 
 	protected LocalDate parseMarker(String marker) {
-		return marker != null ? DateTime.parse(marker).toLocalDate() : LocalDate.now().withDayOfMonth(1);
+		return marker != null
+				? DateTime.parse(marker).toLocalDate()
+				: LocalDate.now().withDayOfMonth(1);
 	}
 
 	protected Command createCommand(Task task, List<Event> events) {
-		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(
+				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}

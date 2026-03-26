@@ -1,9 +1,8 @@
 package com.zenobase.commands;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import jakarta.inject.Inject;
 
 import com.zenobase.json.JsonPatch;
 import com.zenobase.models.Identity;
@@ -41,7 +40,8 @@ public class UpdateCredentialsCommand extends UpdateCommandSupport {
 		return new Builder() {
 			@Override
 			public UpdateCredentialsCommand build() {
-				return new UpdateCredentialsCommand(credentials.getPrincipal(), credentials.getId(), getFrom(), getTo());
+				return new UpdateCredentialsCommand(
+						credentials.getPrincipal(), credentials.getId(), getFrom(), getTo());
 			}
 		};
 	}

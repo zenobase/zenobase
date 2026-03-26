@@ -1,8 +1,7 @@
 package com.zenobase.tasks.hexoskin;
 
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Frequency;
@@ -104,7 +103,9 @@ abstract class HexoskinResultSupport {
 	}
 
 	private Resource resourceValue(JsonNode node) {
-		return new Resource(node.path("name").textValue(), "https://my.hexoskin.com/en/activities/" + node.path("id").longValue());
+		return new Resource(
+				node.path("name").textValue(),
+				"https://my.hexoskin.com/en/activities/" + node.path("id").longValue());
 	}
 
 	private DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
@@ -120,7 +121,9 @@ abstract class HexoskinResultSupport {
 	}
 
 	private DecimalMeasure<Length> distanceValue(JsonNode node) {
-		return !isZero(node) && isPositive(node) ? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), distanceUnit), 2), distanceUnit) : null;
+		return !isZero(node) && isPositive(node)
+				? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), distanceUnit), 2), distanceUnit)
+				: null;
 	}
 
 	private DecimalMeasure<Energy> energyValue(JsonNode node) {

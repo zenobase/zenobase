@@ -11,18 +11,24 @@ public class MapMyFitnessTesting extends TaskTestingSupport {
 	@Test
 	@Ignore
 	public void testActivities() {
-		run(new MapMyFitnessActivitiesTaskManager(newCredentialsManager()), Nodes.newObject("marker", "2014-11-06T00:00:00.000-08:00"));
+		run(
+				new MapMyFitnessActivitiesTaskManager(newCredentialsManager()),
+				Nodes.newObject("marker", "2014-11-06T00:00:00.000-08:00"));
 	}
 
 	@Test
 	@Ignore
 	public void testWeight() {
-		run(new MapMyFitnessWeightTaskManager(newCredentialsManager()), Nodes.newObject("marker", "2015-01-01T00:00:00.000-08:00"));
+		run(
+				new MapMyFitnessWeightTaskManager(newCredentialsManager()),
+				Nodes.newObject("marker", "2015-01-01T00:00:00.000-08:00"));
 	}
 
 	@Test
 	public void testSleep() {
-		run(new MapMyFitnessSleepTaskManager(newCredentialsManager()), Nodes.newObject("marker", "2015-01-01T00:00:00.000-08:00"));
+		run(
+				new MapMyFitnessSleepTaskManager(newCredentialsManager()),
+				Nodes.newObject("marker", "2015-01-01T00:00:00.000-08:00"));
 	}
 
 	@Override

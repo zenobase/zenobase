@@ -1,10 +1,9 @@
 package com.zenobase.tasks.withings;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -15,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.oauth.ExpiringToken;
-import com.zenobase.oauth.OAuth2TokenExtractor;
 import com.zenobase.services.CredentialsRepository;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
@@ -28,7 +26,11 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 	private static final String TYPE = "withings";
 
 	@Inject
-	public WithingsCredentialsManager(CredentialsRepository repository, @Named("withings.api.key") String apiKey, @Named("withings.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
+	public WithingsCredentialsManager(
+			CredentialsRepository repository,
+			@Named("withings.api.key") String apiKey,
+			@Named("withings.api.secret") String apiSecret,
+			@Named("oauth.hostname") String callbackUrl) {
 		super(TYPE, repository, new WithingsApi(), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -46,16 +48,15 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
 		String code = config.path("code").textValue();
 		if (code == null) {
-			logger.warn("Couldn't obtain {} credentials <{}>: {}",
-				credentials.getType(), credentials.getId(), config);
+			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
 			return null;
 		}
 		Token token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-			.with(Credentials.CREDENTIALS)
-			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-			.build();
+				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+				.build();
 	}
 
 	@Override
@@ -69,7 +70,8 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 			refreshToken = token.getRefreshToken();
 		} else {
 			logger.warn("Converting oauth1 token...");
-			refreshToken = credentials.getToken().getToken() + ":" + credentials.getToken().getSecret();
+			refreshToken = credentials.getToken().getToken() + ":"
+					+ credentials.getToken().getSecret();
 		}
 		var request = new OAuthRequest(Verb.POST, "https://wbsapi.withings.net/v2/oauth2");
 		request.addBodyParameter("action", "requesttoken");
@@ -81,7 +83,11 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 		if (response.isSuccessful()) {
 			credentials.setToken(new WithingsAccessTokenExtractor().extract(response.getBody()));
 		} else {
-			logger.warn("Couldn't refresh credentials {}: {} -> {}", credentials.getId(), response.getHeaders(), response.getBody());
+			logger.warn(
+					"Couldn't refresh credentials {}: {} -> {}",
+					credentials.getId(),
+					response.getHeaders(),
+					response.getBody());
 		}
 	}
 

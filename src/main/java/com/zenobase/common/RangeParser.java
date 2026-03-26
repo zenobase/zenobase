@@ -5,7 +5,7 @@ import com.google.common.collect.Range;
 
 public abstract class RangeParser<T extends Comparable<T>> {
 
-	private final static String TO = "..";
+	private static final String TO = "..";
 
 	public Range<T> parse(String value) {
 		int p = value.indexOf(TO);

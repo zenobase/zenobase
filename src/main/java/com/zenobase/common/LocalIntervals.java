@@ -1,9 +1,8 @@
 package com.zenobase.common;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import java.util.ArrayList;
 
 import com.google.common.base.Preconditions;
 import org.joda.time.DurationFieldType;
@@ -15,94 +14,81 @@ import org.joda.time.format.DateTimeFormatterBuilder;
 public class LocalIntervals extends DateTimeFormatSupport {
 
 	private enum IntervalType {
-
 		YEAR(DurationFieldType.years()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder
-					.append(yearElement());
+				return builder.append(yearElement());
 			}
 		},
 
 		MONTH(DurationFieldType.months()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder
-					.append(yearElement())
-					.append(monthElement());
+				return builder.append(yearElement()).append(monthElement());
 			}
 		},
 
 		WEEK(DurationFieldType.weeks()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder
-					.append(weekyearElement())
-					.append(weekofYearElement());
+				return builder.append(weekyearElement()).append(weekofYearElement());
 			}
 		},
 
 		DAY(DurationFieldType.days()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder
-					.append(yearElement())
-					.append(monthElement())
-					.append(dayOfMonthElement());
+				return builder.append(yearElement()).append(monthElement()).append(dayOfMonthElement());
 			}
 		},
 
 		HOUR(DurationFieldType.hours()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder
-					.append(yearElement())
-					.append(monthElement())
-					.append(dayOfMonthElement())
-					.appendLiteral('T')
-					.append(hourElement());
+				return builder.append(yearElement())
+						.append(monthElement())
+						.append(dayOfMonthElement())
+						.appendLiteral('T')
+						.append(hourElement());
 			}
 		},
 
 		MINUTE(DurationFieldType.minutes()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder
-					.append(yearElement())
-					.append(monthElement())
-					.append(dayOfMonthElement())
-					.appendLiteral('T')
-					.append(hourElement())
-					.append(minuteElement());
+				return builder.append(yearElement())
+						.append(monthElement())
+						.append(dayOfMonthElement())
+						.appendLiteral('T')
+						.append(hourElement())
+						.append(minuteElement());
 			}
 		},
 
 		SECOND(DurationFieldType.seconds()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder
-					.append(yearElement())
-					.append(monthElement())
-					.append(dayOfMonthElement())
-					.appendLiteral('T')
-					.append(hourElement())
-					.append(minuteElement())
-					.append(secondElement());
+				return builder.append(yearElement())
+						.append(monthElement())
+						.append(dayOfMonthElement())
+						.appendLiteral('T')
+						.append(hourElement())
+						.append(minuteElement())
+						.append(secondElement());
 			}
 		},
 
 		MILLISECOND(DurationFieldType.millis()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder
-					.append(yearElement())
-					.append(monthElement())
-					.append(dayOfMonthElement())
-					.appendLiteral('T')
-					.append(hourElement())
-					.append(minuteElement())
-					.append(secondElement())
-					.append(millisElement());
+				return builder.append(yearElement())
+						.append(monthElement())
+						.append(dayOfMonthElement())
+						.appendLiteral('T')
+						.append(hourElement())
+						.append(minuteElement())
+						.append(secondElement())
+						.append(millisElement());
 			}
 		};
 

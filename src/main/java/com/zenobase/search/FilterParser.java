@@ -13,6 +13,10 @@ public class FilterParser {
 	}
 
 	public Query parse(String value) {
-		return !Strings.isNullOrEmpty(value) ? new FilterBuilderSupport(constraintBuilders).addConstraints(value).buildFilter() : null;
+		return !Strings.isNullOrEmpty(value)
+				? new FilterBuilderSupport(constraintBuilders)
+						.addConstraints(value)
+						.buildFilter()
+				: null;
 	}
 }

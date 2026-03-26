@@ -1,7 +1,7 @@
 package com.zenobase.tasks.lastfm;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -62,12 +62,11 @@ class RecentTracksResult {
 	}
 
 	private static Resource resourceValue(JsonNode node) {
-		String artist = Preconditions.checkNotNull(textValue(node.path("artist").path("#text")), "missing artist name: %s", node);
+		String artist = Preconditions.checkNotNull(
+				textValue(node.path("artist").path("#text")), "missing artist name: %s", node);
 		String name = Preconditions.checkNotNull(textValue(node.path("name")), "missing recording name: %s", node);
 		String mbid = Strings.emptyToNull(node.path("mbid").textValue());
-		String url = mbid != null
-			? MUSICBRAINZ_URL + mbid
-			: node.path("url").textValue();
+		String url = mbid != null ? MUSICBRAINZ_URL + mbid : node.path("url").textValue();
 		return new Resource(artist + " - " + name, url);
 	}
 

@@ -1,11 +1,9 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import org.opensearch.client.opensearch._types.HealthStatus;
+import jakarta.inject.Inject;
 import org.opensearch.client.opensearch.cluster.HealthResponse;
 
 import com.zenobase.models.StatusInfo;
@@ -23,7 +21,8 @@ public class StatusController extends ControllerSupport {
 	private final Bus bus;
 
 	@Inject
-	public StatusController(AuthorizationContext auth, IndexManager manager, UserRepository users, CommandRepository history, Bus bus) {
+	public StatusController(
+			AuthorizationContext auth, IndexManager manager, UserRepository users, CommandRepository history, Bus bus) {
 		super(auth);
 		this.manager = manager;
 		this.users = users;
@@ -32,31 +31,32 @@ public class StatusController extends ControllerSupport {
 	}
 
 	public void get(ServerRequest req, ServerResponse res) {
-    	if (!req.query().isEmpty()) {
-    		throw new RuntimeException("invalid parameters");
-    	}
-    	StatusInfo statusInfo = getStatus();
-    	JsonNode json = statusInfo.toJson();
-    	switch (statusInfo.getHealth()) {
-    		case Red -> sendStatus(res, 503, json);
-    		default -> sendOk(res, json);
-    	}
-    }
+		if (!req.query().isEmpty()) {
+			throw new RuntimeException("invalid parameters");
+		}
+		StatusInfo statusInfo = getStatus();
+		JsonNode json = statusInfo.toJson();
+		switch (statusInfo.getHealth()) {
+			case Red -> sendStatus(res, 503, json);
+			default -> sendOk(res, json);
+		}
+	}
 
 	private StatusInfo getStatus() {
 		HealthResponse health = manager.getCluster().getHealth();
-		return new StatusInfo(history.size(), health.status(), health.numberOfNodes(), bus.isReadOnly(), bus.isSchedulerDisabled());
+		return new StatusInfo(
+				history.size(), health.status(), health.numberOfNodes(), bus.isReadOnly(), bus.isSchedulerDisabled());
 	}
 
-    public void post(ServerRequest req, ServerResponse res) {
-    	Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
+	public void post(ServerRequest req, ServerResponse res) {
+		Authorization auth = getCurrentAuthorization(req);
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
 		if (auth.getScope() != null) {
-    		sendForbidden(res);
-    		return;
+			sendForbidden(res);
+			return;
 		}
 		if (!users.isSuperuser(auth.getPrincipal())) {
 			sendForbidden(res);
@@ -65,8 +65,8 @@ public class StatusController extends ControllerSupport {
 		JsonNode body = body(req);
 		setReadOnly(body.path("read_only"));
 		setSchedulerDisabled(body.path("scheduler_disabled"));
-        sendNoContent(res);
-    }
+		sendNoContent(res);
+	}
 
 	private void setReadOnly(JsonNode node) {
 		if (node.isBoolean()) {

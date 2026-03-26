@@ -1,15 +1,14 @@
 package com.zenobase.tasks.netatmo;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.ArrayList;
-
-import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.RateLimiter;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
@@ -145,26 +144,31 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("limit", "1000");
 			request.addQuerystringParameter("scale", hourly ? "1hour" : "max");
 			request.addQuerystringParameter("optimize", "false");
-			request.addQuerystringParameter("type", "Temperature,Pressure,Noise,Humidity,CO2,GustStrength," + (hourly ? "sum_rain" : "Rain"));
+			request.addQuerystringParameter(
+					"type", "Temperature,Pressure,Noise,Humidity,CO2,GustStrength," + (hourly ? "sum_rain" : "Rain"));
 			rate.acquire();
 			Response response = send(request, credentials);
 			return new MeasurementsResult(parseObject(response), principal, device, hourly);
 		}
 	}
 
-	private Command createCommand(NetatmoTask task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
+	private Command createCommand(
+			NetatmoTask task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
 		var command = new CompoundCommand(task.getPrincipal(), "ran netatmo task", "reverted netatmo task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events, task.isHourly()))
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(
+						Task.MARKER,
+						task.getMarker(),
+						events.isEmpty() ? task.getMarker() : getMarker(events, task.isHourly()))
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		if (!Objects.equal(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
-				.build());
+					.with(Credentials.CREDENTIALS)
+					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+					.build());
 		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));

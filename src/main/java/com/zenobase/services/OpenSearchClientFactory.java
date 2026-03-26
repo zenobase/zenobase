@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.core5.http.HttpHost;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
@@ -40,36 +39,32 @@ public class OpenSearchClientFactory implements ClientFactory {
 		URI uri = URI.create(host);
 		if ("https".equals(uri.getScheme())) {
 			SdkHttpClient httpClient = AwsCrtHttpClient.builder()
-				.connectionTimeout(Duration.ofSeconds(30))
-				.build();
+					.connectionTimeout(Duration.ofSeconds(30))
+					.build();
 			AwsSdk2Transport transport = new AwsSdk2Transport(
-				httpClient,
-				uri.getHost(),
-				"es",
-				Region.of(region),
-				AwsSdk2TransportOptions.builder().build()
-			);
+					httpClient,
+					uri.getHost(),
+					"es",
+					Region.of(region),
+					AwsSdk2TransportOptions.builder().build());
 			return new OpenSearchClient(transport);
 		}
 		HttpHost httpHost = HttpHost.create(uri);
-		ApacheHttpClient5Transport transport = ApacheHttpClient5TransportBuilder
-			.builder(httpHost)
-			.setMapper(new JacksonJsonpMapper())
-			.build();
+		ApacheHttpClient5Transport transport = ApacheHttpClient5TransportBuilder.builder(httpHost)
+				.setMapper(new JacksonJsonpMapper())
+				.build();
 		return new OpenSearchClient(transport);
 	}
 
 	public static OpenSearchClient createHttpClient(String host) {
 		HttpHost httpHost = HttpHost.create(URI.create(host));
-		return new OpenSearchClient(ApacheHttpClient5TransportBuilder
-			.builder(httpHost)
-			.setMapper(new JacksonJsonpMapper())
-			.setHttpClientConfigCallback(builder -> builder
-				.addRequestInterceptorFirst((request, entity, context) ->
-					request.setHeader("Accept-Encoding", "gzip"))
-				.setDefaultRequestConfig(RequestConfig.custom()
-					.setResponseTimeout(60, TimeUnit.SECONDS)
-					.build()))
-			.build());
+		return new OpenSearchClient(ApacheHttpClient5TransportBuilder.builder(httpHost)
+				.setMapper(new JacksonJsonpMapper())
+				.setHttpClientConfigCallback(builder -> builder.addRequestInterceptorFirst(
+								(request, entity, context) -> request.setHeader("Accept-Encoding", "gzip"))
+						.setDefaultRequestConfig(RequestConfig.custom()
+								.setResponseTimeout(60, TimeUnit.SECONDS)
+								.build()))
+				.build());
 	}
 }

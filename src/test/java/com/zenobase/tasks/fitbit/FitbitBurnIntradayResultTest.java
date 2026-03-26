@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import javax.measure.quantity.Energy;
-
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -24,7 +22,8 @@ public class FitbitBurnIntradayResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		FitbitBurnIntradayResult result = new FitbitBurnIntradayResult(readObject("FitbitBurnIntradayResultTest.json"), TAG, TESTER, DATE, TIMEZONE);
+		FitbitBurnIntradayResult result = new FitbitBurnIntradayResult(
+				readObject("FitbitBurnIntradayResultTest.json"), TAG, TESTER, DATE, TIMEZONE);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(24);
 		Event expected = new Event(events.get(0).getId());

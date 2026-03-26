@@ -1,7 +1,7 @@
 package com.zenobase.tasks.lastfm;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import org.joda.time.Duration;

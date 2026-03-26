@@ -12,8 +12,8 @@ import com.zenobase.services.UserRepository;
 public class ChangeUserEmailCommandTest {
 
 	private final UserRepository users = mock(UserRepository.class);
-	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new ChangeUserEmailCommand.Handler(users));
+	private final CommandHandlerRegistry registry =
+			CommandHandlerRegistry.containing(new ChangeUserEmailCommand.Handler(users));
 
 	@Test
 	public void test() {
@@ -23,7 +23,8 @@ public class ChangeUserEmailCommandTest {
 		String first = "jdoe@zenobase.org";
 		String second = "jdoe@zenobase.com";
 
-		Command command = new ChangeUserEmailCommand(user.asIdentity(), user.getName(), user.getEmail(), first, false, false);
+		Command command =
+				new ChangeUserEmailCommand(user.asIdentity(), user.getName(), user.getEmail(), first, false, false);
 		registry.execute(command);
 		assertThat(user.getEmail()).as("email").isEqualTo(first);
 		assertThat(user.isVerified()).as("user is verified").isFalse();

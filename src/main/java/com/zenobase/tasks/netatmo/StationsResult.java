@@ -1,8 +1,8 @@
 package com.zenobase.tasks.netatmo;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
@@ -32,9 +32,9 @@ class StationsResult {
 			Device device = parseDevice(deviceNode);
 			devices.add(device);
 			if (includeModules) {
-			    for (JsonNode moduleNode : deviceNode.path("modules")) {
-			        devices.add(parseModule(device, moduleNode));
-			    }
+				for (JsonNode moduleNode : deviceNode.path("modules")) {
+					devices.add(parseModule(device, moduleNode));
+				}
 			}
 		}
 		return devices;
@@ -44,42 +44,48 @@ class StationsResult {
 		String id = node.path("_id").textValue();
 		String label = node.path("module_name").textValue();
 		DateTime created = getTimestamp(node.path("date_setup"), DateTimeZone.UTC);
-		DateTime updated = getTimestamp(node.path("last_status_store"), getTimezone(node.path("place").path("timezone")));
+		DateTime updated = getTimestamp(
+				node.path("last_status_store"), getTimezone(node.path("place").path("timezone")));
 		Location location = getLocation(node.path("place").path("location"));
 		List<String> types = parseTypes(node.path("data_type"));
 		return new Device(id, label, created, updated, location, types);
 	}
 
 	private static Device parseModule(Device device, JsonNode node) {
-	    String moduleId = node.path("_id").textValue();
+		String moduleId = node.path("_id").textValue();
 		String moduleLabel = node.path("module_name").textValue();
-        List<String> types = parseTypes(node.path("data_type"));
-		return new Device(device.getId(), moduleId, moduleLabel, device.getCreated(), device.getUpdated(), device.getLocation(), types);
+		List<String> types = parseTypes(node.path("data_type"));
+		return new Device(
+				device.getId(),
+				moduleId,
+				moduleLabel,
+				device.getCreated(),
+				device.getUpdated(),
+				device.getLocation(),
+				types);
 	}
 
 	private static DateTimeZone getTimezone(JsonNode node) {
-		Preconditions.checkArgument(node.isTextual(),
-			"Expected text but got <%s>", node);
+		Preconditions.checkArgument(node.isTextual(), "Expected text but got <%s>", node);
 		return DateTimeZone.forID(node.textValue());
 	}
 
 	private static DateTime getTimestamp(JsonNode node, DateTimeZone timezone) {
-		Preconditions.checkArgument(node.longValue() != 0,
-			"Expected a number but got <%s>", node);
+		Preconditions.checkArgument(node.longValue() != 0, "Expected a number but got <%s>", node);
 		return new DateTime(node.longValue() * 1000, timezone);
 	}
 
 	private static Location getLocation(JsonNode node) {
-		Preconditions.checkArgument(node.isArray() && node.size() == 2,
-			"Expected an array with two elements but got <%s>", node);
+		Preconditions.checkArgument(
+				node.isArray() && node.size() == 2, "Expected an array with two elements but got <%s>", node);
 		return new Location(node.path(1).decimalValue(), node.path(0).decimalValue());
 	}
 
-    private static List<String> parseTypes(JsonNode node) {
-        List<String> types = new ArrayList<>();
-        for (JsonNode typeNode : node) {
-            types.add(typeNode.textValue());
-        }
-        return types;
-    }
+	private static List<String> parseTypes(JsonNode node) {
+		List<String> types = new ArrayList<>();
+		for (JsonNode typeNode : node) {
+			types.add(typeNode.textValue());
+		}
+		return types;
+	}
 }

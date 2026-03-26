@@ -1,9 +1,8 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 import com.zenobase.models.SnapshotList;
 import com.zenobase.oauth.Authorization;
@@ -26,17 +25,17 @@ public class SnapshotController extends ControllerSupport {
 	public void findAll(ServerRequest req, ServerResponse res) {
 		int offset = Integer.parseInt(req.query().first("offset").orElse("0"));
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
-    	Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
+		Authorization auth = getCurrentAuthorization(req);
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
 		if (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal())) {
 			sendForbidden(res);
 			return;
 		}
-        sendOk(res, SnapshotList.toJson(manager.findAll(offset, limit)));
-    }
+		sendOk(res, SnapshotList.toJson(manager.findAll(offset, limit)));
+	}
 
 	public void snapshot(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);

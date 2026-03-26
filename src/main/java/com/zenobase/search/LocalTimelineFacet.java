@@ -3,15 +3,15 @@ package com.zenobase.search;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.CalendarInterval;
@@ -20,8 +20,6 @@ import org.opensearch.client.opensearch._types.aggregations.StatsAggregate;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
 
 import com.zenobase.common.LocalInterval;
 import com.zenobase.common.LocalIntervals;
@@ -32,7 +30,8 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 	private final String interval;
 	private final LocalInterval range;
 
-	public LocalTimelineFacet(String id, String keyField, String valueField, String interval, String range, Unit<?> unit, Query filter) {
+	public LocalTimelineFacet(
+			String id, String keyField, String valueField, String interval, String range, Unit<?> unit, Query filter) {
 		super(id, keyField, valueField, unit, filter);
 		this.interval = interval;
 		this.range = !Strings.isNullOrEmpty(range) ? LocalIntervals.valueOf(range) : null;
@@ -42,13 +41,9 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 	public void configure(SearchRequest.Builder builder) {
 		CalendarInterval calendarInterval = DateHistograms.parseInterval(interval);
 		String f = getField();
-		Aggregation aggregation = Aggregation.of(a -> a
-			.dateHistogram(dh -> dh
-				.field(keyField)
-				.calendarInterval(calendarInterval)
-			)
-			.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(f))))
-		);
+		Aggregation aggregation =
+				Aggregation.of(a -> a.dateHistogram(dh -> dh.field(keyField).calendarInterval(calendarInterval))
+						.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(f)))));
 		addAggregation(getId(), aggregation, builder);
 	}
 
@@ -69,8 +64,9 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 						entryNode.put("time", bucketTime);
 						entryNode.put("count", bucket.docCount());
 						if (!keyField.equals(valueField) && bucket.docCount() > 0) {
-							StatsAggregate stats = bucket.aggregations().get(getId()).stats();
-							addValue(entryNode, "min",  stats.min());
+							StatsAggregate stats =
+									bucket.aggregations().get(getId()).stats();
+							addValue(entryNode, "min", stats.min());
 							addValue(entryNode, "max", stats.max());
 							addValue(entryNode, "sum", stats.sum());
 							addValue(entryNode, "avg", stats.avg());

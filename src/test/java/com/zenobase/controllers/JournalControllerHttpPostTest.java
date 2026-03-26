@@ -27,7 +27,10 @@ public class JournalControllerHttpPostTest extends JournalControllerTestSupport 
 		when(commands.find(command.getId())).thenReturn(command);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(command.getId());
 		try (Http1ClientResponse result = call(new UndoForm(command.getId()).toJson())) {
-			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, command.getId()).isEmpty();
+			assertThat(result)
+					.hasStatus(204)
+					.hasHeader(COMMAND_ID, command.getId())
+					.isEmpty();
 			assertThat(commandArg.getValue().getTag()).isEqualTo("gnitset");
 		}
 	}
@@ -40,7 +43,10 @@ public class JournalControllerHttpPostTest extends JournalControllerTestSupport 
 		when(dispatcher.dispatch(any(TestCommand.class))).thenReturn(command.getId());
 		when(users.isSuperuser(superuser)).thenReturn(true);
 		try (Http1ClientResponse result = call(new UndoForm(command.getId()).toJson())) {
-			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, command.getId()).isEmpty();
+			assertThat(result)
+					.hasStatus(204)
+					.hasHeader(COMMAND_ID, command.getId())
+					.isEmpty();
 		}
 	}
 

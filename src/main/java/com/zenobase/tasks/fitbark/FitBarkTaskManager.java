@@ -1,13 +1,12 @@
 package com.zenobase.tasks.fitbark;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import jakarta.inject.Inject;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Ordering;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -60,15 +59,21 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 				LocalDate to = task.isHourly() ? from.plusDays(7) : from.plusMonths(1);
 				ObjectNode payload = Nodes.newObject();
 				payload.putObject("activity_series")
-					.put("slug", dog.getId())
-					.put("resolution", task.isHourly() ? "HOURLY" : "DAILY")
-					.put("from", from.toString())
-					.put("to", to.toString());
+						.put("slug", dog.getId())
+						.put("resolution", task.isHourly() ? "HOURLY" : "DAILY")
+						.put("from", from.toString())
+						.put("to", to.toString());
 				var request = new OAuthRequest(Verb.POST, "https://app.fitbark.com/api/v2/activity_series");
 				request.addHeader("Content-Type", "application/json");
 				request.addPayload(payload.toString());
 				Response response = send(request, credentials);
-				events.addAll(new ActivitySeriesResult(dog.getName(), task.getPrincipal(), marker, dog.getModified().getZone(), parseObject(response)).getEvents());
+				events.addAll(new ActivitySeriesResult(
+								dog.getName(),
+								task.getPrincipal(),
+								marker,
+								dog.getModified().getZone(),
+								parseObject(response))
+						.getEvents());
 				from = to;
 			}
 		} else {
@@ -111,13 +116,14 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 	}
 
 	private Command createCommand(Task task, List<Event> events) {
-		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(
+				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}

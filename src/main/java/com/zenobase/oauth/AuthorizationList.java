@@ -20,12 +20,12 @@ public class AuthorizationList extends LazyList<Authorization> {
 	}
 
 	public static ObjectNode toJson(PartialList<Authorization> authorizations) {
-    	ObjectNode resultNode = Nodes.newObject();
-    	TOTAL.setValue(resultNode, Ints.checkedCast(authorizations.getTotal()));
-    	ArrayNode usersNode = resultNode.putArray("authorizations");
-    	for (Authorization authorization : authorizations) {
-    		usersNode.add(authorization.toJson());
-    	}
+		ObjectNode resultNode = Nodes.newObject();
+		TOTAL.setValue(resultNode, Ints.checkedCast(authorizations.getTotal()));
+		ArrayNode usersNode = resultNode.putArray("authorizations");
+		for (Authorization authorization : authorizations) {
+			usersNode.add(authorization.toJson());
+		}
 		return resultNode;
 	}
 }

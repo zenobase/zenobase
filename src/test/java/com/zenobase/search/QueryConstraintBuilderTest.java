@@ -14,27 +14,27 @@ public class QueryConstraintBuilderTest {
 		assertThat(c.value()).as("value").isEqualTo("bar:baz");
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testMissingColon() {
 		QueryConstraint.parse("foobar");
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testMissingField() {
 		QueryConstraint.parse(":bar");
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testMissingValue() {
 		QueryConstraint.parse("foo:");
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testEmpty() {
 		QueryConstraint.parse("");
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testNull() {
 		QueryConstraint.parse("");
 	}

@@ -2,16 +2,18 @@ package com.zenobase.search;
 
 import java.math.BigDecimal;
 import java.util.Map;
-
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.DurationFieldType;
+import org.joda.time.Period;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.CalendarInterval;
@@ -19,10 +21,6 @@ import org.opensearch.client.opensearch._types.aggregations.DateHistogramBucket;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.DurationFieldType;
-import org.joda.time.Period;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -37,13 +35,13 @@ public class ScatterPlotFacet extends Facet {
 	public static final String TYPE = "scatterplot";
 
 	private static final Map<String, DurationFieldType> PERIODS = ImmutableMap.<String, DurationFieldType>builder()
-		.put("year", DurationFieldType.years())
-		.put("month", DurationFieldType.months())
-		.put("week", DurationFieldType.weeks())
-		.put("day", DurationFieldType.days())
-		.put("hour", DurationFieldType.hours())
-		.put("minute", DurationFieldType.minutes())
-		.build();
+			.put("year", DurationFieldType.years())
+			.put("month", DurationFieldType.months())
+			.put("week", DurationFieldType.weeks())
+			.put("day", DurationFieldType.days())
+			.put("hour", DurationFieldType.hours())
+			.put("minute", DurationFieldType.minutes())
+			.build();
 
 	private final String keyField;
 	private final Series x, y;
@@ -51,7 +49,8 @@ public class ScatterPlotFacet extends Facet {
 	private final DateTimeZone timezone;
 	private final int lag;
 
-	public ScatterPlotFacet(String id, Series x, Series y, String keyField, String interval, DateTimeZone timezone, int lag) {
+	public ScatterPlotFacet(
+			String id, Series x, Series y, String keyField, String interval, DateTimeZone timezone, int lag) {
 		super(id);
 		this.keyField = keyField;
 		this.x = x;
@@ -75,7 +74,8 @@ public class ScatterPlotFacet extends Facet {
 		return toJson(values.values());
 	}
 
-	private void process(SearchResponse<ObjectNode> response, Map<Long, ObjectNode> values, String field, Series series, int lag) {
+	private void process(
+			SearchResponse<ObjectNode> response, Map<Long, ObjectNode> values, String field, Series series, int lag) {
 		Aggregate agg = response.aggregations().get(series.getId());
 		if (agg != null && agg.isFilter()) {
 			agg = agg.filter().aggregations().get(series.getId());
@@ -94,7 +94,11 @@ public class ScatterPlotFacet extends Facet {
 	}
 
 	private long addLag(long time, int lag) {
-		return lag != 0 ? new DateTime(time, MoreObjects.firstNonNull(timezone, DateTimeZone.UTC)).plus(toPeriod(interval, lag)).getMillis() : time;
+		return lag != 0
+				? new DateTime(time, MoreObjects.firstNonNull(timezone, DateTimeZone.UTC))
+						.plus(toPeriod(interval, lag))
+						.getMillis()
+				: time;
 	}
 
 	private static Period toPeriod(String interval, int value) {
@@ -136,25 +140,22 @@ public class ScatterPlotFacet extends Facet {
 			return id;
 		}
 
-		public void addAggregation(String keyField, String interval, DateTimeZone timezone, SearchRequest.Builder builder) {
-			String tz = MoreObjects.firstNonNull(timezone, DateTimeZone.UTC).toTimeZone().toZoneId().getId();
+		public void addAggregation(
+				String keyField, String interval, DateTimeZone timezone, SearchRequest.Builder builder) {
+			String tz = MoreObjects.firstNonNull(timezone, DateTimeZone.UTC)
+					.toTimeZone()
+					.toZoneId()
+					.getId();
 			String dateField = timezone != null ? keyField : LocalDateTimeField.getLocalTimePath(keyField);
 			String valueField = unit == Unit.ONE ? field : Field.concat(field, DecimalMeasureField.VALUE_SI.getName());
 			CalendarInterval calendarInterval = DateHistograms.parseInterval(interval);
-			Aggregation dateHistogram = Aggregation.of(a -> a
-				.dateHistogram(dh -> dh
-					.field(dateField)
-					.calendarInterval(calendarInterval)
-					.timeZone(tz)
-				)
-				.aggregations("stats", statistic.createAggregation(valueField))
-				.aggregations("_count", Aggregation.of(vc -> vc.valueCount(v -> v.field(valueField))))
-			);
+			Aggregation dateHistogram = Aggregation.of(a -> a.dateHistogram(dh -> dh.field(dateField)
+							.calendarInterval(calendarInterval)
+							.timeZone(tz))
+					.aggregations("stats", statistic.createAggregation(valueField))
+					.aggregations("_count", Aggregation.of(vc -> vc.valueCount(v -> v.field(valueField)))));
 			if (filter != null) {
-				Aggregation filtered = Aggregation.of(a -> a
-					.filter(filter)
-					.aggregations(id, dateHistogram)
-				);
+				Aggregation filtered = Aggregation.of(a -> a.filter(filter).aggregations(id, dateHistogram));
 				builder.aggregations(id, filtered);
 			} else {
 				builder.aggregations(id, dateHistogram);
@@ -162,7 +163,8 @@ public class ScatterPlotFacet extends Facet {
 		}
 
 		public BigDecimal getValue(DateHistogramBucket bucket) {
-			long count = bucket.aggregations().get("_count").valueCount().value().longValue();
+			long count =
+					bucket.aggregations().get("_count").valueCount().value().longValue();
 			if (count == 0) {
 				return null;
 			}
@@ -180,6 +182,7 @@ public class ScatterPlotFacet extends Facet {
 			Aggregation createAggregation(String field) {
 				return Aggregation.of(a -> a.avg(v -> v.field(field)));
 			}
+
 			@Override
 			double getValue(DateHistogramBucket bucket) {
 				return bucket.aggregations().get("stats").avg().value();
@@ -190,6 +193,7 @@ public class ScatterPlotFacet extends Facet {
 			Aggregation createAggregation(String field) {
 				return Aggregation.of(a -> a.min(v -> v.field(field)));
 			}
+
 			@Override
 			double getValue(DateHistogramBucket bucket) {
 				return bucket.aggregations().get("stats").min().value();
@@ -200,6 +204,7 @@ public class ScatterPlotFacet extends Facet {
 			Aggregation createAggregation(String field) {
 				return Aggregation.of(a -> a.max(v -> v.field(field)));
 			}
+
 			@Override
 			double getValue(DateHistogramBucket bucket) {
 				return bucket.aggregations().get("stats").max().value();
@@ -210,6 +215,7 @@ public class ScatterPlotFacet extends Facet {
 			Aggregation createAggregation(String field) {
 				return Aggregation.of(a -> a.sum(v -> v.field(field)));
 			}
+
 			@Override
 			double getValue(DateHistogramBucket bucket) {
 				return bucket.aggregations().get("stats").sum().value();
@@ -220,6 +226,7 @@ public class ScatterPlotFacet extends Facet {
 			Aggregation createAggregation(String field) {
 				return Aggregation.of(a -> a.valueCount(v -> v.field(field)));
 			}
+
 			@Override
 			double getValue(DateHistogramBucket bucket) {
 				return bucket.aggregations().get("stats").valueCount().value();
@@ -234,21 +241,26 @@ public class ScatterPlotFacet extends Facet {
 	public static FacetBuilder builder(FilterParser filterParser) {
 		return options -> {
 			String id = options.get("id");
-			Series x = new Series(id + "-x",
-				options.get("field_x"),
-				parseUnit(options.get("unit_x")),
-				parseStatistic(options.get("statistic_x", String.class, "avg")),
-				filterParser.parse(options.get("filter_x")));
-			Series y = new Series(id + "-y",
-				options.get("field_y"),
-				parseUnit(options.get("unit_y")),
-				parseStatistic(options.get("statistic_y", String.class, "avg")),
-				filterParser.parse(options.get("filter_y")));
-			return new ScatterPlotFacet(id, x, y,
-				options.get("key_field", String.class, Event.TIMESTAMP.getName()),
-				options.get("interval", String.class, "day"),
-				options.get("timezone", DateTimeZone.class, null),
-				options.get("lag", Integer.class, 0));
+			Series x = new Series(
+					id + "-x",
+					options.get("field_x"),
+					parseUnit(options.get("unit_x")),
+					parseStatistic(options.get("statistic_x", String.class, "avg")),
+					filterParser.parse(options.get("filter_x")));
+			Series y = new Series(
+					id + "-y",
+					options.get("field_y"),
+					parseUnit(options.get("unit_y")),
+					parseStatistic(options.get("statistic_y", String.class, "avg")),
+					filterParser.parse(options.get("filter_y")));
+			return new ScatterPlotFacet(
+					id,
+					x,
+					y,
+					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
+					options.get("interval", String.class, "day"),
+					options.get("timezone", DateTimeZone.class, null),
+					options.get("lag", Integer.class, 0));
 		};
 	}
 

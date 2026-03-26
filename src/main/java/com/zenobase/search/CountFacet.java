@@ -73,11 +73,11 @@ public class CountFacet extends FilteredFacet {
 
 	public static FacetBuilder builder(FilterParser filterParser) {
 		return options -> new CountFacet(
-			options.get("id"),
-			options.get("field"),
-			options.get("order", String.class, "-count"),
-			options.get("offset", Integer.class, 0),
-			options.get("limit", Integer.class, 10),
-			filterParser.parse(options.get("filter")));
+				options.get("id"),
+				options.get("field"),
+				options.get("order", String.class, "-count"),
+				options.get("offset", Integer.class, 0),
+				options.get("limit", Integer.class, 10),
+				filterParser.parse(options.get("filter")));
 	}
 }

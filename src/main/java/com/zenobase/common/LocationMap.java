@@ -30,13 +30,11 @@ public class LocationMap {
 	}
 
 	public boolean contains(DateTime time) {
-		return !locations.asMapOfRanges().isEmpty()
-			&& locations.span().contains(time);
+		return !locations.asMapOfRanges().isEmpty() && locations.span().contains(time);
 	}
 
 	public boolean contains(Range<DateTime> time) {
-		return !locations.asMapOfRanges().isEmpty()
-			&& locations.span().isConnected(time);
+		return !locations.asMapOfRanges().isEmpty() && locations.span().isConnected(time);
 	}
 
 	public void remove(DateTime olderThan) {
@@ -46,8 +44,10 @@ public class LocationMap {
 	public Event update(Event event) {
 		List<DateTime> times = event.getValues(Event.TIMESTAMP);
 		Preconditions.checkState(!times.isEmpty());
-		Location location = times.size() == 1 ? get(times.get(0)) :
-			getFirst(Range.closedOpen(Ordering.natural().min(times), Ordering.natural().max(times)));
+		Location location = times.size() == 1
+				? get(times.get(0))
+				: getFirst(Range.closedOpen(
+						Ordering.natural().min(times), Ordering.natural().max(times)));
 		if (location == null) {
 			return null;
 		}

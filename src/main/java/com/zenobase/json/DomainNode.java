@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
@@ -106,8 +105,7 @@ public class DomainNode {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof DomainNode &&
-			equals((DomainNode) that);
+		return that instanceof DomainNode && equals((DomainNode) that);
 	}
 
 	private boolean equals(DomainNode that) {
@@ -130,7 +128,10 @@ public class DomainNode {
 	private static <T extends DomainNode> T as(Class<T> type, ObjectNode node) {
 		try {
 			return type.getConstructor(ObjectNode.class).newInstance(node);
-		} catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+		} catch (InstantiationException
+				| NoSuchMethodException
+				| InvocationTargetException
+				| IllegalAccessException e) {
 			throw new AssertionError(e);
 		}
 	}

@@ -229,6 +229,29 @@
         <finalName>zenobase</finalName>
         <plugins>
             <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>2.44.5</version>
+                <configuration>
+                    <java>
+                        <excludes>
+                            <exclude>src/main/java/com/zenobase/common/BCrypt.java</exclude>
+                        </excludes>
+                        <palantirJavaFormat>
+                            <version>2.89.0</version>
+                        </palantirJavaFormat>
+                        <removeUnusedImports/>
+                        <importOrder>
+                            <order>java|javax,,com.zenobase</order>
+                        </importOrder>
+                        <indent>
+                            <tabs>true</tabs>
+                            <spacesPerTab>4</spacesPerTab>
+                        </indent>
+                    </java>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>

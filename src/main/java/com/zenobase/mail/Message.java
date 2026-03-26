@@ -29,14 +29,11 @@ public class Message {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof Message &&
-			equals((Message) that);
+		return that instanceof Message && equals((Message) that);
 	}
 
 	private boolean equals(Message that) {
-		return to.equals(that.getTo()) &&
-			subject.equals(that.getSubject()) &&
-			text.equals(that.getText());
+		return to.equals(that.getTo()) && subject.equals(that.getSubject()) && text.equals(that.getText());
 	}
 
 	@Override

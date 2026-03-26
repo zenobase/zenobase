@@ -7,9 +7,7 @@ import org.joda.time.Duration;
 
 public class DurationFormat {
 
-	private DurationFormat() {
-
-	}
+	private DurationFormat() {}
 
 	public static Duration parse(String s) {
 		if (isLong(s)) {

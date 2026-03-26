@@ -1,10 +1,9 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +29,12 @@ public class PaymentController extends ControllerSupport {
 	private final CommandDispatcher dispatcher;
 
 	@Inject
-	public PaymentController(AuthorizationContext security, PaymentGateway payments, UserRepository users, EventRepository events, CommandDispatcher dispatcher) {
+	public PaymentController(
+			AuthorizationContext security,
+			PaymentGateway payments,
+			UserRepository users,
+			EventRepository events,
+			CommandDispatcher dispatcher) {
 		super(security);
 		this.payments = payments;
 		this.users = users;
@@ -40,32 +44,32 @@ public class PaymentController extends ControllerSupport {
 
 	public void token(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
-    	if (auth.getScope() != null) {
-    		sendForbidden(res);
-    		return;
-    	}
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
+		if (auth.getScope() != null) {
+			sendForbidden(res);
+			return;
+		}
 		User user = users.find(auth.getPrincipal());
 		if (user == null) {
 			sendNotFound(res, "user not found");
 			return;
 		}
 		sendOk(res, Nodes.newObject("value", payments.token(user.getName())));
-    }
+	}
 
 	public void pay(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
-    	if (auth.getScope() != null) {
-    		sendForbidden(res);
-    		return;
-    	}
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
+		if (auth.getScope() != null) {
+			sendForbidden(res);
+			return;
+		}
 		User user = users.find(auth.getPrincipal());
 		if (user == null) {
 			sendNotFound(res, "user not found");
@@ -88,7 +92,8 @@ public class PaymentController extends ControllerSupport {
 		}
 		if (hasData(user)) {
 			payments.subscribe(user.getName(), user.getEmail(), payment, plan);
-			dispatcher.dispatch(new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), plan.getQuota()));
+			dispatcher.dispatch(
+					new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), plan.getQuota()));
 		} else {
 			logger.warn("Ignoring payment attempt from user without data: {}", user.getName());
 		}
@@ -102,14 +107,14 @@ public class PaymentController extends ControllerSupport {
 	public void cancel(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
-    	if (auth.getScope() != null) {
-    		sendForbidden(res);
-    		return;
-    	}
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
+		if (auth.getScope() != null) {
+			sendForbidden(res);
+			return;
+		}
 		User user = new UserLookup(users).getUser(userId);
 		if (user == null) {
 			sendNotFound(res, "user not found");

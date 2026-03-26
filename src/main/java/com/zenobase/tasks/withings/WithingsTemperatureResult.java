@@ -2,9 +2,8 @@ package com.zenobase.tasks.withings;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Temperature;
 import javax.measure.unit.Unit;
@@ -25,7 +24,8 @@ class WithingsTemperatureResult extends WithingsResult {
 	private final Unit<Temperature> unit;
 	private final DateTimeZone timezone;
 
-	public WithingsTemperatureResult(ObjectNode node, Identity author, String tag, Unit<Temperature> unit, DateTimeZone timezone) {
+	public WithingsTemperatureResult(
+			ObjectNode node, Identity author, String tag, Unit<Temperature> unit, DateTimeZone timezone) {
 		super(node, author, tag);
 		this.unit = unit;
 		this.timezone = timezone;

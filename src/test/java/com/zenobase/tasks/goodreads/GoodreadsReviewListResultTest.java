@@ -28,10 +28,11 @@ public class GoodreadsReviewListResultTest extends ResultTestSupport {
 		expected.addValue(Event.TAG, "Book");
 		expected.setValue(Event.RATING, Rating.valueOf(80));
 		expected.setValue(Event.COUNT, 100);
-		expected.setValue(Event.RESOURCE, new Resource(
-			"The First 20 Minutes: Surprising Science Reveals How We Can: Exercise Better, Train Smarter, Live Longer",
-			"https://www.goodreads.com/review/show/2347385187"
-		));
+		expected.setValue(
+				Event.RESOURCE,
+				new Resource(
+						"The First 20 Minutes: Surprising Science Reveals How We Can: Exercise Better, Train Smarter, Live Longer",
+						"https://www.goodreads.com/review/show/2347385187"));
 		expected.setValue(Event.SOURCE, GoodreadsReviewListResult.SOURCE);
 		expected.setValue(Event.AUTHOR, TESTER);
 		assertThat(actual.get(0)).isEqualTo(expected);

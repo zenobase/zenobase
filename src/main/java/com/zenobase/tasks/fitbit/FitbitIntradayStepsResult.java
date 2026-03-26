@@ -1,12 +1,11 @@
 package com.zenobase.tasks.fitbit;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -22,7 +21,8 @@ class FitbitIntradayStepsResult extends FitbitResultSupport {
 
 	private final LocalDate date;
 
-	public FitbitIntradayStepsResult(JsonNode node, String tag, Identity author, LocalDate date, DateTimeZone timezone) {
+	public FitbitIntradayStepsResult(
+			JsonNode node, String tag, Identity author, LocalDate date, DateTimeZone timezone) {
 		super(node, tag, author, timezone);
 		this.date = date;
 	}
@@ -38,7 +38,8 @@ class FitbitIntradayStepsResult extends FitbitResultSupport {
 	private Map<DateTime, Integer> valuesByHour() {
 		Map<DateTime, Integer> values = Maps.newLinkedHashMap();
 		for (JsonNode recordNode : node.path("activities-steps-intraday").path("dataset")) {
-			DateTime hour = toDateTimeFullHour(LocalTime.parse(recordNode.path("time").textValue()));
+			DateTime hour =
+					toDateTimeFullHour(LocalTime.parse(recordNode.path("time").textValue()));
 			if (hour != null) {
 				int value = recordNode.path("value").intValue();
 				Integer count = MoreObjects.firstNonNull(values.get(hour), 0);
@@ -49,7 +50,10 @@ class FitbitIntradayStepsResult extends FitbitResultSupport {
 	}
 
 	private DateTime toDateTimeFullHour(LocalTime local) {
-		return toDateTimeFullHour(date.toLocalDateTime(local).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0));
+		return toDateTimeFullHour(date.toLocalDateTime(local)
+				.withMinuteOfHour(0)
+				.withSecondOfMinute(0)
+				.withMillisOfSecond(0));
 	}
 
 	private DateTime toDateTimeFullHour(LocalDateTime local) {

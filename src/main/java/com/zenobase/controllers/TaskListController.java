@@ -1,9 +1,8 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 import com.zenobase.commands.CreateTaskCommand;
 import com.zenobase.models.Bucket;
@@ -30,8 +29,13 @@ public class TaskListController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-	public TaskListController(AuthorizationContext security, CommandDispatcher dispatcher,
-		TaskManagerRegistry registry, TaskRepository tasks, BucketRepository buckets, UserRepository users) {
+	public TaskListController(
+			AuthorizationContext security,
+			CommandDispatcher dispatcher,
+			TaskManagerRegistry registry,
+			TaskRepository tasks,
+			BucketRepository buckets,
+			UserRepository users) {
 
 		super(security);
 		this.dispatcher = dispatcher;
@@ -54,13 +58,13 @@ public class TaskListController extends ControllerSupport {
 			return;
 		}
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
 		if (auth.getScope() != null) {
-    		sendForbidden(res);
-    		return;
+			sendForbidden(res);
+			return;
 		}
 		if (!users.isSuperuser(auth.getPrincipal())) {
 			sendForbidden(res);
@@ -71,7 +75,7 @@ public class TaskListController extends ControllerSupport {
 			query = query.queryString(q);
 		}
 		sendOk(res, TaskList.toJson(tasks.find(query, offset, limit)));
-    }
+	}
 
 	public void findByBucket(ServerRequest req, ServerResponse res) {
 		String bucketId = req.path().pathParameters().get("bucketId");
@@ -86,10 +90,10 @@ public class TaskListController extends ControllerSupport {
 			return;
 		}
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
 		Bucket bucket = buckets.find(bucketId);
 		if (bucket == null) {
 			sendNotFound(res, "bucket not found");
@@ -101,7 +105,7 @@ public class TaskListController extends ControllerSupport {
 		}
 		var query = new TaskQuery().bucketEqualTo(bucketId);
 		sendOk(res, TaskList.toJson(tasks.find(query, TaskQuery.orderByCreated(true), offset, limit)));
-    }
+	}
 
 	public void findByUser(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
@@ -117,13 +121,13 @@ public class TaskListController extends ControllerSupport {
 			return;
 		}
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
 		if (auth.getScope() != null) {
-    		sendForbidden(res);
-    		return;
+			sendForbidden(res);
+			return;
 		}
 		Identity principal = new UserLookup(users).getIdentity(userId);
 		if (principal == null) {
@@ -139,14 +143,14 @@ public class TaskListController extends ControllerSupport {
 			query = query.queryString(q);
 		}
 		sendOk(res, TaskList.toJson(tasks.find(query, offset, limit)));
-    }
+	}
 
-    public void post(ServerRequest req, ServerResponse res) {
+	public void post(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
 		var form = new CreateTaskForm(body(req));
 		if (!form.valid()) {
 			sendBadRequest(res, "bad request");
@@ -161,15 +165,15 @@ public class TaskListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-    	TaskManager manager = registry.find(form.getType());
+		TaskManager manager = registry.find(form.getType());
 		if (manager == null) {
 			sendBadRequest(res, "unknown task type");
 			return;
 		}
-    	Task task = manager.newTask(form.getBucketId(), auth.getPrincipal(), form.getSettings());
-    	String commandId = dispatcher.dispatch(new CreateTaskCommand(auth.getPrincipal(), task));
-    	setHeader(res, LOCATION, "/tasks/" + task.getId());
-    	setHeader(res, COMMAND_ID, commandId);
-        sendCreated(res, task.toJson());
-    }
+		Task task = manager.newTask(form.getBucketId(), auth.getPrincipal(), form.getSettings());
+		String commandId = dispatcher.dispatch(new CreateTaskCommand(auth.getPrincipal(), task));
+		setHeader(res, LOCATION, "/tasks/" + task.getId());
+		setHeader(res, COMMAND_ID, commandId);
+		sendCreated(res, task.toJson());
+	}
 }

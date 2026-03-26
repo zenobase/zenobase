@@ -1,12 +1,11 @@
 package com.zenobase.tasks.withings;
 
-import jakarta.inject.Inject;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
@@ -43,7 +42,13 @@ public class WithingsStepsTaskManager extends WithingsTaskManagerSupport<Withing
 	Command safeExecute(WithingsStepsTask task, OAuthCredentials credentials, Token token) {
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
-		var result = new WithingsStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getDistanceUnit(), task.getHeightUnit(), task.getEnergyUnit());
+		var result = new WithingsStepsResult(
+				parseObject(response),
+				task.getPrincipal(),
+				task.getTag(),
+				task.getDistanceUnit(),
+				task.getHeightUnit(),
+				task.getEnergyUnit());
 		checkStatus(result, request, credentials);
 		return createCommand(task, credentials, token, result);
 	}
@@ -51,7 +56,8 @@ public class WithingsStepsTaskManager extends WithingsTaskManagerSupport<Withing
 	private OAuthRequest createRequest(WithingsStepsTask task) {
 		var request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/v2/measure");
 		request.addQuerystringParameter("action", "getactivity");
-		request.addQuerystringParameter("startdateymd", LocalDate.parse(task.getMarker()).toString());
+		request.addQuerystringParameter(
+				"startdateymd", LocalDate.parse(task.getMarker()).toString());
 		request.addQuerystringParameter("enddateymd", LocalDate.now().toString());
 		return request;
 	}

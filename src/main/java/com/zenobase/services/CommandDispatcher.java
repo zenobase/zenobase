@@ -61,7 +61,12 @@ public class CommandDispatcher {
 						handlers.execute(c.reverse(c.getPrincipal()));
 					}
 				} catch (RuntimeException e2) {
-					logger.error("Couldn't revert {} {} ({}/{})...", command.getPrincipal(), command, count + 1, dispatched.size());
+					logger.error(
+							"Couldn't revert {} {} ({}/{})...",
+							command.getPrincipal(),
+							command,
+							count + 1,
+							dispatched.size());
 					throw e;
 				}
 			}

@@ -11,47 +11,54 @@ public class WithingsTesting extends TaskTestingSupport {
 	@Test
 	@Ignore
 	public void testWeight() {
-		run(new WithingsWeightTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("tag", "weight")
-			.put("unit", "lb")
-			.put("timezone", "America/Los_Angeles")
-			.put("marker", "2013-11-01"));
+		run(
+				new WithingsWeightTaskManager(newCredentialsManager()),
+				Nodes.newObject()
+						.put("tag", "weight")
+						.put("unit", "lb")
+						.put("timezone", "America/Los_Angeles")
+						.put("marker", "2013-11-01"));
 	}
 
 	@Test
 	@Ignore
 	public void testSteps() {
-		run(new WithingsStepsTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("tag", "walk")
-			.put("unit", "mi")
-			.put("marker", "2013-10-01"));
+		run(
+				new WithingsStepsTaskManager(newCredentialsManager()),
+				Nodes.newObject().put("tag", "walk").put("unit", "mi").put("marker", "2013-10-01"));
 	}
 
 	@Test
 	@Ignore
 	public void testSleep() {
-		run(new WithingsSleepTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("tag", "Sleep")
-			.put("marker", "2014-03-01T00:00:00Z")
-			.put("timezone", "America/Los_Angeles"));
+		run(
+				new WithingsSleepTaskManager(newCredentialsManager()),
+				Nodes.newObject()
+						.put("tag", "Sleep")
+						.put("marker", "2014-03-01T00:00:00Z")
+						.put("timezone", "America/Los_Angeles"));
 	}
 
 	@Test
 	@Ignore
 	public void testCardio() {
-		run(new WithingsCardioTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("tag", "cardio")
-			.put("timezone", "America/Los_Angeles")
-			.put("marker", "2014-04-16"));
+		run(
+				new WithingsCardioTaskManager(newCredentialsManager()),
+				Nodes.newObject()
+						.put("tag", "cardio")
+						.put("timezone", "America/Los_Angeles")
+						.put("marker", "2014-04-16"));
 	}
 
 	@Test
 	public void testTemperature() {
-		run(new WithingsTemperatureTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("tag", "temp")
-			.put("unit", "C")
-			.put("timezone", "America/Los_Angeles")
-			.put("marker", "2019-04-01"));
+		run(
+				new WithingsTemperatureTaskManager(newCredentialsManager()),
+				Nodes.newObject()
+						.put("tag", "temp")
+						.put("unit", "C")
+						.put("timezone", "America/Los_Angeles")
+						.put("marker", "2019-04-01"));
 	}
 
 	@Override

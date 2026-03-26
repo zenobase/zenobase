@@ -3,15 +3,16 @@ package com.zenobase.search;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.CalendarInterval;
@@ -20,9 +21,6 @@ import org.opensearch.client.opensearch._types.aggregations.StatsAggregate;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Interval;
 
 import com.zenobase.common.OffsetIntervals;
 import com.zenobase.json.Nodes;
@@ -33,7 +31,15 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 	private final Interval range;
 	private final DateTimeZone timezone;
 
-	public OffsetTimelineFacet(String id, String keyField, String valueField, String interval, String range, DateTimeZone timezone, Unit<?> unit, Query filter) {
+	public OffsetTimelineFacet(
+			String id,
+			String keyField,
+			String valueField,
+			String interval,
+			String range,
+			DateTimeZone timezone,
+			Unit<?> unit,
+			Query filter) {
 		super(id, keyField, valueField, unit, filter);
 		this.interval = interval;
 		this.range = !Strings.isNullOrEmpty(range) ? OffsetIntervals.valueOf(range) : null;
@@ -45,14 +51,9 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 		CalendarInterval calendarInterval = DateHistograms.parseInterval(interval);
 		String tz = timezone.toTimeZone().toZoneId().getId();
 		String f = getField();
-		Aggregation aggregation = Aggregation.of(a -> a
-			.dateHistogram(dh -> dh
-				.field(keyField)
-				.calendarInterval(calendarInterval)
-				.timeZone(tz)
-			)
-			.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(f))))
-		);
+		Aggregation aggregation = Aggregation.of(a -> a.dateHistogram(dh ->
+						dh.field(keyField).calendarInterval(calendarInterval).timeZone(tz))
+				.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(f)))));
 		addAggregation(getId(), aggregation, builder);
 	}
 
@@ -73,8 +74,9 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 						entryNode.put("time", addOffset(bucketTime));
 						entryNode.put("count", bucket.docCount());
 						if (!keyField.equals(valueField) && bucket.docCount() > 0) {
-							StatsAggregate stats = bucket.aggregations().get(getId()).stats();
-							addValue(entryNode, "min",  stats.min());
+							StatsAggregate stats =
+									bucket.aggregations().get(getId()).stats();
+							addValue(entryNode, "min", stats.min());
 							addValue(entryNode, "max", stats.max());
 							addValue(entryNode, "sum", stats.sum());
 							addValue(entryNode, "avg", stats.avg());

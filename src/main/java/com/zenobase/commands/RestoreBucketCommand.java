@@ -1,8 +1,7 @@
 package com.zenobase.commands;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.inject.Inject;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;

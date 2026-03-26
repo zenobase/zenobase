@@ -2,7 +2,6 @@ package com.zenobase.search;
 
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
 
 public class TermConstraintBuilder extends ConstraintBuilder {
 

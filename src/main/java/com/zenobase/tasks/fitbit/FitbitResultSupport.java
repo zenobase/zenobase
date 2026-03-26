@@ -1,7 +1,6 @@
 package com.zenobase.tasks.fitbit;
 
 import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Frequency;

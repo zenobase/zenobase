@@ -1,15 +1,12 @@
 package com.zenobase.search;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import java.util.ArrayList;
-
 import com.google.common.collect.ImmutableMultimap;
-import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
-import org.opensearch.client.opensearch._types.query_dsl.MatchAllQuery;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 public class FilterBuilderSupport {

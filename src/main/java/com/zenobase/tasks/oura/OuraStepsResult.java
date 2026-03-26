@@ -1,7 +1,8 @@
 package com.zenobase.tasks.oura;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 

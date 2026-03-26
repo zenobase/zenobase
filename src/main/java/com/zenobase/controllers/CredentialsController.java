@@ -1,10 +1,9 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 
 import com.zenobase.commands.Command;
@@ -26,8 +25,12 @@ public class CredentialsController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-	public CredentialsController(AuthorizationContext security, CommandDispatcher dispatcher,
-		CredentialsManagerRegistry registry, CredentialsRepository credentials, UserRepository users) {
+	public CredentialsController(
+			AuthorizationContext security,
+			CommandDispatcher dispatcher,
+			CredentialsManagerRegistry registry,
+			CredentialsRepository credentials,
+			UserRepository users) {
 
 		super(security);
 		this.dispatcher = dispatcher;
@@ -52,8 +55,8 @@ public class CredentialsController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-    	sendOk(res, credentials.sanitized().toJson());
-    }
+		sendOk(res, credentials.sanitized().toJson());
+	}
 
 	public void update(ServerRequest req, ServerResponse res) {
 		String credentialsId = req.path().pathParameters().get("credentialsId");
@@ -67,39 +70,39 @@ public class CredentialsController extends ControllerSupport {
 			sendNotFound(res);
 			return;
 		}
-    	if (!credentials.isPermitted(auth)) {
-    		sendForbidden(res);
-    		return;
-    	}
-    	CredentialsManager manager = registry.find(credentials.getType());
-    	if (manager == null) {
-    		sendBadRequest(res, "unsupported credentials type: " + credentials.getType());
-    		return;
-    	}
-    	ObjectNode body = body(req);
-    	if (Nodes.size(body) != 1) {
-    		sendBadRequest(res, "expected a single property");
-    		return;
-    	}
-    	Command command = null;
-    	ObjectNode config = Credentials.CREDENTIALS.getValue(body);
-    	if (config == null) {
-    		sendBadRequest(res, "no credentials specified");
-    		return;
-    	}
-    	if (credentials.isAuthorized()) {
-    		sendBadRequest(res, "credentials are already authorized");
-    		return;
-    	}
-    	command = manager.authorize(credentials, config);
-    	if (command == null) {
-    		sendBadRequest(res, "nothing to do");
-    		return;
-    	}
-    	try {
-    		String commandId = dispatcher.dispatch(command);
-    		setHeader(res, COMMAND_ID, commandId);
-    		sendNoContent(res);
+		if (!credentials.isPermitted(auth)) {
+			sendForbidden(res);
+			return;
+		}
+		CredentialsManager manager = registry.find(credentials.getType());
+		if (manager == null) {
+			sendBadRequest(res, "unsupported credentials type: " + credentials.getType());
+			return;
+		}
+		ObjectNode body = body(req);
+		if (Nodes.size(body) != 1) {
+			sendBadRequest(res, "expected a single property");
+			return;
+		}
+		Command command = null;
+		ObjectNode config = Credentials.CREDENTIALS.getValue(body);
+		if (config == null) {
+			sendBadRequest(res, "no credentials specified");
+			return;
+		}
+		if (credentials.isAuthorized()) {
+			sendBadRequest(res, "credentials are already authorized");
+			return;
+		}
+		command = manager.authorize(credentials, config);
+		if (command == null) {
+			sendBadRequest(res, "nothing to do");
+			return;
+		}
+		try {
+			String commandId = dispatcher.dispatch(command);
+			setHeader(res, COMMAND_ID, commandId);
+			sendNoContent(res);
 		} catch (OpenSearchException e) {
 			if (e.status() == 409) {
 				sendConflict(res, "credentials are stale");
@@ -107,9 +110,9 @@ public class CredentialsController extends ControllerSupport {
 				throw e;
 			}
 		}
-    }
+	}
 
-    public void delete(ServerRequest req, ServerResponse res) {
+	public void delete(ServerRequest req, ServerResponse res) {
 		String credentialsId = req.path().pathParameters().get("credentialsId");
 		Authorization auth = getCurrentAuthorization(req);
 		if (auth == null) {
@@ -121,12 +124,12 @@ public class CredentialsController extends ControllerSupport {
 			sendNotFound(res);
 			return;
 		}
-    	if (!credentials.isPermitted(auth) && !users.isSuperuser(auth.getPrincipal())) {
-    		sendForbidden(res);
-    		return;
-    	}
-    	String commandId = dispatcher.dispatch(new DeleteCredentialsCommand(auth.getPrincipal(), credentials));
+		if (!credentials.isPermitted(auth) && !users.isSuperuser(auth.getPrincipal())) {
+			sendForbidden(res);
+			return;
+		}
+		String commandId = dispatcher.dispatch(new DeleteCredentialsCommand(auth.getPrincipal(), credentials));
 		setHeader(res, COMMAND_ID, commandId);
-    	sendNoContent(res);
-    }
+		sendNoContent(res);
+	}
 }

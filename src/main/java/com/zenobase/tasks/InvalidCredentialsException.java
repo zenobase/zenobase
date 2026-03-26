@@ -1,6 +1,5 @@
 package com.zenobase.tasks;
 
-
 public class InvalidCredentialsException extends CredentialsException {
 
 	private static final long serialVersionUID = 1L;

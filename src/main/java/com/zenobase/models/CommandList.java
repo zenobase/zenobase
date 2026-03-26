@@ -26,12 +26,12 @@ public class CommandList extends LazyList<Command> {
 	}
 
 	public static ObjectNode toJson(PartialList<Command> commands) {
-    	ObjectNode node = Nodes.newObject();
-    	TOTAL.setValue(node, Ints.checkedCast(commands.getTotal()));
-    	ArrayNode commandsNode = node.putArray("commands");
-    	for (Command command : commands) {
-    		commandsNode.add(new CommandInfo(command).toJson());
-    	}
-    	return node;
-    }
+		ObjectNode node = Nodes.newObject();
+		TOTAL.setValue(node, Ints.checkedCast(commands.getTotal()));
+		ArrayNode commandsNode = node.putArray("commands");
+		for (Command command : commands) {
+			commandsNode.add(new CommandInfo(command).toJson());
+		}
+		return node;
+	}
 }

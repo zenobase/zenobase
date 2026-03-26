@@ -1,14 +1,12 @@
 package com.zenobase.tasks.fitbit;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import jakarta.inject.Inject;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.scribe.model.OAuthRequest;
@@ -46,7 +44,7 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 		List<Event> events = new ArrayList<>();
 		FitbitProfileResult profile = getProfile(credentials);
 		DateTime afterDate = DateTime.parse(task.getMarker());
-		for (String url = "https://api.fitbit.com/1/user/-/activities/list.json"; url != null;) {
+		for (String url = "https://api.fitbit.com/1/user/-/activities/list.json"; url != null; ) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, url);
 			request.addHeader("Accept-Language", profile.getDistanceLocale());
 			if (events.isEmpty()) {
@@ -58,7 +56,8 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 			try {
 				Response response = send(request, credentials);
 				JsonNode node = parseObject(response);
-				FitbitActivitiesResult result = new FitbitActivitiesResult(node, task.getPrincipal(), task.includeAutodetected(), profile.getDistanceUnit());
+				FitbitActivitiesResult result = new FitbitActivitiesResult(
+						node, task.getPrincipal(), task.includeAutodetected(), profile.getDistanceUnit());
 				events.addAll(result.getEvents());
 				url = result.next();
 			} catch (InvalidStatusException e) {
@@ -68,9 +67,9 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 				}
 				throw e;
 			}
-
 		}
-		return createCommand(task, credentials, events, MoreObjects.firstNonNull(getMarker(events), task.getMarker()), token);
+		return createCommand(
+				task, credentials, events, MoreObjects.firstNonNull(getMarker(events), task.getMarker()), token);
 	}
 
 	private static String getMarker(Iterable<Event> events) {

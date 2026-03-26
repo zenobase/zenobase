@@ -2,12 +2,11 @@ package com.zenobase.controllers;
 
 import java.util.List;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.oauth.Authorization;
@@ -28,24 +27,24 @@ public class SchedulerController extends ControllerSupport {
 	}
 
 	public void findAll(ServerRequest req, ServerResponse res) {
-    	Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
+		Authorization auth = getCurrentAuthorization(req);
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
 		if (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal())) {
 			sendForbidden(res);
 			return;
 		}
-        sendOk(res, toJson(scheduler.findJobs()));
-    }
+		sendOk(res, toJson(scheduler.findJobs()));
+	}
 
 	public static ObjectNode toJson(List<Job> jobs) {
-    	ObjectNode resultNode = Nodes.newObject();
-    	ArrayNode jobsNode = resultNode.putArray("jobs");
-    	for (Job job : jobs) {
-    		jobsNode.add(job.toJson());
-    	}
+		ObjectNode resultNode = Nodes.newObject();
+		ArrayNode jobsNode = resultNode.putArray("jobs");
+		for (Job job : jobs) {
+			jobsNode.add(job.toJson());
+		}
 		return resultNode;
 	}
 }

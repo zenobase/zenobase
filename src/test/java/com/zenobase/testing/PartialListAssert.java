@@ -3,8 +3,8 @@ package com.zenobase.testing;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.Assertions;
 
 import com.zenobase.common.PartialList;
 

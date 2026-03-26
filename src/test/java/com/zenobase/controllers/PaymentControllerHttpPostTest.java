@@ -26,7 +26,12 @@ public class PaymentControllerHttpPostTest extends PaymentControllerTestSupport 
 		user.setVerified(true);
 		try (Http1ClientResponse result = call(payment)) {
 			assertThat(result).hasStatus(200);
-			verify(payments).subscribe(eq(user.getName()), eq(user.getEmail()), argThat(p -> p.getPrice().compareTo(payment.getPrice()) == 0), eq(Plan.PERSONAL));
+			verify(payments)
+					.subscribe(
+							eq(user.getName()),
+							eq(user.getEmail()),
+							argThat(p -> p.getPrice().compareTo(payment.getPrice()) == 0),
+							eq(Plan.PERSONAL));
 			verify(dispatcher).dispatch(ArgumentMatchers.any(ChangeQuotaCommand.class));
 		}
 	}
@@ -40,7 +45,12 @@ public class PaymentControllerHttpPostTest extends PaymentControllerTestSupport 
 		Payment payment = new Payment(new BigDecimal("5.00"));
 		try (Http1ClientResponse result = call(payment)) {
 			assertThat(result).hasStatus(200);
-			verify(payments).subscribe(eq(user.getName()), eq(user.getEmail()), argThat(p -> p.getPrice().compareTo(payment.getPrice()) == 0), eq(Plan.PERSONAL));
+			verify(payments)
+					.subscribe(
+							eq(user.getName()),
+							eq(user.getEmail()),
+							argThat(p -> p.getPrice().compareTo(payment.getPrice()) == 0),
+							eq(Plan.PERSONAL));
 			verify(dispatcher).dispatch(ArgumentMatchers.any(ChangeQuotaCommand.class));
 		}
 	}

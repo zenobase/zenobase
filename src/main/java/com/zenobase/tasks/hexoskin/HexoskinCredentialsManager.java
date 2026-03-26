@@ -1,10 +1,9 @@
 package com.zenobase.tasks.hexoskin;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -29,7 +28,11 @@ public class HexoskinCredentialsManager extends OAuthCredentialsManager {
 	private static final String TYPE = "hexoskin";
 
 	@Inject
-	public HexoskinCredentialsManager(CredentialsRepository repository, @Named("hexoskin.api.key") String apiKey, @Named("hexoskin.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
+	public HexoskinCredentialsManager(
+			CredentialsRepository repository,
+			@Named("hexoskin.api.key") String apiKey,
+			@Named("hexoskin.api.secret") String apiSecret,
+			@Named("oauth.hostname") String callbackUrl) {
 		super(TYPE, repository, new HexoskinApi(), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -42,16 +45,15 @@ public class HexoskinCredentialsManager extends OAuthCredentialsManager {
 	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
 		String code = config.path("code").textValue();
 		if (code == null) {
-			logger.warn("Couldn't obtain {} credentials <{}>: {}",
-				credentials.getType(), credentials.getId(), config);
+			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
 			return null;
 		}
 		Token token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-			.with(Credentials.CREDENTIALS)
-			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-			.build();
+				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+				.build();
 	}
 
 	@Override
@@ -64,7 +66,8 @@ public class HexoskinCredentialsManager extends OAuthCredentialsManager {
 		if (credentials.getToken() instanceof ExpiringToken token) {
 			refreshToken = token.getRefreshToken();
 		} else {
-			refreshToken = credentials.getToken().getToken() + ":" + credentials.getToken().getSecret();
+			refreshToken = credentials.getToken().getToken() + ":"
+					+ credentials.getToken().getSecret();
 		}
 		var request = new OAuthRequest(Verb.POST, "https://api.hexoskin.com/api/connect/oauth2/token/");
 		request.addBodyParameter("grant_type", "refresh_token");
@@ -74,7 +77,11 @@ public class HexoskinCredentialsManager extends OAuthCredentialsManager {
 		if (response.isSuccessful()) {
 			credentials.setToken(new OAuth2TokenExtractor().extract(response.getBody()));
 		} else {
-			logger.warn("Couldn't refresh credentials {}: {} -> {}", credentials.getId(), response.getHeaders(), response.getBody());
+			logger.warn(
+					"Couldn't refresh credentials {}: {} -> {}",
+					credentials.getId(),
+					response.getHeaders(),
+					response.getBody());
 		}
 	}
 

@@ -1,7 +1,7 @@
 package com.zenobase.common;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import javax.measure.quantity.DataAmount;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
@@ -21,12 +21,9 @@ import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 import javax.measure.unit.UnitFormat;
 
-import java.util.ArrayList;
-
 public class Units {
 
 	static {
-
 		UnitFormat.getInstance().label(SI.BIT.times(8), "B");
 		UnitFormat.getInstance().label(SI.KILO(SI.BIT.times(8)), "KB");
 		UnitFormat.getInstance().label(SI.MEGA(SI.BIT.times(8)), "MB");
@@ -52,15 +49,15 @@ public class Units {
 		UnitFormat.getInstance().label(SI.PASCAL.times(6894.75729), "psi");
 		UnitFormat.getInstance().alias(SI.HECTO(SI.PASCAL), "mbar");
 		UnitFormat.getInstance().alias(SI.HECTO(SI.PASCAL).times(1000), "bar");
-        UnitFormat.getInstance().label(SI.PASCAL.times(98.0665), "cm_wg");
+		UnitFormat.getInstance().label(SI.PASCAL.times(98.0665), "cm_wg");
 
 		UnitFormat.getInstance().label(SI.CELSIUS, "C");
 		UnitFormat.getInstance().label(NonSI.FAHRENHEIT, "F");
 
 		UnitFormat.getInstance().alias(NonSI.KILOMETERS_PER_HOUR, "kmh");
 
-		//UnitFormat.getInstance().label(SI.MILLI(SI.SECOND).divide(SI.KILOMETER), "ms/km");
-		//UnitFormat.getInstance().label(SI.MILLI(SI.SECOND).divide(NonSI.MILE), "ms/mi");
+		// UnitFormat.getInstance().label(SI.MILLI(SI.SECOND).divide(SI.KILOMETER), "ms/km");
+		// UnitFormat.getInstance().label(SI.MILLI(SI.SECOND).divide(NonSI.MILE), "ms/mi");
 
 		UnitFormat.getInstance().label(NonSI.OUNCE_LIQUID_US, "fl_oz");
 		UnitFormat.getInstance().label(NonSI.OUNCE_LIQUID_US.times(8), "cups");
@@ -129,7 +126,7 @@ public class Units {
 	public static final Unit<Pressure> MMHG = valueOf("mmHg");
 	public static final Unit<Pressure> INHG = valueOf("inHg");
 	public static final Unit<Pressure> PSI = valueOf("psi");
-    public static final Unit<Pressure> CM_WG = valueOf("cm_wg");
+	public static final Unit<Pressure> CM_WG = valueOf("cm_wg");
 
 	public static final Unit<Dimensionless> DB = valueOf("dB");
 
@@ -166,9 +163,7 @@ public class Units {
 
 	public static final Unit<Illuminance> LX = valueOf("lx");
 
-	private Units() {
-
-	}
+	private Units() {}
 
 	/**
 	 * Obtain units from here to ensure the static initializers have registered any custom units.
@@ -179,7 +174,8 @@ public class Units {
 	}
 
 	public static <Q extends Quantity> boolean isMetric(Unit<Q> unit) {
-		return unit.isStandardUnit() || Math.log10(unit.getConverterTo(unit.getStandardUnit()).convert(1)) % 1 == 0;
+		return unit.isStandardUnit()
+				|| Math.log10(unit.getConverterTo(unit.getStandardUnit()).convert(1)) % 1 == 0;
 	}
 
 	public static boolean isStandard(Unit<?> unit) {

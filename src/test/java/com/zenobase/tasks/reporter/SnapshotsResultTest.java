@@ -3,11 +3,7 @@ package com.zenobase.tasks.reporter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Dimensionless;
-import javax.measure.quantity.Pressure;
-import javax.measure.quantity.Temperature;
 
 import org.joda.time.DateTimeZone;
 import org.junit.Test;

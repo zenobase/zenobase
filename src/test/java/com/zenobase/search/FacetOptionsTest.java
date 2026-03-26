@@ -11,13 +11,13 @@ public class FacetOptionsTest {
 	@Test
 	public void test() {
 		check(new FacetOptions(ImmutableMap.<String, String>builder()
-			.put("a", "foo")
-			.put("b", "42")
-			.put("c", "1.23456789")
-			.put("d", "true")
-			.put("e", "-08:00")
-			.put("l", "l1,l2,l3,l4")
-			.build()));
+				.put("a", "foo")
+				.put("b", "42")
+				.put("c", "1.23456789")
+				.put("d", "true")
+				.put("e", "-08:00")
+				.put("l", "l1,l2,l3,l4")
+				.build()));
 	}
 
 	@Test
@@ -56,7 +56,6 @@ public class FacetOptionsTest {
 
 		assertThat(options.get("l", String.class, null)).isEqualTo("l1,l2,l3,l4");
 	}
-
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testBadType() {

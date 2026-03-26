@@ -1,11 +1,10 @@
 package com.zenobase.tasks.foursquare;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import jakarta.inject.Inject;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
@@ -58,7 +57,8 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 		return time != null ? Long.toString(time.getMillis() / 1000) : null;
 	}
 
-	private boolean execute(FoursquareTask task, OAuthCredentials credentials, String marker, int offset, List<Event> events) {
+	private boolean execute(
+			FoursquareTask task, OAuthCredentials credentials, String marker, int offset, List<Event> events) {
 		var request = new OAuthRequest(Verb.GET, "https://api.foursquare.com/v2/users/self/checkins");
 		request.addQuerystringParameter("v", API_VERSION);
 		if (task.getMarker() != null) {
@@ -77,11 +77,11 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 	private Command createCommand(FoursquareTask task, String marker, List<Event> events) {
 		var command = new CompoundCommand(task.getPrincipal(), "ran foursquare task", "reverted foursquare task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), marker)
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(Task.MARKER, task.getMarker(), marker)
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}

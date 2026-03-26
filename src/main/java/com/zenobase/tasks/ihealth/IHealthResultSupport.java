@@ -2,9 +2,8 @@ package com.zenobase.tasks.ihealth;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Frequency;
@@ -90,7 +89,9 @@ abstract class IHealthResultSupport {
 	}
 
 	protected DecimalMeasure<Energy> energyValue(JsonNode node) {
-		return !isZero(node) ? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.KCAL) : null;
+		return !isZero(node)
+				? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.KCAL)
+				: null;
 	}
 
 	protected static boolean isZero(JsonNode node) {

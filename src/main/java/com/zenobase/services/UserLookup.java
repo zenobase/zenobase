@@ -20,9 +20,7 @@ public class UserLookup {
 	}
 
 	public User getUser(String userId) {
-		return isName(userId)
-			? find(userId)
-			: find(new Identity(userId));
+		return isName(userId) ? find(userId) : find(new Identity(userId));
 	}
 
 	private User find(String userId) {

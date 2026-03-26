@@ -13,44 +13,40 @@ public class QueryTest {
 
 	@Test
 	public void testEmpty() {
-		assertThatQueryBuildsTo(new QuerySupport(),
-			"{\"match_all\":{}}");
+		assertThatQueryBuildsTo(new QuerySupport(), "{\"match_all\":{}}");
 	}
 
 	@Test
 	public void testEqualTo() {
-		assertThatQueryBuildsTo(new QuerySupport().equalTo(FIELD, "foo"),
-			"{\"term\":{\"tag\":{\"value\":\"foo\"}}}");
+		assertThatQueryBuildsTo(new QuerySupport().equalTo(FIELD, "foo"), "{\"term\":{\"tag\":{\"value\":\"foo\"}}}");
 	}
 
 	@Test
 	public void testEqualToNull() {
-		Assertions.assertThat(new QuerySupport().equalTo(FIELD, null))
-			.isEqualTo(new QuerySupport().isNull(FIELD));
+		Assertions.assertThat(new QuerySupport().equalTo(FIELD, null)).isEqualTo(new QuerySupport().isNull(FIELD));
 	}
 
 	@Test
 	public void testIsNull() {
-		assertThatQueryBuildsTo(new QuerySupport().isNull(FIELD),
-			"{\"bool\":{\"must_not\":[{\"exists\":{\"field\":\"tag\"}}]}}");
+		assertThatQueryBuildsTo(
+				new QuerySupport().isNull(FIELD), "{\"bool\":{\"must_not\":[{\"exists\":{\"field\":\"tag\"}}]}}");
 	}
 
 	@Test
 	public void testNotNull() {
-		assertThatQueryBuildsTo(new QuerySupport().notNull(FIELD),
-			"{\"exists\":{\"field\":\"tag\"}}");
+		assertThatQueryBuildsTo(new QuerySupport().notNull(FIELD), "{\"exists\":{\"field\":\"tag\"}}");
 	}
 
 	@Test
 	public void testLessThan() {
-		assertThatQueryBuildsTo(new QuerySupport().lessThan(FIELD, 10),
-			"{\"range\":{\"tag\":{\"lt\":10}}}");
+		assertThatQueryBuildsTo(new QuerySupport().lessThan(FIELD, 10), "{\"range\":{\"tag\":{\"lt\":10}}}");
 	}
 
 	@Test
 	public void testBoolean() {
-		assertThatQueryBuildsTo(new QuerySupport().equalTo(FIELD, "foo").equalTo(FIELD, "bar"),
-			"{\"bool\":{\"must\":[{\"term\":{\"tag\":{\"value\":\"foo\"}}},{\"term\":{\"tag\":{\"value\":\"bar\"}}}]}}");
+		assertThatQueryBuildsTo(
+				new QuerySupport().equalTo(FIELD, "foo").equalTo(FIELD, "bar"),
+				"{\"bool\":{\"must\":[{\"term\":{\"tag\":{\"value\":\"foo\"}}},{\"term\":{\"tag\":{\"value\":\"bar\"}}}]}}");
 	}
 
 	private static void assertThatQueryBuildsTo(QuerySupport query, String expected) {
@@ -68,9 +64,9 @@ public class QueryTest {
 		QuerySupport q3 = new QuerySupport().equalTo(FIELD, "bar");
 		QuerySupport q4 = new QuerySupport();
 		new EqualsTester()
-			.addEqualityGroup(q1, q2)
-			.addEqualityGroup(q3)
-			.addEqualityGroup(q4)
-			.testEquals();
+				.addEqualityGroup(q1, q2)
+				.addEqualityGroup(q3)
+				.addEqualityGroup(q4)
+				.testEquals();
 	}
 }

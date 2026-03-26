@@ -10,8 +10,7 @@ public record Percentage(BigDecimal value) implements Comparable<Percentage> {
 	private static final Range<BigDecimal> RANGE = Range.closed(BigDecimal.ZERO, BigDecimal.valueOf(100L));
 
 	public Percentage {
-		Preconditions.checkArgument(RANGE.contains(value),
-			"Expected a value in %s but got: %s", RANGE, value);
+		Preconditions.checkArgument(RANGE.contains(value), "Expected a value in %s but got: %s", RANGE, value);
 	}
 
 	public static Percentage valueOf(BigDecimal value) {

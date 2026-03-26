@@ -5,9 +5,9 @@ import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.util.List;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 
@@ -28,14 +28,16 @@ public class EventChunksTest {
 		EventRepository events = mock(EventRepository.class);
 
 		doAnswer((Answer<Void>) invocation -> {
-			Callback<ObjectNode> callback = (Callback<ObjectNode>) invocation.getArgument(2);
-			for (int i = 0; i < total; ++i) {
-				ObjectNode fakeEvent = Nodes.newObject();
-				fakeEvent.put("@id", Generator.id());
-				callback.call(fakeEvent);
-			}
-			return null;
-		}).when(events).find(eq(bucketId), any(Search.class), any(Callback.class));
+					Callback<ObjectNode> callback = (Callback<ObjectNode>) invocation.getArgument(2);
+					for (int i = 0; i < total; ++i) {
+						ObjectNode fakeEvent = Nodes.newObject();
+						fakeEvent.put("@id", Generator.id());
+						callback.call(fakeEvent);
+					}
+					return null;
+				})
+				.when(events)
+				.find(eq(bucketId), any(Search.class), any(Callback.class));
 
 		ObjectNode result = onReady(new EventChunks(events, bucketId, List.of()));
 

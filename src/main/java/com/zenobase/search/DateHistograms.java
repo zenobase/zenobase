@@ -6,23 +6,21 @@ import org.opensearch.client.opensearch._types.aggregations.CalendarInterval;
 
 public class DateHistograms {
 
-	private static final ImmutableMap<String, CalendarInterval> INTERVALS = ImmutableMap.<String, CalendarInterval>builder()
-		.put("year", CalendarInterval.Year)
-		.put("month", CalendarInterval.Month)
-		.put("week", CalendarInterval.Week)
-		.put("day", CalendarInterval.Day)
-		.put("hour", CalendarInterval.Hour)
-		.put("minute", CalendarInterval.Minute)
-		.put("second", CalendarInterval.Second)
-		.build();
+	private static final ImmutableMap<String, CalendarInterval> INTERVALS =
+			ImmutableMap.<String, CalendarInterval>builder()
+					.put("year", CalendarInterval.Year)
+					.put("month", CalendarInterval.Month)
+					.put("week", CalendarInterval.Week)
+					.put("day", CalendarInterval.Day)
+					.put("hour", CalendarInterval.Hour)
+					.put("minute", CalendarInterval.Minute)
+					.put("second", CalendarInterval.Second)
+					.build();
 
-	private DateHistograms() {
-
-	}
+	private DateHistograms() {}
 
 	public static CalendarInterval parseInterval(String s) {
 		CalendarInterval interval = INTERVALS.get(s);
 		return Preconditions.checkNotNull(interval, "Invalid interval: %s", s);
 	}
-
 }

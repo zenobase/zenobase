@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.measure.quantity.Mass;
-
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
@@ -25,7 +23,12 @@ public class RunkeeperWeightResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 
-		RunkeeperWeightResult result = new RunkeeperWeightResult(readObject("RunkeeperWeightResultTest.json"), author, "Me", Units.KG, DateTimeZone.forID("America/Los_Angeles"));
+		RunkeeperWeightResult result = new RunkeeperWeightResult(
+				readObject("RunkeeperWeightResultTest.json"),
+				author,
+				"Me",
+				Units.KG,
+				DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.getNext()).isEqualTo("/weight?page=1&pageSize=1");
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(2);

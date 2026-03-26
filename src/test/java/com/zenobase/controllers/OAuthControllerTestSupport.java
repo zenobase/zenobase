@@ -47,17 +47,14 @@ public abstract class OAuthControllerTestSupport extends ControllerTestSupport {
 	}
 
 	protected static void assertGranted(Http1ClientResponse result) {
-		assertThat(result).hasStatus(200).asObjectNode()
-			.path("access_token").isNotNull();
+		assertThat(result).hasStatus(200).asObjectNode().path("access_token").isNotNull();
 	}
 
 	protected static void assertExpires(Http1ClientResponse result, int seconds) {
-		assertThat(result).asObjectNode()
-			.path("expires_in").isEqualTo(seconds);
+		assertThat(result).asObjectNode().path("expires_in").isEqualTo(seconds);
 	}
 
 	protected static void assertDenied(Http1ClientResponse result, String expectedError) {
-		assertThat(result).hasStatus(400).asObjectNode()
-			.path("error").isEqualTo(expectedError);
+		assertThat(result).hasStatus(400).asObjectNode().path("error").isEqualTo(expectedError);
 	}
 }

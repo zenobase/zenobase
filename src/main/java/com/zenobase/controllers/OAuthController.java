@@ -6,13 +6,12 @@ import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Iterables;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +48,11 @@ public class OAuthController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-	public OAuthController(AuthorizationContext security, AuthorizationRepository authorizations, CommandDispatcher dispatcher, UserRepository users) {
+	public OAuthController(
+			AuthorizationContext security,
+			AuthorizationRepository authorizations,
+			CommandDispatcher dispatcher,
+			UserRepository users) {
 		super(security);
 		this.authorizations = authorizations;
 		this.dispatcher = dispatcher;
@@ -57,66 +60,62 @@ public class OAuthController extends ControllerSupport {
 	}
 
 	public void authorize(ServerRequest req, ServerResponse res) {
-        authorize(res, req, new AuthorizeForm(body(req)));
-    }
+		authorize(res, req, new AuthorizeForm(body(req)));
+	}
 
 	private void authorize(ServerResponse res, ServerRequest req, AuthorizeForm form) {
-    	Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null || auth.getScope() != null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
-    	if (!RESPONSE_TYPE_TOKEN.equals(form.getResponseType())) {
-    		deny(res, UNSUPPORTED_RESPONSE_TYPE, String.format("response_type must be '%s'", RESPONSE_TYPE_TOKEN));
-    		return;
-    	}
-    	if (form.getClient() == null) {
-    		deny(res, INVALID_REQUEST, "client_id is required");
-    		return;
-    	}
-    	if (form.getRedirectUri() == null) {
-    		deny(res, INVALID_REQUEST, "redirect_uri is required");
-    		return;
-    	}
-    	User client = users.find(form.getClient());
-    	if (client == null || !client.isVerified() || client.isSuspended()) {
-    		deny(res, UNAUTHORIZED_CLIENT, "client account must be enabled and verified");
-    		return;
-    	}
-    	if (!new OAuthRedirectValidator(client).valid(form.getRedirectUri())) {
-    		deny(res, INVALID_REDIRECT_URI, "domain must match the domain of the email address");
-    		return;
-    	}
-    	if (form.getScope() == null) {
-    		// TODO: check that the bucket exists and that the principal has access
-    		deny(res, INVALID_SCOPE, "scope must be a bucket");
-    		return;
-    	}
-        grant(res, auth.getPrincipal(), form.getClient(), form.getScope());
-    }
+		Authorization auth = getCurrentAuthorization(req);
+		if (auth == null || auth.getScope() != null) {
+			sendUnauthorized(res);
+			return;
+		}
+		if (!RESPONSE_TYPE_TOKEN.equals(form.getResponseType())) {
+			deny(res, UNSUPPORTED_RESPONSE_TYPE, String.format("response_type must be '%s'", RESPONSE_TYPE_TOKEN));
+			return;
+		}
+		if (form.getClient() == null) {
+			deny(res, INVALID_REQUEST, "client_id is required");
+			return;
+		}
+		if (form.getRedirectUri() == null) {
+			deny(res, INVALID_REQUEST, "redirect_uri is required");
+			return;
+		}
+		User client = users.find(form.getClient());
+		if (client == null || !client.isVerified() || client.isSuspended()) {
+			deny(res, UNAUTHORIZED_CLIENT, "client account must be enabled and verified");
+			return;
+		}
+		if (!new OAuthRedirectValidator(client).valid(form.getRedirectUri())) {
+			deny(res, INVALID_REDIRECT_URI, "domain must match the domain of the email address");
+			return;
+		}
+		if (form.getScope() == null) {
+			// TODO: check that the bucket exists and that the principal has access
+			deny(res, INVALID_SCOPE, "scope must be a bucket");
+			return;
+		}
+		grant(res, auth.getPrincipal(), form.getClient(), form.getScope());
+	}
 
 	public void token(ServerRequest req, ServerResponse res) {
 		TokenForm form = parseTokenForm(req);
-    	token(res, form);
-    }
+		token(res, form);
+	}
 
 	private TokenForm parseTokenForm(ServerRequest req) {
-		String contentType = req.headers().first(io.helidon.http.HeaderNames.CONTENT_TYPE).orElse("");
+		String contentType =
+				req.headers().first(io.helidon.http.HeaderNames.CONTENT_TYPE).orElse("");
 		if (contentType.contains("application/json")) {
 			ObjectNode node = body(req);
 			return new TokenForm(
-				node.has("grant_type") ? node.get("grant_type").asText() : null,
-				node.has("username") ? node.get("username").asText() : null,
-				node.has("password") ? node.get("password").asText() : null
-			);
+					node.has("grant_type") ? node.get("grant_type").asText() : null,
+					node.has("username") ? node.get("username").asText() : null,
+					node.has("password") ? node.get("password").asText() : null);
 		}
 		String body = req.content().as(String.class);
 		Map<String, String> params = parseFormEncoded(body);
-		return new TokenForm(
-			params.get("grant_type"),
-			params.get("username"),
-			params.get("password")
-		);
+		return new TokenForm(params.get("grant_type"), params.get("username"), params.get("password"));
 	}
 
 	private static Map<String, String> parseFormEncoded(String body) {
@@ -137,73 +136,76 @@ public class OAuthController extends ControllerSupport {
 		return params;
 	}
 
-    private void token(ServerResponse res, TokenForm form) {
-    	if (GRANT_TYPE_CLIENT_CREDENTIALS.equals(form.getGrant_type())) {
-            grant(res, new Identity(), null, null);
-            return;
-    	}
-    	if (GRANT_TYPE_PASSWORD.equals(form.getGrant_type())) {
-    		if (form.getUsername() == null) {
-    			deny(res, INVALID_REQUEST, "username is required");
-    			return;
-    		}
-    		if (form.getPassword() == null) {
-    			deny(res, INVALID_REQUEST, "password is required");
-    			return;
-    		}
-    		User user = users.find(form.getUsername());
-    		if (user == null || !user.passwordEquals(form.getPassword())) {
-    			deny(res, ACCESS_DENIED, "invalid username or password for " + form.getUsername());
-    			return;
-    		}
-    		if (user.isSuspended()) {
-    			deny(res, ACCESS_DENIED, "user suspended");
-    			return;
-    		}
-    		grant(res, user.asIdentity(), null, null);
-    		return;
-    	}
-		deny(res, UNSUPPORTED_GRANT_TYPE, String.format("grant_type must be '%s', got %s", GRANT_TYPE_PASSWORD, form.getGrant_type()));
-    }
+	private void token(ServerResponse res, TokenForm form) {
+		if (GRANT_TYPE_CLIENT_CREDENTIALS.equals(form.getGrant_type())) {
+			grant(res, new Identity(), null, null);
+			return;
+		}
+		if (GRANT_TYPE_PASSWORD.equals(form.getGrant_type())) {
+			if (form.getUsername() == null) {
+				deny(res, INVALID_REQUEST, "username is required");
+				return;
+			}
+			if (form.getPassword() == null) {
+				deny(res, INVALID_REQUEST, "password is required");
+				return;
+			}
+			User user = users.find(form.getUsername());
+			if (user == null || !user.passwordEquals(form.getPassword())) {
+				deny(res, ACCESS_DENIED, "invalid username or password for " + form.getUsername());
+				return;
+			}
+			if (user.isSuspended()) {
+				deny(res, ACCESS_DENIED, "user suspended");
+				return;
+			}
+			grant(res, user.asIdentity(), null, null);
+			return;
+		}
+		deny(
+				res,
+				UNSUPPORTED_GRANT_TYPE,
+				String.format("grant_type must be '%s', got %s", GRANT_TYPE_PASSWORD, form.getGrant_type()));
+	}
 
-    private void deny(ServerResponse res, String errorCode, String errorDescription) {
-    	logger.warn("Denied: {}", errorDescription);
-    	ObjectNode result = Nodes.newObject();
-    	result.put("error", errorCode);
-    	result.put("error_description", errorDescription);
-    	sendBadRequest(res, result);
-    }
+	private void deny(ServerResponse res, String errorCode, String errorDescription) {
+		logger.warn("Denied: {}", errorDescription);
+		ObjectNode result = Nodes.newObject();
+		result.put("error", errorCode);
+		result.put("error_description", errorDescription);
+		sendBadRequest(res, result);
+	}
 
-    private void grant(ServerResponse res, Identity principal, Identity client, String scope) {
-    	Authorization auth = null;
-    	if (client != null) {
-    		AuthorizationQuery query = new AuthorizationQuery()
-    			.principalEqualTo(principal)
-    			.clientEqualTo(client)
-    			.scopeEqualTo(scope);
-    		auth = Iterables.getOnlyElement(authorizations.find(query, 0, 1), null);
-    	}
-    	if (auth == null) {
-    		auth = new Authorization(principal, client, scope);
-    		dispatcher.dispatch(new CreateAuthorizationCommand(principal, auth));
-    	}
-    	ObjectNode result = Nodes.newObject();
-    	result.put("access_token", auth.getId());
-    	result.put("client_id", principal.getId());
-    	if (scope != null) {
-    		result.put("scope", scope);
-    	} else {
-        	result.put("expires_in", Duration.standardDays(31).getStandardSeconds());
-    	}
-    	sendOk(res, result);
-    }
+	private void grant(ServerResponse res, Identity principal, Identity client, String scope) {
+		Authorization auth = null;
+		if (client != null) {
+			AuthorizationQuery query = new AuthorizationQuery()
+					.principalEqualTo(principal)
+					.clientEqualTo(client)
+					.scopeEqualTo(scope);
+			auth = Iterables.getOnlyElement(authorizations.find(query, 0, 1), null);
+		}
+		if (auth == null) {
+			auth = new Authorization(principal, client, scope);
+			dispatcher.dispatch(new CreateAuthorizationCommand(principal, auth));
+		}
+		ObjectNode result = Nodes.newObject();
+		result.put("access_token", auth.getId());
+		result.put("client_id", principal.getId());
+		if (scope != null) {
+			result.put("scope", scope);
+		} else {
+			result.put("expires_in", Duration.standardDays(31).getStandardSeconds());
+		}
+		sendOk(res, result);
+	}
 
-    public void callback(ServerRequest req, ServerResponse res) {
-    	String id = req.path().pathParameters().get("id");
-    	res.status(io.helidon.http.Status.create(303));
-    	res.header(io.helidon.http.HeaderNames.LOCATION, String.format("/#/credentials/%s?%s", id, toQueryString(req)));
-    	res.send();
-    }
+	public void callback(ServerRequest req, ServerResponse res) {
+		String id = req.path().pathParameters().get("id");
+		res.status(io.helidon.http.Status.create(303));
+		res.header(io.helidon.http.HeaderNames.LOCATION, String.format("/#/credentials/%s?%s", id, toQueryString(req)));
+		res.send();
+	}
 
 	private static String toQueryString(ServerRequest req) {
 		try {

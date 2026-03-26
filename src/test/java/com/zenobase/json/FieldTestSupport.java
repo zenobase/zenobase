@@ -10,8 +10,8 @@ import org.junit.BeforeClass;
 
 import com.zenobase.common.Generator;
 import com.zenobase.common.Units;
-import com.zenobase.services.OpenSearchTestSupport;
 import com.zenobase.services.Index;
+import com.zenobase.services.OpenSearchTestSupport;
 
 public abstract class FieldTestSupport<T> extends OpenSearchTestSupport {
 
@@ -45,7 +45,9 @@ public abstract class FieldTestSupport<T> extends OpenSearchTestSupport {
 		index.store(id, node, DateTime.now(), true);
 		field.postPersist(node);
 		ObjectNode foundNode = index.get(id);
-		assertThat(Nodes.readObject(foundNode.toString())).isEqualTo(Nodes.readObject(node.toString())); // TODO investigate why some tests fail if we don't reparse the json
+		assertThat(Nodes.readObject(foundNode.toString()))
+				.isEqualTo(Nodes.readObject(
+						node.toString())); // TODO investigate why some tests fail if we don't reparse the json
 	}
 
 	@After

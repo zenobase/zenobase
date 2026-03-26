@@ -17,6 +17,10 @@ public class DataSourcesResultTest extends ResultTestSupport {
 		DataSourcesResult result = new DataSourcesResult(readObject("DataSourcesResultTest.json"));
 		List<DataStream> streams = result.get();
 		assertThat(streams).as("streams").hasSize(1);
-		assertThat(streams.get(0)).isEqualTo(new DataStream("derived:com.google.step_count.delta", "com.google.step_count.delta", new Resource("Google Fit", "https://fit.google.com/")));
+		assertThat(streams.get(0))
+				.isEqualTo(new DataStream(
+						"derived:com.google.step_count.delta",
+						"com.google.step_count.delta",
+						new Resource("Google Fit", "https://fit.google.com/")));
 	}
 }

@@ -2,11 +2,9 @@ package com.zenobase.tasks.withings;
 
 import java.util.List;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
@@ -30,7 +28,8 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 	@Override
 	public WithingsSleepTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "steps");
-		DateTimeZone timezone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone timezone = DateTimeZone.forID(
+				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
 		var task = new WithingsSleepTask(bucketId, principal, marker);
 		task.setTag(tag);
@@ -39,12 +38,18 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 	}
 
 	private static String parseMarker(String marker, DateTimeZone timezone) {
-		return marker != null ? LocalDateTime.parse(marker.replaceAll("Z", "")).toDateTime(timezone).withHourOfDay(12).toString() : null;
+		return marker != null
+				? LocalDateTime.parse(marker.replaceAll("Z", ""))
+						.toDateTime(timezone)
+						.withHourOfDay(12)
+						.toString()
+				: null;
 	}
 
 	@Override
 	Command safeExecute(WithingsSleepTask task, OAuthCredentials credentials, Token token) {
-		var result = new WithingsSleepResult(List.of(), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
+		var result = new WithingsSleepResult(
+				List.of(), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
 		for (DateTime from = task.getFrom(); from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
 			result.add(execute(task, credentials, from));
 		}
@@ -54,7 +59,8 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 	private List<Event> execute(WithingsSleepTask task, OAuthCredentials credentials, DateTime from) {
 		OAuthRequest request = createRequest(from);
 		Response response = send(request, credentials);
-		var result = new WithingsSleepResult(parseObject(response), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
+		var result = new WithingsSleepResult(
+				parseObject(response), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
 		checkStatus(result, request, credentials);
 		return result.getEvents();
 	}

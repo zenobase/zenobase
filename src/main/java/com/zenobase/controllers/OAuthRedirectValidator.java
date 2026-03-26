@@ -26,15 +26,16 @@ class OAuthRedirectValidator {
 	}
 
 	private static boolean isCustomScheme(URI uri) {
-    	return uri.getScheme() != null && uri.getScheme().startsWith("x");
+		return uri.getScheme() != null && uri.getScheme().startsWith("x");
 	}
 
 	private static boolean isLocalhost(URI uri) {
-    	return "localhost".equals(uri.getHost());
+		return "localhost".equals(uri.getHost());
 	}
 
 	private static boolean sameDomain(String email, URI uri) {
 		String domain = email.substring(email.indexOf('@') + 1);
-    	return uri.getHost() != null && (uri.getHost().equals(domain) || uri.getHost().endsWith('.' + domain));
+		return uri.getHost() != null
+				&& (uri.getHost().equals(domain) || uri.getHost().endsWith('.' + domain));
 	}
 }

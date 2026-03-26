@@ -18,9 +18,8 @@ class Datapoint {
 	}
 
 	public ObjectNode toJson(boolean asDuration) {
-		ObjectNode node = Nodes.newObject()
-			.put("timestamp", time.getMillis() / 1000)
-			.put("comment", "");
+		ObjectNode node =
+				Nodes.newObject().put("timestamp", time.getMillis() / 1000).put("comment", "");
 		if (asDuration) {
 			node.put("value", formatDuration(value));
 		} else {

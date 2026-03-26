@@ -1,14 +1,12 @@
 package com.zenobase.services;
 
-import java.util.List;
-
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
 import org.joda.time.DateTime;
-import org.joda.time.ReadableInstant;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateEventCommand;
@@ -18,7 +16,6 @@ import com.zenobase.models.Identity;
 import com.zenobase.search.EventSearchBuilder;
 import com.zenobase.search.ListFacet;
 import com.zenobase.search.OffsetDateTimeRangeConstraintBuilder;
-import com.zenobase.search.SearchBuilderSupport;
 
 public abstract class EventEditor {
 
@@ -54,9 +51,12 @@ public abstract class EventEditor {
 
 	private ObjectNode find() {
 		events.refresh(bucketId);
-		var search = new EventSearchBuilder().addFacet(new ListFacet(FIELD.getName(), 0, LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA));
+		var search = new EventSearchBuilder()
+				.addFacet(new ListFacet(FIELD.getName(), 0, LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA));
 		if (last != null) {
-			search.addConstraint(new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName()).build(Range.greaterThan(last)), false);
+			search.addConstraint(
+					new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName()).build(Range.greaterThan(last)),
+					false);
 		}
 		return events.find(bucketId, search.buildSearch());
 	}

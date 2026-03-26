@@ -3,7 +3,6 @@ package com.zenobase.scripts;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-
 import javax.net.ssl.SSLContext;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -34,9 +33,11 @@ public abstract class ClientSupport {
 	private HttpClient buildClient() {
 		try {
 			SSLContext context = SSLContexts.custom().useTLS().build();
-			SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(context,
-				new String[] { "TLSv1.1" }, null,
-				SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+			SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
+					context,
+					new String[] {"TLSv1.1"},
+					null,
+					SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
 			return HttpClients.custom().setSSLSocketFactory(f).build();
 		} catch (KeyManagementException | NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
@@ -50,7 +51,8 @@ public abstract class ClientSupport {
 	public void run() throws IOException {
 
 		if (token == null) {
-			System.err.format("%s/#/oauth/authorize?response_type=token&client_id=%s&redirect_uri=%s\n", host, apiKey, callback);
+			System.err.format(
+					"%s/#/oauth/authorize?response_type=token&client_id=%s&redirect_uri=%s\n", host, apiKey, callback);
 			System.exit(1);
 		}
 

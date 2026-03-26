@@ -36,10 +36,8 @@ public class MapFacet extends FilteredFacet {
 
 	@Override
 	public void configure(SearchRequest.Builder builder) {
-		Aggregation grid = Aggregation.of(a -> a.geohashGrid(g -> g
-			.field(field)
-			.precision(p -> p.geohashLength(precision))
-		));
+		Aggregation grid =
+				Aggregation.of(a -> a.geohashGrid(g -> g.field(field).precision(p -> p.geohashLength(precision))));
 		addAggregation(getId(), grid, builder);
 	}
 
@@ -49,8 +47,7 @@ public class MapFacet extends FilteredFacet {
 		Aggregate agg = getAggregate(response);
 		var builder = new GeoClusterBuilder();
 		for (GeoHashGridBucket bucket : agg.geohashGrid().buckets().array()) {
-			builder.add(bucket.docCount(), bucket.key(),
-				GeohashUtils.decode(bucket.key(), SpatialContext.GEO));
+			builder.add(bucket.docCount(), bucket.key(), GeohashUtils.decode(bucket.key(), SpatialContext.GEO));
 		}
 		for (GeoCluster cluster : builder.build()) {
 			GeoBoundingBox bounds = cluster.bounds();
@@ -68,9 +65,9 @@ public class MapFacet extends FilteredFacet {
 
 	public static FacetBuilder builder(FilterParser filterParser) {
 		return options -> new MapFacet(
-			options.get("id"),
-			options.get("field", String.class, Event.LOCATION.getName()),
-			options.get("factor", Double.class, 0.2),
-			filterParser.parse(options.get("filter")));
+				options.get("id"),
+				options.get("field", String.class, Event.LOCATION.getName()),
+				options.get("factor", Double.class, 0.2),
+				filterParser.parse(options.get("filter")));
 	}
 }

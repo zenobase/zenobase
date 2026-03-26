@@ -1,10 +1,9 @@
 package com.zenobase.commands;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import jakarta.inject.Inject;
 
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.TokenField;
@@ -83,12 +82,16 @@ public class ChangeQuotaCommand extends Command {
 		public void executeTyped(ChangeQuotaCommand command) {
 			User user = repository.find(command.getUsername());
 			if (user != null) {
-				Preconditions.checkState(Objects.equal(command.getFrom(), user.getQuota()),
-						"Conflict: Expected <%s> but got <%s>", command.getFrom(), user.getQuota());
+				Preconditions.checkState(
+						Objects.equal(command.getFrom(), user.getQuota()),
+						"Conflict: Expected <%s> but got <%s>",
+						command.getFrom(),
+						user.getQuota());
 				user.setQuota(command.getTo());
 				repository.update(user, command.getTimestamp());
 			} else {
-				throw new NonExistentUserException("Tried to change the quota of a nonexistent user: " + command.getUsername());
+				throw new NonExistentUserException(
+						"Tried to change the quota of a nonexistent user: " + command.getUsername());
 			}
 		}
 	}

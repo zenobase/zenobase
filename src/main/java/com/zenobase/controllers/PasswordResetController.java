@@ -1,10 +1,9 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.mail.PasswordResetMailer;
@@ -19,7 +18,8 @@ public class PasswordResetController extends ControllerSupport {
 	private final PasswordResetMailer resetMailer;
 
 	@Inject
-	public PasswordResetController(AuthorizationContext security, UserRepository users, PasswordResetMailer resetMailer) {
+	public PasswordResetController(
+			AuthorizationContext security, UserRepository users, PasswordResetMailer resetMailer) {
 		super(security);
 		this.users = users;
 		this.resetMailer = resetMailer;
@@ -33,10 +33,10 @@ public class PasswordResetController extends ControllerSupport {
 			return;
 		}
 		User user = users.find(username);
-    	if (user == null) {
-    		sendBadRequest(res, "user not found");
-    		return;
-    	}
+		if (user == null) {
+			sendBadRequest(res, "user not found");
+			return;
+		}
 		if (!user.isVerified()) {
 			sendBadRequest(res, "can't reset password without a verified email address");
 			return;

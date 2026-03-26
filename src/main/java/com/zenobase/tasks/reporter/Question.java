@@ -29,14 +29,11 @@ public class Question {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof Question
-			&& equals((Question) that);
+		return that instanceof Question && equals((Question) that);
 	}
 
 	private boolean equals(Question that) {
-		return Objects.equal(prompt, that.prompt)
-			&& Objects.equal(tag, that.tag)
-			&& Objects.equal(field, that.field);
+		return Objects.equal(prompt, that.prompt) && Objects.equal(tag, that.tag) && Objects.equal(field, that.field);
 	}
 
 	@Override

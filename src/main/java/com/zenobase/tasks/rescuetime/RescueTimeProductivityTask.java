@@ -2,7 +2,6 @@ package com.zenobase.tasks.rescuetime;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
@@ -23,11 +22,19 @@ public class RescueTimeProductivityTask extends Task {
 		super(node);
 	}
 
-	public RescueTimeProductivityTask(String bucketId, Identity principal, String tag, String kind, String source, DateTimeZone timezone) {
+	public RescueTimeProductivityTask(
+			String bucketId, Identity principal, String tag, String kind, String source, DateTimeZone timezone) {
 		this(bucketId, principal, tag, kind, source, timezone, null);
 	}
 
-	RescueTimeProductivityTask(String bucketId, Identity principal, String tag, String kind, String source, DateTimeZone timezone, String marker) {
+	RescueTimeProductivityTask(
+			String bucketId,
+			Identity principal,
+			String tag,
+			String kind,
+			String source,
+			DateTimeZone timezone,
+			String marker) {
 		super(TYPE, bucketId, principal);
 		setSetting(TAG, tag);
 		setSetting(KIND, kind);
@@ -56,8 +63,8 @@ public class RescueTimeProductivityTask extends Task {
 	public DateTime getLast() {
 		String marker = getMarker();
 		return marker != null
-			? DateTime.parse(marker, ISODateTimeFormat.dateTime().withOffsetParsed())
-			: null;
+				? DateTime.parse(marker, ISODateTimeFormat.dateTime().withOffsetParsed())
+				: null;
 	}
 
 	@Override

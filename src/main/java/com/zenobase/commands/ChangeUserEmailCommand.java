@@ -1,8 +1,7 @@
 package com.zenobase.commands;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.inject.Inject;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
@@ -24,7 +23,8 @@ public class ChangeUserEmailCommand extends Command {
 		checkType(TYPE);
 	}
 
-	public ChangeUserEmailCommand(Identity principal, String username, String from, String to, boolean fromVerified, boolean toVerified) {
+	public ChangeUserEmailCommand(
+			Identity principal, String username, String from, String to, boolean fromVerified, boolean toVerified) {
 		super(TYPE, principal);
 		setParameter(USERNAME, username);
 		setParameter(FROM, from);
@@ -55,7 +55,8 @@ public class ChangeUserEmailCommand extends Command {
 
 	@Override
 	public Command reverse(Identity principal) {
-		return new ChangeUserEmailCommand(principal, getUsername(), getTo(), getFrom(), getToVerified(), getFromVerified());
+		return new ChangeUserEmailCommand(
+				principal, getUsername(), getTo(), getFrom(), getToVerified(), getFromVerified());
 	}
 
 	@Override
@@ -97,7 +98,8 @@ public class ChangeUserEmailCommand extends Command {
 				user.setVerified(command.getToVerified());
 				repository.update(user, command.getTimestamp());
 			} else {
-				throw new NonExistentUserException("Tried to change the email of a nonexistent user: " + command.getUsername());
+				throw new NonExistentUserException(
+						"Tried to change the email of a nonexistent user: " + command.getUsername());
 			}
 		}
 	}

@@ -1,9 +1,8 @@
 package com.zenobase.tasks.withings;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList;
-
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
@@ -27,7 +26,13 @@ class WithingsStepsResult extends WithingsResult {
 	private final Unit<Length> distanceUnit, heightUnit;
 	private final Unit<Energy> energyUnit;
 
-	public WithingsStepsResult(ObjectNode node, Identity author, String tag, Unit<Length> distanceUnit, Unit<Length> heightUnit, Unit<Energy> energyUnit) {
+	public WithingsStepsResult(
+			ObjectNode node,
+			Identity author,
+			String tag,
+			Unit<Length> distanceUnit,
+			Unit<Length> heightUnit,
+			Unit<Energy> energyUnit) {
 		super(node, author, tag);
 		this.distanceUnit = distanceUnit;
 		this.heightUnit = heightUnit;
@@ -69,7 +74,13 @@ class WithingsStepsResult extends WithingsResult {
 	@Override
 	public String getMarker() {
 		List<Event> events = getEvents();
-		return !events.isEmpty() ? Iterables.getLast(events).getValue(Event.TIMESTAMP).toLocalDate().plusDays(1).toString() : null;
+		return !events.isEmpty()
+				? Iterables.getLast(events)
+						.getValue(Event.TIMESTAMP)
+						.toLocalDate()
+						.plusDays(1)
+						.toString()
+				: null;
 	}
 
 	private static DateTime dateTimeValue(JsonNode node, DateTimeZone timezone) {

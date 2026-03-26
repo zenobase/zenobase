@@ -17,14 +17,28 @@ public class UnitsTest {
 
 	@Test
 	public void testDimensions() {
-		assertThat(Units.getUnits(Dimension.LENGTH, Length.class)).as("length units").isNotEmpty();
+		assertThat(Units.getUnits(Dimension.LENGTH, Length.class))
+				.as("length units")
+				.isNotEmpty();
 		assertThat(Units.getUnits(Dimension.MASS, Mass.class)).as("mass units").isNotEmpty();
-		assertThat(Units.getUnits(Dimension.TEMPERATURE, Temperature.class)).as("temperature units").isNotEmpty();
-		assertThat(Units.getUnits(Dimension.NONE, Dimensionless.class)).as("dimensionless units").isNotEmpty();
-		assertThat(Units.getUnits(Dimension.LENGTH.pow(3), Volume.class)).as("volume units").isNotEmpty();
-		assertThat(Units.getUnits(Dimension.TIME, Duration.class)).as("time units").isNotEmpty();
-		assertThat(Units.getUnits(Dimension.NONE.divide(Dimension.TIME), Frequency.class)).as("frequency units").isNotEmpty();
-		assertThat(Units.getUnits(Dimension.LENGTH.pow(3), Volume.class)).as("volume units").isNotEmpty();
+		assertThat(Units.getUnits(Dimension.TEMPERATURE, Temperature.class))
+				.as("temperature units")
+				.isNotEmpty();
+		assertThat(Units.getUnits(Dimension.NONE, Dimensionless.class))
+				.as("dimensionless units")
+				.isNotEmpty();
+		assertThat(Units.getUnits(Dimension.LENGTH.pow(3), Volume.class))
+				.as("volume units")
+				.isNotEmpty();
+		assertThat(Units.getUnits(Dimension.TIME, Duration.class))
+				.as("time units")
+				.isNotEmpty();
+		assertThat(Units.getUnits(Dimension.NONE.divide(Dimension.TIME), Frequency.class))
+				.as("frequency units")
+				.isNotEmpty();
+		assertThat(Units.getUnits(Dimension.LENGTH.pow(3), Volume.class))
+				.as("volume units")
+				.isNotEmpty();
 	}
 
 	@Test

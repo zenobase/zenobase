@@ -1,17 +1,15 @@
 package com.zenobase.tasks.beeminder;
 
 import java.math.BigDecimal;
-
-import jakarta.inject.Inject;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -77,9 +75,16 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 			logger.warn("Can't run task {} because goal does not exist: {}", task.getId(), task.getGoal());
 			return null;
 		}
-		ObjectNode result = find(task.getBucketId(), task.getKeyField(), task.getField(), task.getUnit(), task.getFrom(), task.getFilter());
+		ObjectNode result = find(
+				task.getBucketId(),
+				task.getKeyField(),
+				task.getField(),
+				task.getUnit(),
+				task.getFrom(),
+				task.getFilter());
 		DateTime to = getLatest(result);
-		ArrayNode datapoints = getDatapoints(result, task.getField() != null, Event.DURATION.getName().equals(task.getField()), user.getTimezone());
+		ArrayNode datapoints = getDatapoints(
+				result, task.getField() != null, Event.DURATION.getName().equals(task.getField()), user.getTimezone());
 		if (to != null && datapoints.size() > 0) {
 			send(datapoints, task.getGoal(), credentials);
 			return createCommand(task, to);
@@ -93,12 +98,17 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 		return new UserResult(parseObject(response));
 	}
 
-	private ObjectNode find(String bucketId, String keyField, String field, Unit<?> unit, DateTime from, String filter) {
+	private ObjectNode find(
+			String bucketId, String keyField, String field, Unit<?> unit, DateTime from, String filter) {
 		events.refresh(bucketId);
 		SearchBuilderSupport search = new EventSearchBuilder()
-			.addFacet(new ListFacet(FIELD_LATEST.getName(), 0, 1, '-' + Event.TIMESTAMP.getName(), null, Event.SCHEMA))
-			.addFacet(new LocalTimelineFacet(FIELD_STATS.getName(), keyField, field, "day", null, unit, null))
-			.addConstraint(new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName()).build(Range.greaterThan(from)), false);
+				.addFacet(new ListFacet(
+						FIELD_LATEST.getName(), 0, 1, '-' + Event.TIMESTAMP.getName(), null, Event.SCHEMA))
+				.addFacet(new LocalTimelineFacet(FIELD_STATS.getName(), keyField, field, "day", null, unit, null))
+				.addConstraint(
+						new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName())
+								.build(Range.greaterThan(from)),
+						false);
 		if (filter != null) {
 			search.addConstraints(filter);
 		}
@@ -136,19 +146,21 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 	}
 
 	private void send(ArrayNode datapoints, String goal, OAuthCredentials credentials) {
-		var request = new OAuthRequest(Verb.POST, String.format("%s/users/me/goals/%s/datapoints/create_all.json", BASE, goal));
+		var request = new OAuthRequest(
+				Verb.POST, String.format("%s/users/me/goals/%s/datapoints/create_all.json", BASE, goal));
 		request.addBodyParameter("datapoints", datapoints.toString());
 		send(request, credentials);
 	}
 
 	private Command createCommand(Task task, DateTime marker) {
-		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(
+				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), marker != null ? marker.toString() : null)
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(Task.MARKER, task.getMarker(), marker != null ? marker.toString() : null)
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		return command;
 	}
 }

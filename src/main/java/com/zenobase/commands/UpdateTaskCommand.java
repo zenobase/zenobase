@@ -2,12 +2,12 @@ package com.zenobase.commands;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import jakarta.inject.Inject;
+
 import com.zenobase.json.JsonPatch;
 import com.zenobase.models.Identity;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.tasks.Task;
-
-import jakarta.inject.Inject;
 
 public class UpdateTaskCommand extends UpdateCommandSupport {
 

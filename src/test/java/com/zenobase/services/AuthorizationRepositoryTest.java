@@ -122,7 +122,8 @@ public class AuthorizationRepositoryTest extends OpenSearchTestSupport {
 		List<Authorization> authorizations = Lists.newArrayListWithCapacity(size);
 		for (int i = 0; i < size; ++i) {
 			authorizations.add(insert(ME, null, null));
-			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
+			Uninterruptibles.sleepUninterruptibly(
+					5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
 		}
 		return Lists.reverse(authorizations);
 	}

@@ -1,7 +1,6 @@
 package com.zenobase.tasks;
 
 import java.io.StringWriter;
-
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;

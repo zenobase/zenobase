@@ -33,9 +33,9 @@ public class LocalInterval implements Comparable<LocalInterval> {
 	}
 
 	public long toDurationMillis() {
-		return end.toDateTime(DateTimeZone.UTC).getMillis() - start.toDateTime(DateTimeZone.UTC).getMillis();
+		return end.toDateTime(DateTimeZone.UTC).getMillis()
+				- start.toDateTime(DateTimeZone.UTC).getMillis();
 	}
-
 
 	@Override
 	public int compareTo(LocalInterval that) {
@@ -48,13 +48,11 @@ public class LocalInterval implements Comparable<LocalInterval> {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof LocalInterval li
-			&& equals(li);
+		return that instanceof LocalInterval li && equals(li);
 	}
 
 	private boolean equals(LocalInterval that) {
-		return start.equals(that.start)
-			&& end.equals(that.end);
+		return start.equals(that.start) && end.equals(that.end);
 	}
 
 	@Override
@@ -64,10 +62,11 @@ public class LocalInterval implements Comparable<LocalInterval> {
 
 	@Override
 	public String toString() {
-        DateTimeFormatter printer = ISODateTimeFormat.dateTime();
-        StringBuffer buf = new StringBuffer(48);
-        printer.printTo(buf, getStart());
-        buf.append('/');
-        printer.printTo(buf, getEnd());
-        return buf.toString();
-    }}
+		DateTimeFormatter printer = ISODateTimeFormat.dateTime();
+		StringBuffer buf = new StringBuffer(48);
+		printer.printTo(buf, getStart());
+		buf.append('/');
+		printer.printTo(buf, getEnd());
+		return buf.toString();
+	}
+}

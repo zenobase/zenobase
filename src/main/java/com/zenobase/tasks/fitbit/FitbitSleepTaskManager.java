@@ -1,13 +1,11 @@
 package com.zenobase.tasks.fitbit;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import jakarta.inject.Inject;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import jakarta.inject.Inject;
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -49,10 +47,17 @@ public class FitbitSleepTaskManager extends FitbitTaskManagerSupport<FitbitSleep
 		LocalDate fromDate = getFromDate(task);
 		FitbitProfileResult profile = getProfile(credentials);
 		for (LocalDate date = fromDate; date.isBefore(syncDate); date = date.plusDays(1)) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/sleep/date/" + date + ".json");
+			OAuthRequest request =
+					new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/sleep/date/" + date + ".json");
 			try {
 				Response response = send(request, credentials);
-				events.addAll(new FitbitSleepResult(parseObject(response), task.getTag(), task.getPrincipal(), task.useRanges(), profile.getTimezone()).getEvents());
+				events.addAll(new FitbitSleepResult(
+								parseObject(response),
+								task.getTag(),
+								task.getPrincipal(),
+								task.useRanges(),
+								profile.getTimezone())
+						.getEvents());
 			} catch (InvalidStatusException e) {
 				if (e.getStatus() == 429) { // reached rate limit
 					logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());

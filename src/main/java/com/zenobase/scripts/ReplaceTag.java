@@ -1,8 +1,8 @@
 package com.zenobase.scripts;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -31,7 +31,8 @@ public class ReplaceTag extends ClientSupport {
 	@Override
 	protected void doRun() throws IOException {
 		for (Event event : find("tag:" + from)) {
-			event.setValues(Event.TAG, Iterables.transform(event.getValues(Event.TAG), tag -> from.equals(tag) ? to : tag));
+			event.setValues(
+					Event.TAG, Iterables.transform(event.getValues(Event.TAG), tag -> from.equals(tag) ? to : tag));
 			update(event);
 		}
 	}
@@ -53,7 +54,8 @@ public class ReplaceTag extends ClientSupport {
 		request.setHeader("Content-Type", "application/json");
 		request.setEntity(new StringEntity(event.toString()));
 		HttpResponse response = client.execute(request);
-		System.out.format("Update <%s>: %d\n%s\n", event.getId(), response.getStatusLine().getStatusCode(), event);
+		System.out.format(
+				"Update <%s>: %d\n%s\n", event.getId(), response.getStatusLine().getStatusCode(), event);
 	}
 
 	public static void main(String[] args) throws IOException {

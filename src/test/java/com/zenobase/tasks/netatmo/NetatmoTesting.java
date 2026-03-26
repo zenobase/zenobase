@@ -9,10 +9,12 @@ public class NetatmoTesting extends TaskTestingSupport {
 
 	@Test
 	public void test() {
-		run(new NetatmoTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2019-01-01")
-            .put("modules", true)
-			.put("hourly", true));
+		run(
+				new NetatmoTaskManager(newCredentialsManager()),
+				Nodes.newObject()
+						.put("marker", "2019-01-01")
+						.put("modules", true)
+						.put("hourly", true));
 	}
 
 	@Override

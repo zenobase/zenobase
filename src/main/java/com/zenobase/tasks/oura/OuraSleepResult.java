@@ -1,7 +1,8 @@
 package com.zenobase.tasks.oura;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.Duration;
 
 import com.zenobase.models.Event;
@@ -20,7 +21,9 @@ class OuraSleepResult extends OuraResultSupport {
 	protected Event newEvent(JsonNode node) {
 		var event = new Event();
 		event.addValue(Event.TAG, tag);
-		event.setValues(Event.TIMESTAMP, List.of(dateTimeValue(node.path("bedtime_start")), dateTimeValue(node.path("bedtime_end"))));
+		event.setValues(
+				Event.TIMESTAMP,
+				List.of(dateTimeValue(node.path("bedtime_start")), dateTimeValue(node.path("bedtime_end"))));
 		event.setValue(Event.DURATION, Duration.standardSeconds(intValue(node.path("total_sleep_duration"))));
 		event.setValue(Event.FREQUENCY, frequencyValue(node.path("average_heart_rate")));
 		event.setValue(Event.PERCENTAGE, percentageValue(node.path("efficiency")));

@@ -22,7 +22,8 @@ public class WithingsWeightTask extends Task {
 		super(node);
 	}
 
-	WithingsWeightTask(String bucketId, Identity principal, String tag, Unit<Mass> unit, DateTimeZone timezone, String marker) {
+	WithingsWeightTask(
+			String bucketId, Identity principal, String tag, Unit<Mass> unit, DateTimeZone timezone, String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);

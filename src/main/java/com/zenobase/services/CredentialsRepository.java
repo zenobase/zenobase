@@ -1,11 +1,10 @@
 package com.zenobase.services;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
-import org.opensearch.client.opensearch.core.SearchRequest;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
+import org.opensearch.client.opensearch.core.SearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,9 +64,13 @@ public class CredentialsRepository extends RepositorySupport<Credentials> {
 
 	public PartialList<Credentials> find(CredentialsQuery query, int offset, int limit) {
 		SearchRequest.Builder builder = new SearchRequest.Builder()
-			.index(index.getIndexName())
-			.query(query.build()).version(true).seqNoPrimaryTerm(true).from(offset).size(limit)
-			.trackTotalHits(t -> t.enabled(true));
+				.index(index.getIndexName())
+				.query(query.build())
+				.version(true)
+				.seqNoPrimaryTerm(true)
+				.from(offset)
+				.size(limit)
+				.trackTotalHits(t -> t.enabled(true));
 		query.order().apply(builder);
 		return new CredentialsList(index.find(builder.build()));
 	}

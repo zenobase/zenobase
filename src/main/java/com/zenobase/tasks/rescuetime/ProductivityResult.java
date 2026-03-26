@@ -1,7 +1,7 @@
 package com.zenobase.tasks.rescuetime;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -60,7 +60,9 @@ public class ProductivityResult {
 			event.addValue(Event.TAG, node.path(3).textValue());
 		}
 		if (node.path(4).isNumber()) {
-			event.setValue(Event.RATING, Rating.valueOf(Ints.checkedCast(Math.round(node.get(4).doubleValue()))));
+			event.setValue(
+					Event.RATING,
+					Rating.valueOf(Ints.checkedCast(Math.round(node.get(4).doubleValue()))));
 		}
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);

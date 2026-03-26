@@ -2,6 +2,7 @@ package com.zenobase.io;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
 import com.google.common.collect.Sets;
 
 import com.zenobase.json.Nodes;
@@ -86,7 +86,7 @@ public class SpreadsheetPrinter {
 	}
 
 	private static void getFields(ObjectNode node, Set<Field> fields, Field parent) {
-		for (Iterator<Map.Entry<String, JsonNode>> i = node.fields(); i.hasNext();) {
+		for (Iterator<Map.Entry<String, JsonNode>> i = node.fields(); i.hasNext(); ) {
 			Map.Entry<String, JsonNode> entry = i.next();
 			Field field = new Field(parent, entry.getKey());
 			JsonNode value = entry.getValue();

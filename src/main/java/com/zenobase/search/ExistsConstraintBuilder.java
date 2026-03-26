@@ -1,6 +1,5 @@
 package com.zenobase.search;
 
-import org.opensearch.client.opensearch._types.query_dsl.ExistsQuery;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 public class ExistsConstraintBuilder extends ConstraintBuilder {

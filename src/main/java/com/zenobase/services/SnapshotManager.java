@@ -1,16 +1,15 @@
 package com.zenobase.services;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import java.util.ArrayList;
-
 import com.google.common.collect.Lists;
+import org.joda.time.DateTime;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.opensearch.client.opensearch.snapshot.GetSnapshotResponse;
 import org.opensearch.client.opensearch.snapshot.SnapshotInfo;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,10 +31,8 @@ public class SnapshotManager {
 	public PartialList<Snapshot> findAll(int offset, int limit) {
 		try {
 			List<Snapshot> snapshots = new ArrayList<>(limit);
-			GetSnapshotResponse response = client.snapshot().get(g -> g
-				.repository(repositoryName)
-				.snapshot("*")
-			);
+			GetSnapshotResponse response =
+					client.snapshot().get(g -> g.repository(repositoryName).snapshot("*"));
 			List<SnapshotInfo> infos = Lists.reverse(response.snapshots());
 			for (int i = offset; i < offset + limit && i < infos.size(); ++i) {
 				snapshots.add(new Snapshot(infos.get(i)));
@@ -55,11 +52,9 @@ public class SnapshotManager {
 		String snapshotId = String.valueOf(DateTime.now().getMillis() / 1000);
 		logger.info("Creating snapshot {}...", snapshotId);
 		try {
-			client.snapshot().create(c -> c
-				.repository(repositoryName)
-				.snapshot(snapshotId)
-				.waitForCompletion(true)
-			);
+			client.snapshot()
+					.create(c ->
+							c.repository(repositoryName).snapshot(snapshotId).waitForCompletion(true));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -68,10 +63,9 @@ public class SnapshotManager {
 	public boolean delete(String snapshotId) {
 		logger.info("Deleting snapshot {}...", snapshotId);
 		try {
-			return client.snapshot().delete(d -> d
-				.repository(repositoryName)
-				.snapshot(snapshotId)
-			).acknowledged();
+			return client.snapshot()
+					.delete(d -> d.repository(repositoryName).snapshot(snapshotId))
+					.acknowledged();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

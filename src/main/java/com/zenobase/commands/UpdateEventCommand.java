@@ -1,17 +1,17 @@
 package com.zenobase.commands;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.zenobase.json.ObjectField;
-import com.zenobase.json.TokenField;
-import com.zenobase.json.DomainNode;
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.services.EventRepository;
+import jakarta.inject.Inject;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.inject.Inject;
+import com.zenobase.json.DomainNode;
+import com.zenobase.json.ObjectField;
+import com.zenobase.json.TokenField;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.services.EventRepository;
 
 public class UpdateEventCommand extends Command {
 
@@ -94,16 +94,21 @@ public class UpdateEventCommand extends Command {
 				update(command);
 			} catch (OpenSearchException e) {
 				if (e.status() != 409) throw e;
-				Event current = repository.find(command.getBucketId(), command.getTo().getId());
+				Event current =
+						repository.find(command.getBucketId(), command.getTo().getId());
 				if (current == null) {
 					logger.warn("Recovering a missing event...");
 					create(command);
 				} else if (current.getVersion() < command.getTo().getVersion()) {
-					logger.warn("Recovering from an event version conflict: {} -> {}...", command.getTo().getVersion(), current.getVersion());
+					logger.warn(
+							"Recovering from an event version conflict: {} -> {}...",
+							command.getTo().getVersion(),
+							current.getVersion());
 					Event correctedFrom = command.getFrom().copy();
 					correctedFrom.setVersion(current.getVersion());
 					DomainNode.SEQ_NO.setValue(correctedFrom.toJson(), DomainNode.SEQ_NO.getValue(current.toJson()));
-					DomainNode.PRIMARY_TERM.setValue(correctedFrom.toJson(), DomainNode.PRIMARY_TERM.getValue(current.toJson()));
+					DomainNode.PRIMARY_TERM.setValue(
+							correctedFrom.toJson(), DomainNode.PRIMARY_TERM.getValue(current.toJson()));
 					command.setParameter(FROM, correctedFrom.toJson());
 					Event correctedTo = command.getTo().copy();
 					correctedTo.setVersion(current.getVersion());
@@ -116,7 +121,11 @@ public class UpdateEventCommand extends Command {
 		}
 
 		private void update(UpdateEventCommand command) {
-			repository.update(command.getBucketId(), command.getFrom(), command.getTo().copy(), command.getTimestamp()); // copy to prevent the version number from being incremented
+			repository.update(
+					command.getBucketId(),
+					command.getFrom(),
+					command.getTo().copy(),
+					command.getTimestamp()); // copy to prevent the version number from being incremented
 		}
 
 		private void create(UpdateEventCommand command) {

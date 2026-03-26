@@ -26,7 +26,5 @@ public class LocalBus implements Bus {
 	}
 
 	@Override
-	public void close() {
-
-	}
+	public void close() {}
 }

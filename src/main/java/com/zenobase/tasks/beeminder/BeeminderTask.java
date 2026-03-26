@@ -26,7 +26,15 @@ public class BeeminderTask extends Task {
 		super(node);
 	}
 
-	public BeeminderTask(String bucketId, Identity principal, String goal, String filter, String keyField, String field, String unit, String marker) {
+	public BeeminderTask(
+			String bucketId,
+			Identity principal,
+			String goal,
+			String filter,
+			String keyField,
+			String field,
+			String unit,
+			String marker) {
 		super(TYPE, bucketId, principal);
 		setSetting(GOAL, Preconditions.checkNotNull(goal));
 		setSetting(KEY_FIELD, Preconditions.checkNotNull(keyField));

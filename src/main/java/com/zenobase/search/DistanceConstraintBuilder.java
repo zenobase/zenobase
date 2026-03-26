@@ -2,16 +2,13 @@ package com.zenobase.search;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import org.opensearch.client.opensearch._types.query_dsl.GeoDistanceQuery;
-import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch._types.GeoLocation;
 import org.opensearch.client.opensearch._types.LatLonGeoLocation;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -45,10 +42,9 @@ public class DistanceConstraintBuilder extends ConstraintBuilder {
 		double lat = location.latitude().doubleValue();
 		double lon = location.longitude().doubleValue();
 		String dist = distance.doubleValue(Units.KM) + "km";
-		return Query.of(q -> q.geoDistance(g -> g
-			.field(getPath())
-			.location(GeoLocation.of(gl -> gl.latlon(LatLonGeoLocation.of(ll -> ll.lat(lat).lon(lon)))))
-			.distance(dist)
-		));
+		return Query.of(q -> q.geoDistance(g -> g.field(getPath())
+				.location(GeoLocation.of(
+						gl -> gl.latlon(LatLonGeoLocation.of(ll -> ll.lat(lat).lon(lon)))))
+				.distance(dist)));
 	}
 }

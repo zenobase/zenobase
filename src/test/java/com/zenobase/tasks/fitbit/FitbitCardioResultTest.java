@@ -3,9 +3,7 @@ package com.zenobase.tasks.fitbit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Frequency;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -22,7 +20,8 @@ public class FitbitCardioResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		FitbitCardioResult result = new FitbitCardioResult(readObject("FitbitCardioResultTest.json"), TAG, TESTER, TIMEZONE);
+		FitbitCardioResult result =
+				new FitbitCardioResult(readObject("FitbitCardioResultTest.json"), TAG, TESTER, TIMEZONE);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(8);
 		Event expected = new Event(events.get(0).getId());

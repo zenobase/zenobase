@@ -1,10 +1,9 @@
 package com.zenobase.tasks.ihealth;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.scribe.model.OAuthConstants;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;
@@ -30,7 +29,12 @@ public class IHealthCredentialsManager extends OAuthCredentialsManager {
 	private final String sc;
 
 	@Inject
-	public IHealthCredentialsManager(CredentialsRepository integrations, @Named("ihealth.api.key") String apiKey, @Named("ihealth.api.secret") String apiSecret, @Named("ihealth.api.sc") String sc, @Named("oauth.hostname") String callbackUrl) {
+	public IHealthCredentialsManager(
+			CredentialsRepository integrations,
+			@Named("ihealth.api.key") String apiKey,
+			@Named("ihealth.api.secret") String apiSecret,
+			@Named("ihealth.api.sc") String sc,
+			@Named("oauth.hostname") String callbackUrl) {
 		super(TYPE, integrations, new IHealthApi(), apiKey, apiSecret, callbackUrl);
 		this.callbackUrl = callbackUrl;
 		this.sc = sc;
@@ -50,17 +54,16 @@ public class IHealthCredentialsManager extends OAuthCredentialsManager {
 	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
 		String code = config.path("code").textValue();
 		if (code == null) {
-			logger.warn("Couldn't obtain {} credentials <{}>: {}",
-				credentials.getType(), credentials.getId(), config);
+			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
 			return null;
 		}
 		IHealthToken token = (IHealthToken) getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-			.with(Credentials.CREDENTIALS)
-			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-			.set(OAuthCredentials.SCOPE, credentials.getScope(), token.getUserId())
-			.build();
+				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+				.set(OAuthCredentials.SCOPE, credentials.getScope(), token.getUserId())
+				.build();
 	}
 
 	@Override

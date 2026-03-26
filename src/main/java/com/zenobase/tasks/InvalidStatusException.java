@@ -21,7 +21,7 @@ public class InvalidStatusException extends OAuthException {
 
 	@Override
 	public String getMessage() {
-		return String.format("Request for <%s> returned status <%d>: %s",
-			getRequest().getCompleteUrl(), status, body);
+		return String.format(
+				"Request for <%s> returned status <%d>: %s", getRequest().getCompleteUrl(), status, body);
 	}
 }

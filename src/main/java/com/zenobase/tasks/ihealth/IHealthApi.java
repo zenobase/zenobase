@@ -29,10 +29,12 @@ public class IHealthApi extends CustomApi20 {
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
 		return new UriBuilder(ENDPOINT)
-			.addParameter("response_type", "code")
-			.addParameter("client_id", config.getApiKey())
-			.addParameter("redirect_uri", config.getCallback())
-			.addParameter("APIName", "OpenApiActivity OpenApiBP OpenApiSleep OpenApiWeight OpenApiBG OpenApiSpO2 OpenApiUserInfo OpenApiFood OpenApiSport")
-			.build();
+				.addParameter("response_type", "code")
+				.addParameter("client_id", config.getApiKey())
+				.addParameter("redirect_uri", config.getCallback())
+				.addParameter(
+						"APIName",
+						"OpenApiActivity OpenApiBP OpenApiSleep OpenApiWeight OpenApiBG OpenApiSpO2 OpenApiUserInfo OpenApiFood OpenApiSport")
+				.build();
 	}
 }

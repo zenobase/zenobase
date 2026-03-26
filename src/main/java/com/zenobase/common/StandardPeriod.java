@@ -17,14 +17,14 @@ public class StandardPeriod implements Comparable<StandardPeriod> {
 	private static final Pattern PATTERN = Pattern.compile("([+-])(\\d+)([yMwdhms])");
 
 	private static final Map<Character, DurationFieldType> FIELDS = ImmutableMap.<Character, DurationFieldType>builder()
-		.put('y', DurationFieldType.years())
-		.put('M', DurationFieldType.months())
-		.put('w', DurationFieldType.weeks())
-		.put('d', DurationFieldType.days())
-		.put('h', DurationFieldType.hours())
-		.put('m', DurationFieldType.minutes())
-		.put('s', DurationFieldType.seconds())
-		.build();
+			.put('y', DurationFieldType.years())
+			.put('M', DurationFieldType.months())
+			.put('w', DurationFieldType.weeks())
+			.put('d', DurationFieldType.days())
+			.put('h', DurationFieldType.hours())
+			.put('m', DurationFieldType.minutes())
+			.put('s', DurationFieldType.seconds())
+			.build();
 
 	private final Period period;
 
@@ -84,8 +84,7 @@ public class StandardPeriod implements Comparable<StandardPeriod> {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof StandardPeriod
-			&& equals((StandardPeriod) that);
+		return that instanceof StandardPeriod && equals((StandardPeriod) that);
 	}
 
 	private boolean equals(StandardPeriod that) {

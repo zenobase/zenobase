@@ -1,7 +1,7 @@
 package com.zenobase.tasks.withings;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -33,7 +33,8 @@ class WithingsSleepResult extends WithingsResult {
 		this.timezone = timezone;
 	}
 
-	public WithingsSleepResult(List<Event> events, Identity author, String tag, boolean useRanges, DateTimeZone timezone) {
+	public WithingsSleepResult(
+			List<Event> events, Identity author, String tag, boolean useRanges, DateTimeZone timezone) {
 		this(Nodes.newObject(), author, tag, useRanges, timezone);
 		this.events.addAll(events);
 	}
@@ -113,15 +114,24 @@ class WithingsSleepResult extends WithingsResult {
 
 	@Override
 	public String getMarker() {
-		return !getEvents().isEmpty() ? Ordering.natural().max(Iterables.getLast(getEvents()).getValues(Event.TIMESTAMP)).toString() : null;
+		return !getEvents().isEmpty()
+				? Ordering.natural()
+						.max(Iterables.getLast(getEvents()).getValues(Event.TIMESTAMP))
+						.toString()
+				: null;
 	}
 
 	private static Percentage meanPercentage(Event left, Event right) {
-		return mean(left.getValue(Event.PERCENTAGE), Ints.checkedCast(left.getValue(Event.DURATION).getStandardSeconds()),
-			right.getValue(Event.PERCENTAGE), Ints.checkedCast(right.getValue(Event.DURATION).getStandardSeconds()));
+		return mean(
+				left.getValue(Event.PERCENTAGE),
+				Ints.checkedCast(left.getValue(Event.DURATION).getStandardSeconds()),
+				right.getValue(Event.PERCENTAGE),
+				Ints.checkedCast(right.getValue(Event.DURATION).getStandardSeconds()));
 	}
 
 	private static Percentage mean(Percentage left, int leftWeight, Percentage right, int rightWeight) {
-		return Percentage.valueOf((left.value().intValue() * leftWeight + right.value().intValue() * rightWeight) / (leftWeight + rightWeight));
+		return Percentage.valueOf(
+				(left.value().intValue() * leftWeight + right.value().intValue() * rightWeight)
+						/ (leftWeight + rightWeight));
 	}
 }

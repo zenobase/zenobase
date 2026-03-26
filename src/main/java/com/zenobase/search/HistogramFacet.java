@@ -39,11 +39,8 @@ public class HistogramFacet extends FilteredFacet {
 		String f = unit == Unit.ONE ? this.field : Field.concat(this.field, DecimalMeasureField.VALUE_SI.getName());
 		double stdInterval = getStandardInterval();
 		double stdOffset = getStandardOffset();
-		Aggregation histogram = Aggregation.of(a -> a.histogram(h -> h
-			.field(f)
-			.interval(stdInterval)
-			.offset(stdOffset)
-		));
+		Aggregation histogram = Aggregation.of(
+				a -> a.histogram(h -> h.field(f).interval(stdInterval).offset(stdOffset)));
 		addAggregation(getId(), histogram, builder);
 	}
 
@@ -98,11 +95,11 @@ public class HistogramFacet extends FilteredFacet {
 		return options -> {
 			String unit = options.get("unit");
 			return new HistogramFacet(
-				options.get("id"),
-				options.get("field"),
-				options.get("interval", Double.class, 10.0),
-				unit != null ? Units.valueOf(unit) : Unit.ONE,
-				filterParser.parse(options.get("filter")));
+					options.get("id"),
+					options.get("field"),
+					options.get("interval", Double.class, 10.0),
+					unit != null ? Units.valueOf(unit) : Unit.ONE,
+					filterParser.parse(options.get("filter")));
 		};
 	}
 }

@@ -13,6 +13,8 @@ class HexoskinActivitiesResult extends HexoskinResultSupport {
 
 	@Override
 	protected boolean ignore(JsonNode node) {
-		return super.ignore(node) || "/api/v1/trainingroutine/12/".equals(node.path("trainingroutine").textValue()); // sleep
+		return super.ignore(node)
+				|| "/api/v1/trainingroutine/12/"
+						.equals(node.path("trainingroutine").textValue()); // sleep
 	}
 }

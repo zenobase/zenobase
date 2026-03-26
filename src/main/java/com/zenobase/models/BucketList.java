@@ -23,29 +23,29 @@ public class BucketList extends LazyList<Bucket> {
 		return new Bucket(node);
 	}
 
-    public static ObjectNode toJson(PartialList<Bucket> buckets, EventRepository repository) {
-    	ObjectNode resultNode = Nodes.newObject();
-    	TOTAL.setValue(resultNode, Ints.checkedCast(buckets.getTotal()));
-    	ArrayNode bucketsNode = resultNode.putArray("buckets");
-    	for (Bucket bucket : buckets) {
-    		ObjectNode bucketNode = bucket.toJson();
-    		SIZE.setValue(bucketNode, repository.size(bucket.getId()));
-    		bucketsNode.add(bucketNode);
-    	}
-    	return resultNode;
-    }
+	public static ObjectNode toJson(PartialList<Bucket> buckets, EventRepository repository) {
+		ObjectNode resultNode = Nodes.newObject();
+		TOTAL.setValue(resultNode, Ints.checkedCast(buckets.getTotal()));
+		ArrayNode bucketsNode = resultNode.putArray("buckets");
+		for (Bucket bucket : buckets) {
+			ObjectNode bucketNode = bucket.toJson();
+			SIZE.setValue(bucketNode, repository.size(bucket.getId()));
+			bucketsNode.add(bucketNode);
+		}
+		return resultNode;
+	}
 
-    public static ObjectNode toJsonLabelsOnly(PartialList<Bucket> buckets) {
-    	ObjectNode resultNode = Nodes.newObject();
-    	TOTAL.setValue(resultNode, Ints.checkedCast(buckets.getTotal()));
-    	ArrayNode bucketsNode = resultNode.putArray("buckets");
-    	for (Bucket bucket : buckets) {
-    		ObjectNode bucketNode = Nodes.newObject();
-    		bucketNode.put("@id", bucket.getId());
-    		bucketNode.put("label", bucket.getLabel());
-    		bucketNode.put("aliases", bucket.getAliases().size());
-    		bucketsNode.add(bucketNode);
-    	}
-    	return resultNode;
-    }
+	public static ObjectNode toJsonLabelsOnly(PartialList<Bucket> buckets) {
+		ObjectNode resultNode = Nodes.newObject();
+		TOTAL.setValue(resultNode, Ints.checkedCast(buckets.getTotal()));
+		ArrayNode bucketsNode = resultNode.putArray("buckets");
+		for (Bucket bucket : buckets) {
+			ObjectNode bucketNode = Nodes.newObject();
+			bucketNode.put("@id", bucket.getId());
+			bucketNode.put("label", bucket.getLabel());
+			bucketNode.put("aliases", bucket.getAliases().size());
+			bucketsNode.add(bucketNode);
+		}
+		return resultNode;
+	}
 }

@@ -80,8 +80,8 @@ public class TaskListControllerFindAllTest extends TaskListControllerTestSupport
 
 	private Http1ClientResponse call(String q, int offset, int limit) {
 		var request = client.get("/tasks/")
-			.queryParam("offset", String.valueOf(offset))
-			.queryParam("limit", String.valueOf(limit));
+				.queryParam("offset", String.valueOf(offset))
+				.queryParam("limit", String.valueOf(limit));
 		if (q != null) {
 			request = request.queryParam("q", q);
 		}

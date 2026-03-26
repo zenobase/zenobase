@@ -5,8 +5,6 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
-import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
-import org.opensearch.client.opensearch._types.query_dsl.MatchAllQuery;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
@@ -78,14 +76,13 @@ public class Search {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof Search s &&
-			equals(s);
+		return that instanceof Search s && equals(s);
 	}
 
 	private boolean equals(Search that) {
-		return facets.toString().equals(that.facets.toString()) &&
-			toJsonStrings(must).equals(toJsonStrings(that.must)) &&
-			toJsonStrings(mustNot).equals(toJsonStrings(that.mustNot));
+		return facets.toString().equals(that.facets.toString())
+				&& toJsonStrings(must).equals(toJsonStrings(that.must))
+				&& toJsonStrings(mustNot).equals(toJsonStrings(that.mustNot));
 	}
 
 	@Override

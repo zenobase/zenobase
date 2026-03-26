@@ -12,8 +12,8 @@ import com.zenobase.services.UserRepository;
 public class ChangeQuotaCommandTest {
 
 	private final UserRepository users = mock(UserRepository.class);
-	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new ChangeQuotaCommand.Handler(users));
+	private final CommandHandlerRegistry registry =
+			CommandHandlerRegistry.containing(new ChangeQuotaCommand.Handler(users));
 
 	@Test
 	public void test() {

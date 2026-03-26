@@ -3,9 +3,7 @@ package com.zenobase.tasks.fitbit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Energy;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;

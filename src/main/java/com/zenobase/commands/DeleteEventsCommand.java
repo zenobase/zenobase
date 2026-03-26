@@ -1,12 +1,10 @@
 package com.zenobase.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.inject.Inject;
-
-import java.util.ArrayList;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.inject.Inject;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;

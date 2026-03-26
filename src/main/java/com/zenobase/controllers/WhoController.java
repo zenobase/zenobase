@@ -1,9 +1,8 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;
@@ -24,9 +23,13 @@ public class WhoController extends ControllerSupport {
 		Authorization auth = getCurrentAuthorization(req);
 		if (auth != null) {
 			User user = users.find(auth.getPrincipal());
-			sendOk(res, user != null ? new UserProfile(user).toJson() : auth.getPrincipal().toJson());
+			sendOk(
+					res,
+					user != null
+							? new UserProfile(user).toJson()
+							: auth.getPrincipal().toJson());
 			return;
 		}
-    	sendNoContent(res);
-    }
+		sendNoContent(res);
+	}
 }

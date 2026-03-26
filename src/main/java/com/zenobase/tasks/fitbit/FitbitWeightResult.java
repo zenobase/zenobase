@@ -1,8 +1,7 @@
 package com.zenobase.tasks.fitbit;
 
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
@@ -20,7 +19,8 @@ class FitbitWeightResult extends FitbitResultSupport {
 	private final LocalDate date;
 	private final Unit<Mass> weightUnit;
 
-	public FitbitWeightResult(JsonNode node, String tag, Identity author, LocalDate date, DateTimeZone timezone, Unit<Mass> weightUnit) {
+	public FitbitWeightResult(
+			JsonNode node, String tag, Identity author, LocalDate date, DateTimeZone timezone, Unit<Mass> weightUnit) {
 		super(node, tag, author, timezone);
 		this.date = date;
 		this.weightUnit = weightUnit;
@@ -34,7 +34,7 @@ class FitbitWeightResult extends FitbitResultSupport {
 			Event event = new Event();
 			event.setValue(Event.TAG, tag);
 			event.setValue(Event.TIMESTAMP, begin);
-			event.setValue(Event.WEIGHT,  weight);
+			event.setValue(Event.WEIGHT, weight);
 			event.setValue(Event.PERCENTAGE, percentageValue(node.path("body").path("fat")));
 			event.setValue(Event.AUTHOR, author);
 			event.setValue(Event.SOURCE, SOURCE);

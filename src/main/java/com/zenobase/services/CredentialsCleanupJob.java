@@ -1,7 +1,6 @@
 package com.zenobase.services;
 
 import jakarta.inject.Inject;
-
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
@@ -29,7 +28,12 @@ public class CredentialsCleanupJob extends Job {
 	@Override
 	public void run() {
 		logger.info("Cleaning up credentials...");
-		var query = new CredentialsQuery().notAuthorized().createdBefore(DateTime.now().minus(MAX_AGE));
-		credentials.find(query, credentials -> dispatcher.dispatch(new DeleteCredentialsCommand(credentials.getPrincipal(), credentials)));
+		var query = new CredentialsQuery()
+				.notAuthorized()
+				.createdBefore(DateTime.now().minus(MAX_AGE));
+		credentials.find(
+				query,
+				credentials ->
+						dispatcher.dispatch(new DeleteCredentialsCommand(credentials.getPrincipal(), credentials)));
 	}
 }

@@ -1,9 +1,8 @@
 package com.zenobase.mail;
 
+import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-
-import com.google.common.base.Preconditions;
 
 import com.zenobase.controllers.EmailVerificationKey;
 import com.zenobase.models.User;
@@ -29,11 +28,11 @@ public class VerificationMailer {
 		String text = """
 			Account:
 
-			  %s
+			%s
 
 			Please verify your email address by opening the following link:
 
-			  %s/#/users/%s/verify?key=%s
+			%s/#/users/%s/verify?key=%s
 
 			Thanks!
 			""".formatted(username, hostname, username, key.getKey());

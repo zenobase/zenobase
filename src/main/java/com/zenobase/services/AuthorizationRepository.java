@@ -1,11 +1,10 @@
 package com.zenobase.services;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.inject.Inject;
+import org.joda.time.DateTime;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch.core.SearchRequest;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,12 +49,15 @@ public class AuthorizationRepository extends RepositorySupport<Authorization> {
 	}
 
 	public PartialList<Authorization> find(AuthorizationQuery query, int offset, int limit) {
-		SearchRequest request = SearchRequest.of(s -> s
-			.index(index.getIndexName())
-			.query(query.build()).version(true).seqNoPrimaryTerm(true).from(offset).size(limit)
-			.trackTotalHits(t -> t.enabled(true))
-			.sort(so -> so.field(f -> f.field(Authorization.CREATED.getName()).order(SortOrder.Desc)))
-		);
+		SearchRequest request = SearchRequest.of(s -> s.index(index.getIndexName())
+				.query(query.build())
+				.version(true)
+				.seqNoPrimaryTerm(true)
+				.from(offset)
+				.size(limit)
+				.trackTotalHits(t -> t.enabled(true))
+				.sort(so ->
+						so.field(f -> f.field(Authorization.CREATED.getName()).order(SortOrder.Desc))));
 		return new AuthorizationList(index.find(request));
 	}
 

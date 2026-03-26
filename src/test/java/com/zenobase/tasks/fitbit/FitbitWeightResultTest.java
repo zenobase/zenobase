@@ -3,9 +3,7 @@ package com.zenobase.tasks.fitbit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Mass;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -25,7 +23,8 @@ public class FitbitWeightResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		FitbitWeightResult result = new FitbitWeightResult(readObject("FitbitWeightResultTest.json"), TAG, TESTER, DATE, TIMEZONE, Units.KG);
+		FitbitWeightResult result = new FitbitWeightResult(
+				readObject("FitbitWeightResultTest.json"), TAG, TESTER, DATE, TIMEZONE, Units.KG);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());

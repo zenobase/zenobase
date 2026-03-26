@@ -3,8 +3,6 @@ package com.zenobase.search;
 import static com.zenobase.testing.NodeAssert.assertThat;
 
 import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Length;
-import javax.measure.quantity.Temperature;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Before;
@@ -64,8 +62,9 @@ public class HistogramFacetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,field:%s,interval:%s,filter:%s", FACET_ID,
-			HistogramFacet.TYPE, Event.COUNT, 1000, "tag:hike|count:(5000..*)");
+		addFacet(
+				"id:%s,type:%s,field:%s,interval:%s,filter:%s",
+				FACET_ID, HistogramFacet.TYPE, Event.COUNT, 1000, "tag:hike|count:(5000..*)");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -82,7 +81,9 @@ public class HistogramFacetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,field:%s,interval:%s,unit:%s", FACET_ID, HistogramFacet.TYPE, Event.DISTANCE, 5, Units.KM);
+		addFacet(
+				"id:%s,type:%s,field:%s,interval:%s,unit:%s",
+				FACET_ID, HistogramFacet.TYPE, Event.DISTANCE, 5, Units.KM);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -106,7 +107,9 @@ public class HistogramFacetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,field:%s,interval:%s,unit:%s", FACET_ID, HistogramFacet.TYPE, Event.DISTANCE, 5, Units.MI);
+		addFacet(
+				"id:%s,type:%s,field:%s,interval:%s,unit:%s",
+				FACET_ID, HistogramFacet.TYPE, Event.DISTANCE, 5, Units.MI);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -130,7 +133,9 @@ public class HistogramFacetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,field:%s,interval:%s,unit:%s", FACET_ID, HistogramFacet.TYPE, Event.TEMPERATURE, "1.0", Units.C);
+		addFacet(
+				"id:%s,type:%s,field:%s,interval:%s,unit:%s",
+				FACET_ID, HistogramFacet.TYPE, Event.TEMPERATURE, "1.0", Units.C);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -154,7 +159,9 @@ public class HistogramFacetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,field:%s,interval:%s,unit:%s", FACET_ID, HistogramFacet.TYPE, Event.TEMPERATURE, "0.5", Units.C);
+		addFacet(
+				"id:%s,type:%s,field:%s,interval:%s,unit:%s",
+				FACET_ID, HistogramFacet.TYPE, Event.TEMPERATURE, "0.5", Units.C);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -183,7 +190,9 @@ public class HistogramFacetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,field:%s,interval:%s,unit:%s", FACET_ID, HistogramFacet.TYPE, Event.TEMPERATURE, "1.0", Units.F);
+		addFacet(
+				"id:%s,type:%s,field:%s,interval:%s,unit:%s",
+				FACET_ID, HistogramFacet.TYPE, Event.TEMPERATURE, "1.0", Units.F);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);

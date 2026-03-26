@@ -1,21 +1,22 @@
 package com.zenobase.commands;
 
+import static org.mockito.Mockito.*;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.opensearch.client.opensearch._types.ErrorResponse;
+import org.opensearch.client.opensearch._types.OpenSearchException;
+
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.services.EventRepository;
-import org.opensearch.client.opensearch._types.OpenSearchException;
-import org.opensearch.client.opensearch._types.ErrorResponse;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.mockito.Mockito.*;
 
 public class UpdateEventCommandTest {
 
 	private final EventRepository repository = mock(EventRepository.class);
-	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new UpdateEventCommand.Handler(repository));
+	private final CommandHandlerRegistry registry =
+			CommandHandlerRegistry.containing(new UpdateEventCommand.Handler(repository));
 	private final String bucketId = Generator.id();
 	private final Identity principal = new Identity();
 	private final Event from = new Event();
@@ -55,21 +56,29 @@ public class UpdateEventCommandTest {
 		to2.setVersion(1);
 
 		Command command = new UpdateEventCommand(principal, bucketId, from, to);
-		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
-		doThrow(e).doNothing().when(repository).update(eq(bucketId), any(Event.class), any(Event.class), eq(command.getTimestamp()));
+		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409)
+				.error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
+		doThrow(e)
+				.doNothing()
+				.when(repository)
+				.update(eq(bucketId), any(Event.class), any(Event.class), eq(command.getTimestamp()));
 		Event current = from.copy();
 		current.setVersion(1);
 		when(repository.find(bucketId, to.getId())).thenReturn(current);
 		registry.execute(command);
-		verify(repository, times(2)).update(eq(bucketId), any(Event.class), any(Event.class), eq(command.getTimestamp()));
+		verify(repository, times(2))
+				.update(eq(bucketId), any(Event.class), any(Event.class), eq(command.getTimestamp()));
 	}
 
 	@Test(expected = OpenSearchException.class)
 	public void testUnrecoverableVersionConflict() {
 
 		Command command = new UpdateEventCommand(principal, bucketId, from, to);
-		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
-		doThrow(e).when(repository).update(eq(bucketId), any(Event.class), any(Event.class), eq(command.getTimestamp()));
+		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409)
+				.error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
+		doThrow(e)
+				.when(repository)
+				.update(eq(bucketId), any(Event.class), any(Event.class), eq(command.getTimestamp()));
 		Event current = from.copy();
 		current.setVersion(3);
 		when(repository.find(bucketId, to.getId())).thenReturn(current);
@@ -80,8 +89,11 @@ public class UpdateEventCommandTest {
 	public void testRecoverFromMissingEvent() {
 
 		Command command = new UpdateEventCommand(principal, bucketId, from, to);
-		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
-		doThrow(e).when(repository).update(eq(bucketId), any(Event.class), any(Event.class), eq(command.getTimestamp()));
+		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409)
+				.error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
+		doThrow(e)
+				.when(repository)
+				.update(eq(bucketId), any(Event.class), any(Event.class), eq(command.getTimestamp()));
 		when(repository.find(bucketId, to.getId())).thenReturn(null);
 		registry.execute(command);
 		verify(repository).add(bucketId, to, command.getTimestamp());

@@ -12,7 +12,6 @@ import org.locationtech.spatial4j.shape.Point;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.GeoHashGridBucket;
-import org.opensearch.client.opensearch._types.aggregations.SumAggregate;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
@@ -48,14 +47,12 @@ public class HeatmapFacet extends FilteredFacet {
 		Aggregation aggregation;
 		if (vf != null) {
 			String sumField = unit == Unit.ONE ? vf : Field.concat(vf, DecimalMeasureField.VALUE_SI.getName());
-			aggregation = Aggregation.of(a -> a
-				.geohashGrid(g -> g.field(keyField).precision(p -> p.geohashLength(precision)))
-				.aggregations("sum", Aggregation.of(sa -> sa.sum(s -> s.field(sumField))))
-			);
+			aggregation =
+					Aggregation.of(a -> a.geohashGrid(g -> g.field(keyField).precision(p -> p.geohashLength(precision)))
+							.aggregations("sum", Aggregation.of(sa -> sa.sum(s -> s.field(sumField)))));
 		} else {
-			aggregation = Aggregation.of(a -> a
-				.geohashGrid(g -> g.field(keyField).precision(p -> p.geohashLength(precision)))
-			);
+			aggregation = Aggregation.of(
+					a -> a.geohashGrid(g -> g.field(keyField).precision(p -> p.geohashLength(precision))));
 		}
 		addAggregation(getId(), aggregation, builder);
 	}
@@ -95,12 +92,12 @@ public class HeatmapFacet extends FilteredFacet {
 		return options -> {
 			String unit = options.get("unit");
 			return new HeatmapFacet(
-				options.get("id"),
-				options.get("field", String.class, Event.LOCATION.getName()),
-				options.get("value_field", String.class, null),
-				unit != null ? Units.valueOf(unit) : Unit.ONE,
-				options.get("precision", Integer.class, 8),
-				filterParser.parse(options.get("filter")));
+					options.get("id"),
+					options.get("field", String.class, Event.LOCATION.getName()),
+					options.get("value_field", String.class, null),
+					unit != null ? Units.valueOf(unit) : Unit.ONE,
+					options.get("precision", Integer.class, 8),
+					filterParser.parse(options.get("filter")));
 		};
 	}
 }

@@ -3,7 +3,6 @@ package com.zenobase.common;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-
 import javax.measure.Measurable;
 
 import com.google.common.collect.Range;

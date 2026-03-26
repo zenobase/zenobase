@@ -3,10 +3,9 @@ package com.zenobase.services;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.google.common.base.Stopwatch;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-
-import com.google.common.base.Stopwatch;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,10 @@ public class CommandReplay {
 	private final AtomicInteger failures = new AtomicInteger();
 
 	@Inject
-	public CommandReplay(@Named("opensearch.replay") String sourceHost, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
+	public CommandReplay(
+			@Named("opensearch.replay") String sourceHost,
+			CommandParserRegistry parsers,
+			CommandDispatcher dispatcher) {
 		this.sourceHost = sourceHost;
 		this.parsers = parsers;
 		this.dispatcher = dispatcher;
@@ -46,8 +48,10 @@ public class CommandReplay {
 	}
 
 	void replay(IndexManager indexManager) {
-		replay(indexManager, new IdentitiesFilterBuilder(
-			new UserRepository(indexManager), new AuthorizationRepository(indexManager)));
+		replay(
+				indexManager,
+				new IdentitiesFilterBuilder(
+						new UserRepository(indexManager), new AuthorizationRepository(indexManager)));
 	}
 
 	void replay(IndexManager indexManager, IdentitiesFilterBuilder identitiesFilterBuilder) {
@@ -63,8 +67,13 @@ public class CommandReplay {
 			}
 			count.incrementAndGet();
 		});
-		logger.warn("Replayed {} and discarded {} commands out of {} with {} failures in {} s",
-			replayed.get(), count.get() - replayed.get(), repository.size(), failures.get(), timer.elapsed(TimeUnit.SECONDS));
+		logger.warn(
+				"Replayed {} and discarded {} commands out of {} with {} failures in {} s",
+				replayed.get(),
+				count.get() - replayed.get(),
+				repository.size(),
+				failures.get(),
+				timer.elapsed(TimeUnit.SECONDS));
 		if (failures.get() > 0) {
 			throw new IllegalStateException("Replay completed with one or more failures");
 		}

@@ -65,14 +65,18 @@ public class Authorization extends DomainNode {
 	}
 
 	public boolean isPermitted(Authorization auth) {
-		return auth.getScope() == null
-			&& getPrincipal().equals(auth.getPrincipal());
+		return auth.getScope() == null && getPrincipal().equals(auth.getPrincipal());
 	}
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-			.add(VERSION).add(ID).add(CREATED)
-			.add(PRINCIPAL).add(CLIENT).add(SCOPE).build();
+				.add(VERSION)
+				.add(ID)
+				.add(CREATED)
+				.add(PRINCIPAL)
+				.add(CLIENT)
+				.add(SCOPE)
+				.build();
 	}
 
 	public Authorization copy() {

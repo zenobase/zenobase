@@ -18,12 +18,10 @@ import com.google.common.base.Strings;
 public class Nodes {
 
 	public static final ObjectMapper MAPPER = new ObjectMapper()
-		.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
-		.setNodeFactory(JsonNodeFactory.withExactBigDecimals(true));
+			.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
+			.setNodeFactory(JsonNodeFactory.withExactBigDecimals(true));
 
-	private Nodes() {
-
-	}
+	private Nodes() {}
 
 	public static ObjectNode newObject() {
 		return MAPPER.createObjectNode();
@@ -82,24 +80,24 @@ public class Nodes {
 		}
 	}
 
-    public static ObjectNode readObject(String in) {
-        return (ObjectNode) read(in);
-    }
+	public static ObjectNode readObject(String in) {
+		return (ObjectNode) read(in);
+	}
 
-    public static ArrayNode readArray(String in) {
-        return (ArrayNode) read(in);
-    }
+	public static ArrayNode readArray(String in) {
+		return (ArrayNode) read(in);
+	}
 
-    public static JsonNode read(String in) {
-        if (Strings.isNullOrEmpty(in)) {
-            return MissingNode.getInstance();
-        }
-        try {
-            return MAPPER.readTree(in);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Can't read json: '" + in + "' [" + in.length() + "]");
-        }
-    }
+	public static JsonNode read(String in) {
+		if (Strings.isNullOrEmpty(in)) {
+			return MissingNode.getInstance();
+		}
+		try {
+			return MAPPER.readTree(in);
+		} catch (IOException e) {
+			throw new IllegalArgumentException("Can't read json: '" + in + "' [" + in.length() + "]");
+		}
+	}
 
 	public static int size(JsonNode node) {
 		return node != null ? node.size() : 0;

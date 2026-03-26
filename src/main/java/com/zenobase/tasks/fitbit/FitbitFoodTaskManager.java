@@ -1,14 +1,12 @@
 package com.zenobase.tasks.fitbit;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import jakarta.inject.Inject;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.collect.Ordering;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
@@ -48,10 +46,14 @@ public class FitbitFoodTaskManager extends FitbitTaskManagerSupport<FitbitFoodTa
 		LocalDate fromDate = getFromDate(task);
 		for (LocalDate date = fromDate; date.isBefore(today); date = date.plusYears(1)) {
 			LocalDate toDate = Ordering.natural().min(today, date.plusYears(1)).minusDays(1);
-			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/foods/log/caloriesIn/date/" + date + "/" + toDate + ".json");
+			OAuthRequest request = new OAuthRequest(
+					Verb.GET,
+					"https://api.fitbit.com/1/user/-/foods/log/caloriesIn/date/" + date + "/" + toDate + ".json");
 			try {
 				Response response = send(request, credentials);
-				events.addAll(new FitbitFoodResult(parseObject(response), task.getTag(), task.getPrincipal(), profile.getTimezone()).getEvents());
+				events.addAll(new FitbitFoodResult(
+								parseObject(response), task.getTag(), task.getPrincipal(), profile.getTimezone())
+						.getEvents());
 			} catch (InvalidStatusException e) {
 				if (e.getStatus() == 429) { // reached rate limit
 					logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());

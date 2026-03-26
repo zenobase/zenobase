@@ -1,10 +1,9 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,9 +42,13 @@ public class UserController extends ControllerSupport {
 	private final PaymentGateway payments;
 
 	@Inject
-	public UserController(AuthorizationContext security, UserRepository users,
-		AuthorizationRepository authorizations, CommandDispatcher dispatcher,
-		VerificationMailer mailer, PaymentGateway payments) {
+	public UserController(
+			AuthorizationContext security,
+			UserRepository users,
+			AuthorizationRepository authorizations,
+			CommandDispatcher dispatcher,
+			VerificationMailer mailer,
+			PaymentGateway payments) {
 
 		super(security);
 		this.users = users;
@@ -67,80 +70,88 @@ public class UserController extends ControllerSupport {
 	}
 
 	private ObjectNode toJson(User user, Authorization auth) {
-		return auth != null && (auth.getScope() == null && user.is(auth.getPrincipal()) || users.isSuperuser(auth.getPrincipal()))
-			? new UserProfile(user).toJson()
-			: new UserInfo(user).toJson();
+		return auth != null
+						&& (auth.getScope() == null && user.is(auth.getPrincipal())
+								|| users.isSuperuser(auth.getPrincipal()))
+				? new UserProfile(user).toJson()
+				: new UserInfo(user).toJson();
 	}
 
 	public void update(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
 		ObjectNode body = body(req);
 		User user = new UserLookup(users).getUser(userId);
-    	if (user == null) {
-    		sendNotFound(res, "user not found");
-    		return;
-    	}
-    	UpdateUserForm form = new UpdateUserForm(body);
-    	if (form.getEmail() != null) {
-    		updateEmail(req, res, form, user);
-    		return;
-    	}
-    	if (form.getPassword() != null) {
-    		updatePassword(req, res, form, user);
-    		return;
-    	}
-    	if (form.isVerified()) {
-    		updateVerified(res, form, user);
-    		return;
-    	}
-    	if (form.hasQuota()) {
-    		updateQuota(req, res, form, user);
-    		return;
-    	}
-    	if (form.isSuspended() != null) {
-    		updateSuspension(req, res, user, form.isSuspended());
-    		return;
-    	}
-    	if (form.isOptedOut() != null) {
-    		updateOptedOut(req, res, form, user);
-    		return;
-    	}
-    	sendBadRequest(res, "invalid update request");
+		if (user == null) {
+			sendNotFound(res, "user not found");
+			return;
+		}
+		UpdateUserForm form = new UpdateUserForm(body);
+		if (form.getEmail() != null) {
+			updateEmail(req, res, form, user);
+			return;
+		}
+		if (form.getPassword() != null) {
+			updatePassword(req, res, form, user);
+			return;
+		}
+		if (form.isVerified()) {
+			updateVerified(res, form, user);
+			return;
+		}
+		if (form.hasQuota()) {
+			updateQuota(req, res, form, user);
+			return;
+		}
+		if (form.isSuspended() != null) {
+			updateSuspension(req, res, user, form.isSuspended());
+			return;
+		}
+		if (form.isOptedOut() != null) {
+			updateOptedOut(req, res, form, user);
+			return;
+		}
+		sendBadRequest(res, "invalid update request");
 	}
 
 	private void updateEmail(ServerRequest req, ServerResponse res, UpdateUserForm form, User user) {
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
-    	if (auth.getScope() != null || !user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
-    		sendForbidden(res);
-    		return;
-    	}
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
+		if (auth.getScope() != null || !user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
+			sendForbidden(res);
+			return;
+		}
 		String email = form.getEmail();
-    	if (!SignUpForm.isValidEmail(email)) {
-    		sendBadRequest(res, "invalid email address");
-    		return;
-    	}
-		String commandId = dispatcher.dispatch(new ChangeUserEmailCommand(auth.getPrincipal(), user.getName(), user.getEmail(), email, user.isVerified(), user.isVerified() && user.getEmail().equals(email)));
+		if (!SignUpForm.isValidEmail(email)) {
+			sendBadRequest(res, "invalid email address");
+			return;
+		}
+		String commandId = dispatcher.dispatch(new ChangeUserEmailCommand(
+				auth.getPrincipal(),
+				user.getName(),
+				user.getEmail(),
+				email,
+				user.isVerified(),
+				user.isVerified() && user.getEmail().equals(email)));
 		mailer.send(user.getName(), email);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}
 
 	private void updatePassword(ServerRequest req, ServerResponse res, UpdateUserForm form, User user) {
-    	String key = form.getKey();
-    	if (key == null) {
-    		sendBadRequest(res, "missing key field");
-    		return;
-    	}
-    	String password = form.getPassword();
+		String key = form.getKey();
+		if (key == null) {
+			sendBadRequest(res, "missing key field");
+			return;
+		}
+		String password = form.getPassword();
 		if (!SignUpForm.isValidPassword(password)) {
 			sendBadRequest(res, "invalid password");
 			return;
 		}
-    	String expires = form.getExpires();
+		String expires = form.getExpires();
 		if (expires == null) {
 			sendBadRequest(res, "missing expires field");
 			return;
@@ -151,12 +162,12 @@ public class UserController extends ControllerSupport {
 		}
 		var auth = new Authorization(user.asIdentity(), null, null);
 		var command = new CompoundCommand(user.asIdentity(), "updated password", "reverted password");
-		command.add(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.hashPassword(password)));
+		command.add(new ChangeUserPasswordCommand(
+				user.asIdentity(), user.getName(), user.getHashedPassword(), User.hashPassword(password)));
 		command.add(new CreateAuthorizationCommand(user.asIdentity(), auth));
-		var query = new AuthorizationQuery()
-			.principalEqualTo(user.asIdentity())
-			.clientIsNull();
-		authorizations.find(query, authorization -> command.add(new DeleteAuthorizationCommand(user.asIdentity(), authorization)));
+		var query = new AuthorizationQuery().principalEqualTo(user.asIdentity()).clientIsNull();
+		authorizations.find(
+				query, authorization -> command.add(new DeleteAuthorizationCommand(user.asIdentity(), authorization)));
 		String commandId = dispatcher.dispatch(command);
 		setHeader(res, COMMAND_ID, commandId);
 		sendOk(res, Nodes.newObject("access_token", auth.getId()));
@@ -164,19 +175,26 @@ public class UserController extends ControllerSupport {
 
 	private void updateSuspension(ServerRequest req, ServerResponse res, User user, boolean suspended) {
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
-    	if (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal())) {
-    		sendForbidden(res);
-    		return;
-    	}
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
+		if (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal())) {
+			sendForbidden(res);
+			return;
+		}
 		Command command = new SuspendUserCommand(auth.getPrincipal(), user.getName(), suspended);
-    	CompoundCommand commands = new CompoundCommand(auth.getPrincipal(), command.toString(), command.reverse(auth.getPrincipal()).toString());
+		CompoundCommand commands = new CompoundCommand(
+				auth.getPrincipal(),
+				command.toString(),
+				command.reverse(auth.getPrincipal()).toString());
 		commands.add(command);
-		authorizations.find(new AuthorizationQuery().principalEqualTo(user.asIdentity()), authorization -> commands.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization)));
-		authorizations.find(new AuthorizationQuery().clientEqualTo(user.asIdentity()), authorization -> commands.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization)));
+		authorizations.find(
+				new AuthorizationQuery().principalEqualTo(user.asIdentity()),
+				authorization -> commands.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization)));
+		authorizations.find(
+				new AuthorizationQuery().clientEqualTo(user.asIdentity()),
+				authorization -> commands.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization)));
 		String commandId = dispatcher.dispatch(commands.unwrap());
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
@@ -204,33 +222,34 @@ public class UserController extends ControllerSupport {
 
 	private void updateQuota(ServerRequest req, ServerResponse res, UpdateUserForm form, User user) {
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
-    	if (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal())) {
-    		sendForbidden(res);
-    		return;
-    	}
-		String commandId = dispatcher.dispatch(new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), form.getQuota()));
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
+		if (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal())) {
+			sendForbidden(res);
+			return;
+		}
+		String commandId = dispatcher.dispatch(
+				new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), form.getQuota()));
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}
 
 	private void updateOptedOut(ServerRequest req, ServerResponse res, UpdateUserForm form, User user) {
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
-    	if (auth.getScope() != null || !user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
-    		sendForbidden(res);
-    		return;
-    	}
-		Command c = form.isOptedOut() ?
-			new OptOutCommand(auth.getPrincipal(), user.getName()) :
-			new OptInCommand(auth.getPrincipal(), user.getName());
-    	String commandId = dispatcher.dispatch(c);
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
+		if (auth.getScope() != null || !user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
+			sendForbidden(res);
+			return;
+		}
+		Command c = form.isOptedOut()
+				? new OptOutCommand(auth.getPrincipal(), user.getName())
+				: new OptInCommand(auth.getPrincipal(), user.getName());
+		String commandId = dispatcher.dispatch(c);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}

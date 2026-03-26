@@ -1,8 +1,8 @@
 package com.zenobase.scripts;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -45,7 +45,8 @@ public class DeleteCredentials extends ClientSupport {
 
 	private List<Credentials> find(String query, int offset, int limit) throws IOException {
 		List<Credentials> credentials = new ArrayList<>();
-		HttpGet request = new HttpGet(String.format("%s/credentials/?code=%s&q=%s&offset=%d&limit=%d", host, token, query, offset, limit));
+		HttpGet request = new HttpGet(
+				String.format("%s/credentials/?code=%s&q=%s&offset=%d&limit=%d", host, token, query, offset, limit));
 		HttpResponse response = client.execute(request);
 		for (JsonNode eventNode : readObject(response).path("items")) {
 			credentials.add(new Credentials((ObjectNode) eventNode));
@@ -56,6 +57,7 @@ public class DeleteCredentials extends ClientSupport {
 	private void delete(String credentialsId) throws IOException {
 		HttpDelete request = new HttpDelete(String.format("%s/credentials/%s?code=%s", host, credentialsId, token));
 		HttpResponse response = client.execute(request);
-		System.out.format("Deleted <%s>: %d\n", credentialsId, response.getStatusLine().getStatusCode());
+		System.out.format(
+				"Deleted <%s>: %d\n", credentialsId, response.getStatusLine().getStatusCode());
 	}
 }

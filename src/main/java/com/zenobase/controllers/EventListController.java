@@ -2,21 +2,17 @@ package com.zenobase.controllers;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import java.util.ArrayList;
-
 import com.google.common.collect.Maps;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensearch.client.opensearch._types.OpenSearchException;
@@ -55,7 +51,12 @@ public class EventListController extends ControllerSupport {
 	private final CommandDispatcher dispatcher;
 
 	@Inject
-	public EventListController(AuthorizationContext security, BucketRepository buckets, EventRepository events, UserRepository users, CommandDispatcher dispatcher) {
+	public EventListController(
+			AuthorizationContext security,
+			BucketRepository buckets,
+			EventRepository events,
+			UserRepository users,
+			CommandDispatcher dispatcher) {
 		super(security);
 		this.buckets = buckets;
 		this.events = events;
@@ -67,26 +68,26 @@ public class EventListController extends ControllerSupport {
 		String bucketId = req.path().pathParameters().get("bucketId");
 		Authorization auth = getCurrentAuthorization(req);
 		Bucket bucket = buckets.find(bucketId);
-    	if (bucket == null) {
-    		sendNotFound(res);
-    		return;
-    	}
-    	if (!bucket.hasRole(auth, Role.VIEWER)) {
-    		if (auth == null) {
-    			sendUnauthorized(res);
-    		} else {
-    			sendForbidden(res);
-    		}
-    		return;
-    	}
-    	List<String> constraints = getConstraints(req);
-    	List<FacetOptions> facets = getFacets(req);
-    	if (!facets.isEmpty()) {
-    		getWithFacets(res, bucketId, constraints, facets);
-    	} else {
-    		getStreaming(req, res, bucketId, constraints);
-    	}
-    }
+		if (bucket == null) {
+			sendNotFound(res);
+			return;
+		}
+		if (!bucket.hasRole(auth, Role.VIEWER)) {
+			if (auth == null) {
+				sendUnauthorized(res);
+			} else {
+				sendForbidden(res);
+			}
+			return;
+		}
+		List<String> constraints = getConstraints(req);
+		List<FacetOptions> facets = getFacets(req);
+		if (!facets.isEmpty()) {
+			getWithFacets(res, bucketId, constraints, facets);
+		} else {
+			getStreaming(req, res, bucketId, constraints);
+		}
+	}
 
 	private static List<String> getConstraints(ServerRequest req) {
 		try {
@@ -109,15 +110,15 @@ public class EventListController extends ControllerSupport {
 		} catch (java.util.NoSuchElementException e) {
 			// no query params at all
 		}
-    	if (options.isEmpty() && req.query().first("limit").orElse(null) != null) {
-    		Map<String, String> map = Maps.newLinkedHashMap();
+		if (options.isEmpty() && req.query().first("limit").orElse(null) != null) {
+			Map<String, String> map = Maps.newLinkedHashMap();
 			map.put("id", "events");
 			map.put("type", ListFacet.TYPE);
 			copyRequestParameter(req, "offset", map);
 			copyRequestParameter(req, "limit", map);
 			copyRequestParameter(req, "order", map);
-    		options.add(new FacetOptions(map));
-    	}
+			options.add(new FacetOptions(map));
+		}
 		return options;
 	}
 
@@ -128,9 +129,13 @@ public class EventListController extends ControllerSupport {
 		}
 	}
 
-	private void getWithFacets(ServerResponse res, String bucketId, List<String> constraints, List<FacetOptions> facets) {
+	private void getWithFacets(
+			ServerResponse res, String bucketId, List<String> constraints, List<FacetOptions> facets) {
 		try {
-			Search search = new EventSearchBuilder().addConstraints(constraints).addFacets(facets).buildSearch();
+			Search search = new EventSearchBuilder()
+					.addConstraints(constraints)
+					.addFacets(facets)
+					.buildSearch();
 			sendOk(res, events.find(bucketId, search));
 		} catch (IllegalArgumentException e) {
 			sendBadRequest(res, "Invalid parameters");
@@ -141,34 +146,37 @@ public class EventListController extends ControllerSupport {
 				throw e;
 			}
 		}
-    }
+	}
 
 	private void getStreaming(ServerRequest req, ServerResponse res, String bucketId, List<String> constraints) {
 		String accept = MoreObjects.firstNonNull(req.query().first("accept").orElse(null), "application/json");
 		if (accept.equals("text/plain")) {
-    		setHeader(res, "Content-Type", accept);
-    		streamEventRows(res, bucketId, constraints);
-    		return;
-    	}
+			setHeader(res, "Content-Type", accept);
+			streamEventRows(res, bucketId, constraints);
+			return;
+		}
 		if (accept.equals("application/json")) {
 			setHeader(res, "Content-Type", accept);
 			streamEventChunks(res, bucketId, constraints);
 			return;
 		}
 		sendBadRequest(res, "Can't accept <" + accept + ">");
-    }
+	}
 
 	private void streamEventChunks(ServerResponse res, String bucketId, Iterable<String> constraints) {
 		try (var out = res.outputStream()) {
 			JsonStream stream = new JsonStream(out);
 			stream.writeArrayFieldStart(EVENTS.getName());
-			events.find(bucketId, new EventSearchBuilder().addConstraints(constraints).buildSearch(), node -> {
-				try {
-					stream.write(node);
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			});
+			events.find(
+					bucketId,
+					new EventSearchBuilder().addConstraints(constraints).buildSearch(),
+					node -> {
+						try {
+							stream.write(node);
+						} catch (IOException e) {
+							throw new RuntimeException(e);
+						}
+					});
 			stream.writeEndArray();
 			stream.close();
 		} catch (IOException e) {
@@ -188,9 +196,12 @@ public class EventListController extends ControllerSupport {
 	}
 
 	private static Search createExportSearch(Iterable<String> constraints, int offset) {
-		var facet = new ListFacet(EVENTS.getName(),
-			offset, EXPORT_LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA);
-		return new EventSearchBuilder().addConstraints(constraints).addFacet(facet).buildSearch();
+		var facet =
+				new ListFacet(EVENTS.getName(), offset, EXPORT_LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA);
+		return new EventSearchBuilder()
+				.addConstraints(constraints)
+				.addFacet(facet)
+				.buildSearch();
 	}
 
 	public void post(ServerRequest req, ServerResponse res) {
@@ -200,33 +211,36 @@ public class EventListController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
-    	Bucket bucket = buckets.find(bucketId);
-    	if (bucket == null) {
-    		sendNotFound(res);
-    		return;
-    	}
-    	if (!bucket.hasRole(auth, Role.OWNER)) {
-    		sendForbidden(res);
-    		return;
-    	}
-    	ObjectNode body = body(req);
-    	var nodes = EVENTS.getValues(body);
-    	if (!nodes.isEmpty()) {
-    		CreateEventsCommand command = newCreateEventsCommand(auth.getPrincipal(), bucketId, nodes);
-    		String commandId = dispatcher.dispatch(command);
-    		setHeader(res, COMMAND_ID, commandId);
-            sendNoContent(res);
-    	}
-    	else {
-    		CreateEventCommand command = newCreateEventCommand(auth.getPrincipal(), bucketId, body);
-    		String commandId = dispatcher.dispatch(command);
-            setHeader(res, LOCATION, "/buckets/" + bucketId + "/" + command.getEvent().getId());
-    		setHeader(res, COMMAND_ID, commandId);
-            sendCreated(res, command.getEvent().toJson());
-    	}
-    }
+		Bucket bucket = buckets.find(bucketId);
+		if (bucket == null) {
+			sendNotFound(res);
+			return;
+		}
+		if (!bucket.hasRole(auth, Role.OWNER)) {
+			sendForbidden(res);
+			return;
+		}
+		ObjectNode body = body(req);
+		var nodes = EVENTS.getValues(body);
+		if (!nodes.isEmpty()) {
+			CreateEventsCommand command = newCreateEventsCommand(auth.getPrincipal(), bucketId, nodes);
+			String commandId = dispatcher.dispatch(command);
+			setHeader(res, COMMAND_ID, commandId);
+			sendNoContent(res);
+		} else {
+			CreateEventCommand command = newCreateEventCommand(auth.getPrincipal(), bucketId, body);
+			String commandId = dispatcher.dispatch(command);
+			setHeader(
+					res,
+					LOCATION,
+					"/buckets/" + bucketId + "/" + command.getEvent().getId());
+			setHeader(res, COMMAND_ID, commandId);
+			sendCreated(res, command.getEvent().toJson());
+		}
+	}
 
-	private static CreateEventsCommand newCreateEventsCommand(Identity principal, String bucketId, List<ObjectNode> nodes) {
+	private static CreateEventsCommand newCreateEventsCommand(
+			Identity principal, String bucketId, List<ObjectNode> nodes) {
 		return new CreateEventsCommand(principal, bucketId, toEvents(principal, nodes));
 	}
 
@@ -253,44 +267,44 @@ public class EventListController extends ControllerSupport {
 	}
 
 	public void countAll(ServerRequest req, ServerResponse res) {
-    	Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
-    	if (auth.getScope() != null) {
-    		sendForbidden(res);
-    		return;
-    	}
-    	if (!users.isSuperuser(auth.getPrincipal())) {
-    		sendForbidden(res);
-    		return;
-    	}
-    	sendOk(res, toJson(events.size()));
-    }
+		Authorization auth = getCurrentAuthorization(req);
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
+		if (auth.getScope() != null) {
+			sendForbidden(res);
+			return;
+		}
+		if (!users.isSuperuser(auth.getPrincipal())) {
+			sendForbidden(res);
+			return;
+		}
+		sendOk(res, toJson(events.size()));
+	}
 
 	public void countByUser(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
-    	Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
-    	if (auth.getScope() != null) {
-    		sendForbidden(res);
-    		return;
-    	}
-    	if (!users.isSuperuser(auth.getPrincipal())) {
-    		sendForbidden(res);
-    		return;
-    	}
+		Authorization auth = getCurrentAuthorization(req);
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
+		if (auth.getScope() != null) {
+			sendForbidden(res);
+			return;
+		}
+		if (!users.isSuperuser(auth.getPrincipal())) {
+			sendForbidden(res);
+			return;
+		}
 		Identity principal = new UserLookup(users).getIdentity(userId);
 		if (principal == null) {
 			sendNotFound(res, "user not found");
 			return;
 		}
-    	sendOk(res, toJson(events.size(principal)));
-    }
+		sendOk(res, toJson(events.size(principal)));
+	}
 
 	private static ObjectNode toJson(long total) {
 		return Nodes.newObject("total", total);

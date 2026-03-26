@@ -3,7 +3,6 @@ package com.zenobase.search;
 import static com.zenobase.testing.NodeAssert.assertThat;
 
 import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Length;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
@@ -40,8 +39,7 @@ public class PolarFacetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,key_field:%s,interval:%s",
-			FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "hour_of_day");
+		addFacet("id:%s,type:%s,key_field:%s,interval:%s", FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "hour_of_day");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -69,8 +67,7 @@ public class PolarFacetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,key_field:%s,interval:%s",
-			FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "day_of_week");
+		addFacet("id:%s,type:%s,key_field:%s,interval:%s", FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "day_of_week");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -103,8 +100,7 @@ public class PolarFacetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,key_field:%s,interval:%s",
-			FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "day_of_month");
+		addFacet("id:%s,type:%s,key_field:%s,interval:%s", FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "day_of_month");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -137,8 +133,7 @@ public class PolarFacetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,key_field:%s,interval:%s",
-			FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "month_of_year");
+		addFacet("id:%s,type:%s,key_field:%s,interval:%s", FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "month_of_year");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -166,8 +161,9 @@ public class PolarFacetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,key_field:%s,interval:%s,filter:%s",
-			FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "month_of_year", "count:(*..5000)");
+		addFacet(
+				"id:%s,type:%s,key_field:%s,interval:%s,filter:%s",
+				FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "month_of_year", "count:(*..5000)");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -195,8 +191,9 @@ public class PolarFacetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,interval:%s,unit:%s",
-			FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, Event.DISTANCE, "month_of_year", "m");
+		addFacet(
+				"id:%s,type:%s,key_field:%s,value_field:%s,interval:%s,unit:%s",
+				FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, Event.DISTANCE, "month_of_year", "m");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -232,8 +229,9 @@ public class PolarFacetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,interval:%s",
-			FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, Event.COUNT, "month_of_year");
+		addFacet(
+				"id:%s,type:%s,key_field:%s,value_field:%s,interval:%s",
+				FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, Event.COUNT, "month_of_year");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -266,8 +264,7 @@ public class PolarFacetTest extends FacetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addFacet("id:%s,type:%s,key_field:%s,interval:%s",
-			FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "hour_of_day");
+		addFacet("id:%s,type:%s,key_field:%s,interval:%s", FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "hour_of_day");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);

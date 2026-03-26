@@ -17,7 +17,8 @@ public class IHealthFoodResultTest extends ResultTestSupport {
 	public void test() {
 
 		String tag = "Food";
-		IHealthFoodResult result = new IHealthFoodResult(readObject("IHealthFoodResultTest.json"), TESTER, tag, DateTimeZone.forID("America/Los_Angeles"));
+		IHealthFoodResult result = new IHealthFoodResult(
+				readObject("IHealthFoodResultTest.json"), TESTER, tag, DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.isSuccess()).isTrue();
 		assertThat(result.hasNext()).isFalse();
 		List<Event> events = result.getEvents();

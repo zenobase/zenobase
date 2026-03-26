@@ -33,7 +33,12 @@ public class PaymentGatewayTesting {
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
 		assertThat(gateway.token(USERNAME)).isNotNull();
 		gateway.subscribe(USERNAME, EMAIL, PAYMENT, Plan.PERSONAL);
-		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasPaymentMethod().hasPlan(Plan.PERSONAL).hasPrice("5.00");
+		assertThat(gateway.findCustomer(USERNAME))
+				.hasId(USERNAME)
+				.hasEmail(EMAIL)
+				.hasPaymentMethod()
+				.hasPlan(Plan.PERSONAL)
+				.hasPrice("5.00");
 		assertThat(gateway.cancel(USERNAME)).isTrue();
 		assertThat(gateway.cancel(USERNAME)).isFalse();
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
@@ -53,7 +58,12 @@ public class PaymentGatewayTesting {
 		gateway.subscribe(USERNAME, EMAIL, PAYMENT, Plan.PERSONAL);
 		assertThat(gateway.token(USERNAME)).isNotNull();
 		gateway.subscribe(USERNAME, EMAIL, newPayment, Plan.PERSONAL);
-		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasPaymentMethod().hasPlan(Plan.PERSONAL).hasPrice("5.00");
+		assertThat(gateway.findCustomer(USERNAME))
+				.hasId(USERNAME)
+				.hasEmail(EMAIL)
+				.hasPaymentMethod()
+				.hasPlan(Plan.PERSONAL)
+				.hasPrice("5.00");
 		assertThat(gateway.cancel(USERNAME)).isTrue();
 	}
 
@@ -67,7 +77,12 @@ public class PaymentGatewayTesting {
 		} catch (IllegalArgumentException e) {
 
 		}
-		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasPaymentMethod().hasPlan(Plan.PERSONAL).hasPrice("5.00");
+		assertThat(gateway.findCustomer(USERNAME))
+				.hasId(USERNAME)
+				.hasEmail(EMAIL)
+				.hasPaymentMethod()
+				.hasPlan(Plan.PERSONAL)
+				.hasPrice("5.00");
 		assertThat(gateway.cancel(USERNAME)).isTrue();
 	}
 
@@ -76,7 +91,11 @@ public class PaymentGatewayTesting {
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
 		gateway.subscribe(USERNAME, EMAIL, PAYMENT, Plan.PERSONAL);
 		gateway.unsubscribe(USERNAME);
-		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasPaymentMethod().planIsNull();
+		assertThat(gateway.findCustomer(USERNAME))
+				.hasId(USERNAME)
+				.hasEmail(EMAIL)
+				.hasPaymentMethod()
+				.planIsNull();
 		assertThat(gateway.cancel(USERNAME)).isTrue();
 	}
 }

@@ -102,7 +102,9 @@ public class HeatmapFacetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,value_field:%s,filter:%s", FACET_ID, HeatmapFacet.TYPE, Event.COUNT.getName(), "count:[1500..*)");
+		addFacet(
+				"id:%s,type:%s,value_field:%s,filter:%s",
+				FACET_ID, HeatmapFacet.TYPE, Event.COUNT.getName(), "count:[1500..*)");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);

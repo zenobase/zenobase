@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import javax.measure.quantity.Frequency;
-
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -24,7 +22,8 @@ public class FitbitCardioIntradayResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		FitbitCardioIntradayResult result = new FitbitCardioIntradayResult(readObject("FitbitCardioIntradayResultTest.json"), TAG, TESTER, DATE, TIMEZONE);
+		FitbitCardioIntradayResult result = new FitbitCardioIntradayResult(
+				readObject("FitbitCardioIntradayResultTest.json"), TAG, TESTER, DATE, TIMEZONE);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(24);
 		Event expected = new Event(events.get(0).getId());
@@ -40,7 +39,8 @@ public class FitbitCardioIntradayResultTest extends ResultTestSupport {
 
 	@Test
 	public void testEmpty() {
-		FitbitCardioIntradayResult result = new FitbitCardioIntradayResult(Nodes.newObject(), TAG, TESTER, DATE, TIMEZONE);
+		FitbitCardioIntradayResult result =
+				new FitbitCardioIntradayResult(Nodes.newObject(), TAG, TESTER, DATE, TIMEZONE);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").isEmpty();
 	}

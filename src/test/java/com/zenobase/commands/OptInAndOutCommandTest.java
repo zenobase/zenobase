@@ -12,9 +12,8 @@ import com.zenobase.services.UserRepository;
 public class OptInAndOutCommandTest {
 
 	private final UserRepository users = mock(UserRepository.class);
-	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new OptOutCommand.Handler(users),
-		new OptInCommand.Handler(users));
+	private final CommandHandlerRegistry registry =
+			CommandHandlerRegistry.containing(new OptOutCommand.Handler(users), new OptInCommand.Handler(users));
 
 	@Test
 	public void test() {

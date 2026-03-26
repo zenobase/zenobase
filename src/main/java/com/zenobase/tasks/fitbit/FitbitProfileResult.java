@@ -27,13 +27,11 @@ class FitbitProfileResult {
 	}
 
 	public Unit<Length> getDistanceUnit() {
-		return "en_US".equals(getDistanceLocale()) ?
-			Units.MI : Units.KM;
+		return "en_US".equals(getDistanceLocale()) ? Units.MI : Units.KM;
 	}
 
 	public Unit<Length> getHeightUnit() {
-		return "en_US".equals(getDistanceLocale()) ?
-			Units.FT : Units.M;
+		return "en_US".equals(getDistanceLocale()) ? Units.FT : Units.M;
 	}
 
 	public String getWeightLocale() {

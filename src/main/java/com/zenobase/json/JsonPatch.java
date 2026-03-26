@@ -1,13 +1,12 @@
 package com.zenobase.json;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-
-import java.util.Iterator;
-import java.util.Map;
 
 public class JsonPatch {
 
@@ -26,18 +25,28 @@ public class JsonPatch {
 	}
 
 	private void checkState(ObjectNode node, ObjectNode expected) throws IllegalStateException {
-		for (Iterator<Map.Entry<String, JsonNode>> i = expected.fields(); i.hasNext();) {
+		for (Iterator<Map.Entry<String, JsonNode>> i = expected.fields(); i.hasNext(); ) {
 			Map.Entry<String, JsonNode> entry = i.next();
 			JsonNode found = node.path(entry.getKey());
 			if (entry.getValue().isNull()) {
-				Preconditions.checkState(found.isMissingNode(),
-					"Expected value of field <%s> to be empty but found <%s>", entry.getKey(), found);
+				Preconditions.checkState(
+						found.isMissingNode(),
+						"Expected value of field <%s> to be empty but found <%s>",
+						entry.getKey(),
+						found);
 			} else if (entry.getValue().isValueNode()) {
-				Preconditions.checkState(entry.getValue().equals(found),
-					"Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found);
+				Preconditions.checkState(
+						entry.getValue().equals(found),
+						"Expected value of field <%s> to be <%s> but found <%s>",
+						entry.getKey(),
+						entry.getValue(),
+						found);
 			} else if (entry.getValue().isObject()) {
-				Preconditions.checkState(found.isObject(),
-					"Expected value of field <%s> to be an object node but found <%s>", entry.getKey(), found);
+				Preconditions.checkState(
+						found.isObject(),
+						"Expected value of field <%s> to be an object node but found <%s>",
+						entry.getKey(),
+						found);
 				checkState((ObjectNode) found, (ObjectNode) entry.getValue());
 			} else {
 				throw new AssertionError();
@@ -46,7 +55,7 @@ public class JsonPatch {
 	}
 
 	private static void apply(ObjectNode target, ObjectNode changes) {
-		for (Iterator<Map.Entry<String, JsonNode>> i = changes.fields(); i.hasNext();) {
+		for (Iterator<Map.Entry<String, JsonNode>> i = changes.fields(); i.hasNext(); ) {
 			Map.Entry<String, JsonNode> entry = i.next();
 			if (entry.getValue().isNull()) {
 				target.remove(entry.getKey());

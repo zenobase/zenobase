@@ -3,10 +3,9 @@ package com.zenobase.services;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import jakarta.inject.Inject;
-
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
+import jakarta.inject.Inject;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
 import org.slf4j.Logger;
@@ -28,7 +27,8 @@ public class BucketRefreshJob extends Job {
 	private final TaskRefresher refresher;
 
 	@Inject
-	public BucketRefreshJob(BucketRepository buckets, UserRepository users, TaskRepository tasks, TaskRefresher refresher) {
+	public BucketRefreshJob(
+			BucketRepository buckets, UserRepository users, TaskRepository tasks, TaskRefresher refresher) {
 		super("refresh buckets", new LocalTime(2, 0), Period.hours(6));
 		this.buckets = buckets;
 		this.users = users;
@@ -45,12 +45,14 @@ public class BucketRefreshJob extends Job {
 			User owner = users.find(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)));
 			if (hasRefreshPrivilege(owner)) {
 				try {
-					for (Task task : tasks.find(new TaskQuery().bucketEqualTo(bucket.getId()), TaskQuery.orderByCreated(true), 0, 100)) {
+					for (Task task : tasks.find(
+							new TaskQuery().bucketEqualTo(bucket.getId()), TaskQuery.orderByCreated(true), 0, 100)) {
 						refresher.refresh(task);
 						counter.incrementAndGet();
 					}
 				} catch (CredentialsException e) {
-					logger.warn("Couldn't refresh bucket {} for {}: {}", bucket.getId(), owner.getName(), e.getMessage());
+					logger.warn(
+							"Couldn't refresh bucket {} for {}: {}", bucket.getId(), owner.getName(), e.getMessage());
 				} catch (RuntimeException e) {
 					logger.error("Couldn't refresh bucket {} for {}", bucket.getId(), owner.getName(), e);
 				}

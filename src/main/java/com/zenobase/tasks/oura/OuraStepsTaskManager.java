@@ -1,13 +1,11 @@
 package com.zenobase.tasks.oura;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import jakarta.inject.Inject;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
@@ -32,7 +30,8 @@ public class OuraStepsTaskManager extends OuraTaskManagerSupport {
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = DateTime.parse(settings.path("marker").textValue()).toString();
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "steps");
-		DateTimeZone zone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone zone = DateTimeZone.forID(
+				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		return new OuraStepsTask(bucketId, principal, marker, tag, zone);
 	}
 
@@ -53,7 +52,8 @@ public class OuraStepsTaskManager extends OuraTaskManagerSupport {
 		request.addQuerystringParameter("start_date", begin.toLocalDate().toString());
 		request.addQuerystringParameter("end_date", end.toLocalDate().toString());
 		Response response = send(request, credentials);
-		events.addAll(new OuraStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone()).getEvents());
+		events.addAll(new OuraStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone())
+				.getEvents());
 		return createCommand(task, credentials, events, token);
 	}
 }

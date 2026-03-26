@@ -1,9 +1,8 @@
 package com.zenobase.tasks.withings;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;

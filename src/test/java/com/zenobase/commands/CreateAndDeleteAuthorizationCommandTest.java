@@ -13,8 +13,7 @@ public class CreateAndDeleteAuthorizationCommandTest {
 
 	private final AuthorizationRepository repository = mock(AuthorizationRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new CreateAuthorizationCommand.Handler(repository),
-		new DeleteAuthorizationCommand.Handler(repository));
+			new CreateAuthorizationCommand.Handler(repository), new DeleteAuthorizationCommand.Handler(repository));
 
 	@Test
 	public void test() {

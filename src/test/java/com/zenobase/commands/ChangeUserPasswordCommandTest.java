@@ -11,8 +11,8 @@ import com.zenobase.services.UserRepository;
 public class ChangeUserPasswordCommandTest {
 
 	private final UserRepository users = mock(UserRepository.class);
-	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new ChangeUserPasswordCommand.Handler(users));
+	private final CommandHandlerRegistry registry =
+			CommandHandlerRegistry.containing(new ChangeUserPasswordCommand.Handler(users));
 
 	@Test
 	public void test() {
@@ -23,7 +23,8 @@ public class ChangeUserPasswordCommandTest {
 		user.setPassword(from);
 		when(users.find(user.getName())).thenReturn(user);
 
-		Command command = new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), User.hashPassword(from), User.hashPassword(to));
+		Command command = new ChangeUserPasswordCommand(
+				user.asIdentity(), user.getName(), User.hashPassword(from), User.hashPassword(to));
 		registry.execute(command);
 		assertThat(user.passwordEquals(to)).isTrue();
 

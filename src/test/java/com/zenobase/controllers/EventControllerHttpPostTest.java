@@ -5,10 +5,10 @@ import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.opensearch.client.opensearch._types.OpenSearchException;
-import org.opensearch.client.opensearch._types.ErrorResponse;
 import org.junit.Before;
 import org.junit.Test;
+import org.opensearch.client.opensearch._types.ErrorResponse;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 
 import com.zenobase.commands.UpdateEventCommand;
 import com.zenobase.common.Generator;
@@ -50,7 +50,10 @@ public class EventControllerHttpPostTest extends EventControllerTestSupport {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(events.find(bucket.getId(), from.getId())).thenReturn(from.copy());
-		when(dispatcher.dispatch(any(UpdateEventCommand.class))).thenThrow(new OpenSearchException(ErrorResponse.of(r -> r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict")))));
+		when(dispatcher.dispatch(any(UpdateEventCommand.class)))
+				.thenThrow(new OpenSearchException(ErrorResponse.of(r -> r.status(409)
+						.error(e2 ->
+								e2.type("version_conflict_engine_exception").reason("version conflict")))));
 		try (Http1ClientResponse result = call(bucket.getId(), from.getId(), to.toJson())) {
 			assertThat(result).hasStatus(409);
 		}

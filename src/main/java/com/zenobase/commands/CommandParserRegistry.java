@@ -3,12 +3,11 @@ package com.zenobase.commands;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import jakarta.inject.Inject;
 
 public class CommandParserRegistry {
 
@@ -32,7 +31,8 @@ public class CommandParserRegistry {
 		CommandParser parser = parsers.get(type.getName());
 		Preconditions.checkNotNull(parser, "Missing parser for type '%s'", type.getName());
 		Command command = parser.parse(node, type.getVersion());
-		Preconditions.checkNotNull(command, "Missing parser for version %s of type '%s'", type.getVersion(), type.getName());
+		Preconditions.checkNotNull(
+				command, "Missing parser for version %s of type '%s'", type.getVersion(), type.getName());
 		return command;
 	}
 }

@@ -23,9 +23,7 @@ public class UpdateUserForm extends DomainNode {
 		super(node);
 	}
 
-	UpdateUserForm() {
-
-	}
+	UpdateUserForm() {}
 
 	UpdateUserForm(String email) {
 		setValue(EMAIL, email);

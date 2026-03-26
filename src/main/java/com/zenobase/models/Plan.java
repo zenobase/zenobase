@@ -3,7 +3,6 @@ package com.zenobase.models;
 import java.math.BigDecimal;
 
 public enum Plan {
-
 	PERSONAL("personal", 3000000, new BigDecimal("5.00"));
 
 	private final String id;

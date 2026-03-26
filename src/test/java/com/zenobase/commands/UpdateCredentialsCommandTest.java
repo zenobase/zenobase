@@ -12,8 +12,8 @@ public class UpdateCredentialsCommandTest {
 
 	private final Identity principal = new Identity();
 	private final CredentialsRepository repository = mock(CredentialsRepository.class);
-	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new UpdateCredentialsCommand.Handler(repository));
+	private final CommandHandlerRegistry registry =
+			CommandHandlerRegistry.containing(new UpdateCredentialsCommand.Handler(repository));
 
 	@Test
 	public void test() {
@@ -24,8 +24,8 @@ public class UpdateCredentialsCommandTest {
 		to.setAuthorizationUrl("http://localhost/");
 
 		Command command = UpdateCredentialsCommand.builder(from)
-			.set(Credentials.AUTHORIZATION_URL, from.getAuthorizationUrl(), to.getAuthorizationUrl())
-			.build();
+				.set(Credentials.AUTHORIZATION_URL, from.getAuthorizationUrl(), to.getAuthorizationUrl())
+				.build();
 		when(repository.find(from.getId())).thenReturn(from.copy());
 		registry.execute(command);
 		verify(repository).update(to, command.getTimestamp());

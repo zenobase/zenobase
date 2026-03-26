@@ -1,6 +1,5 @@
 package com.zenobase.services;
 
-
 import com.google.common.primitives.Ints;
 
 import com.zenobase.common.StringBloomFilter;
@@ -27,11 +26,12 @@ public class IdentitiesFilterBuilder {
 	}
 
 	public StringFilter build() {
-		StringFilter filter = deterministic
-			? new StringHashFilter()
-			: new StringBloomFilter(Ints.checkedCast(users.size()));
+		StringFilter filter =
+				deterministic ? new StringHashFilter() : new StringBloomFilter(Ints.checkedCast(users.size()));
 		users.find(user -> filter.put(user.getId()));
-		authorizations.find(new AuthorizationQuery().clientIsNull(), authorization -> filter.put(authorization.getPrincipal().getId()));
+		authorizations.find(
+				new AuthorizationQuery().clientIsNull(),
+				authorization -> filter.put(authorization.getPrincipal().getId()));
 		return filter;
 	}
 }

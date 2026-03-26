@@ -10,7 +10,6 @@ import com.zenobase.tasks.CustomApi20;
  *
  * @see <a href="https://wiki.fitbit.com/display/API">Fitbit API</a>
  */
-
 public class FitbitApi extends CustomApi20 {
 
 	@Override
@@ -21,11 +20,11 @@ public class FitbitApi extends CustomApi20 {
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
 		return new UriBuilder("https://www.fitbit.com/oauth2/authorize")
-			.addParameter("response_type", "code")
-			.addParameter("client_id", config.getApiKey())
-			.addParameter("redirect_uri", config.getCallback())
-			.addParameter("scope", "profile settings activity heartrate location nutrition sleep weight")
-			.build();
+				.addParameter("response_type", "code")
+				.addParameter("client_id", config.getApiKey())
+				.addParameter("redirect_uri", config.getCallback())
+				.addParameter("scope", "profile settings activity heartrate location nutrition sleep weight")
+				.build();
 	}
 
 	@Override

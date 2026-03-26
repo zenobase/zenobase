@@ -11,8 +11,8 @@ import com.zenobase.services.UserRepository;
 public class SuspendUserCommandTest {
 
 	private final UserRepository users = mock(UserRepository.class);
-	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new SuspendUserCommand.Handler(users));
+	private final CommandHandlerRegistry registry =
+			CommandHandlerRegistry.containing(new SuspendUserCommand.Handler(users));
 
 	@Test
 	public void test() {

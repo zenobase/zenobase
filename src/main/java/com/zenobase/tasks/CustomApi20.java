@@ -57,7 +57,7 @@ public abstract class CustomApi20 extends DefaultApi20 {
 			@Override
 			public void signRequest(Token accessToken, OAuthRequest request) {
 				if (passTokenInHeader()) {
-				    request.addHeader(OAuthConstants.HEADER, "Bearer " + accessToken.getToken());
+					request.addHeader(OAuthConstants.HEADER, "Bearer " + accessToken.getToken());
 				} else {
 					super.signRequest(accessToken, request);
 				}
@@ -79,9 +79,7 @@ public abstract class CustomApi20 extends DefaultApi20 {
 		request.addHeader("Authorization", "Basic " + encoded);
 	}
 
-	protected void configureAccessTokenRequest(OAuthRequest request) {
-
-	}
+	protected void configureAccessTokenRequest(OAuthRequest request) {}
 
 	protected void addParameter(OAuthRequest request, String key, String value) {
 		if (getAccessTokenVerb() == Verb.POST) {

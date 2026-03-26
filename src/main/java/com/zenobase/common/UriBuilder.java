@@ -6,7 +6,7 @@ import org.apache.http.client.utils.URIBuilder;
 
 public class UriBuilder {
 
-	private final URIBuilder builder ;
+	private final URIBuilder builder;
 
 	public UriBuilder(String uri) {
 		try {

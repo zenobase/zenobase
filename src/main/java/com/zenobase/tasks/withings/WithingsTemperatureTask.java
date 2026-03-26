@@ -22,7 +22,13 @@ public class WithingsTemperatureTask extends Task {
 		super(node);
 	}
 
-	WithingsTemperatureTask(String bucketId, Identity principal, String tag, Unit<Temperature> unit, DateTimeZone timezone, String marker) {
+	WithingsTemperatureTask(
+			String bucketId,
+			Identity principal,
+			String tag,
+			Unit<Temperature> unit,
+			DateTimeZone timezone,
+			String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);

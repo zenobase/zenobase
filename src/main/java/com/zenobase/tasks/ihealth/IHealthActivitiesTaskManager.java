@@ -1,12 +1,10 @@
 package com.zenobase.tasks.ihealth;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -16,15 +14,21 @@ import com.zenobase.tasks.Task;
 public class IHealthActivitiesTaskManager extends IHealthTaskManagerSupport<IHealthActivitiesTask> {
 
 	@Inject
-	public IHealthActivitiesTaskManager(IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.sport") String sv) {
+	public IHealthActivitiesTaskManager(
+			IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.sport") String sv) {
 		super(IHealthActivitiesTask.TYPE, credentialsManager, IHealthActivitiesTask.class);
-		register("sport", sv, (task, node) -> new IHealthActivitiesResult(node, task.getPrincipal(), task.getTag(), task.getTimezone()));
+		register(
+				"sport",
+				sv,
+				(task, node) ->
+						new IHealthActivitiesResult(node, task.getPrincipal(), task.getTag(), task.getTimezone()));
 	}
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String tag = Strings.emptyToNull(settings.path("tag").textValue());
-		DateTimeZone zone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone zone = DateTimeZone.forID(
+				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = DateTime.parse(settings.path("marker").textValue()).toString();
 		return new IHealthActivitiesTask(bucketId, principal, tag, zone, marker);
 	}

@@ -4,16 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import javax.measure.quantity.Energy;
-import javax.measure.quantity.Length;
-import javax.measure.quantity.Velocity;
-
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.junit.Test;
 
 import com.zenobase.common.Measures;
-import com.zenobase.common.Pace;
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -27,7 +22,12 @@ public class RunkeeperActivitiesResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 
-		RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(readObject("RunkeeperActivitiesResultTest.json"), author, Units.KM, Units.KCAL, DateTimeZone.forID("America/Los_Angeles"));
+		RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(
+				readObject("RunkeeperActivitiesResultTest.json"),
+				author,
+				Units.KM,
+				Units.KCAL,
+				DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.getNext()).isEqualTo("/fitnessActivities?page=1&pageSize=2");
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(2);
@@ -54,7 +54,12 @@ public class RunkeeperActivitiesResultTest extends ResultTestSupport {
 
 	@Test
 	public void testMeters() {
-		RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(readObject("RunkeeperActivitiesResultTest.json"), author, Units.M, Units.KCAL, DateTimeZone.forID("America/Los_Angeles"));
+		RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(
+				readObject("RunkeeperActivitiesResultTest.json"),
+				author,
+				Units.M,
+				Units.KCAL,
+				DateTimeZone.forID("America/Los_Angeles"));
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(2);
 		assertThat(events.get(0).getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf("6164.05 m"));
@@ -65,7 +70,12 @@ public class RunkeeperActivitiesResultTest extends ResultTestSupport {
 	@Test
 	public void testMiles() {
 		Identity author = new Identity();
-		RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(readObject("RunkeeperActivitiesResultTest.json"), author, Units.MI, Units.KCAL, DateTimeZone.forID("America/Los_Angeles"));
+		RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(
+				readObject("RunkeeperActivitiesResultTest.json"),
+				author,
+				Units.MI,
+				Units.KCAL,
+				DateTimeZone.forID("America/Los_Angeles"));
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(2);
 		assertThat(events.get(0).getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf("3.83 mi"));

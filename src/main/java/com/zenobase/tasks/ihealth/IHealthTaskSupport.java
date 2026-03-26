@@ -17,7 +17,8 @@ abstract class IHealthTaskSupport extends Task {
 		super(node);
 	}
 
-	protected IHealthTaskSupport(String type, String bucketId, Identity principal, String tag, DateTimeZone zone, String marker) {
+	protected IHealthTaskSupport(
+			String type, String bucketId, Identity principal, String tag, DateTimeZone zone, String marker) {
 		super(type, bucketId, principal);
 		setSetting(TAG, tag);
 		setSetting(TIMEZONE, zone.getID());

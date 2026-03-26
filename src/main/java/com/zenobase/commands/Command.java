@@ -63,8 +63,7 @@ public class Command extends DomainNode {
 	}
 
 	protected void checkType(Command.Type expected) {
-		Preconditions.checkArgument(expected.equals(getType()),
-			"Expected %s but was %s", expected, getType());
+		Preconditions.checkArgument(expected.equals(getType()), "Expected %s but was %s", expected, getType());
 	}
 
 	public Identity getPrincipal() {
@@ -108,14 +107,12 @@ public class Command extends DomainNode {
 	}
 
 	public boolean isPermitted(Authorization auth) {
-		return auth.getScope() == null
-			&& getPrincipal().equals(auth.getPrincipal());
+		return auth.getScope() == null && getPrincipal().equals(auth.getPrincipal());
 	}
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof Command &&
-			equals((Command) that);
+		return that instanceof Command && equals((Command) that);
 	}
 
 	private boolean equals(Command that) {
@@ -129,8 +126,13 @@ public class Command extends DomainNode {
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-			.add(ID).add(TYPE).add(PRINCIPAL).add(TIMESTAMP)
-			.add(PARAMETERS).add(COST).build();
+				.add(ID)
+				.add(TYPE)
+				.add(PRINCIPAL)
+				.add(TIMESTAMP)
+				.add(PARAMETERS)
+				.add(COST)
+				.build();
 	}
 
 	public static class Type {
@@ -153,13 +155,11 @@ public class Command extends DomainNode {
 
 		@Override
 		public boolean equals(Object that) {
-			return that instanceof Command.Type &&
-				equals((Command.Type) that);
+			return that instanceof Command.Type && equals((Command.Type) that);
 		}
 
 		private boolean equals(Command.Type that) {
-			return name.equals(that.getName()) &&
-				version == that.getVersion();
+			return name.equals(that.getName()) && version == that.getVersion();
 		}
 
 		@Override

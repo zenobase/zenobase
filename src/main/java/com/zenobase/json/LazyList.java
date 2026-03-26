@@ -34,8 +34,7 @@ public abstract class LazyList<T extends DomainNode> extends AbstractList<T> imp
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof LazyList &&
-			equals((LazyList<?>) that);
+		return that instanceof LazyList && equals((LazyList<?>) that);
 	}
 
 	private boolean equals(LazyList<?> that) {

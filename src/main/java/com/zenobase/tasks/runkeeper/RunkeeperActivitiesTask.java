@@ -6,7 +6,6 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import org.joda.time.DateTimeZone;
 
 import com.zenobase.common.Units;
@@ -30,7 +29,13 @@ public class RunkeeperActivitiesTask extends Task {
 		super(TYPE, bucketId, principal);
 	}
 
-	RunkeeperActivitiesTask(String bucketId, Identity principal, DateTimeZone timezone, Unit<Length> lengthUnit, Unit<Energy> energyUnit, String marker) {
+	RunkeeperActivitiesTask(
+			String bucketId,
+			Identity principal,
+			DateTimeZone timezone,
+			Unit<Length> lengthUnit,
+			Unit<Energy> energyUnit,
+			String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TIMEZONE, timezone != null ? timezone.getID() : null);

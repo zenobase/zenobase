@@ -10,20 +10,21 @@ public class RunkeeperTesting extends TaskTestingSupport {
 
 	@Test
 	public void testActivities() {
-		run(new RunkeeperActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2018-11-13")
-			.put("unit", "mi")
-			.put("timezone", "America/Los_Angeles"));
+		run(
+				new RunkeeperActivitiesTaskManager(newCredentialsManager()),
+				Nodes.newObject().put("marker", "2018-11-13").put("unit", "mi").put("timezone", "America/Los_Angeles"));
 	}
 
 	@Test
 	@Ignore
 	public void testWeight() {
-		run(new RunkeeperWeightTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-11-01")
-			.put("tag", "Me")
-			.put("unit", "lb")
-			.put("timezone", "America/Los_Angeles"));
+		run(
+				new RunkeeperWeightTaskManager(newCredentialsManager()),
+				Nodes.newObject()
+						.put("marker", "2014-11-01")
+						.put("tag", "Me")
+						.put("unit", "lb")
+						.put("timezone", "America/Los_Angeles"));
 	}
 
 	@Override

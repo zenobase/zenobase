@@ -88,7 +88,8 @@ public class TaskRepositoryTest extends OpenSearchTestSupport {
 		for (int i = 0; i < size; ++i) {
 			Task task = new Task(TYPE, BUCKET, ME);
 			tasks.add(task);
-			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
+			Uninterruptibles.sleepUninterruptibly(
+					5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
 			repository.store(task, DateTime.now());
 		}
 		repository.refresh();

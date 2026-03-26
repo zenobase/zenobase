@@ -31,14 +31,13 @@ public class DataStream {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof DataStream &&
-			equals((DataStream) that);
+		return that instanceof DataStream && equals((DataStream) that);
 	}
 
 	private boolean equals(DataStream that) {
-		return Objects.equal(that.id, id) &&
-			Objects.equal(that.dataType, dataType) &&
-			Objects.equal(that.source, source);
+		return Objects.equal(that.id, id)
+				&& Objects.equal(that.dataType, dataType)
+				&& Objects.equal(that.source, source);
 	}
 
 	@Override

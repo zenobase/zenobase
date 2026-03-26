@@ -19,7 +19,13 @@ public class AuthorizationListControllerFindByUserTest extends AuthorizationList
 	public void test() {
 		PartialList<Authorization> list = DefaultPartialList.of(new Authorization(user.asIdentity()));
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		when(authorizations.find(new AuthorizationQuery().principalEqualTo(user.asIdentity()).clientNotNull(), 0, 10)).thenReturn(list);
+		when(authorizations.find(
+						new AuthorizationQuery()
+								.principalEqualTo(user.asIdentity())
+								.clientNotNull(),
+						0,
+						10))
+				.thenReturn(list);
 		try (Http1ClientResponse result = call(user.getId(), Boolean.TRUE, null, 0, 10)) {
 			assertThat(result).hasStatus(200).hasContent(AuthorizationList.toJson(list));
 		}
@@ -31,7 +37,13 @@ public class AuthorizationListControllerFindByUserTest extends AuthorizationList
 		PartialList<Authorization> list = DefaultPartialList.of(new Authorization(user.asIdentity()));
 		when(auth.current(any())).thenReturn(new Authorization(superuser));
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(authorizations.find(new AuthorizationQuery().principalEqualTo(user.asIdentity()).queryString("scope:*"), 0, 10)).thenReturn(list);
+		when(authorizations.find(
+						new AuthorizationQuery()
+								.principalEqualTo(user.asIdentity())
+								.queryString("scope:*"),
+						0,
+						10))
+				.thenReturn(list);
 		try (Http1ClientResponse result = call(user.getId(), null, "scope:*", 0, 10)) {
 			assertThat(result).hasStatus(200).hasContent(AuthorizationList.toJson(list));
 		}
@@ -98,8 +110,8 @@ public class AuthorizationListControllerFindByUserTest extends AuthorizationList
 
 	private Http1ClientResponse call(String userId, Boolean hasClient, String q, int offset, int limit) {
 		var request = client.get("/users/" + userId + "/authorizations/")
-			.queryParam("offset", String.valueOf(offset))
-			.queryParam("limit", String.valueOf(limit));
+				.queryParam("offset", String.valueOf(offset))
+				.queryParam("limit", String.valueOf(limit));
 		if (hasClient != null) {
 			request = request.queryParam("has_client", String.valueOf(hasClient));
 		}

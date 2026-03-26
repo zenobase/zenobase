@@ -4,9 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.List;
-
 import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Mass;
 
 import org.junit.Test;
 

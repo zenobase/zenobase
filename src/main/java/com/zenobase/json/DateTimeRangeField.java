@@ -16,7 +16,6 @@ public class DateTimeRangeField extends DateTimeField {
 		max = new DateTimeField(name + "$max");
 		min.copyConstraintBuilders(this);
 		max.copyConstraintBuilders(this);
-
 	}
 
 	@Override

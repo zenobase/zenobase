@@ -36,13 +36,14 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(oauthClient.asIdentity())).thenReturn(oauthClient);
 		AuthorizationQuery query = new AuthorizationQuery()
-			.principalEqualTo(user.asIdentity())
-			.clientEqualTo(oauthClient.asIdentity())
-			.scopeEqualTo(scope);
+				.principalEqualTo(user.asIdentity())
+				.clientEqualTo(oauthClient.asIdentity())
+				.scopeEqualTo(scope);
 		when(authorizations.find(eq(query), anyInt(), anyInt())).thenReturn(DefaultPartialList.of());
 		ArgumentCaptor<CreateAuthorizationCommand> arg = ArgumentCaptor.forClass(CreateAuthorizationCommand.class);
 		when(dispatcher.dispatch(arg.capture())).thenReturn("c1");
-		try (Http1ClientResponse result = call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, scope))) {
+		try (Http1ClientResponse result = call(
+				new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, scope))) {
 			assertGranted(result);
 			Authorization auth = arg.getValue().getAuthorization();
 			assertThat(auth.getId()).isNotNull();
@@ -58,18 +59,24 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(oauthClient.asIdentity())).thenReturn(oauthClient);
 		AuthorizationQuery query = new AuthorizationQuery()
-			.principalEqualTo(user.asIdentity())
-			.clientEqualTo(oauthClient.asIdentity())
-			.scopeEqualTo(scope);
+				.principalEqualTo(user.asIdentity())
+				.clientEqualTo(oauthClient.asIdentity())
+				.scopeEqualTo(scope);
 		when(authorizations.find(eq(query), anyInt(), anyInt())).thenReturn(DefaultPartialList.of(authorization));
-		try (Http1ClientResponse result = call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, scope))) {
-			assertThat(result).hasStatus(200).asObjectNode().path("access_token").isEqualTo(authorization.getId());
+		try (Http1ClientResponse result = call(
+				new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, scope))) {
+			assertThat(result)
+					.hasStatus(200)
+					.asObjectNode()
+					.path("access_token")
+					.isEqualTo(authorization.getId());
 		}
 	}
 
 	@Test
 	public void testUnauthorized() {
-		try (Http1ClientResponse result = call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, scope))) {
+		try (Http1ClientResponse result = call(
+				new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, scope))) {
 			assertThat(result).hasStatus(401).isEmpty();
 		}
 	}
@@ -78,7 +85,8 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 	public void testMissingClient() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(oauthClient.asIdentity())).thenReturn(oauthClient);
-		try (Http1ClientResponse result = call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, null, redirectUri, scope))) {
+		try (Http1ClientResponse result =
+				call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, null, redirectUri, scope))) {
 			assertDenied(result, OAuthController.INVALID_REQUEST);
 		}
 	}
@@ -87,7 +95,8 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 	public void testMissingRedirectUri() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(oauthClient.asIdentity())).thenReturn(oauthClient);
-		try (Http1ClientResponse result = call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), null, scope))) {
+		try (Http1ClientResponse result =
+				call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), null, scope))) {
 			assertDenied(result, OAuthController.INVALID_REQUEST);
 		}
 	}
@@ -96,7 +105,8 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 	public void testBadRedirectUri() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(oauthClient.asIdentity())).thenReturn(oauthClient);
-		try (Http1ClientResponse result = call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), "http://foo.test/", scope))) {
+		try (Http1ClientResponse result = call(new AuthorizeForm(
+				OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), "http://foo.test/", scope))) {
 			assertDenied(result, OAuthController.INVALID_REDIRECT_URI);
 		}
 	}
@@ -105,7 +115,8 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 	public void testMissingScope() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(oauthClient.asIdentity())).thenReturn(oauthClient);
-		try (Http1ClientResponse result = call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, null))) {
+		try (Http1ClientResponse result = call(
+				new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, null))) {
 			assertDenied(result, OAuthController.INVALID_SCOPE);
 		}
 	}
@@ -114,7 +125,8 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 	public void testBadResponseType() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(oauthClient.asIdentity())).thenReturn(oauthClient);
-		try (Http1ClientResponse result = call(new AuthorizeForm("foo", oauthClient.asIdentity(), redirectUri, scope))) {
+		try (Http1ClientResponse result =
+				call(new AuthorizeForm("foo", oauthClient.asIdentity(), redirectUri, scope))) {
 			assertDenied(result, OAuthController.UNSUPPORTED_RESPONSE_TYPE);
 		}
 	}
@@ -122,7 +134,8 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 	@Test
 	public void testUnknownClient() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		try (Http1ClientResponse result = call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, scope))) {
+		try (Http1ClientResponse result = call(
+				new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, scope))) {
 			assertDenied(result, OAuthController.UNAUTHORIZED_CLIENT);
 		}
 	}
@@ -132,7 +145,8 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 		oauthClient.setSuspended(true);
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(oauthClient.asIdentity())).thenReturn(oauthClient);
-		try (Http1ClientResponse result = call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, scope))) {
+		try (Http1ClientResponse result = call(
+				new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, scope))) {
 			assertDenied(result, OAuthController.UNAUTHORIZED_CLIENT);
 		}
 	}
@@ -142,7 +156,8 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 		oauthClient.setVerified(false);
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(oauthClient.asIdentity())).thenReturn(oauthClient);
-		try (Http1ClientResponse result = call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, scope))) {
+		try (Http1ClientResponse result = call(
+				new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, scope))) {
 			assertDenied(result, OAuthController.UNAUTHORIZED_CLIENT);
 		}
 	}

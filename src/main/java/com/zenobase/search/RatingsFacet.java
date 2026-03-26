@@ -51,7 +51,8 @@ public class RatingsFacet extends FilteredFacet {
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
 		Aggregate agg = getAggregate(response);
-		for (RangeBucket entry : ImmutableList.copyOf(agg.range().buckets().array()).reverse()) {
+		for (RangeBucket entry :
+				ImmutableList.copyOf(agg.range().buckets().array()).reverse()) {
 			if (entry.docCount() > 0L) {
 				ObjectNode entryNode = result.addObject();
 				Double fromValue = entry.from();
@@ -70,9 +71,9 @@ public class RatingsFacet extends FilteredFacet {
 
 	public static FacetBuilder builder(FilterParser filterParser) {
 		return options -> new RatingsFacet(
-			options.get("id"),
-			Event.RATING.getName(),
-			options.get("scale", Integer.class, 5),
-			filterParser.parse(options.get("filter")));
+				options.get("id"),
+				Event.RATING.getName(),
+				options.get("scale", Integer.class, 5),
+				filterParser.parse(options.get("filter")));
 	}
 }

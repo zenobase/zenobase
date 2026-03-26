@@ -29,8 +29,8 @@ public class LocalIntervalTest {
 	@Test
 	public void testEqualsHashCode() {
 		new EqualsTester()
-			.addEqualityGroup(start, LocalDateTime.parse("2013-01-01T00:00"))
-			.addEqualityGroup(end)
-			.testEquals();
+				.addEqualityGroup(start, LocalDateTime.parse("2013-01-01T00:00"))
+				.addEqualityGroup(end)
+				.testEquals();
 	}
 }

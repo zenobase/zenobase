@@ -1,7 +1,6 @@
 package com.zenobase.controllers;
 
 import org.assertj.core.api.Assertions;
-
 import org.junit.Test;
 
 import com.zenobase.models.User;

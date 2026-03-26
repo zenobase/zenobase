@@ -1,10 +1,9 @@
 package com.zenobase.tasks.goodreads;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormatter;
@@ -24,23 +23,23 @@ class GoodreadsReviewListResult extends XmlResultSupport {
 	public static final Resource SOURCE = new Resource("Goodreads", "https://www.goodreads.com/");
 
 	private static final DateTimeFormatter DATE_FORMAT = new DateTimeFormatterBuilder()
-		.appendDayOfWeekShortText()
-		.appendLiteral(' ')
-		.appendMonthOfYearShortText()
-		.appendLiteral(' ')
-		.appendDayOfMonth(2)
-		.appendLiteral(' ')
-		.appendHourOfDay(2)
-		.appendLiteral(':')
-		.appendMinuteOfHour(2)
-		.appendLiteral(':')
-		.appendSecondOfMinute(2)
-		.appendLiteral(' ')
-		.appendTimeZoneOffset(null, false, 2, 2)
-		.appendLiteral(' ')
-		.appendYearOfEra(4, 4)
-		.toFormatter()
-		.withOffsetParsed();
+			.appendDayOfWeekShortText()
+			.appendLiteral(' ')
+			.appendMonthOfYearShortText()
+			.appendLiteral(' ')
+			.appendDayOfMonth(2)
+			.appendLiteral(' ')
+			.appendHourOfDay(2)
+			.appendLiteral(':')
+			.appendMinuteOfHour(2)
+			.appendLiteral(':')
+			.appendSecondOfMinute(2)
+			.appendLiteral(' ')
+			.appendTimeZoneOffset(null, false, 2, 2)
+			.appendLiteral(' ')
+			.appendYearOfEra(4, 4)
+			.toFormatter()
+			.withOffsetParsed();
 
 	private final Identity author;
 	private final String tag;

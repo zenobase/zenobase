@@ -58,11 +58,15 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		assertThat(repository.size(me)).as("event count for user").isEqualTo(1L);
 		assertThat(repository.size(bucket.getId())).as("bucket size").isEqualTo(1L);
 		assertThat(repository.find(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
-		NodeAssert.assertThat(repository.find(bucket.getId(), new EventSearchBuilder().buildSearch())).path(Search.TOTAL.getName()).isEqualTo(1);
+		NodeAssert.assertThat(repository.find(bucket.getId(), new EventSearchBuilder().buildSearch()))
+				.path(Search.TOTAL.getName())
+				.isEqualTo(1);
 		List<Event> all = new ArrayList<>();
 		repository.findAll(bucket.getId(), all::add);
 		assertThat(all).as("event count in bucket").hasSize(1);
-		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").containsOnly("test", "demo");
+		assertThat(repository.terms(bucket.getId(), Event.TAG.getName()))
+				.as("tags")
+				.containsOnly("test", "demo");
 
 		// update event
 		Event before = event.copy();
@@ -70,7 +74,9 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		repository.update(bucket.getId(), before, event, DateTime.now());
 		repository.refresh(bucket.getId());
 		assertThat(repository.find(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
-		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").containsOnly("test", "demo", "updated");
+		assertThat(repository.terms(bucket.getId(), Event.TAG.getName()))
+				.as("tags")
+				.containsOnly("test", "demo", "updated");
 
 		// delete event
 		repository.delete(bucket.getId(), event.getId());
@@ -79,7 +85,9 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		assertThat(repository.size(me)).as("event count for user").isZero();
 		assertThat(repository.size(bucket.getId())).as("bucket size").isZero();
 		assertThat(repository.find(bucket.getId(), event.getId())).as("event").isNull();
-		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").isEmpty();
+		assertThat(repository.terms(bucket.getId(), Event.TAG.getName()))
+				.as("tags")
+				.isEmpty();
 	}
 
 	@Test

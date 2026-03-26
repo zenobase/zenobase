@@ -12,8 +12,9 @@ import com.zenobase.services.SearchOrder;
 public class SearchOrderTest {
 
 	private static final Schema SCHEMA = new SchemaBuilder("test")
-		.add(new TokenField("foo"))
-		.add(new TokenField("bar")).build();
+			.add(new TokenField("foo"))
+			.add(new TokenField("bar"))
+			.build();
 
 	@Test
 	public void test() {
@@ -33,9 +34,9 @@ public class SearchOrderTest {
 	@Test
 	public void testEqualsHashCode() {
 		new EqualsTester()
-			.addEqualityGroup(SearchOrder.valueOf("foo", SCHEMA), SearchOrder.valueOf("foo", SCHEMA))
-			.addEqualityGroup(SearchOrder.valueOf("-foo", SCHEMA))
-			.addEqualityGroup(SearchOrder.valueOf("-bar", SCHEMA))
-			.testEquals();
+				.addEqualityGroup(SearchOrder.valueOf("foo", SCHEMA), SearchOrder.valueOf("foo", SCHEMA))
+				.addEqualityGroup(SearchOrder.valueOf("-foo", SCHEMA))
+				.addEqualityGroup(SearchOrder.valueOf("-bar", SCHEMA))
+				.testEquals();
 	}
 }

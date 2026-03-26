@@ -3,7 +3,6 @@ package com.zenobase.tasks.withings;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import javax.measure.DecimalMeasure;
 
 import org.joda.time.DateTimeZone;
@@ -17,7 +16,12 @@ public class WithingsTemperatureResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		WithingsTemperatureResult result = new WithingsTemperatureResult(readObject("WithingsTemperatureResultTest.json"), TESTER, "body", Units.F, DateTimeZone.forID("America/Los_Angeles"));
+		WithingsTemperatureResult result = new WithingsTemperatureResult(
+				readObject("WithingsTemperatureResultTest.json"),
+				TESTER,
+				"body",
+				Units.F,
+				DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		assertThat(result.getMarker()).as("marker").isEqualTo("1353615011");
 		List<Event> events = result.getEvents();

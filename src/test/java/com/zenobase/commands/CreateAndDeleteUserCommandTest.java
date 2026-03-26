@@ -11,8 +11,7 @@ public class CreateAndDeleteUserCommandTest {
 
 	private final UserRepository repository = mock(UserRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new CreateUserCommand.Handler(repository),
-		new DeleteUserCommand.Handler(repository));
+			new CreateUserCommand.Handler(repository), new DeleteUserCommand.Handler(repository));
 
 	@Test
 	public void test() {

@@ -33,9 +33,13 @@ public class BucketPrinter implements Callback<Bucket> {
 	}
 
 	private String toString(Bucket bucket) {
-		return Joiner.on('\t').join(bucket.getId(),
-			Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)),
-			bucket.hasRole(new Authorization(Identity.PUBLIC), Role.VIEWER) ? "published" : "unpublished",
-			bucket.getCreated(), events.size(bucket.getId()), "\n");
+		return Joiner.on('\t')
+				.join(
+						bucket.getId(),
+						Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)),
+						bucket.hasRole(new Authorization(Identity.PUBLIC), Role.VIEWER) ? "published" : "unpublished",
+						bucket.getCreated(),
+						events.size(bucket.getId()),
+						"\n");
 	}
 }

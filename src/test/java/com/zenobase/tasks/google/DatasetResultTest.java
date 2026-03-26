@@ -39,11 +39,11 @@ public class DatasetResultTest extends ResultTestSupport {
 		assertThat(points.get(2).getBegin()).isEqualTo(dateTime("2016-06-02T15:17:38.000-07:00"));
 		assertThat(points.get(2).getEnd()).isEqualTo(dateTime("2016-06-02T15:17:40.000-07:00"));
 		assertThat(points.get(2).getDataType()).isEqualTo("com.google.nutrition");
-		assertThat(points.get(2).getValue(0, Map.class)).contains(
-			entry("protein", new BigDecimal("5.32574987411499")),
-			entry("calories", new BigDecimal("153.4949951171875")),
-			entry("sugar", new BigDecimal("0.40095001459121704"))
-		);
+		assertThat(points.get(2).getValue(0, Map.class))
+				.contains(
+						entry("protein", new BigDecimal("5.32574987411499")),
+						entry("calories", new BigDecimal("153.4949951171875")),
+						entry("sugar", new BigDecimal("0.40095001459121704")));
 		assertThat(points.get(2).getValue(1, BigDecimal.class)).isEqualTo(new BigDecimal(1));
 		assertThat(points.get(2).getValue(2, String.class)).isEqualTo("Oatmeal");
 	}

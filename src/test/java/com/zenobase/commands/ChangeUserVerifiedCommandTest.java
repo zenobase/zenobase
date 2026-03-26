@@ -11,8 +11,8 @@ import com.zenobase.services.UserRepository;
 public class ChangeUserVerifiedCommandTest {
 
 	private final UserRepository users = mock(UserRepository.class);
-	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new ChangeUserVerifiedCommand.Handler(users));
+	private final CommandHandlerRegistry registry =
+			CommandHandlerRegistry.containing(new ChangeUserVerifiedCommand.Handler(users));
 
 	@Test
 	public void test() {

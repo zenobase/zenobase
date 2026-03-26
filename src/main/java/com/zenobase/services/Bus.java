@@ -11,5 +11,4 @@ public interface Bus {
 	void setSchedulerDisabled(boolean schedulerDisabled);
 
 	void close();
-
 }

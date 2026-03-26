@@ -18,7 +18,9 @@ public class DateTimeZonesTest {
 	}
 
 	private static void assertThatIsEqualTo(DateTimeZone timezone, String local, String expected) {
-		assertThat(DateTimeZones.toDateTime(LocalDateTime.parse(local), timezone).toString()).isEqualTo(DateTime.parse(expected).toString());
+		assertThat(DateTimeZones.toDateTime(LocalDateTime.parse(local), timezone)
+						.toString())
+				.isEqualTo(DateTime.parse(expected).toString());
 	}
 
 	@Test

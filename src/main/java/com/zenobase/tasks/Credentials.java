@@ -80,8 +80,7 @@ public class Credentials extends DomainNode {
 	}
 
 	public boolean isPermitted(Authorization auth) {
-		return auth.getScope() == null
-			&& getPrincipal().equals(auth.getPrincipal());
+		return auth.getScope() == null && getPrincipal().equals(auth.getPrincipal());
 	}
 
 	public Credentials copy() {
@@ -99,13 +98,13 @@ public class Credentials extends DomainNode {
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-			.add(VERSION)
-			.add(ID)
-			.add(TYPE)
-			.add(PRINCIPAL)
-			.add(CREATED)
-			.add(AUTHORIZATION_URL)
-			.add(CREDENTIALS)
-			.build();
+				.add(VERSION)
+				.add(ID)
+				.add(TYPE)
+				.add(PRINCIPAL)
+				.add(CREATED)
+				.add(AUTHORIZATION_URL)
+				.add(CREDENTIALS)
+				.build();
 	}
 }

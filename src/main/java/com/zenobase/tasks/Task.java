@@ -2,7 +2,6 @@ package com.zenobase.tasks;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Minutes;
@@ -121,13 +120,13 @@ public class Task extends DomainNode {
 	}
 
 	public boolean isPermitted(Authorization auth) {
-		return auth.getScope() == null
-			&& getPrincipal().equals(auth.getPrincipal());
+		return auth.getScope() == null && getPrincipal().equals(auth.getPrincipal());
 	}
 
 	public boolean isStale() {
 		DateTime completed = MoreObjects.firstNonNull(getCompleted(), new DateTime(0L));
-		return getStatus() == Status.FAILED || Minutes.minutesBetween(completed, DateTime.now()).isGreaterThan(Minutes.ONE);
+		return getStatus() == Status.FAILED
+				|| Minutes.minutesBetween(completed, DateTime.now()).isGreaterThan(Minutes.ONE);
 	}
 
 	public Task copy() {
@@ -136,18 +135,18 @@ public class Task extends DomainNode {
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-			.add(VERSION)
-			.add(ID)
-			.add(TYPE)
-			.add(BUCKET)
-			.add(PRINCIPAL)
-			.add(CREATED)
-			.add(COMPLETED)
-			.add(STATUS)
-			.add(MARKER)
-			.add(UNDO)
-			.add(SETTINGS)
-			.build();
+				.add(VERSION)
+				.add(ID)
+				.add(TYPE)
+				.add(BUCKET)
+				.add(PRINCIPAL)
+				.add(CREATED)
+				.add(COMPLETED)
+				.add(STATUS)
+				.add(MARKER)
+				.add(UNDO)
+				.add(SETTINGS)
+				.build();
 	}
 
 	public enum Status {

@@ -1,8 +1,7 @@
 package com.zenobase.tasks.foursquare;
 
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
 
 import com.zenobase.models.Resource;
 

@@ -8,8 +8,12 @@ public record Rating(int value) implements Comparable<Rating> {
 	public static final int MAX_VALUE = 100;
 
 	public Rating {
-		Preconditions.checkArgument(value >= MIN_VALUE && value <= MAX_VALUE,
-			"Expected a rating between %s and %s: %s", MIN_VALUE, MAX_VALUE, value);
+		Preconditions.checkArgument(
+				value >= MIN_VALUE && value <= MAX_VALUE,
+				"Expected a rating between %s and %s: %s",
+				MIN_VALUE,
+				MAX_VALUE,
+				value);
 	}
 
 	public static Rating valueOf(int value) {

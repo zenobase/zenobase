@@ -19,7 +19,8 @@ public abstract class UpdateCommandSupport extends Command {
 		super(node);
 	}
 
-	protected UpdateCommandSupport(Command.Type type, Identity principal, String objectId, ObjectNode from, ObjectNode to) {
+	protected UpdateCommandSupport(
+			Command.Type type, Identity principal, String objectId, ObjectNode from, ObjectNode to) {
 		super(type, principal);
 		setParameter(OBJECT_ID, objectId);
 		setParameter(FROM, from);
@@ -45,7 +46,7 @@ public abstract class UpdateCommandSupport extends Command {
 		return newInstance(principal, getObjectId(), getTo(), getFrom());
 	}
 
-	public static abstract class Builder {
+	public abstract static class Builder {
 
 		private final ObjectNode fromRoot = Nodes.newObject();
 		private final ObjectNode toRoot = Nodes.newObject();

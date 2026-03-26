@@ -12,9 +12,9 @@ public class CreateDeleteAndRestoreBucketCommandTest {
 
 	private final BucketRepository repository = mock(BucketRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new CreateBucketCommand.Handler(repository),
-		new DeleteBucketCommand.Handler(repository),
-		new RestoreBucketCommand.Handler(repository));
+			new CreateBucketCommand.Handler(repository),
+			new DeleteBucketCommand.Handler(repository),
+			new RestoreBucketCommand.Handler(repository));
 
 	@Test
 	public void test() {

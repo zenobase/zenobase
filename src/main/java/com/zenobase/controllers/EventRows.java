@@ -44,8 +44,11 @@ final class EventRows {
 	}
 
 	private static Search createSearch(Iterable<String> constraints, int offset) {
-		var facet = new ListFacet(EventListController.EVENTS.getName(),
-			offset, LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA);
-		return new EventSearchBuilder().addConstraints(constraints).addFacet(facet).buildSearch();
+		var facet = new ListFacet(
+				EventListController.EVENTS.getName(), offset, LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA);
+		return new EventSearchBuilder()
+				.addConstraints(constraints)
+				.addFacet(facet)
+				.buildSearch();
 	}
 }

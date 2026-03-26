@@ -1,8 +1,8 @@
 package com.zenobase.scripts;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -28,7 +28,8 @@ public class ListBuckets extends ClientSupport {
 	@Override
 	protected void doRun() throws IOException {
 		List<Bucket> buckets = new ArrayList<>();
-		HttpGet request = new HttpGet(String.format("%s/buckets/?q=roles.principal:%s&offset=0&limit=100", host, userId));
+		HttpGet request =
+				new HttpGet(String.format("%s/buckets/?q=roles.principal:%s&offset=0&limit=100", host, userId));
 		request.addHeader("Authorization", "Bearer " + token);
 		HttpResponse response = client.execute(request);
 		ObjectNode node = Nodes.readObject(EntityUtils.toByteArray(response.getEntity()));

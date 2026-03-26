@@ -1,15 +1,13 @@
 package com.zenobase.tasks.runkeeper;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import jakarta.inject.Inject;
+import java.util.List;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import jakarta.inject.Inject;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
@@ -39,7 +37,8 @@ public class RunkeeperActivitiesTaskManager extends RunkeeperTaskManagerSupport 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = formatMarker(parseMarker(settings.path("marker").textValue()));
-		DateTimeZone zone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone zone = DateTimeZone.forID(
+				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		Unit<Length> lengthUnit = MoreObjects.firstNonNull(new UnitField<Length>("unit").getValue(settings), Units.KM);
 		return new RunkeeperActivitiesTask(bucketId, principal, zone, lengthUnit, Units.KCAL, marker);
 	}
@@ -58,13 +57,20 @@ public class RunkeeperActivitiesTaskManager extends RunkeeperTaskManagerSupport 
 				var request = new OAuthRequest(Verb.GET, host + path);
 				request.addHeader("Accept", "application/vnd.com.runkeeper.FitnessActivityFeed+json");
 				if (from != null) {
-					request.addQuerystringParameter("noEarlierThan", from.toLocalDate().toString());
+					request.addQuerystringParameter(
+							"noEarlierThan", from.toLocalDate().toString());
 				}
 				request.addQuerystringParameter("pageSize", "100");
 				Response response = send(request, credentials);
-				RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(parseObject(response), task.getPrincipal(), task.getDistanceUnit(), task.getEnergyUnit(), task.getTimezone());
+				RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(
+						parseObject(response),
+						task.getPrincipal(),
+						task.getDistanceUnit(),
+						task.getEnergyUnit(),
+						task.getTimezone());
 				for (Event event : result.getEvents()) {
-					if (from == null || event.getValue(Event.TIMESTAMP).toLocalDateTime().isAfter(from)) {
+					if (from == null
+							|| event.getValue(Event.TIMESTAMP).toLocalDateTime().isAfter(from)) {
 						events.add(event);
 					}
 				}
@@ -84,7 +90,8 @@ public class RunkeeperActivitiesTaskManager extends RunkeeperTaskManagerSupport 
 	}
 
 	private void addDetails(Event event, Unit<Length> heightUnit, OAuthCredentials credentials) {
-		var request = new OAuthRequest(Verb.GET, host + event.getValue(Event.SOURCE).url());
+		var request =
+				new OAuthRequest(Verb.GET, host + event.getValue(Event.SOURCE).url());
 		request.addHeader("Accept", "application/vnd.com.runkeeper.FitnessActivity+json");
 		Response response = send(request, credentials);
 		new RunkeeperActivityResult(parseObject(response), heightUnit).addDetails(event);

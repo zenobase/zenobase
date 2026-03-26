@@ -1,9 +1,8 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 import com.zenobase.commands.CreateCredentialsCommand;
 import com.zenobase.models.Identity;
@@ -26,8 +25,12 @@ public class CredentialsListController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-	public CredentialsListController(AuthorizationContext security, CommandDispatcher dispatcher,
-		CredentialsManagerRegistry registry, CredentialsRepository credentials, UserRepository users) {
+	public CredentialsListController(
+			AuthorizationContext security,
+			CommandDispatcher dispatcher,
+			CredentialsManagerRegistry registry,
+			CredentialsRepository credentials,
+			UserRepository users) {
 
 		super(security);
 		this.dispatcher = dispatcher;
@@ -49,13 +52,13 @@ public class CredentialsListController extends ControllerSupport {
 			return;
 		}
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
 		if (auth.getScope() != null) {
-    		sendForbidden(res);
-    		return;
+			sendForbidden(res);
+			return;
 		}
 		if (!users.isSuperuser(auth.getPrincipal())) {
 			sendForbidden(res);
@@ -66,7 +69,7 @@ public class CredentialsListController extends ControllerSupport {
 			query = query.queryString(q);
 		}
 		sendOk(res, CredentialsList.toJson(credentials.find(query, offset, limit)));
-    }
+	}
 
 	public void findByUser(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
@@ -82,13 +85,13 @@ public class CredentialsListController extends ControllerSupport {
 			return;
 		}
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
 		if (auth.getScope() != null) {
-    		sendForbidden(res);
-    		return;
+			sendForbidden(res);
+			return;
 		}
 		Identity principal = new UserLookup(users).getIdentity(userId);
 		if (principal == null) {
@@ -104,14 +107,14 @@ public class CredentialsListController extends ControllerSupport {
 			query = query.queryString(q);
 		}
 		sendOk(res, CredentialsList.toJson(credentials.find(query, offset, limit)));
-    }
+	}
 
-    public void post(ServerRequest req, ServerResponse res) {
+	public void post(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
-    	if (auth == null) {
-    		sendUnauthorized(res);
-    		return;
-    	}
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
 		var form = new CreateCredentialsForm(body(req));
 		if (!form.valid()) {
 			sendBadRequest(res, "bad request");
@@ -126,10 +129,10 @@ public class CredentialsListController extends ControllerSupport {
 			sendBadRequest(res, "already connected");
 			return;
 		}
-    	Credentials credentials = manager.newCredentials(auth.getPrincipal());
-    	String commandId = dispatcher.dispatch(new CreateCredentialsCommand(auth.getPrincipal(), credentials));
-    	setHeader(res, COMMAND_ID, commandId);
-    	setHeader(res, LOCATION, "/credentials/" + credentials.getId());
-        sendCreated(res, credentials.sanitized().toJson());
-    }
+		Credentials credentials = manager.newCredentials(auth.getPrincipal());
+		String commandId = dispatcher.dispatch(new CreateCredentialsCommand(auth.getPrincipal(), credentials));
+		setHeader(res, COMMAND_ID, commandId);
+		setHeader(res, LOCATION, "/credentials/" + credentials.getId());
+		sendCreated(res, credentials.sanitized().toJson());
+	}
 }

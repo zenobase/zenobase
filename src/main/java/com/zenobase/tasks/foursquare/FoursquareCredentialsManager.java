@@ -1,10 +1,9 @@
 package com.zenobase.tasks.foursquare;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;
 import org.slf4j.Logger;
@@ -24,7 +23,11 @@ public class FoursquareCredentialsManager extends OAuthCredentialsManager {
 	public static final String TYPE = "foursquare";
 
 	@Inject
-	public FoursquareCredentialsManager(CredentialsRepository integrations, @Named("foursquare.api.key") String apiKey, @Named("foursquare.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
+	public FoursquareCredentialsManager(
+			CredentialsRepository integrations,
+			@Named("foursquare.api.key") String apiKey,
+			@Named("foursquare.api.secret") String apiSecret,
+			@Named("oauth.hostname") String callbackUrl) {
 		super(TYPE, integrations, new FoursquareApi(), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -42,16 +45,15 @@ public class FoursquareCredentialsManager extends OAuthCredentialsManager {
 	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
 		String code = config.path("code").textValue();
 		if (code == null) {
-			logger.warn("Couldn't obtain {} credentials <{}>: {}",
-				credentials.getType(), credentials.getId(), config);
+			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
 			return null;
 		}
 		Token token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-			.with(Credentials.CREDENTIALS)
-			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-			.build();
+				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+				.build();
 	}
 
 	@Override

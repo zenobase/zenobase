@@ -1,10 +1,9 @@
 package com.zenobase.tasks.trakt;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.scribe.model.OAuthConstants;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;
@@ -28,7 +27,11 @@ public class TraktCredentialsManager extends OAuthCredentialsManager {
 	public static final String TYPE = "trakt";
 
 	@Inject
-	public TraktCredentialsManager(CredentialsRepository integrations, @Named("trakt.api.key") String apiKey, @Named("trakt.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
+	public TraktCredentialsManager(
+			CredentialsRepository integrations,
+			@Named("trakt.api.key") String apiKey,
+			@Named("trakt.api.secret") String apiSecret,
+			@Named("oauth.hostname") String callbackUrl) {
 		super(TYPE, integrations, new TraktApi(), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -46,16 +49,15 @@ public class TraktCredentialsManager extends OAuthCredentialsManager {
 	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
 		String code = config.path("code").textValue();
 		if (code == null) {
-			logger.warn("Couldn't obtain {} credentials <{}>: {}",
-				credentials.getType(), credentials.getId(), config);
+			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
 			return null;
 		}
 		Token token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-			.with(Credentials.CREDENTIALS)
-			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-			.build();
+				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+				.build();
 	}
 
 	@Override

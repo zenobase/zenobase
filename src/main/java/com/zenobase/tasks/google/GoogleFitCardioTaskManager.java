@@ -1,15 +1,13 @@
 package com.zenobase.tasks.google;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
-
-import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -29,16 +27,19 @@ public class GoogleFitCardioTaskManager extends GoogleFitTaskManagerSupport<Goog
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		DateTimeZone zone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone zone = DateTimeZone.forID(
+				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		DateTime begin = DateTime.parse(settings.path("marker").textValue()).withZoneRetainFields(zone);
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "Cardio");
 		return new GoogleFitCardioTask(bucketId, principal, zone, tag, begin.toString());
 	}
 
 	@Override
-	protected List<Event> createEvents(GoogleFitCardioTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
+	protected List<Event> createEvents(
+			GoogleFitCardioTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
 		List<Event> events = new ArrayList<>();
-		for (DataStream stream : filter(streams.values(), "com.google.heart_rate.bpm", "com.google.heart_rate.summary")) {
+		for (DataStream stream :
+				filter(streams.values(), "com.google.heart_rate.bpm", "com.google.heart_rate.summary")) {
 			if (!stream.getId().contains("derived")) {
 				getDataPoints(task, credentials, stream, point -> {
 					BigDecimal value = point.getValue(0, BigDecimal.class);

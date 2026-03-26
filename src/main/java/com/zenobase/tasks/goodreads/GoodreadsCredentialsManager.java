@@ -1,10 +1,9 @@
 package com.zenobase.tasks.goodreads;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
@@ -25,7 +24,11 @@ public class GoodreadsCredentialsManager extends OAuthCredentialsManager {
 	public static final String TYPE = "goodreads";
 
 	@Inject
-	public GoodreadsCredentialsManager(CredentialsRepository integrations, @Named("goodreads.api.key") String apiKey, @Named("goodreads.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
+	public GoodreadsCredentialsManager(
+			CredentialsRepository integrations,
+			@Named("goodreads.api.key") String apiKey,
+			@Named("goodreads.api.secret") String apiSecret,
+			@Named("oauth.hostname") String callbackUrl) {
 		super(TYPE, integrations, new GoodreadsApi(callbackUrl + "/oauth/callback/-"), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -39,16 +42,15 @@ public class GoodreadsCredentialsManager extends OAuthCredentialsManager {
 		int result = config.path("authorize").asInt();
 		String code = config.path("oauth_token").textValue();
 		if (code == null || result != 1) {
-			logger.warn("Couldn't obtain {} credentials <{}>: {}",
-				credentials.getType(), credentials.getId(), config);
+			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
 			return null;
 		}
 		Token token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-			.with(Credentials.CREDENTIALS)
-			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-			.build();
+				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+				.build();
 	}
 
 	@Override

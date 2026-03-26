@@ -11,8 +11,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class JsonStream {
 
-	private static final ObjectMapper MAPPER = new ObjectMapper()
-		.disable(SerializationFeature.FLUSH_AFTER_WRITE_VALUE);
+	private static final ObjectMapper MAPPER = new ObjectMapper().disable(SerializationFeature.FLUSH_AFTER_WRITE_VALUE);
 
 	private final JsonGenerator generator;
 

@@ -11,6 +11,11 @@ class HexoskinProfileResult {
 	}
 
 	public boolean isMetric() {
-		return !"imperial".equals(node.path("objects").path(0).path("profile").path("unit_system").textValue());
+		return !"imperial"
+				.equals(node.path("objects")
+						.path(0)
+						.path("profile")
+						.path("unit_system")
+						.textValue());
 	}
 }

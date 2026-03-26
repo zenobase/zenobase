@@ -18,7 +18,11 @@ public class IHealthBloodOxygenResultTest extends ResultTestSupport {
 	public void test() {
 
 		String tag = "Cardio";
-		IHealthBloodOxygenResult result = new IHealthBloodOxygenResult(readObject("IHealthBloodOxygenResultTest.json"), TESTER, tag, DateTimeZone.forID("America/Los_Angeles"));
+		IHealthBloodOxygenResult result = new IHealthBloodOxygenResult(
+				readObject("IHealthBloodOxygenResultTest.json"),
+				TESTER,
+				tag,
+				DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.isSuccess()).isTrue();
 		assertThat(result.hasNext()).isFalse();
 		List<Event> events = result.getEvents();

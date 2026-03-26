@@ -39,13 +39,11 @@ public class SearchOrder {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof SearchOrder
-			&& equals((SearchOrder) that);
+		return that instanceof SearchOrder && equals((SearchOrder) that);
 	}
 
 	private boolean equals(SearchOrder that) {
-		return field.equals(that.field)
-			&& asc == that.asc;
+		return field.equals(that.field) && asc == that.asc;
 	}
 
 	@Override

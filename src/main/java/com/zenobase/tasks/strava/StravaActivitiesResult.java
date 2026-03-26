@@ -1,8 +1,7 @@
 package com.zenobase.tasks.strava;
 
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Frequency;
@@ -47,7 +46,8 @@ class StravaActivitiesResult {
 	private Event newEvent(JsonNode node) {
 		var event = new Event();
 		event.addValue(Event.TAG, node.path("type").textValue());
-		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("start_date"), dateTimeZoneValue(node.path("timezone"))));
+		event.setValue(
+				Event.TIMESTAMP, dateTimeValue(node.path("start_date"), dateTimeZoneValue(node.path("timezone"))));
 		event.setValue(Event.DURATION, durationValue(node.path("elapsed_time")));
 		event.setValue(Event.LOCATION, locationValue(node.path("start_latlng")));
 		event.setValue(Event.DISTANCE, distanceValue(node.path("distance"), metric ? Units.KM : Units.MI, 1));
@@ -88,15 +88,21 @@ class StravaActivitiesResult {
 	}
 
 	private DecimalMeasure<Length> distanceValue(JsonNode node, Unit<Length> unit, int scale) {
-		return !isZero(node) ? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), scale), unit) : null;
+		return !isZero(node)
+				? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), scale), unit)
+				: null;
 	}
 
 	private DecimalMeasure<Velocity> velocityValue(JsonNode node, Unit<Velocity> unit) {
-		return !isZero(node) ? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), 1), unit) : null;
+		return !isZero(node)
+				? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), 1), unit)
+				: null;
 	}
 
 	private DecimalMeasure<Pace> paceValue(JsonNode node, Unit<Pace> unit) {
-		return !isZero(node) ? Measures.valueOf(Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0), unit) : null;
+		return !isZero(node)
+				? Measures.valueOf(Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0), unit)
+				: null;
 	}
 
 	private DecimalMeasure<Energy> energyValue(JsonNode node) {

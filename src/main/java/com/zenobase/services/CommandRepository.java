@@ -1,19 +1,15 @@
 package com.zenobase.services;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.inject.Inject;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
-import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.opensearch.client.opensearch._types.query_dsl.RangeQuery;
-import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,18 +51,20 @@ public class CommandRepository extends RepositorySupport<Command> {
 
 	public void find(CommandQuery query, SearchOrder order, Callback<Command> callback) {
 		SearchRequest.Builder builder = new SearchRequest.Builder()
-			.index(index.getIndexName())
-			.query(query.build())
-			.size(100);
+				.index(index.getIndexName())
+				.query(query.build())
+				.size(100);
 		order.apply(builder);
 		index.find(builder, node -> callback.call(toObject(node)));
 	}
 
 	public PartialList<Command> find(CommandQuery query, SearchOrder order, int offset, int limit) {
 		SearchRequest.Builder builder = new SearchRequest.Builder()
-			.index(index.getIndexName())
-			.query(query.build()).from(offset).size(limit)
-			.trackTotalHits(t -> t.enabled(true));
+				.index(index.getIndexName())
+				.query(query.build())
+				.from(offset)
+				.size(limit)
+				.trackTotalHits(t -> t.enabled(true));
 		order.apply(builder);
 		return new CommandList(index.find(builder.build()), parsers);
 	}
@@ -82,26 +80,29 @@ public class CommandRepository extends RepositorySupport<Command> {
 	public int getTotalCost(Identity principal, DateTime since) {
 		String id = "cost";
 		Query filter = createFilter(principal, since);
-		SearchRequest request = SearchRequest.of(s -> s
-			.index(index.getIndexName())
-			.size(1)
-			.aggregations(id, Aggregation.of(a -> a
-				.filter(filter)
-				.aggregations(id, Aggregation.of(sa -> sa
-					.sum(sum -> sum.field(Command.COST.getName()))
-				))
-			))
-		);
+		SearchRequest request = SearchRequest.of(s -> s.index(index.getIndexName())
+				.size(1)
+				.aggregations(
+						id,
+						Aggregation.of(a -> a.filter(filter)
+								.aggregations(
+										id, Aggregation.of(sa -> sa.sum(sum -> sum.field(Command.COST.getName())))))));
 		SearchResponse<ObjectNode> response = index.search(request);
-		double value = response.aggregations().get(id).filter().aggregations().get(id).sum().value();
+		double value = response.aggregations()
+				.get(id)
+				.filter()
+				.aggregations()
+				.get(id)
+				.sum()
+				.value();
 		return (int) value;
 	}
 
 	private static Query createFilter(Identity principal, DateTime since) {
-		return Query.of(q -> q.bool(b -> b
-			.must(Query.of(q2 -> q2.term(t -> t.field(Command.PRINCIPAL.getName()).value(FieldValue.of(principal.getId())))))
-			.must(Query.of(q3 -> q3.range(r -> r.field(Command.TIMESTAMP.getName()).gte(JsonData.of(since.getMillis())))))
-		));
+		return Query.of(q -> q.bool(b -> b.must(Query.of(q2 ->
+						q2.term(t -> t.field(Command.PRINCIPAL.getName()).value(FieldValue.of(principal.getId())))))
+				.must(Query.of(q3 ->
+						q3.range(r -> r.field(Command.TIMESTAMP.getName()).gte(JsonData.of(since.getMillis())))))));
 	}
 
 	@Override
@@ -111,6 +112,6 @@ public class CommandRepository extends RepositorySupport<Command> {
 
 	@Override
 	protected Command toObject(ObjectNode node) {
-    	return parsers.parse(node);
-    }
+		return parsers.parse(node);
+	}
 }

@@ -18,7 +18,8 @@ public class ProductivityResultTest extends ResultTestSupport {
 	public void test() {
 		String tag = "Productivity";
 		DateTimeZone timezone = DateTimeZone.forOffsetHours(-7);
-		ProductivityResult result = new ProductivityResult(readObject("ProductivityResultTest.json"), TESTER, tag, timezone);
+		ProductivityResult result =
+				new ProductivityResult(readObject("ProductivityResultTest.json"), TESTER, tag, timezone);
 		assertThat(result.isSuccess()).isTrue();
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(14);

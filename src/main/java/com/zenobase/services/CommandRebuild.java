@@ -10,11 +10,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +27,11 @@ import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.Task;
-import com.zenobase.models.Role;
 
 public class CommandRebuild {
 
@@ -48,8 +47,15 @@ public class CommandRebuild {
 	private final TaskRepository targetTasks;
 
 	@Inject
-	public CommandRebuild(@Named("opensearch.rebuild") String sourceHost, @Named("opensearch.rebuild_parallelism") int parallelism, CommandDispatcher dispatcher,
-			UserRepository targetUsers, AuthorizationRepository targetAuthorizations, CredentialsRepository targetCredentials, BucketRepository targetBuckets, TaskRepository targetTasks) {
+	public CommandRebuild(
+			@Named("opensearch.rebuild") String sourceHost,
+			@Named("opensearch.rebuild_parallelism") int parallelism,
+			CommandDispatcher dispatcher,
+			UserRepository targetUsers,
+			AuthorizationRepository targetAuthorizations,
+			CredentialsRepository targetCredentials,
+			BucketRepository targetBuckets,
+			TaskRepository targetTasks) {
 		this.sourceHost = sourceHost;
 		this.parallelism = parallelism;
 		this.dispatcher = dispatcher;
@@ -80,7 +86,11 @@ public class CommandRebuild {
 		logger.warn("Rebuilt history in {} s", timer.elapsed(TimeUnit.SECONDS));
 	}
 
-	private void rebuild(IndexManager indexManager, RepositorySupport<?> targetRepo, String label, ToIntFunction<IndexManager> action) {
+	private void rebuild(
+			IndexManager indexManager,
+			RepositorySupport<?> targetRepo,
+			String label,
+			ToIntFunction<IndexManager> action) {
 		targetRepo.disableRefresh(true);
 		try {
 			Stopwatch timer = Stopwatch.createStarted();
@@ -102,14 +112,16 @@ public class CommandRebuild {
 	private int rebuildAuthorizations(IndexManager indexManager) {
 		List<Authorization> allAuthorizations = new ArrayList<>();
 		new AuthorizationRepository(indexManager).findAll(allAuthorizations::add);
-		allAuthorizations.forEach(authorization -> dispatcher.dispatch(new CreateAuthorizationCommand(authorization.getPrincipal(), authorization)));
+		allAuthorizations.forEach(authorization ->
+				dispatcher.dispatch(new CreateAuthorizationCommand(authorization.getPrincipal(), authorization)));
 		return allAuthorizations.size();
 	}
 
 	private int rebuildCredentials(IndexManager indexManager) {
 		List<Credentials> allCredentials = new ArrayList<>();
 		new CredentialsRepository(indexManager).findAll(allCredentials::add);
-		allCredentials.forEach(credential -> dispatcher.dispatch(new CreateCredentialsCommand(credential.getPrincipal(), credential)));
+		allCredentials.forEach(
+				credential -> dispatcher.dispatch(new CreateCredentialsCommand(credential.getPrincipal(), credential)));
 		return allCredentials.size();
 	}
 
@@ -119,36 +131,37 @@ public class CommandRebuild {
 		List<Bucket> allBuckets = new ArrayList<>();
 		buckets.findAll(allBuckets::add);
 		runInParallel(
-			allBuckets,
-			bucket -> Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)).getId(),
-			bucket -> {
-				Identity owner = Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER));
-				dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
-				if (!bucket.isVirtual()) {
-					rebuildEvents(events, owner, bucket.getId(), bucket.getCreated());
-				}
-			},
-			Bucket::getId
-		);
+				allBuckets,
+				bucket -> Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER))
+						.getId(),
+				bucket -> {
+					Identity owner = Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER));
+					dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
+					if (!bucket.isVirtual()) {
+						rebuildEvents(events, owner, bucket.getId(), bucket.getCreated());
+					}
+				},
+				Bucket::getId);
 		return allBuckets.size();
 	}
 
-	private <T> void runInParallel(List<T> items, Function<T, String> laneKey, Consumer<T> action, Function<T, String> itemLabel) {
+	private <T> void runInParallel(
+			List<T> items, Function<T, String> laneKey, Consumer<T> action, Function<T, String> itemLabel) {
 		var failures = new AtomicInteger();
-		int effectiveParallelism = parallelism > 0 ? parallelism : Math.max(2, Runtime.getRuntime().availableProcessors());
+		int effectiveParallelism =
+				parallelism > 0 ? parallelism : Math.max(2, Runtime.getRuntime().availableProcessors());
 		logger.info("Using {} executor(s)", effectiveParallelism);
 		ThreadPoolExecutor[] lanes = new ThreadPoolExecutor[effectiveParallelism];
 		for (int i = 0; i < effectiveParallelism; ++i) {
-			lanes[i] = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
-				new LinkedBlockingQueue<>(100),
-				(r, executor) -> {
-					try {
-						executor.getQueue().put(r);
-					} catch (InterruptedException e) {
-						Thread.currentThread().interrupt();
-						throw new RuntimeException(e);
-					}
-				});
+			lanes[i] = new ThreadPoolExecutor(
+					1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(100), (r, executor) -> {
+						try {
+							executor.getQueue().put(r);
+						} catch (InterruptedException e) {
+							Thread.currentThread().interrupt();
+							throw new RuntimeException(e);
+						}
+					});
 		}
 		for (T item : items) {
 			int lane = Math.abs(laneKey.apply(item).hashCode() % effectiveParallelism);
@@ -185,7 +198,8 @@ public class CommandRebuild {
 		events.findAll(bucketId, event -> {
 			batch.add(event);
 			if (batch.size() == 5000) {
-				dispatcher.dispatch(new CreateEventsCommand(owner, bucketId, batch, timestamp.plusMillis(batchNum.get())));
+				dispatcher.dispatch(
+						new CreateEventsCommand(owner, bucketId, batch, timestamp.plusMillis(batchNum.get())));
 				batch.clear();
 				batchNum.incrementAndGet();
 			}

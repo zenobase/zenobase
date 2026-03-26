@@ -1,9 +1,8 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.oauth.Authorization;
@@ -18,7 +17,11 @@ public class AuthorizationController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-	public AuthorizationController(AuthorizationContext security, CommandDispatcher dispatcher, AuthorizationRepository authorizations, UserRepository users) {
+	public AuthorizationController(
+			AuthorizationContext security,
+			CommandDispatcher dispatcher,
+			AuthorizationRepository authorizations,
+			UserRepository users) {
 		super(security);
 		this.dispatcher = dispatcher;
 		this.authorizations = authorizations;
@@ -41,12 +44,12 @@ public class AuthorizationController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-    	sendOk(res, authorization.toJson());
-    }
+		sendOk(res, authorization.toJson());
+	}
 
-    public void delete(ServerRequest req, ServerResponse res) {
+	public void delete(ServerRequest req, ServerResponse res) {
 		String authId = req.path().pathParameters().get("authId");
-    	Authorization auth = getCurrentAuthorization(req);
+		Authorization auth = getCurrentAuthorization(req);
 		if (auth == null) {
 			sendUnauthorized(res);
 			return;
@@ -56,12 +59,12 @@ public class AuthorizationController extends ControllerSupport {
 			sendNotFound(res);
 			return;
 		}
-    	if (!authorization.isPermitted(auth) && !users.isSuperuser(auth.getPrincipal())) {
-    		sendForbidden(res);
-    		return;
-    	}
-    	String commandId = dispatcher.dispatch(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization));
+		if (!authorization.isPermitted(auth) && !users.isSuperuser(auth.getPrincipal())) {
+			sendForbidden(res);
+			return;
+		}
+		String commandId = dispatcher.dispatch(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization));
 		setHeader(res, COMMAND_ID, commandId);
-    	sendNoContent(res);
-    }
+		sendNoContent(res);
+	}
 }

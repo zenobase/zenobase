@@ -13,9 +13,9 @@ public class QuestionTest extends ResultTestSupport {
 		Question q2 = new Question("How are you?", "mood", null);
 		Question q3 = new Question("What are you doing?", null, null);
 		new EqualsTester()
-			.addEqualityGroup(q1, new Question("How are you?", "mood", "rating"))
-			.addEqualityGroup(q2)
-			.addEqualityGroup(q3)
-			.testEquals();
+				.addEqualityGroup(q1, new Question("How are you?", "mood", "rating"))
+				.addEqualityGroup(q2)
+				.addEqualityGroup(q3)
+				.testEquals();
 	}
 }

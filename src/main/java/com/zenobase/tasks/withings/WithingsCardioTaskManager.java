@@ -1,10 +1,8 @@
 package com.zenobase.tasks.withings;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import jakarta.inject.Inject;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
@@ -25,7 +23,8 @@ public class WithingsCardioTaskManager extends WithingsTaskManagerSupport<Within
 
 	@Override
 	public WithingsCardioTask newTask(String bucketId, Identity principal, ObjectNode settings) {
-		DateTimeZone timezone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone timezone = DateTimeZone.forID(
+				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "heart rate");
 		var task = new WithingsCardioTask(bucketId, principal, marker);
@@ -35,14 +34,20 @@ public class WithingsCardioTaskManager extends WithingsTaskManagerSupport<Within
 	}
 
 	private static String parseMarker(String marker, DateTimeZone timezone) {
-		return marker != null ? Long.toString(LocalDateTime.parse(marker.replaceAll("Z", "")).toDateTime(timezone).getMillis() / 1000) : null;
+		return marker != null
+				? Long.toString(LocalDateTime.parse(marker.replaceAll("Z", ""))
+								.toDateTime(timezone)
+								.getMillis()
+						/ 1000)
+				: null;
 	}
 
 	@Override
 	Command safeExecute(WithingsCardioTask task, OAuthCredentials credentials, Token token) {
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
-		var result = new WithingsCardioResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
+		var result =
+				new WithingsCardioResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
 		checkStatus(result, request, credentials);
 		return createCommand(task, credentials, token, result);
 	}

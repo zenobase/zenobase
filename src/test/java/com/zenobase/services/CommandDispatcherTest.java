@@ -26,7 +26,8 @@ public class CommandDispatcherTest {
 
 		Command c1 = new TestCommand(TESTER, "do a bit");
 		Command c2 = new TestCommand(TESTER, "do more");
-		Command c3 = new TestCommand(TESTER, "do most").setTimestamp(DateTime.now().minusMonths(1));
+		Command c3 =
+				new TestCommand(TESTER, "do most").setTimestamp(DateTime.now().minusMonths(1));
 
 		dispatcher.dispatch(c1);
 		dispatcher.dispatch(c2);

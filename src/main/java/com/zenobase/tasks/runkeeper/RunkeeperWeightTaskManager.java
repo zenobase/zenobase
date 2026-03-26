@@ -1,15 +1,13 @@
 package com.zenobase.tasks.runkeeper;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import jakarta.inject.Inject;
+import java.util.List;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import jakarta.inject.Inject;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
@@ -39,7 +37,8 @@ public class RunkeeperWeightTaskManager extends RunkeeperTaskManagerSupport {
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = formatMarker(parseMarker(settings.path("marker").textValue()));
-		DateTimeZone zone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone zone = DateTimeZone.forID(
+				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		Unit<Mass> unit = MoreObjects.firstNonNull(new UnitField<Mass>("unit").getValue(settings), Units.KG);
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "Body");
 		return new RunkeeperWeightTask(bucketId, principal, tag, unit, zone, marker);
@@ -58,14 +57,17 @@ public class RunkeeperWeightTaskManager extends RunkeeperTaskManagerSupport {
 			OAuthRequest request = new OAuthRequest(Verb.GET, host + path);
 			request.addHeader("Accept", "application/vnd.com.runkeeper.WeightSetFeed+json");
 			if (from != null) {
-				request.addQuerystringParameter("noEarlierThan", from.toLocalDate().toString());
+				request.addQuerystringParameter(
+						"noEarlierThan", from.toLocalDate().toString());
 			}
 			request.addQuerystringParameter("pageSize", "100");
 			try {
 				Response response = send(request, credentials);
-				RunkeeperWeightResult result = new RunkeeperWeightResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
+				RunkeeperWeightResult result = new RunkeeperWeightResult(
+						parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
 				for (Event event : result.getEvents()) {
-					if (from == null || event.getValue(Event.TIMESTAMP).toLocalDateTime().isAfter(from)) {
+					if (from == null
+							|| event.getValue(Event.TIMESTAMP).toLocalDateTime().isAfter(from)) {
 						events.add(event);
 					}
 				}

@@ -3,7 +3,6 @@ package com.zenobase.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import io.helidon.http.HeaderNames;
 import io.helidon.http.Status;
 import io.helidon.webserver.http.ServerRequest;
@@ -107,7 +106,8 @@ public abstract class ControllerSupport implements CustomHeaders {
 	public static void sendError(ServerResponse res, Status status, String message) {
 		res.status(status);
 		res.header(HeaderNames.CONTENT_TYPE, "application/json");
-		res.send(Nodes.newObject("message", sanitize(MoreObjects.firstNonNull(message, "?"))).toString());
+		res.send(Nodes.newObject("message", sanitize(MoreObjects.firstNonNull(message, "?")))
+				.toString());
 	}
 
 	private static String sanitize(String message) {

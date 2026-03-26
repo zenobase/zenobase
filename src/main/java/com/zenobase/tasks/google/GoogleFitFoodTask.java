@@ -19,6 +19,7 @@ public class GoogleFitFoodTask extends GoogleFitTaskSupport {
 		super(TYPE, bucketId, principal, timezone, marker);
 		setSetting(TAG, tag);
 	}
+
 	public String getTag() {
 		return getSetting(TAG);
 	}

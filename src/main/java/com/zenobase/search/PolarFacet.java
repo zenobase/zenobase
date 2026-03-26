@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -50,14 +49,10 @@ public class PolarFacet extends FilteredFacet {
 	@Override
 	public void configure(SearchRequest.Builder builder) {
 		String vf = unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
-		Aggregation terms = Aggregation.of(a -> a
-			.terms(t -> t
-				.field(interval.getField(keyField))
-				.order(Collections.singletonMap("_key", SortOrder.Asc))
-				.size(31)
-			)
-			.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(vf))))
-		);
+		Aggregation terms = Aggregation.of(a -> a.terms(t -> t.field(interval.getField(keyField))
+						.order(Collections.singletonMap("_key", SortOrder.Asc))
+						.size(31))
+				.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(vf)))));
 		addAggregation(getId(), terms, builder);
 	}
 
@@ -112,7 +107,6 @@ public class PolarFacet extends FilteredFacet {
 	}
 
 	private enum Interval {
-
 		HOUR_OF_DAY(0, 24) {
 			@Override
 			public String getLabel(int n) {
@@ -179,12 +173,12 @@ public class PolarFacet extends FilteredFacet {
 		return options -> {
 			String unit = options.get("unit");
 			return new PolarFacet(
-				options.get("id"),
-				options.get("key_field", String.class, Event.TIMESTAMP.getName()),
-				options.get("value_field", String.class, Event.TIMESTAMP.getName()),
-				Interval.valueOf(options.get("interval").toUpperCase()),
-				unit != null ? Units.valueOf(unit) : Unit.ONE,
-				filterParser.parse(options.get("filter")));
+					options.get("id"),
+					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
+					options.get("value_field", String.class, Event.TIMESTAMP.getName()),
+					Interval.valueOf(options.get("interval").toUpperCase()),
+					unit != null ? Units.valueOf(unit) : Unit.ONE,
+					filterParser.parse(options.get("filter")));
 		};
 	}
 }

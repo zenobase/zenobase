@@ -1,7 +1,6 @@
 package com.zenobase.tasks;
 
 import jakarta.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,16 +32,16 @@ public class TaskRefresher {
 		if (bucket == null) {
 			return;
 		}
-    	if (!bucket.hasRole(new Authorization(task.getPrincipal()), Role.OWNER)) {
+		if (!bucket.hasRole(new Authorization(task.getPrincipal()), Role.OWNER)) {
 			return;
-    	}
-    	TaskManager manager = registry.find(task.getType());
-    	if (manager == null) {
+		}
+		TaskManager manager = registry.find(task.getType());
+		if (manager == null) {
 			return;
-    	}
+		}
 		Command command = manager.execute(task);
-    	if (command != null) {
-    		dispatcher.dispatch(command);
-    	}
+		if (command != null) {
+			dispatcher.dispatch(command);
+		}
 	}
 }

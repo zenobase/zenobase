@@ -17,7 +17,8 @@ public class IHealthStepsResultTest extends ResultTestSupport {
 	public void test() {
 
 		String tag = "Steps";
-		IHealthStepsResult result = new IHealthStepsResult(readObject("IHealthStepsResultTest.json"), TESTER, tag, DateTimeZone.forID("America/Los_Angeles"));
+		IHealthStepsResult result = new IHealthStepsResult(
+				readObject("IHealthStepsResultTest.json"), TESTER, tag, DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.isSuccess()).isTrue();
 		assertThat(result.hasNext()).isFalse();
 		List<Event> events = result.getEvents();

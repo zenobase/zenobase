@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -41,9 +40,18 @@ public class Bucket extends DomainNode {
 	public static final BooleanField REFRESH = new BooleanField("refresh");
 	public static final BooleanField ARCHIVED = new BooleanField("archived");
 
-	public static final Schema SCHEMA = new SchemaBuilder(TYPE_NAME).add(VERSION)
-		.add(ID).add(LABEL).add(DESCRIPTION).add(CREATED)
-		.add(ROLES).add(WIDGETS).add(ALIASES).add(REFRESH).add(ARCHIVED).build();
+	public static final Schema SCHEMA = new SchemaBuilder(TYPE_NAME)
+			.add(VERSION)
+			.add(ID)
+			.add(LABEL)
+			.add(DESCRIPTION)
+			.add(CREATED)
+			.add(ROLES)
+			.add(WIDGETS)
+			.add(ALIASES)
+			.add(REFRESH)
+			.add(ARCHIVED)
+			.build();
 
 	public Bucket(ObjectNode node) {
 		super(node);
@@ -161,8 +169,7 @@ public class Bucket extends DomainNode {
 	}
 
 	public boolean valid() {
-		return !Strings.isNullOrEmpty(getLabel()) &&
-			!getPrincipals(Role.OWNER).isEmpty();
+		return !Strings.isNullOrEmpty(getLabel()) && !getPrincipals(Role.OWNER).isEmpty();
 	}
 
 	@Override

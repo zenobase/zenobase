@@ -1,6 +1,5 @@
 package com.zenobase.search;
 
-import org.opensearch.client.opensearch._types.query_dsl.MatchPhraseQuery;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 public class PhraseConstraintBuilder extends ConstraintBuilder {
@@ -11,7 +10,9 @@ public class PhraseConstraintBuilder extends ConstraintBuilder {
 
 	@Override
 	public Query build(String value) {
-		return isPhrase(value) ? Query.of(q -> q.matchPhrase(m -> m.field(getPath()).query(value))) : null;
+		return isPhrase(value)
+				? Query.of(q -> q.matchPhrase(m -> m.field(getPath()).query(value)))
+				: null;
 	}
 
 	private boolean isPhrase(String value) {

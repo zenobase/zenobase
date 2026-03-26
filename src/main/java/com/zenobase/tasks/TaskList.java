@@ -21,11 +21,11 @@ public class TaskList extends LazyList<Task> {
 
 	public static ObjectNode toJson(PartialList<Task> tasks) {
 		ObjectNode resultNode = Nodes.newObject();
-    	TOTAL.setValue(resultNode, Ints.checkedCast(tasks.getTotal()));
-    	ArrayNode tasksNode = resultNode.putArray("tasks");
-    	for (Task task : tasks) {
-    		tasksNode.add(task.toJson());
-    	}
+		TOTAL.setValue(resultNode, Ints.checkedCast(tasks.getTotal()));
+		ArrayNode tasksNode = resultNode.putArray("tasks");
+		for (Task task : tasks) {
+			tasksNode.add(task.toJson());
+		}
 		return resultNode;
 	}
 }

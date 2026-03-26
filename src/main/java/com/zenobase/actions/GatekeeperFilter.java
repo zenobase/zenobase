@@ -1,12 +1,11 @@
 package com.zenobase.actions;
 
-import jakarta.inject.Inject;
-
 import io.helidon.http.Status;
 import io.helidon.webserver.http.Filter;
 import io.helidon.webserver.http.FilterChain;
 import io.helidon.webserver.http.RoutingRequest;
 import io.helidon.webserver.http.RoutingResponse;
+import jakarta.inject.Inject;
 
 import com.zenobase.controllers.AuthorizationContext;
 import com.zenobase.oauth.Authorization;

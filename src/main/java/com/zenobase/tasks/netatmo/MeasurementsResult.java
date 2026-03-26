@@ -1,10 +1,9 @@
 package com.zenobase.tasks.netatmo;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
-
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
@@ -32,7 +31,7 @@ class MeasurementsResult {
 	private final boolean hourly;
 
 	public MeasurementsResult(JsonNode node, Identity author, Device device, boolean hourly) {
-	    this.node = Preconditions.checkNotNull(node);
+		this.node = Preconditions.checkNotNull(node);
 		this.author = Preconditions.checkNotNull(author);
 		this.device = Preconditions.checkNotNull(device);
 		this.hourly = hourly;
@@ -45,7 +44,7 @@ class MeasurementsResult {
 	public List<Event> getEvents() {
 		Preconditions.checkState(isSuccess(), "Expected a successful response but got <%s>", node);
 		List<Event> events = new ArrayList<>();
-		for (Iterator<Map.Entry<String, JsonNode>> i = node.path("body").fields(); i.hasNext();) {
+		for (Iterator<Map.Entry<String, JsonNode>> i = node.path("body").fields(); i.hasNext(); ) {
 			events.add(getEvent(i.next()));
 		}
 		return events;
@@ -54,7 +53,8 @@ class MeasurementsResult {
 	public Event getEvent(Map.Entry<String, JsonNode> entry) {
 		ArrayNode node = (ArrayNode) entry.getValue();
 		var event = new Event();
-		DateTime timestamp = new DateTime(Long.parseLong(entry.getKey()) * 1000, device.getUpdated().getZone());
+		DateTime timestamp = new DateTime(
+				Long.parseLong(entry.getKey()) * 1000, device.getUpdated().getZone());
 		if (hourly) {
 			event.setValue(Event.TIMESTAMP, timestamp.withMinuteOfHour(0));
 			event.setValue(Event.DURATION, Duration.standardHours(1));
@@ -64,26 +64,26 @@ class MeasurementsResult {
 		event.addValue(Event.TAG, device.getLabel());
 		event.setValue(Event.LOCATION, device.getLocation());
 		if (device.supports("Temperature")) {
-		    event.setValue(Event.TEMPERATURE, getMeasure(node.get(0), Units.C));
+			event.setValue(Event.TEMPERATURE, getMeasure(node.get(0), Units.C));
 		}
-        if (device.supports("Pressure")) {
-            event.setValue(Event.PRESSURE, getMeasure(node.get(1), Units.HPA));
-        }
-        if (device.supports("Noise")) {
-            event.setValue(Event.SOUND, getMeasure(node.get(2), Units.DB));
-        }
-        if (device.supports("Humidity")) {
-            event.setValue(Event.HUMIDITY, getInteger(node.get(3)));
-        }
-        if (device.supports("CO2")) {
-            event.setValue(Event.RATING, getRating(node.get(4)));
-        }
-        if (device.supports("Wind")) {
-            event.setValue(Event.VELOCITY, getMeasure(node.get(5), Units.KMH));
-        }
-        if (device.supports("Rain")) {
-            event.setValue(Event.HEIGHT, getMeasure(node.get(6), Units.MM));
-        }
+		if (device.supports("Pressure")) {
+			event.setValue(Event.PRESSURE, getMeasure(node.get(1), Units.HPA));
+		}
+		if (device.supports("Noise")) {
+			event.setValue(Event.SOUND, getMeasure(node.get(2), Units.DB));
+		}
+		if (device.supports("Humidity")) {
+			event.setValue(Event.HUMIDITY, getInteger(node.get(3)));
+		}
+		if (device.supports("CO2")) {
+			event.setValue(Event.RATING, getRating(node.get(4)));
+		}
+		if (device.supports("Wind")) {
+			event.setValue(Event.VELOCITY, getMeasure(node.get(5), Units.KMH));
+		}
+		if (device.supports("Rain")) {
+			event.setValue(Event.HEIGHT, getMeasure(node.get(6), Units.MM));
+		}
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);
 		return event;

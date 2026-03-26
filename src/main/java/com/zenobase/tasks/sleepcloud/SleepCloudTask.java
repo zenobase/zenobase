@@ -2,7 +2,6 @@ package com.zenobase.tasks.sleepcloud;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -33,7 +32,9 @@ public class SleepCloudTask extends Task {
 
 	public DateTime getFrom() {
 		String marker = getMarker();
-		return marker != null ? DateTime.parse(marker, ISODateTimeFormat.dateTime().withOffsetParsed()) : null;
+		return marker != null
+				? DateTime.parse(marker, ISODateTimeFormat.dateTime().withOffsetParsed())
+				: null;
 	}
 
 	public boolean useRanges() {

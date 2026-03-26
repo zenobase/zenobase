@@ -14,8 +14,9 @@ public class PercentageTest {
 		Percentage r1 = valueOf("0");
 		Percentage r2 = valueOf("50.5");
 		new EqualsTester()
-			.addEqualityGroup(r1, Percentage.valueOf(r1.value()))
-			.addEqualityGroup(r2).testEquals();
+				.addEqualityGroup(r1, Percentage.valueOf(r1.value()))
+				.addEqualityGroup(r2)
+				.testEquals();
 	}
 
 	@Test

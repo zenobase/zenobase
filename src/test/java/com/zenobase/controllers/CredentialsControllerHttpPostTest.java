@@ -5,10 +5,10 @@ import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.opensearch.client.opensearch._types.OpenSearchException;
-import org.opensearch.client.opensearch._types.ErrorResponse;
 import org.junit.Before;
 import org.junit.Test;
+import org.opensearch.client.opensearch._types.ErrorResponse;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 
 import com.zenobase.commands.Command;
 import com.zenobase.json.Nodes;
@@ -40,7 +40,10 @@ public class CredentialsControllerHttpPostTest extends CredentialsControllerTest
 		when(manager.authorize(from, Credentials.CREDENTIALS.getValue(update))).thenReturn(command);
 		when(dispatcher.dispatch(command)).thenReturn(command.getId());
 		try (Http1ClientResponse result = call(from.getId(), update)) {
-			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, command.getId()).isEmpty();
+			assertThat(result)
+					.hasStatus(204)
+					.hasHeader(COMMAND_ID, command.getId())
+					.isEmpty();
 		}
 	}
 
@@ -134,7 +137,10 @@ public class CredentialsControllerHttpPostTest extends CredentialsControllerTest
 		when(repository.find(from.getId())).thenReturn(from.copy());
 		when(registry.find(from.getType())).thenReturn(manager);
 		when(manager.authorize(from, Credentials.CREDENTIALS.getValue(update))).thenReturn(command);
-		when(dispatcher.dispatch(command)).thenThrow(new OpenSearchException(ErrorResponse.of(r -> r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict")))));
+		when(dispatcher.dispatch(command))
+				.thenThrow(new OpenSearchException(ErrorResponse.of(r -> r.status(409)
+						.error(e2 ->
+								e2.type("version_conflict_engine_exception").reason("version conflict")))));
 		try (Http1ClientResponse result = call(from.getId(), update)) {
 			assertThat(result).hasStatus(409);
 		}

@@ -3,8 +3,8 @@ package com.zenobase.services;
 import java.math.BigDecimal;
 
 import com.braintreegateway.Customer;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.Assertions;
 
 import com.zenobase.models.Plan;
 
@@ -40,7 +40,8 @@ public class CustomerAssert extends AbstractAssert<CustomerAssert, Customer> {
 
 	public CustomerAssert hasPlan(Plan plan) {
 		isNotNull();
-		Assertions.assertThat(PaymentGateway.getSubscription(actual).getPlanId()).isEqualTo(plan.getId());
+		Assertions.assertThat(PaymentGateway.getSubscription(actual).getPlanId())
+				.isEqualTo(plan.getId());
 		return this;
 	}
 

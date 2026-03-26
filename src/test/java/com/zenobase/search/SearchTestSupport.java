@@ -6,8 +6,8 @@ import org.junit.Before;
 
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
-import com.zenobase.services.OpenSearchTestSupport;
 import com.zenobase.services.Index;
+import com.zenobase.services.OpenSearchTestSupport;
 
 public class SearchTestSupport extends OpenSearchTestSupport {
 

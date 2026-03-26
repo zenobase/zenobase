@@ -9,9 +9,9 @@ public class WakaTimeTesting extends TaskTestingSupport {
 
 	@Test
 	public void test() {
-		run(new WakaTimeTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2015-05-01")
-			.put("tag", "project"));
+		run(
+				new WakaTimeTaskManager(newCredentialsManager()),
+				Nodes.newObject().put("marker", "2015-05-01").put("tag", "project"));
 	}
 
 	@Override

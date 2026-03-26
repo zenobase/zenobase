@@ -26,14 +26,14 @@ public class LocalDateTimeRangeParser extends RangeParser<ReadablePartial> {
 
 	private static ReadablePartial getLower(Range<LocalInterval> range) {
 		return range.lowerBoundType() == BoundType.CLOSED
-			? range.lowerEndpoint().getStart()
-			: range.lowerEndpoint().getEnd();
+				? range.lowerEndpoint().getStart()
+				: range.lowerEndpoint().getEnd();
 	}
 
 	private static ReadablePartial getUpper(Range<LocalInterval> range) {
 		return range.upperBoundType() == BoundType.OPEN
-			? range.upperEndpoint().getStart()
-			: range.upperEndpoint().getEnd();
+				? range.upperEndpoint().getStart()
+				: range.upperEndpoint().getEnd();
 	}
 
 	@Override

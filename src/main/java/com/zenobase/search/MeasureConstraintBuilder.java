@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
 
 import com.zenobase.common.Measures;
 import com.zenobase.json.DecimalMeasureField;

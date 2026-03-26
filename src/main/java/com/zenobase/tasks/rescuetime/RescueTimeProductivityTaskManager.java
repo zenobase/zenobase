@@ -1,17 +1,15 @@
 package com.zenobase.tasks.rescuetime;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import jakarta.inject.Inject;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.RateLimiter;
+import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -44,14 +42,19 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		String tag = Strings.emptyToNull(settings.path("tag").textValue());
 		String kind = Strings.emptyToNull(settings.path("kind").textValue());
 		String source = Strings.emptyToNull(settings.path("source").textValue());
-		DateTimeZone timezone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone timezone = DateTimeZone.forID(
+				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		Task task = new RescueTimeProductivityTask(bucketId, principal, tag, kind, source, timezone);
 		task.setMarker(parseMarker(settings.path("marker").textValue(), timezone));
 		return task;
 	}
 
 	private static String parseMarker(String marker, DateTimeZone timezone) {
-		return marker != null ? LocalDateTime.parse(marker.replaceAll("Z", "")).toDateTime(timezone).toString() : null;
+		return marker != null
+				? LocalDateTime.parse(marker.replaceAll("Z", ""))
+						.toDateTime(timezone)
+						.toString()
+				: null;
 	}
 
 	@Override
@@ -82,12 +85,12 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		rateLimit.acquire();
 		OAuthRequest request = newRequest(task.getKind(), task.getSource(), date);
 		Response response = send(request, credentials);
-		Preconditions.checkState(response.getCode() == 200,
-			"Couldn't request <%s>: %s", request.getCompleteUrl(), response.getCode());
+		Preconditions.checkState(
+				response.getCode() == 200, "Couldn't request <%s>: %s", request.getCompleteUrl(), response.getCode());
 		ObjectNode node = parseObject(response);
 		var result = new ProductivityResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());
-		Preconditions.checkState(result.isSuccess(),
-			"Request <%s> failed: %s", request.getCompleteUrl(), response.getCode());
+		Preconditions.checkState(
+				result.isSuccess(), "Request <%s> failed: %s", request.getCompleteUrl(), response.getCode());
 		return result.getEvents();
 	}
 
@@ -118,13 +121,17 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 	}
 
 	private Command createCommand(Task task, List<Event> events) {
-		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(
+				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getLast(events).toString())
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(
+						Task.MARKER,
+						task.getMarker(),
+						events.isEmpty() ? task.getMarker() : getLast(events).toString())
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}

@@ -15,9 +15,9 @@ public class BeeminderApi extends CustomApi20 {
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
 		return new UriBuilder("https://www.beeminder.com/apps/authorize")
-			.addParameter("response_type", "token")
-			.addParameter("client_id", config.getApiKey())
-			.addParameter("redirect_uri", config.getCallback())
-			.build();
+				.addParameter("response_type", "token")
+				.addParameter("client_id", config.getApiKey())
+				.addParameter("redirect_uri", config.getCallback())
+				.build();
 	}
 }

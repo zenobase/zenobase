@@ -4,16 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import javax.measure.quantity.Energy;
-import javax.measure.quantity.Frequency;
-import javax.measure.quantity.Length;
-import javax.measure.quantity.Velocity;
-
 import org.joda.time.Duration;
 import org.junit.Test;
 
 import com.zenobase.common.Measures;
-import com.zenobase.common.Pace;
 import com.zenobase.common.Units;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -24,7 +18,8 @@ public class FitbitActivitiesResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 
-		FitbitActivitiesResult result = new FitbitActivitiesResult(readObject("FitbitActivitiesResultTest.json"), TESTER, true, Units.MI);
+		FitbitActivitiesResult result =
+				new FitbitActivitiesResult(readObject("FitbitActivitiesResultTest.json"), TESTER, true, Units.MI);
 		assertThat(result.next()).isNotNull();
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(2);
@@ -57,7 +52,8 @@ public class FitbitActivitiesResultTest extends ResultTestSupport {
 
 	@Test
 	public void testExcludeAutodetected() {
-		FitbitActivitiesResult result = new FitbitActivitiesResult(readObject("FitbitActivitiesResultTest.json"), TESTER, false, Units.MI);
+		FitbitActivitiesResult result =
+				new FitbitActivitiesResult(readObject("FitbitActivitiesResultTest.json"), TESTER, false, Units.MI);
 		assertThat(result.next()).isNotNull();
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);

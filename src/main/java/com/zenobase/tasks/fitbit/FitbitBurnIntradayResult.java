@@ -1,11 +1,10 @@
 package com.zenobase.tasks.fitbit;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
-
 import javax.measure.DecimalMeasure;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,7 +33,8 @@ class FitbitBurnIntradayResult extends FitbitResultSupport {
 
 	public List<Event> getEvents() {
 		List<Event> events = new ArrayList<>();
-		for (Map.Entry<DateTime, Collection<BigDecimal>> entry : valuesByHour().asMap().entrySet()) {
+		for (Map.Entry<DateTime, Collection<BigDecimal>> entry :
+				valuesByHour().asMap().entrySet()) {
 			events.add(toEvent(entry.getKey(), sum(entry.getValue())));
 		}
 		return events;
@@ -51,7 +51,8 @@ class FitbitBurnIntradayResult extends FitbitResultSupport {
 	private Multimap<DateTime, BigDecimal> valuesByHour() {
 		Multimap<DateTime, BigDecimal> values = LinkedListMultimap.create();
 		for (JsonNode recordNode : node.path("activities-calories-intraday").path("dataset")) {
-			DateTime hour = toDateTimeFullHour(LocalTime.parse(recordNode.path("time").textValue()));
+			DateTime hour =
+					toDateTimeFullHour(LocalTime.parse(recordNode.path("time").textValue()));
 			if (hour != null) {
 				values.put(hour, recordNode.path("value").decimalValue());
 			}
@@ -60,7 +61,10 @@ class FitbitBurnIntradayResult extends FitbitResultSupport {
 	}
 
 	private DateTime toDateTimeFullHour(LocalTime local) {
-		return toDateTimeFullHour(date.toLocalDateTime(local).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0));
+		return toDateTimeFullHour(date.toLocalDateTime(local)
+				.withMinuteOfHour(0)
+				.withSecondOfMinute(0)
+				.withMillisOfSecond(0));
 	}
 
 	private DateTime toDateTimeFullHour(LocalDateTime local) {

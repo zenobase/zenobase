@@ -1,7 +1,6 @@
 package com.zenobase.models;
 
 public enum Role {
-
 	VIEWER,
 	CONTRIBUTOR,
 	OWNER;

@@ -42,6 +42,12 @@ public class ActivitySeriesResultTest extends ResultTestSupport {
 	}
 
 	private List<Event> read(String path) {
-		return new ActivitySeriesResult("Jessie", TESTER, dateTime("2016-01-28T12:00:00-08:00"), DateTimeZone.forID("America/Los_Angeles"), readObject(path)).getEvents();
+		return new ActivitySeriesResult(
+						"Jessie",
+						TESTER,
+						dateTime("2016-01-28T12:00:00-08:00"),
+						DateTimeZone.forID("America/Los_Angeles"),
+						readObject(path))
+				.getEvents();
 	}
 }

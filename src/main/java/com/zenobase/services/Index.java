@@ -6,14 +6,13 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
+import org.joda.time.DateTime;
 import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.opensearch.client.opensearch._types.OpType;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.opensearch.client.opensearch._types.Refresh;
 import org.opensearch.client.opensearch._types.Time;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
@@ -26,7 +25,8 @@ import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.bulk.BulkOperation;
 import org.opensearch.client.opensearch.core.bulk.BulkResponseItem;
 import org.opensearch.client.opensearch.core.search.Hit;
-import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.zenobase.common.Callback;
 import com.zenobase.json.DomainNode;
@@ -66,13 +66,10 @@ public class Index {
 	public void create(int shards, int replicas) {
 		try {
 			String autoExpandReplicas = replicas == Integer.MAX_VALUE ? "0-all" : "0-" + replicas;
-			boolean acknowledged = client.indices().create(c -> c
-				.index(indexName)
-				.settings(s -> s
-					.numberOfShards(shards)
-					.autoExpandReplicas(autoExpandReplicas)
-				)
-			).acknowledged();
+			boolean acknowledged = client.indices()
+					.create(c -> c.index(indexName)
+							.settings(s -> s.numberOfShards(shards).autoExpandReplicas(autoExpandReplicas)))
+					.acknowledged();
 			Preconditions.checkState(acknowledged, "Expected acknowledgement of index creation: %s", indexName);
 			Preconditions.checkState(new Cluster(client).isReady(), "Expected at least one shard in cluster");
 		} catch (IOException e) {
@@ -83,13 +80,13 @@ public class Index {
 	public void putMapping(Schema schema) {
 		try {
 			String json = schema.toJson().toString();
-			client.generic().execute(
-				org.opensearch.client.opensearch.generic.Requests.builder()
-					.endpoint(indexName + "/_mapping")
-					.method("PUT")
-					.json(json)
-					.build()
-			).close();
+			client.generic()
+					.execute(org.opensearch.client.opensearch.generic.Requests.builder()
+							.endpoint(indexName + "/_mapping")
+							.method("PUT")
+							.json(json)
+							.build())
+					.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -110,11 +107,11 @@ public class Index {
 	private void index(String id, ObjectNode node, OpType operation, DateTime timestamp, boolean refresh) {
 		try {
 			IndexRequest.Builder<ObjectNode> builder = new IndexRequest.Builder<ObjectNode>()
-				.index(indexName)
-				.id(id)
-				.document(stripMetadata(node))
-				.opType(operation)
-				.refresh(refreshPolicy(refresh));
+					.index(indexName)
+					.id(id)
+					.document(stripMetadata(node))
+					.opType(operation)
+					.refresh(refreshPolicy(refresh));
 			if (operation == OpType.Index) {
 				Long seqNo = DomainNode.SEQ_NO.getValue(node);
 				Long primaryTerm = DomainNode.PRIMARY_TERM.getValue(node);
@@ -147,16 +144,17 @@ public class Index {
 					Long primaryTerm = DomainNode.PRIMARY_TERM.getValue(node.toJson());
 					Preconditions.checkNotNull(seqNo, "Missing seq_no field: %s", node.toJson());
 					Preconditions.checkNotNull(primaryTerm, "Missing primary_term field: %s", node.toJson());
-					opBuilder.index(idx -> idx.index(indexName).id(node.getId()).document(doc)
-						.ifSeqNo(seqNo).ifPrimaryTerm(primaryTerm));
+					opBuilder.index(idx -> idx.index(indexName)
+							.id(node.getId())
+							.document(doc)
+							.ifSeqNo(seqNo)
+							.ifPrimaryTerm(primaryTerm));
 				}
 				operations.add(opBuilder.build());
 			}
 			try {
-				BulkResponse bulkResponse = client.bulk(b -> b
-					.operations(operations)
-					.refresh(refreshPolicy(refresh))
-				);
+				BulkResponse bulkResponse =
+						client.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh)));
 				List<BulkResponseItem> items = bulkResponse.items();
 				String failureMessage = getFailureMessage(items);
 				if (failureMessage != null) {
@@ -202,11 +200,10 @@ public class Index {
 
 	public boolean delete(String id, boolean refresh) {
 		try {
-			return client.delete(d -> d
-				.index(indexName)
-				.id(id)
-				.refresh(refreshPolicy(refresh))
-			).result().jsonValue().equals("deleted");
+			return client.delete(d -> d.index(indexName).id(id).refresh(refreshPolicy(refresh)))
+					.result()
+					.jsonValue()
+					.equals("deleted");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -215,10 +212,12 @@ public class Index {
 	public boolean delete(List<String> ids, boolean refresh) {
 		List<BulkOperation> operations = new ArrayList<>();
 		for (String id : ids) {
-			operations.add(BulkOperation.of(op -> op.delete(d -> d.index(indexName).id(id))));
+			operations.add(
+					BulkOperation.of(op -> op.delete(d -> d.index(indexName).id(id))));
 		}
 		try {
-			BulkResponse bulkResponse = client.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh)));
+			BulkResponse bulkResponse =
+					client.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh)));
 			String failureMessage = getFailureMessage(bulkResponse.items());
 			if (failureMessage != null) {
 				throw new RuntimeException("Couldn't delete an item: " + failureMessage);
@@ -248,12 +247,8 @@ public class Index {
 	}
 
 	public NodeList find(Query query) {
-		SearchRequest request = SearchRequest.of(s -> s
-			.index(indexName)
-			.query(query)
-			.version(true)
-			.seqNoPrimaryTerm(true)
-		);
+		SearchRequest request = SearchRequest.of(
+				s -> s.index(indexName).query(query).version(true).seqNoPrimaryTerm(true));
 		SearchResponse<ObjectNode> response = search(request);
 		List<ObjectNode> nodes = new ArrayList<>(response.hits().hits().size());
 		for (Hit<ObjectNode> hit : response.hits().hits()) {
@@ -281,11 +276,11 @@ public class Index {
 
 	public void find(Query query, Callback<ObjectNode> callback, int scrollSize) {
 		SearchRequest.Builder builder = new SearchRequest.Builder()
-			.index(indexName)
-			.query(query)
-			.size(scrollSize)
-			.version(true)
-			.seqNoPrimaryTerm(true);
+				.index(indexName)
+				.query(query)
+				.size(scrollSize)
+				.version(true)
+				.seqNoPrimaryTerm(true);
 		find(builder, callback);
 	}
 
@@ -329,7 +324,8 @@ public class Index {
 
 	public ObjectNode get(String id) {
 		try {
-			GetResponse<ObjectNode> response = client.get(g -> g.index(indexName).id(id), ObjectNode.class);
+			GetResponse<ObjectNode> response =
+					client.get(g -> g.index(indexName).id(id), ObjectNode.class);
 			if (!response.found()) return null;
 			ObjectNode node = response.source();
 			DomainNode.VERSION.setValue(node, response.version());
@@ -365,7 +361,8 @@ public class Index {
 	}
 
 	public int count(Query query) {
-		SearchRequest request = SearchRequest.of(s -> s.index(indexName).query(query).size(0).trackTotalHits(t -> t.enabled(true)));
+		SearchRequest request =
+				SearchRequest.of(s -> s.index(indexName).query(query).size(0).trackTotalHits(t -> t.enabled(true)));
 		return Ints.saturatedCast(search(request).hits().total().value());
 	}
 
@@ -385,9 +382,11 @@ public class Index {
 	private Set<String> aliases() {
 		try {
 			ImmutableSet.Builder<String> builder = ImmutableSet.builder();
-			client.indices().getAlias(a -> a.index(indexName))
-				.result().values().forEach(indexAliases ->
-					indexAliases.aliases().keySet().forEach(builder::add));
+			client.indices()
+					.getAlias(a -> a.index(indexName))
+					.result()
+					.values()
+					.forEach(indexAliases -> indexAliases.aliases().keySet().forEach(builder::add));
 			return builder.build();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -396,12 +395,14 @@ public class Index {
 
 	private boolean close(Iterable<String> aliases) {
 		try {
-			return client.indices().updateAliases(u -> {
-				for (String alias : aliases) {
-					u.actions(a -> a.remove(r -> r.index(indexName).alias(alias)));
-				}
-				return u;
-			}).acknowledged();
+			return client.indices()
+					.updateAliases(u -> {
+						for (String alias : aliases) {
+							u.actions(a -> a.remove(r -> r.index(indexName).alias(alias)));
+						}
+						return u;
+					})
+					.acknowledged();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

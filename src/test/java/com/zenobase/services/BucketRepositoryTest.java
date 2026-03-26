@@ -96,9 +96,15 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 	public void testFindWithPagingInReverse() {
 		List<Bucket> expected = insert(11);
 		SearchOrder order = BucketQuery.DEFAULT_ORDER.reverse();
-		assertThat(repository.find(new BucketQuery(), order, 0, 10)).hasTotal(expected.size()).isEqualTo(expected.subList(0, 10));
-		assertThat(repository.find(new BucketQuery(), order, 10, 10)).hasTotal(expected.size()).isEqualTo(expected.subList(10, 11));
-		assertThat(repository.find(new BucketQuery(), order, 20, 10)).hasTotal(expected.size()).isEmpty();
+		assertThat(repository.find(new BucketQuery(), order, 0, 10))
+				.hasTotal(expected.size())
+				.isEqualTo(expected.subList(0, 10));
+		assertThat(repository.find(new BucketQuery(), order, 10, 10))
+				.hasTotal(expected.size())
+				.isEqualTo(expected.subList(10, 11));
+		assertThat(repository.find(new BucketQuery(), order, 20, 10))
+				.hasTotal(expected.size())
+				.isEmpty();
 	}
 
 	@Test
@@ -175,7 +181,8 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 	private List<Bucket> insert(int size) {
 		List<Bucket> buckets = Lists.newArrayListWithCapacity(size);
 		for (int i = 0; i < size; ++i) {
-			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
+			Uninterruptibles.sleepUninterruptibly(
+					5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
 			Bucket bucket = newBucket(String.format("bucket%03d", i + 1), ME);
 			buckets.add(bucket);
 			repository.store(bucket, DateTime.now());

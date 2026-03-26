@@ -44,7 +44,8 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.asIdentity())).thenReturn(user);
 		when(dispatcher.dispatch(any(OptOutCommand.class))).thenReturn(commandId);
-		try (Http1ClientResponse result = call(user.getId(), UpdateUserForm.withOptedOut(true).toJson())) {
+		try (Http1ClientResponse result =
+				call(user.getId(), UpdateUserForm.withOptedOut(true).toJson())) {
 			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, commandId).isEmpty();
 			verifyNoInteractions(mailer, payments);
 		}
@@ -56,7 +57,8 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.asIdentity())).thenReturn(user);
 		when(dispatcher.dispatch(any(OptInCommand.class))).thenReturn(commandId);
-		try (Http1ClientResponse result = call(user.getId(), UpdateUserForm.withOptedOut(false).toJson())) {
+		try (Http1ClientResponse result =
+				call(user.getId(), UpdateUserForm.withOptedOut(false).toJson())) {
 			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, commandId).isEmpty();
 			verifyNoInteractions(mailer, payments);
 		}
@@ -65,7 +67,8 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 	@Test
 	public void testUpdateUserNotFound() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		try (Http1ClientResponse result = call('@' + user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson())) {
+		try (Http1ClientResponse result =
+				call('@' + user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson())) {
 			assertThat(result).hasStatus(404);
 			verifyNoInteractions(dispatcher, mailer, payments);
 		}
@@ -105,12 +108,19 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		user.setPassword("secret123");
 		String commandId = Generator.id();
 		when(users.find(user.asIdentity())).thenReturn(user);
-		AuthorizationQuery query = new AuthorizationQuery().principalEqualTo(user.asIdentity()).clientIsNull();
+		AuthorizationQuery query =
+				new AuthorizationQuery().principalEqualTo(user.asIdentity()).clientIsNull();
 		doCallback(new Authorization(new Identity())).when(authorizations).find(eq(query), any(Callback.class));
 		when(dispatcher.dispatch(ArgumentMatchers.any(CompoundCommand.class))).thenReturn(commandId);
 		PasswordResetKey key = new PasswordResetKey(user);
-		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm("newpassword",  key.getKey(), key.getExpirationToken()).toJson())) {
-			assertThat(result).hasStatus(200).hasHeader(COMMAND_ID, commandId).asObjectNode().path("access_code").isNotNull();
+		try (Http1ClientResponse result = call(
+				user.getId(), new UpdateUserForm("newpassword", key.getKey(), key.getExpirationToken()).toJson())) {
+			assertThat(result)
+					.hasStatus(200)
+					.hasHeader(COMMAND_ID, commandId)
+					.asObjectNode()
+					.path("access_code")
+					.isNotNull();
 			verifyNoInteractions(payments);
 		}
 	}
@@ -120,7 +130,8 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		user.setPassword("secret123");
 		when(users.find(user.asIdentity())).thenReturn(user);
 		PasswordResetKey key = new PasswordResetKey(user);
-		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm("123", key.getKey(), key.getExpirationToken()).toJson())) {
+		try (Http1ClientResponse result =
+				call(user.getId(), new UpdateUserForm("123", key.getKey(), key.getExpirationToken()).toJson())) {
 			assertThat(result).hasStatus(400);
 			verifyNoInteractions(auth, dispatcher, payments);
 		}
@@ -131,7 +142,8 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		user.setPassword("secret123");
 		when(users.find(user.asIdentity())).thenReturn(user);
 		PasswordResetKey key = new PasswordResetKey(user);
-		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm("newpassword", null, key.getExpirationToken()).toJson())) {
+		try (Http1ClientResponse result =
+				call(user.getId(), new UpdateUserForm("newpassword", null, key.getExpirationToken()).toJson())) {
 			assertThat(result).hasStatus(400);
 			verifyNoInteractions(auth, dispatcher, payments);
 		}
@@ -142,7 +154,8 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		user.setPassword("secret123");
 		when(users.find(user.asIdentity())).thenReturn(user);
 		PasswordResetKey key = new PasswordResetKey(user);
-		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm("newpassword",  key.getKey(), null).toJson())) {
+		try (Http1ClientResponse result =
+				call(user.getId(), new UpdateUserForm("newpassword", key.getKey(), null).toJson())) {
 			assertThat(result).hasStatus(400);
 			verifyNoInteractions(auth, dispatcher, payments);
 		}
@@ -155,7 +168,8 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		User other = user.copy();
 		other.setPassword("123secret");
 		PasswordResetKey key = new PasswordResetKey(other);
-		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm("newpassword",  key.getKey(), key.getExpirationToken()).toJson())) {
+		try (Http1ClientResponse result = call(
+				user.getId(), new UpdateUserForm("newpassword", key.getKey(), key.getExpirationToken()).toJson())) {
 			assertThat(result).hasStatus(400);
 			verifyNoInteractions(auth, dispatcher, payments);
 		}

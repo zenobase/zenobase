@@ -25,7 +25,7 @@ public class JsonDiff {
 	}
 
 	private void addedOrModified(JsonNode original, JsonNode modified) {
-		for (Iterator<Map.Entry<String, JsonNode>> i = modified.fields(); i.hasNext();) {
+		for (Iterator<Map.Entry<String, JsonNode>> i = modified.fields(); i.hasNext(); ) {
 			Map.Entry<String, JsonNode> entry = i.next();
 			JsonNode value = original.path(entry.getKey());
 			if (value.isMissingNode()) {
@@ -39,11 +39,16 @@ public class JsonDiff {
 				from.set(entry.getKey(), original.get(entry.getKey()));
 				to.set(entry.getKey(), entry.getValue());
 			} else {
-				Preconditions.checkState(value.equals(entry.getValue()),
-					"Expected <%s> but found <%s> in field <%s>", entry.getValue(), value, entry.getKey());
+				Preconditions.checkState(
+						value.equals(entry.getValue()),
+						"Expected <%s> but found <%s> in field <%s>",
+						entry.getValue(),
+						value,
+						entry.getKey());
 			}
 		}
-		for (String removedField : Sets.difference(Sets.newHashSet(original.fieldNames()), Sets.newHashSet(modified.fieldNames()))) {
+		for (String removedField :
+				Sets.difference(Sets.newHashSet(original.fieldNames()), Sets.newHashSet(modified.fieldNames()))) {
 			from.set(removedField, original.get(removedField));
 			to.set(removedField, NullNode.getInstance());
 		}

@@ -17,7 +17,8 @@ abstract class HexoskinTaskSupport extends Task {
 		super(node);
 	}
 
-	public HexoskinTaskSupport(String type, String bucketId, Identity principal, String tag, DateTimeZone zone, String marker) {
+	public HexoskinTaskSupport(
+			String type, String bucketId, Identity principal, String tag, DateTimeZone zone, String marker) {
 		super(type, bucketId, principal);
 		setSetting(TAG, tag);
 		setSetting(TIMEZONE, zone.toString());

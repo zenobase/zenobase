@@ -43,9 +43,7 @@ public class LocationField extends Field<Location> {
 
 	@Override
 	public JsonNode toJson(Location value) {
-		return value != null
-			? toJson(value.latitude(), value.longitude())
-			: NullNode.getInstance();
+		return value != null ? toJson(value.latitude(), value.longitude()) : NullNode.getInstance();
 	}
 
 	private JsonNode toJson(BigDecimal lat, BigDecimal lon) {

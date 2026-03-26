@@ -43,7 +43,8 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 	@Override
 	public final Command execute(Task task, OAuthCredentials credentials) {
 		Token token = credentials.getToken();
-		if (credentials.isExpired() || !Strings.isNullOrEmpty(credentials.getToken().getSecret())) {
+		if (credentials.isExpired()
+				|| !Strings.isNullOrEmpty(credentials.getToken().getSecret())) {
 			reauthorize(credentials);
 		}
 		try {
@@ -76,7 +77,9 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 	}
 
 	protected LocalDate parseMarker(String marker) {
-		return marker != null ? DateTime.parse(marker).toLocalDate() : LocalDate.now().withDayOfMonth(1);
+		return marker != null
+				? DateTime.parse(marker).toLocalDate()
+				: LocalDate.now().withDayOfMonth(1);
 	}
 
 	protected FitbitProfileResult getProfile(OAuthCredentials credentials) {
@@ -85,23 +88,26 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 		return new FitbitProfileResult(parseObject(response));
 	}
 
-	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, LocalDate lastDate, Token expiredToken) {
+	protected Command createCommand(
+			Task task, OAuthCredentials credentials, List<Event> events, LocalDate lastDate, Token expiredToken) {
 		return createCommand(task, credentials, events, lastDate.toString(), expiredToken);
 	}
 
-	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, String marker, Token expiredToken) {
-		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+	protected Command createCommand(
+			Task task, OAuthCredentials credentials, List<Event> events, String marker, Token expiredToken) {
+		var command = new CompoundCommand(
+				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), marker)
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
+				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
+				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+				.set(Task.MARKER, task.getMarker(), marker)
+				.set(Task.UNDO, task.getUndoId(), command.getId())
+				.build());
 		if (!Objects.equal(credentials.getToken(), expiredToken)) {
 			command.add(UpdateCredentialsCommand.builder(credentials)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
-				.build());
+					.with(Credentials.CREDENTIALS)
+					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+					.build());
 		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));

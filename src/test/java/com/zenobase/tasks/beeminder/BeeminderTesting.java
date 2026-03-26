@@ -17,10 +17,12 @@ public class BeeminderTesting extends TaskTestingSupport {
 
 	@Test
 	public void testCount() {
-		run(new BeeminderTaskManager(newCredentialsManager(), fakeEventRepository()), Nodes.newObject()
-			.put("marker", "2014-12-01T00:00:00-08:00")
-			.put("goal", "test")
-			.put("field", "duration"));
+		run(
+				new BeeminderTaskManager(newCredentialsManager(), fakeEventRepository()),
+				Nodes.newObject()
+						.put("marker", "2014-12-01T00:00:00-08:00")
+						.put("goal", "test")
+						.put("field", "duration"));
 	}
 
 	@Override
@@ -37,7 +39,8 @@ public class BeeminderTesting extends TaskTestingSupport {
 		add(stats, "2015-01-02T-08:00", 2, 120000L);
 		add(stats, "2015-01-03T-08:00", 0, null);
 		add(stats, "2015-01-04T-08:00", 1, 90000L);
-		Mockito.when(repository.find(ArgumentMatchers.anyString(), ArgumentMatchers.any(Search.class))).thenReturn(result);
+		Mockito.when(repository.find(ArgumentMatchers.anyString(), ArgumentMatchers.any(Search.class)))
+				.thenReturn(result);
 		return repository;
 	}
 

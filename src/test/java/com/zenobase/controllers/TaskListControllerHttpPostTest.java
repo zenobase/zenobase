@@ -30,7 +30,8 @@ public class TaskListControllerHttpPostTest extends TaskListControllerTestSuppor
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(registry.find(type)).thenReturn(manager);
-		when(manager.newTask(bucket.getId(), user.asIdentity(), form.getSettings())).thenReturn(task);
+		when(manager.newTask(bucket.getId(), user.asIdentity(), form.getSettings()))
+				.thenReturn(task);
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		try (Http1ClientResponse result = call(form)) {
 			assertThat(result).hasStatus(201).hasContent(task.toJson());

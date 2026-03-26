@@ -36,10 +36,10 @@ public class StandardPeriodTest {
 	@Test
 	public void testEqualsHashCode() {
 		new EqualsTester()
-			.addEqualityGroup(StandardPeriod.valueOf(Period.weeks(1)), StandardPeriod.valueOf(Period.weeks(1)))
-			.addEqualityGroup(StandardPeriod.valueOf(Period.days(7)), StandardPeriod.valueOf(Period.days(7)))
-			.addEqualityGroup(StandardPeriod.valueOf(Period.days(7).withHours(12)))
-			.testEquals();
+				.addEqualityGroup(StandardPeriod.valueOf(Period.weeks(1)), StandardPeriod.valueOf(Period.weeks(1)))
+				.addEqualityGroup(StandardPeriod.valueOf(Period.days(7)), StandardPeriod.valueOf(Period.days(7)))
+				.addEqualityGroup(StandardPeriod.valueOf(Period.days(7).withHours(12)))
+				.testEquals();
 	}
 
 	@Test
@@ -54,6 +54,7 @@ public class StandardPeriodTest {
 	}
 
 	private static void compare(String a, String b, int expected) {
-		assertThat(StandardPeriod.valueOf(a).compareTo(StandardPeriod.valueOf(b))).isEqualTo(expected);
+		assertThat(StandardPeriod.valueOf(a).compareTo(StandardPeriod.valueOf(b)))
+				.isEqualTo(expected);
 	}
 }

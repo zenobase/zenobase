@@ -3,10 +3,9 @@ package com.zenobase.tasks;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.inject.Inject;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import jakarta.inject.Inject;
 
 public class CredentialsManagerRegistry {
 

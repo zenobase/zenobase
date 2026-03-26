@@ -27,7 +27,8 @@ public class RunkeeperWeightTask extends Task {
 		super(TYPE, bucketId, principal);
 	}
 
-	RunkeeperWeightTask(String bucketId, Identity principal, String tag, Unit<Mass> unit, DateTimeZone timezone, String marker) {
+	RunkeeperWeightTask(
+			String bucketId, Identity principal, String tag, Unit<Mass> unit, DateTimeZone timezone, String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);

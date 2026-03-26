@@ -71,8 +71,7 @@ public abstract class Field<T> {
 			for (JsonNode element : fieldNode) {
 				values.add(getValue(element));
 			}
-		}
-		else if (fieldNode != null) {
+		} else if (fieldNode != null) {
 			values.add(getValue(fieldNode));
 		}
 		return values.build();
@@ -85,8 +84,7 @@ public abstract class Field<T> {
 			for (JsonNode element : fieldNode) {
 				values.add(element);
 			}
-		}
-		else if (fieldNode != null && !fieldNode.isMissingNode() && !fieldNode.isNull()) {
+		} else if (fieldNode != null && !fieldNode.isMissingNode() && !fieldNode.isNull()) {
 			values.add(fieldNode);
 		}
 		return values.build();
@@ -100,12 +98,10 @@ public abstract class Field<T> {
 		if (fieldNode == null) {
 			ArrayNode arrayNode = node.putArray(name);
 			arrayNode.add(toJson(value));
-		}
-		else if (fieldNode.isArray()) {
+		} else if (fieldNode.isArray()) {
 			ArrayNode arrayNode = ((ArrayNode) fieldNode);
 			arrayNode.add(toJson(value));
-		}
-		else {
+		} else {
 			ArrayNode arrayNode = node.putArray(name);
 			arrayNode.add(fieldNode);
 			arrayNode.add(toJson(value));
@@ -117,12 +113,10 @@ public abstract class Field<T> {
 		if (fieldNode == null) {
 			ArrayNode arrayNode = node.putArray(name);
 			addValues(arrayNode, values);
-		}
-		else if (fieldNode.isArray()) {
+		} else if (fieldNode.isArray()) {
 			ArrayNode arrayNode = ((ArrayNode) fieldNode);
 			addValues(arrayNode, values);
-		}
-		else {
+		} else {
 			ArrayNode arrayNode = node.putArray(name);
 			arrayNode.add(fieldNode);
 			addValues(arrayNode, values);
@@ -132,8 +126,7 @@ public abstract class Field<T> {
 	public final void setValue(ObjectNode node, T value) {
 		if (value != null) {
 			node.set(name, toJson(value));
-		}
-		else {
+		} else {
 			node.remove(name);
 		}
 	}
@@ -179,18 +172,15 @@ public abstract class Field<T> {
 	}
 
 	protected final void copyConstraintBuilders(Field<?> target) {
-		for (Map.Entry<String, ConstraintBuilder> entry : getConstraintBuilders().entries()) {
+		for (Map.Entry<String, ConstraintBuilder> entry :
+				getConstraintBuilders().entries()) {
 			target.addConstraintBuilder(entry.getKey(), entry.getValue());
 		}
 	}
 
-	public void prePersist(ObjectNode node) {
+	public void prePersist(ObjectNode node) {}
 
-	}
-
-	public void postPersist(ObjectNode node) {
-
-	}
+	public void postPersist(ObjectNode node) {}
 
 	@Override
 	public String toString() {

@@ -1,7 +1,6 @@
 package com.zenobase.search;
 
 import java.util.Collections;
-
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,7 +31,8 @@ public class ScoreboardFacet extends FilteredFacet {
 	private final String order;
 	private final int limit;
 
-	private ScoreboardFacet(String id, String termField, String valueField, Unit<?> unit, String order, int limit, Query filter) {
+	private ScoreboardFacet(
+			String id, String termField, String valueField, Unit<?> unit, String order, int limit, Query filter) {
 		super(id, filter);
 		this.termField = termField;
 		this.valueField = valueField;
@@ -44,21 +44,19 @@ public class ScoreboardFacet extends FilteredFacet {
 	@Override
 	public void configure(SearchRequest.Builder builder) {
 		String vf = getValueField();
-		Aggregation terms = Aggregation.of(a -> a
-			.terms(t -> {
-				t.field(termField).size(limit);
-				boolean asc = !order.startsWith("-");
-				String orderField = asc ? order : order.substring(1);
-				SortOrder sortOrder = asc ? SortOrder.Asc : SortOrder.Desc;
-				switch (orderField) {
-					case "count" -> t.order(Collections.singletonMap("_count", sortOrder));
-					case "term" -> t.order(Collections.singletonMap("_key", sortOrder));
-					default -> t.order(Collections.singletonMap(getId() + "." + orderField, sortOrder));
-				}
-				return t;
-			})
-			.aggregations(getId(), Aggregation.of(sa -> sa.extendedStats(e -> e.field(vf))))
-		);
+		Aggregation terms = Aggregation.of(a -> a.terms(t -> {
+					t.field(termField).size(limit);
+					boolean asc = !order.startsWith("-");
+					String orderField = asc ? order : order.substring(1);
+					SortOrder sortOrder = asc ? SortOrder.Asc : SortOrder.Desc;
+					switch (orderField) {
+						case "count" -> t.order(Collections.singletonMap("_count", sortOrder));
+						case "term" -> t.order(Collections.singletonMap("_key", sortOrder));
+						default -> t.order(Collections.singletonMap(getId() + "." + orderField, sortOrder));
+					}
+					return t;
+				})
+				.aggregations(getId(), Aggregation.of(sa -> sa.extendedStats(e -> e.field(vf)))));
 		addAggregation(getId(), terms, builder);
 	}
 
@@ -102,13 +100,13 @@ public class ScoreboardFacet extends FilteredFacet {
 		return options -> {
 			String unit = options.get("unit");
 			return new ScoreboardFacet(
-				options.get("id"),
-				options.get("key_field"),
-				options.get("value_field"),
-				unit != null ? Units.valueOf(unit) : Unit.ONE,
-				options.get("order", String.class, "-count"),
-				options.get("limit", Integer.class, 10),
-				filterParser.parse(options.get("filter")));
+					options.get("id"),
+					options.get("key_field"),
+					options.get("value_field"),
+					unit != null ? Units.valueOf(unit) : Unit.ONE,
+					options.get("order", String.class, "-count"),
+					options.get("limit", Integer.class, 10),
+					filterParser.parse(options.get("filter")));
 		};
 	}
 }

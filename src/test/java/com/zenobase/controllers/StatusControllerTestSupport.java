@@ -3,10 +3,10 @@ package com.zenobase.controllers;
 import static org.mockito.Mockito.mock;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import io.helidon.webserver.http.HttpRouting;
-import com.google.inject.Injector;
 
 import com.zenobase.models.User;
 import com.zenobase.services.Bus;

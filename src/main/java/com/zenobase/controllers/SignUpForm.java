@@ -1,7 +1,6 @@
 package com.zenobase.controllers;
 
 import java.util.regex.Pattern;
-
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
@@ -42,22 +41,19 @@ public class SignUpForm extends DomainNode {
 	}
 
 	public boolean valid() {
-		return isValidUsername(getUsername()) &&
-			isValidPassword(getPassword()) &&
-			isValidEmail(getEmail());
+		return isValidUsername(getUsername()) && isValidPassword(getPassword()) && isValidEmail(getEmail());
 	}
 
 	public static boolean isValidUsername(String value) {
-		return !Strings.isNullOrEmpty(value) &&
-			!value.contains("zenobase") &&
-			!value.contains("admin") &&
-			!"guest".equalsIgnoreCase(value) &&
-			USERNAME_PATTERN.matcher(value).matches();
+		return !Strings.isNullOrEmpty(value)
+				&& !value.contains("zenobase")
+				&& !value.contains("admin")
+				&& !"guest".equalsIgnoreCase(value)
+				&& USERNAME_PATTERN.matcher(value).matches();
 	}
 
 	public static boolean isValidPassword(String value) {
-		return !Strings.isNullOrEmpty(value) &&
-			value.length() >= 8;
+		return !Strings.isNullOrEmpty(value) && value.length() >= 8;
 	}
 
 	public static boolean isValidEmail(String value) {

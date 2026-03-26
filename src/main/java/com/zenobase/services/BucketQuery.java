@@ -2,9 +2,7 @@ package com.zenobase.services;
 
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.ChildScoreMode;
-import org.opensearch.client.opensearch._types.query_dsl.NestedQuery;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
 
 import com.zenobase.json.RolesField;
 import com.zenobase.models.Bucket;
@@ -15,14 +13,10 @@ public class BucketQuery extends QuerySupport {
 	public static final SearchOrder DEFAULT_ORDER = new SearchOrder(Bucket.CREATED.getName(), false);
 
 	public BucketQuery principalEqualTo(Identity principal) {
-		add(Query.of(q -> q.nested(n -> n
-			.path(Bucket.ROLES.getName())
-			.query(Query.of(q2 -> q2.term(t -> t
-				.field(Bucket.ROLES.getName() + "." + RolesField.PRINCIPAL)
-				.value(FieldValue.of(principal.getId()))
-			)))
-			.scoreMode(ChildScoreMode.None)
-		)));
+		add(Query.of(q -> q.nested(n -> n.path(Bucket.ROLES.getName())
+				.query(Query.of(q2 -> q2.term(t -> t.field(Bucket.ROLES.getName() + "." + RolesField.PRINCIPAL)
+						.value(FieldValue.of(principal.getId())))))
+				.scoreMode(ChildScoreMode.None))));
 		return this;
 	}
 

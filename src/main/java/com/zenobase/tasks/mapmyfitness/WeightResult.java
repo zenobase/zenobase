@@ -1,9 +1,8 @@
 package com.zenobase.tasks.mapmyfitness;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
@@ -47,7 +46,9 @@ class WeightResult {
 	private Event newEvent(JsonNode node) {
 		var event = new Event();
 		event.addValue(Event.TAG, tag);
-		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("datetime_utc"), dateTimeZoneValue(node.path("datetime_timezone"))));
+		event.setValue(
+				Event.TIMESTAMP,
+				dateTimeValue(node.path("datetime_utc"), dateTimeZoneValue(node.path("datetime_timezone"))));
 		event.setValue(Event.WEIGHT, weightValue(node.path("mass")));
 		event.setValue(Event.PERCENTAGE, percentageValue(node.path("fat_percent")));
 		event.setValue(Event.SOURCE, SOURCE);
@@ -69,7 +70,9 @@ class WeightResult {
 
 	private DecimalMeasure<Mass> weightValue(JsonNode node) {
 		Unit<Mass> unit = imperial ? Units.LB : Units.KG;
-		return !isZero(node) ? Measures.valueOf(Measures.round(Measures.convert(node.asDouble(), unit), 1), unit) : null;
+		return !isZero(node)
+				? Measures.valueOf(Measures.round(Measures.convert(node.asDouble(), unit), 1), unit)
+				: null;
 	}
 
 	private Percentage percentageValue(JsonNode node) {

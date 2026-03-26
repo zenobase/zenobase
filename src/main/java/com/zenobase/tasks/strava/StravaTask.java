@@ -2,7 +2,6 @@ package com.zenobase.tasks.strava;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.models.Identity;

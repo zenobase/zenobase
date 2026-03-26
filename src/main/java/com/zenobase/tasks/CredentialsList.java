@@ -20,12 +20,12 @@ public class CredentialsList extends LazyList<Credentials> {
 	}
 
 	public static ObjectNode toJson(PartialList<Credentials> credentials) {
-    	ObjectNode node = Nodes.newObject();
-    	TOTAL.setValue(node, Ints.checkedCast(credentials.getTotal()));
-    	ArrayNode itemsNode = node.putArray("items");
-    	for (Credentials integration : credentials) {
-    		itemsNode.add(integration.sanitized().toJson());
-    	}
+		ObjectNode node = Nodes.newObject();
+		TOTAL.setValue(node, Ints.checkedCast(credentials.getTotal()));
+		ArrayNode itemsNode = node.putArray("items");
+		for (Credentials integration : credentials) {
+			itemsNode.add(integration.sanitized().toJson());
+		}
 		return node;
 	}
 }

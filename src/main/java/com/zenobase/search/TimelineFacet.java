@@ -2,8 +2,8 @@ package com.zenobase.search;
 
 import javax.measure.unit.Unit;
 
-import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.joda.time.DateTimeZone;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
@@ -27,8 +27,15 @@ public class TimelineFacet {
 				DateTimeZone timezone = options.get("timezone", DateTimeZone.class, null);
 				Query filter = filterParser.parse(options.get("filter"));
 				return timezone != null
-					? new OffsetTimelineFacet(id, keyField, valueField, interval, range, timezone, unit, filter)
-					: new LocalTimelineFacet(id, local(keyField), valueField.equals(keyField) ? local(valueField) : valueField, interval, range, unit, filter);
+						? new OffsetTimelineFacet(id, keyField, valueField, interval, range, timezone, unit, filter)
+						: new LocalTimelineFacet(
+								id,
+								local(keyField),
+								valueField.equals(keyField) ? local(valueField) : valueField,
+								interval,
+								range,
+								unit,
+								filter);
 			}
 
 			private Unit<?> getUnit(String value) {

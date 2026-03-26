@@ -1,7 +1,7 @@
 package com.zenobase.tasks.sleepcloud;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
@@ -70,10 +70,8 @@ public class SleepCloudResult {
 		if (node.isMissingNode()) {
 			return DateTimeZone.UTC;
 		}
-		String value = node.textValue()
-			.replace("GMT--", "-")
-			.replace("GMT-", "-")
-			.replace("GMT+", "+");
+		String value =
+				node.textValue().replace("GMT--", "-").replace("GMT-", "-").replace("GMT+", "+");
 		if (value.length() < 6) {
 			value = value.charAt(0) + "0" + value.substring(1);
 		}

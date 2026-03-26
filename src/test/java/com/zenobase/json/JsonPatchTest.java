@@ -80,7 +80,7 @@ public class JsonPatchTest {
 		nestedTo.put("bar", "xyz");
 		to.set("nested", nestedTo);
 
-		ObjectNode nestedExpected= Nodes.newObject();
+		ObjectNode nestedExpected = Nodes.newObject();
 		nestedExpected.put("foo", 41);
 		nestedExpected.put("bar", "xyz");
 		expected.set("nested", nestedExpected);
@@ -117,7 +117,7 @@ public class JsonPatchTest {
 		nestedTo.put("foo", 41);
 		to.set("nested", nestedTo);
 
-		ObjectNode nestedExpected= Nodes.newObject();
+		ObjectNode nestedExpected = Nodes.newObject();
 		nestedExpected.put("foo", 41);
 		expected.set("nested", nestedExpected);
 

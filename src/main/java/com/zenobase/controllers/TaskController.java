@@ -1,10 +1,9 @@
 package com.zenobase.controllers;
 
-import jakarta.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.DeleteTaskCommand;
@@ -36,9 +35,15 @@ public class TaskController extends ControllerSupport {
 	private final Bus bus;
 
 	@Inject
-	public TaskController(AuthorizationContext security, CommandDispatcher dispatcher,
-		TaskManagerRegistry registry, TaskRepository tasks, BucketRepository buckets, UserRepository users,
-		TaskRefresher refresher, Bus bus) {
+	public TaskController(
+			AuthorizationContext security,
+			CommandDispatcher dispatcher,
+			TaskManagerRegistry registry,
+			TaskRepository tasks,
+			BucketRepository buckets,
+			UserRepository users,
+			TaskRefresher refresher,
+			Bus bus) {
 
 		super(security);
 		this.dispatcher = dispatcher;
@@ -73,10 +78,10 @@ public class TaskController extends ControllerSupport {
 				setHeader(res, "Link", "<" + e.getCredentials().getAuthorizationUrl() + ">");
 			} catch (MissingCredentialsException e) {
 				setHeader(res, "X-Credentials", e.getExpectedType());
-	    	}
+			}
 		}
-    	sendOk(res, task.toJson());
-    }
+		sendOk(res, task.toJson());
+	}
 
 	public void update(ServerRequest req, ServerResponse res) {
 		String taskId = req.path().pathParameters().get("taskId");
@@ -90,35 +95,37 @@ public class TaskController extends ControllerSupport {
 			sendNotFound(res);
 			return;
 		}
-    	if (!task.isPermitted(auth)) {
-    		sendForbidden(res);
-    		return;
-    	}
-    	TaskManager manager = registry.find(task.getType());
-    	if (manager == null) {
-    		sendBadRequest(res, "unsupported task type: " + task.getType());
-    		return;
-    	}
-    	ObjectNode body = body(req);
-    	if (Nodes.size(body) != 1) {
-    		sendBadRequest(res, "no data");
-    		return;
-    	}
-    	Command command = null;
-    	ObjectNode settings = Task.SETTINGS.getValue(body);
-    	if (settings != null) {
-	    	command = UpdateTaskCommand.builder(task).set(Task.SETTINGS, task.getSettings(), settings).build();
-    	}
-    	if (command == null) {
-    		sendBadRequest(res, "nothing to do");
-    		return;
-    	}
-    	String commandId = dispatcher.dispatch(command);
+		if (!task.isPermitted(auth)) {
+			sendForbidden(res);
+			return;
+		}
+		TaskManager manager = registry.find(task.getType());
+		if (manager == null) {
+			sendBadRequest(res, "unsupported task type: " + task.getType());
+			return;
+		}
+		ObjectNode body = body(req);
+		if (Nodes.size(body) != 1) {
+			sendBadRequest(res, "no data");
+			return;
+		}
+		Command command = null;
+		ObjectNode settings = Task.SETTINGS.getValue(body);
+		if (settings != null) {
+			command = UpdateTaskCommand.builder(task)
+					.set(Task.SETTINGS, task.getSettings(), settings)
+					.build();
+		}
+		if (command == null) {
+			sendBadRequest(res, "nothing to do");
+			return;
+		}
+		String commandId = dispatcher.dispatch(command);
 		setHeader(res, COMMAND_ID, commandId);
-    	sendNoContent(res);
-    }
+		sendNoContent(res);
+	}
 
-    public void delete(ServerRequest req, ServerResponse res) {
+	public void delete(ServerRequest req, ServerResponse res) {
 		String taskId = req.path().pathParameters().get("taskId");
 		Authorization auth = getCurrentAuthorization(req);
 		if (auth == null) {
@@ -130,13 +137,13 @@ public class TaskController extends ControllerSupport {
 			sendNotFound(res);
 			return;
 		}
-    	Bucket bucket = buckets.find(task.getBucketId());
-    	if (bucket != null && !bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
-    		sendForbidden(res);
-    		return;
-    	}
-    	String commandId = dispatcher.dispatch(new DeleteTaskCommand(auth.getPrincipal(), task));
+		Bucket bucket = buckets.find(task.getBucketId());
+		if (bucket != null && !bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
+			sendForbidden(res);
+			return;
+		}
+		String commandId = dispatcher.dispatch(new DeleteTaskCommand(auth.getPrincipal(), task));
 		setHeader(res, COMMAND_ID, commandId);
-    	sendNoContent(res);
-    }
+		sendNoContent(res);
+	}
 }

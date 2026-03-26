@@ -1,11 +1,11 @@
 package com.zenobase;
 
 import com.google.inject.Injector;
+import io.helidon.http.HttpException;
 import io.helidon.webserver.http.HttpRouting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.helidon.http.HttpException;
 import com.zenobase.actions.GatekeeperFilter;
 import com.zenobase.actions.QuotaExceptionFilter;
 import com.zenobase.controllers.*;
@@ -24,7 +24,11 @@ class Routing {
 			ControllerSupport.sendError(res, e.status(), e.getMessage());
 		});
 		routing.error(Exception.class, (req, res, e) -> {
-			logger.error("Unhandled exception: {} {}", req.prologue().method(), req.prologue().uriPath().rawPath(), e);
+			logger.error(
+					"Unhandled exception: {} {}",
+					req.prologue().method(),
+					req.prologue().uriPath().rawPath(),
+					e);
 			ControllerSupport.sendInternalServerError(res, "internal error");
 		});
 
