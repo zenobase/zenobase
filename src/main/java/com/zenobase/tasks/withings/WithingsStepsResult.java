@@ -41,6 +41,7 @@ class WithingsStepsResult extends WithingsResult {
 		this.energyUnit = energyUnit;
 	}
 
+	@Override
 	public List<Event> getEvents() {
 		List<Event> events = new ArrayList<>();
 		for (JsonNode activityNode : node.path("body").path("activities")) {

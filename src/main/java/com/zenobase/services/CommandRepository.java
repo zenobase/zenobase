@@ -76,6 +76,7 @@ public class CommandRepository extends RepositorySupport<Command> {
 		return index.count();
 	}
 
+	@Override
 	public void refresh() {
 		index.refresh();
 	}

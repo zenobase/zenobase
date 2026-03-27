@@ -42,6 +42,7 @@ class WithingsSleepResult extends WithingsResult {
 		this.events.addAll(events);
 	}
 
+	@Override
 	public List<Event> getEvents() {
 		if (events.isEmpty()) {
 			for (JsonNode seriesNode : node.path("body").path("series")) {

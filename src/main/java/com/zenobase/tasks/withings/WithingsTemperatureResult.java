@@ -36,6 +36,7 @@ class WithingsTemperatureResult extends WithingsResult {
 		this.timezone = timezone;
 	}
 
+	@Override
 	public @Nullable String getMarker() {
 		return Strings.emptyToNull(node.path("body").path("updatetime").asText());
 	}

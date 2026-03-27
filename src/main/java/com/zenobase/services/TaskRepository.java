@@ -73,6 +73,7 @@ public class TaskRepository extends RepositorySupport<Task> {
 		super.find(query.build(), callback);
 	}
 
+	@Override
 	public void refresh() {
 		index.refresh();
 	}

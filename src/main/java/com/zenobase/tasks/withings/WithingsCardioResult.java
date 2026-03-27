@@ -28,10 +28,12 @@ class WithingsCardioResult extends WithingsResult {
 		this.timezone = timezone;
 	}
 
+	@Override
 	public @Nullable String getMarker() {
 		return Strings.emptyToNull(node.path("body").path("updatetime").asText());
 	}
 
+	@Override
 	public List<Event> getEvents() {
 		List<Event> events = new ArrayList<>();
 		for (JsonNode group : node.path("body").path("measuregrps")) {

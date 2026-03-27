@@ -11,10 +11,12 @@ public class StringBloomFilter implements StringFilter {
 		filter = BloomFilter.create(Funnels.unencodedCharsFunnel(), expectedSize, 0.001);
 	}
 
+	@Override
 	public void put(String value) {
 		filter.put(value);
 	}
 
+	@Override
 	public boolean mightContain(String value) {
 		return filter.mightContain(value);
 	}
