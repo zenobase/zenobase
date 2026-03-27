@@ -63,7 +63,7 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: zenobase
-          SENTRY_PROJECT: java-logback
+          SENTRY_PROJECT: zenobase-api
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
