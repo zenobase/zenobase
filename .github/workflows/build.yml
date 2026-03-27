@@ -55,16 +55,6 @@ jobs:
       - name: Package
         run: ./mvnw -B package -DskipTests
 
-      - name: Create Sentry release
-        run: |
-          npx @sentry/cli releases new "${{ github.sha }}"
-          npx @sentry/cli releases set-commits "${{ github.sha }}" --auto
-          npx @sentry/cli releases finalize "${{ github.sha }}"
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: zenobase
-          SENTRY_PROJECT: zenobase-api
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -91,3 +81,13 @@ jobs:
           tags: ${{ steps.ecr-login.outputs.registry }}/zenobase-api:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Create Sentry release
+        run: |
+          npx @sentry/cli releases new "${{ github.sha }}"
+          npx @sentry/cli releases set-commits "${{ github.sha }}" --auto
+          npx @sentry/cli releases finalize "${{ github.sha }}"
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: zenobase
+          SENTRY_PROJECT: zenobase-api
