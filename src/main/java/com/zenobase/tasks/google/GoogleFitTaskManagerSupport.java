@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
@@ -48,7 +49,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 			reauthorize(credentials);
 		}
 
-		Map<String, DataStream> streams = getDataStreams(credentials);
+		ImmutableMap<String, DataStream> streams = getDataStreams(credentials);
 
 		return execute(task.as(taskClass), streams, credentials, token);
 	}
@@ -62,7 +63,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 		throw new UnsupportedOperationException();
 	}
 
-	private Map<String, DataStream> getDataStreams(OAuthCredentials credentials) {
+	private ImmutableMap<String, DataStream> getDataStreams(OAuthCredentials credentials) {
 		var request = new OAuthRequest(Verb.GET, "https://www.googleapis.com/fitness/v1/users/me/dataSources");
 		Response response = send(request, credentials);
 		return Maps.uniqueIndex(new DataSourcesResult(parseObject(response)).get(), DataStream::getId);

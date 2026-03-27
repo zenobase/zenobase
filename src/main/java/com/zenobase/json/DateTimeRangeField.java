@@ -1,8 +1,7 @@
 package com.zenobase.json;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import org.joda.time.DateTime;
 
@@ -28,7 +27,7 @@ public class DateTimeRangeField extends DateTimeField {
 	@Override
 	public void prePersist(ObjectNode node) {
 		super.prePersist(node);
-		List<DateTime> values = getValues(node);
+		ImmutableList<DateTime> values = getValues(node);
 		min.setValue(node, Ordering.natural().min(values));
 		max.setValue(node, Ordering.natural().max(values));
 		min.prePersist(node);

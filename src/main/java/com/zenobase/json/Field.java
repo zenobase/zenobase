@@ -11,7 +11,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.ListMultimap;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.search.ConstraintBuilder;
@@ -22,7 +22,7 @@ public abstract class Field<T> {
 	private final String name;
 	private final Type type;
 	private final String schemaType;
-	private final Multimap<String, ConstraintBuilder> constraintBuilders = ArrayListMultimap.create();
+	private final ListMultimap<String, ConstraintBuilder> constraintBuilders = ArrayListMultimap.create();
 
 	protected Field(String name, Type type, String schemaType) {
 		this(name, name, type, schemaType);
@@ -165,7 +165,7 @@ public abstract class Field<T> {
 		field.configureSchema(properties.putObject(field.getName()));
 	}
 
-	public final Multimap<String, ConstraintBuilder> getConstraintBuilders() {
+	public final ListMultimap<String, ConstraintBuilder> getConstraintBuilders() {
 		return constraintBuilders;
 	}
 
@@ -173,7 +173,7 @@ public abstract class Field<T> {
 		constraintBuilders.put(path, constraint);
 	}
 
-	protected final void addAll(Multimap<String, ConstraintBuilder> constraints) {
+	protected final void addAll(ListMultimap<String, ConstraintBuilder> constraints) {
 		for (Map.Entry<String, ConstraintBuilder> entry : constraints.entries()) {
 			addConstraintBuilder(entry.getKey(), entry.getValue());
 		}

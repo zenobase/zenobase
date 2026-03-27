@@ -10,7 +10,7 @@ import javax.measure.DecimalMeasure;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.ListMultimap;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -51,8 +51,8 @@ class FitbitBurnIntradayResult extends FitbitResultSupport {
 		return sum;
 	}
 
-	private Multimap<DateTime, BigDecimal> valuesByHour() {
-		Multimap<DateTime, BigDecimal> values = LinkedListMultimap.create();
+	private ListMultimap<DateTime, BigDecimal> valuesByHour() {
+		LinkedListMultimap<DateTime, BigDecimal> values = LinkedListMultimap.create();
 		for (JsonNode recordNode : node.path("activities-calories-intraday").path("dataset")) {
 			DateTime hour =
 					toDateTimeFullHour(LocalTime.parse(recordNode.path("time").textValue()));

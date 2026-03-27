@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.ImmutableList;
 import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
 
@@ -38,7 +39,7 @@ public class DeleteEventsCommand extends Command {
 	}
 
 	private List<Event> getEvents() {
-		List<ObjectNode> nodes = getParameters(EVENTS);
+		ImmutableList<ObjectNode> nodes = getParameters(EVENTS);
 		List<Event> events = new ArrayList<>(nodes.size());
 		for (ObjectNode node : nodes) {
 			events.add(new Event(node));

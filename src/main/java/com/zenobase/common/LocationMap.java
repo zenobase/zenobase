@@ -1,9 +1,9 @@
 package com.zenobase.common;
 
-import java.util.List;
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
@@ -44,7 +44,7 @@ public class LocationMap {
 	}
 
 	public @Nullable Event update(Event event) {
-		List<DateTime> times = event.getValues(Event.TIMESTAMP);
+		ImmutableList<DateTime> times = event.getValues(Event.TIMESTAMP);
 		Preconditions.checkState(!times.isEmpty());
 		Location location = times.size() == 1
 				? get(times.get(0))

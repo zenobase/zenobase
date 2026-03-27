@@ -1,7 +1,5 @@
 package com.zenobase.tasks.netatmo;
 
-import java.util.Set;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -18,7 +16,7 @@ public class Device {
 	private final DateTime created;
 	private final DateTime updated;
 	private final Location location;
-	private final Set<String> types;
+	private final ImmutableSet<String> types;
 
 	public Device(
 			String id, String label, DateTime created, DateTime updated, Location location, Iterable<String> types) {

@@ -182,7 +182,7 @@ public class Units {
 		return unit.isStandardUnit() || DB.equals(unit);
 	}
 
-	public static <Q extends Quantity> Iterable<Unit<Q>> getUnits(Dimension dimension, Class<Q> type) {
+	public static <Q extends Quantity> List<Unit<Q>> getUnits(Dimension dimension, Class<Q> type) {
 		List<Unit<Q>> units = new ArrayList<>();
 		for (Unit<?> unit : SI.getInstance().getUnits()) {
 			if (unit.getDimension().equals(dimension)) {

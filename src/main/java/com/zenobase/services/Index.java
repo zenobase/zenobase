@@ -3,7 +3,6 @@ package com.zenobase.services;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
@@ -368,7 +367,7 @@ public class Index {
 	}
 
 	public boolean close() {
-		Set<String> aliases = aliases();
+		ImmutableSet<String> aliases = aliases();
 		if (aliases.isEmpty()) {
 			try {
 				return client.indices().close(c -> c.index(indexName)).acknowledged();
@@ -380,7 +379,7 @@ public class Index {
 		}
 	}
 
-	private Set<String> aliases() {
+	private ImmutableSet<String> aliases() {
 		try {
 			ImmutableSet.Builder<String> builder = ImmutableSet.builder();
 			client.indices()

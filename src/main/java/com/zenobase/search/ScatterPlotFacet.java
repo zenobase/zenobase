@@ -36,14 +36,15 @@ public class ScatterPlotFacet extends Facet {
 
 	public static final String TYPE = "scatterplot";
 
-	private static final Map<String, DurationFieldType> PERIODS = ImmutableMap.<String, DurationFieldType>builder()
-			.put("year", DurationFieldType.years())
-			.put("month", DurationFieldType.months())
-			.put("week", DurationFieldType.weeks())
-			.put("day", DurationFieldType.days())
-			.put("hour", DurationFieldType.hours())
-			.put("minute", DurationFieldType.minutes())
-			.build();
+	private static final ImmutableMap<String, DurationFieldType> PERIODS =
+			ImmutableMap.<String, DurationFieldType>builder()
+					.put("year", DurationFieldType.years())
+					.put("month", DurationFieldType.months())
+					.put("week", DurationFieldType.weeks())
+					.put("day", DurationFieldType.days())
+					.put("hour", DurationFieldType.hours())
+					.put("minute", DurationFieldType.minutes())
+					.build();
 
 	private final String keyField;
 	private final Series x, y;
