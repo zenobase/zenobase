@@ -8,7 +8,6 @@ import org.opensearch.client.opensearch._types.OpenSearchException;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.DeleteCredentialsCommand;
-import com.zenobase.json.Nodes;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CredentialsRepository;

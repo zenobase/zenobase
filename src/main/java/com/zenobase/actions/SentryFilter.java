@@ -1,12 +1,12 @@
 package com.zenobase.actions;
 
-import io.sentry.Sentry;
-import io.sentry.protocol.Request;
-import io.sentry.protocol.User;
 import io.helidon.webserver.http.Filter;
 import io.helidon.webserver.http.FilterChain;
 import io.helidon.webserver.http.RoutingRequest;
 import io.helidon.webserver.http.RoutingResponse;
+import io.sentry.Sentry;
+import io.sentry.protocol.Request;
+import io.sentry.protocol.User;
 import jakarta.inject.Inject;
 
 import com.zenobase.controllers.AuthorizationContext;

@@ -23,10 +23,7 @@ public class IHealthWeightTaskManager extends IHealthTaskManagerSupport<IHealthW
 				"weight",
 				sv,
 				(task, node) -> new IHealthWeightResult(
-						node,
-						task.getPrincipal(),
-						Objects.requireNonNull(task.getTag()),
-						task.getTimezone()));
+						node, task.getPrincipal(), Objects.requireNonNull(task.getTag()), task.getTimezone()));
 	}
 
 	@Override

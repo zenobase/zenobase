@@ -20,9 +20,9 @@ import io.helidon.webserver.cors.CorsPathConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zenobase.actions.SentryFilter;
 import com.zenobase.commands.*;
 import com.zenobase.common.Globals;
-import com.zenobase.actions.SentryFilter;
 import com.zenobase.controllers.*;
 import com.zenobase.mail.Mailer;
 import com.zenobase.mail.PasswordResetMailer;
@@ -67,7 +67,8 @@ public class Main {
 
 		Globals.put(Injector.class, injector);
 
-		Set<String> allowedOrigins = Set.copyOf(config.get("cors.allowed.origins").asList(String.class).orElse(List.of("https://zenobase.com")));
+		Set<String> allowedOrigins = Set.copyOf(
+				config.get("cors.allowed.origins").asList(String.class).orElse(List.of("https://zenobase.com")));
 		WebServer server = WebServer.builder()
 				.config(config.get("server"))
 				.addFeature(CorsFeature.builder()

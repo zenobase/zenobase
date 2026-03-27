@@ -74,8 +74,7 @@ class WeightResult {
 		Unit<Mass> unit = imperial ? Units.LB : Units.KG;
 		return !isZero(node)
 				? Measures.valueOf(
-						Objects.requireNonNull(Measures.round(Measures.convert(node.asDouble(), unit), 1)),
-						unit)
+						Objects.requireNonNull(Measures.round(Measures.convert(node.asDouble(), unit), 1)), unit)
 				: null;
 	}
 

@@ -42,8 +42,7 @@ class RunkeeperActivityResult {
 	private static @Nullable <Q extends Quantity> DecimalMeasure<Q> convertMeasureValue(JsonNode node, Unit<Q> unit) {
 		return !isZero(node)
 				? Measures.valueOf(
-						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 0)),
-						unit)
+						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 0)), unit)
 				: null;
 	}
 

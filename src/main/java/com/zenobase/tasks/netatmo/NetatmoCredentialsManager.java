@@ -72,8 +72,7 @@ public class NetatmoCredentialsManager extends OAuthCredentialsManager {
 		var request = new OAuthRequest(Verb.POST, "https://api.netatmo.net/oauth2/token");
 		request.addBodyParameter("grant_type", "refresh_token");
 		request.addBodyParameter(
-				"refresh_token",
-				((ExpiringToken) Objects.requireNonNull(credentials.getToken())).getRefreshToken());
+				"refresh_token", ((ExpiringToken) Objects.requireNonNull(credentials.getToken())).getRefreshToken());
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
 		request.addBodyParameter(OAuthConstants.CLIENT_SECRET, getApiSecret());
 		credentials.setToken(new OAuth2TokenExtractor().extract(request.send().getBody()));
@@ -82,7 +81,6 @@ public class NetatmoCredentialsManager extends OAuthCredentialsManager {
 	@Override
 	public void sign(OAuthRequest request, OAuthCredentials credentials) {
 		request.addQuerystringParameter(
-				"access_token",
-				Objects.requireNonNull(credentials.getToken()).getToken());
+				"access_token", Objects.requireNonNull(credentials.getToken()).getToken());
 	}
 }

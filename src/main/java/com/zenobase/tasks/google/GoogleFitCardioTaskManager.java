@@ -54,8 +54,7 @@ public class GoogleFitCardioTaskManager extends GoogleFitTaskManagerSupport<Goog
 						}
 						event.setValue(
 								Event.FREQUENCY,
-								Measures.valueOf(
-										Objects.requireNonNull(Measures.round(value, 0)), Units.BPM));
+								Measures.valueOf(Objects.requireNonNull(Measures.round(value, 0)), Units.BPM));
 						event.setValue(Event.AUTHOR, task.getPrincipal());
 						event.setValue(Event.SOURCE, stream.getSource());
 						events.add(event);

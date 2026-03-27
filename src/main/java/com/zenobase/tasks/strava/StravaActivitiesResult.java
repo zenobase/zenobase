@@ -92,17 +92,14 @@ class StravaActivitiesResult {
 	private @Nullable DecimalMeasure<Length> distanceValue(JsonNode node, Unit<Length> unit, int scale) {
 		return !isZero(node)
 				? Measures.valueOf(
-						Objects.requireNonNull(
-								Measures.round(Measures.convert(node.doubleValue(), unit), scale)),
-						unit)
+						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), scale)), unit)
 				: null;
 	}
 
 	private @Nullable DecimalMeasure<Velocity> velocityValue(JsonNode node, Unit<Velocity> unit) {
 		return !isZero(node)
 				? Measures.valueOf(
-						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)),
-						unit)
+						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)), unit)
 				: null;
 	}
 

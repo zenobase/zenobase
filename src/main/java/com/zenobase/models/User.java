@@ -7,8 +7,8 @@ import com.google.common.base.MoreObjects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
-import com.zenobase.common.BCryptUtils;
 
+import com.zenobase.common.BCryptUtils;
 import com.zenobase.common.Generator;
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DateTimeField;

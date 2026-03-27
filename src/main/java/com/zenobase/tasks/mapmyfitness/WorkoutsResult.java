@@ -89,8 +89,7 @@ class WorkoutsResult {
 		Unit<Length> unit = imperial ? Units.MI : Units.KM;
 		return !isZero(node)
 				? Measures.valueOf(
-						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)),
-						unit)
+						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)), unit)
 				: null;
 	}
 
@@ -98,8 +97,7 @@ class WorkoutsResult {
 		Unit<Velocity> unit = imperial ? Units.MPH : Units.KMH;
 		return !isZero(node)
 				? Measures.valueOf(
-						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)),
-						unit)
+						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)), unit)
 				: null;
 	}
 

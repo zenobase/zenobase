@@ -41,8 +41,7 @@ class RunkeeperWeightResult extends RunkeeperResultSupport {
 	private @Nullable DecimalMeasure<Mass> massValue(JsonNode node) {
 		return !isZero(node)
 				? Measures.valueOf(
-						Objects.requireNonNull(
-								Measures.convert(node.doubleValue(), Objects.requireNonNull(unit))),
+						Objects.requireNonNull(Measures.convert(node.doubleValue(), Objects.requireNonNull(unit))),
 						Objects.requireNonNull(unit))
 				: null;
 	}

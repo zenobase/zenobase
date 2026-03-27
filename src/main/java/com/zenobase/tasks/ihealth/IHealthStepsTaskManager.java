@@ -23,10 +23,7 @@ public class IHealthStepsTaskManager extends IHealthTaskManagerSupport<IHealthSt
 				"activity",
 				sv,
 				(task, node) -> new IHealthStepsResult(
-						node,
-						task.getPrincipal(),
-						Objects.requireNonNull(task.getTag()),
-						task.getTimezone()));
+						node, task.getPrincipal(), Objects.requireNonNull(task.getTag()), task.getTimezone()));
 	}
 
 	@Override

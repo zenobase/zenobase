@@ -128,8 +128,7 @@ abstract class HexoskinResultSupport {
 	private @Nullable DecimalMeasure<Length> distanceValue(JsonNode node) {
 		return !isZero(node) && isPositive(node)
 				? Measures.valueOf(
-						Objects.requireNonNull(
-								Measures.round(Measures.convert(node.doubleValue(), distanceUnit), 2)),
+						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), distanceUnit), 2)),
 						distanceUnit)
 				: null;
 	}
