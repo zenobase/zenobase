@@ -3,6 +3,7 @@ package com.zenobase;
 import java.time.Duration;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.google.common.base.Strings;
 import com.google.inject.AbstractModule;
@@ -14,9 +15,14 @@ import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import io.helidon.config.Config;
 import io.helidon.config.ConfigSources;
+import io.helidon.health.HealthCheckResponse;
+import io.helidon.health.HealthCheckType;
 import io.helidon.webserver.WebServer;
 import io.helidon.webserver.cors.CorsFeature;
 import io.helidon.webserver.cors.CorsPathConfig;
+import io.helidon.webserver.observe.ObserveFeature;
+import io.helidon.webserver.observe.health.HealthObserver;
+import org.opensearch.client.opensearch._types.HealthStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,10 +73,39 @@ public class Main {
 
 		Globals.put(Injector.class, injector);
 
+		AtomicBoolean ready = new AtomicBoolean(false);
+		IndexManager indexManager = injector.getInstance(IndexManager.class);
+		ObserveFeature observeFeature = ObserveFeature.builder()
+				.addObserver(HealthObserver.builder()
+						.useSystemServices(false)
+						.addCheck(
+								() -> HealthCheckResponse.builder().status(true).build(),
+								HealthCheckType.LIVENESS,
+								"server")
+						.addCheck(
+								() -> HealthCheckResponse.builder()
+										.status(ready.get())
+										.build(),
+								HealthCheckType.STARTUP,
+								"startup")
+						.addCheck(
+								() -> HealthCheckResponse.builder()
+										.status(indexManager
+														.getCluster()
+														.getHealth()
+														.status()
+												!= HealthStatus.Red)
+										.build(),
+								HealthCheckType.READINESS,
+								"opensearch")
+						.build())
+				.build();
+
 		Set<String> allowedOrigins = Set.copyOf(
 				config.get("cors.allowed.origins").asList(String.class).orElse(List.of("https://zenobase.com")));
 		WebServer server = WebServer.builder()
 				.config(config.get("server"))
+				.addFeature(observeFeature)
 				.addFeature(CorsFeature.builder()
 						.addPath(CorsPathConfig.builder()
 								.pathPattern("/{+}")
@@ -98,6 +133,7 @@ public class Main {
 		replay(injector, config);
 		enableWrites(injector);
 		startScheduler(injector);
+		ready.set(true);
 	}
 
 	static Injector createInjector(Config config) {

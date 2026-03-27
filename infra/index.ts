@@ -494,13 +494,13 @@ const tg = new aws.lb.TargetGroup("zenobase-tg", {
     vpcId: vpc.id,
     targetType: "ip",
     healthCheck: {
-        path: "/status",
+        path: "/observe/health/ready",
         port: "9000",
         protocol: "HTTP",
         healthyThreshold: 2,
-        unhealthyThreshold: 5,
-        timeout: 10,
-        interval: 30,
+        unhealthyThreshold: 3,
+        timeout: 5,
+        interval: 10,
     },
     deregistrationDelay: 60,
     tags: { Name: "zenobase" },
@@ -713,7 +713,7 @@ new aws.ecs.Service("zenobase-service", {
         containerName: "api",
         containerPort: 9000,
     }],
-    healthCheckGracePeriodSeconds: 21600, // 6h, to allow migrations to complete
+    healthCheckGracePeriodSeconds: 60, // allow time for container startup before health checks begin
     deploymentCircuitBreaker: {
         enable: true,
         rollback: true,
