@@ -613,11 +613,6 @@ new aws.wafv2.WebAclAssociation("zenobase-waf-alb", {
 
 // ---------- Secrets Manager ----------
 
-new aws.secretsmanager.Secret("zenobase-prod-conf", {
-    name: "zenobase/prod-conf",
-    description: "Zenobase production configuration (deprecated, use zenobase/prod/zenobase-api-config)",
-}, { retainOnDelete: true });
-
 const apiConfig = new aws.secretsmanager.Secret("zenobase-prod-api-config", {
     name: "zenobase/prod/zenobase-api-config",
     description: "Zenobase API application configuration",
