@@ -7,7 +7,7 @@ import com.google.common.base.MoreObjects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
-import org.mindrot.jbcrypt.BCrypt;
+import com.zenobase.common.BCryptUtils;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.BooleanField;
@@ -69,7 +69,7 @@ public class User extends DomainNode {
 	}
 
 	public static String hashPassword(String password) {
-		return BCrypt.hashpw(password);
+		return BCryptUtils.hashpw(password);
 	}
 
 	public void setHashedPassword(String hashed) {
@@ -82,7 +82,7 @@ public class User extends DomainNode {
 
 	public boolean passwordEquals(String password) {
 		String hashed = getHashedPassword();
-		return hashed != null && BCrypt.checkpw(password, hashed);
+		return hashed != null && BCryptUtils.checkpw(password, hashed);
 	}
 
 	public @Nullable String getEmail() {

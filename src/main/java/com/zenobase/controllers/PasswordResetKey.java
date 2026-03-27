@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.mindrot.jbcrypt.BCrypt;
+import com.zenobase.common.BCryptUtils;
 
 import com.zenobase.models.User;
 
@@ -29,7 +29,7 @@ public class PasswordResetKey {
 	}
 
 	public String getKey() {
-		return BCrypt.hashpw(concatenate());
+		return BCryptUtils.hashpw(concatenate());
 	}
 
 	public String getExpirationToken() {
@@ -37,7 +37,7 @@ public class PasswordResetKey {
 	}
 
 	public boolean validate(String key) {
-		return key.length() > 50 && expires.isAfter(System.currentTimeMillis()) && BCrypt.checkpw(concatenate(), key);
+		return key.length() > 50 && expires.isAfter(System.currentTimeMillis()) && BCryptUtils.checkpw(concatenate(), key);
 	}
 
 	private String concatenate() {

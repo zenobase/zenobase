@@ -227,6 +227,11 @@
             <version>33.5.0-jre</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -238,10 +243,7 @@
                 <version>2.44.5</version>
                 <configuration>
                     <java>
-                        <excludes>
-                            <exclude>src/main/java/org/mindrot/jbcrypt/BCrypt.java</exclude>
-                        </excludes>
-                        <palantirJavaFormat>
+<palantirJavaFormat>
                             <version>2.89.0</version>
                         </palantirJavaFormat>
                         <removeUnusedImports/>
@@ -262,7 +264,7 @@
                     <compilerArgs>
                         <arg>-XDcompilePolicy=simple</arg>
                         <arg>--should-stop=ifError=FLOW</arg>
-                        <arg>-Xplugin:ErrorProne -XepDisableAllChecks -XepOpt:NullAway:OnlyNullMarked=true -Xep:NullAway:ERROR -XepExcludedPaths:.*/src/test/.*|.*/org/mindrot/.*</arg>
+                        <arg>-Xplugin:ErrorProne -XepDisableAllChecks -XepOpt:NullAway:OnlyNullMarked=true -Xep:NullAway:ERROR -XepExcludedPaths:.*/src/test/.*</arg>
                     </compilerArgs>
                     <annotationProcessorPaths>
                         <path>

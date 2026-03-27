@@ -1,7 +1,7 @@
 package com.zenobase.controllers;
 
 import com.google.common.base.Joiner;
-import org.mindrot.jbcrypt.BCrypt;
+import com.zenobase.common.BCryptUtils;
 
 public class EmailVerificationKey {
 
@@ -14,11 +14,11 @@ public class EmailVerificationKey {
 	}
 
 	public String getKey() {
-		return BCrypt.hashpw(concatenate());
+		return BCryptUtils.hashpw(concatenate());
 	}
 
 	public boolean validate(String key) {
-		return key.length() > 50 && BCrypt.checkpw(concatenate(), key);
+		return key.length() > 50 && BCryptUtils.checkpw(concatenate(), key);
 	}
 
 	private String concatenate() {
