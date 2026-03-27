@@ -83,7 +83,6 @@ public class CredentialsController extends ControllerSupport {
 			sendBadRequest(res, "expected a single property");
 			return;
 		}
-		Command command = null;
 		ObjectNode config = Credentials.CREDENTIALS.getValue(body);
 		if (config == null) {
 			sendBadRequest(res, "no credentials specified");
@@ -93,7 +92,7 @@ public class CredentialsController extends ControllerSupport {
 			sendBadRequest(res, "credentials are already authorized");
 			return;
 		}
-		command = manager.authorize(credentials, config);
+		Command command = manager.authorize(credentials, config);
 		if (command == null) {
 			sendBadRequest(res, "nothing to do");
 			return;

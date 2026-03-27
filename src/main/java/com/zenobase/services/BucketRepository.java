@@ -44,7 +44,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 
 	public void store(Bucket bucket, DateTime timestamp) {
 		realias(bucket);
-		index.store(bucket.getId(), bucket.toJson(), timestamp, true);
+		index.store(bucket.getId(), bucket.toJson(), true);
 	}
 
 	public void realias(Bucket bucket) {
@@ -60,7 +60,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 		}
 		DomainNode.SEQ_NO.setValue(to.toJson(), DomainNode.SEQ_NO.getValue(from.toJson()));
 		DomainNode.PRIMARY_TERM.setValue(to.toJson(), DomainNode.PRIMARY_TERM.getValue(from.toJson()));
-		index.update(to.getId(), to.toJson(), timestamp, true);
+		index.update(to.getId(), to.toJson(), true);
 	}
 
 	public boolean delete(String bucketId) {

@@ -5,7 +5,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.FieldValue;
@@ -44,7 +43,7 @@ public class CommandRepository extends RepositorySupport<Command> {
 	}
 
 	public void put(Command command) {
-		index.store(command.getId(), command.toJson(), DateTime.now(DateTimeZone.UTC), false);
+		index.store(command.getId(), command.toJson(), false);
 	}
 
 	public @Nullable Command find(String id) {

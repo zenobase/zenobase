@@ -37,11 +37,11 @@ public class UserRepository extends RepositorySupport<User> {
 	}
 
 	public void store(User user, DateTime timestamp) {
-		index.store(Objects.requireNonNull(user.getName()), user.toJson(), timestamp, true);
+		index.store(Objects.requireNonNull(user.getName()), user.toJson(), true);
 	}
 
 	public void update(User user, DateTime timestamp) {
-		index.update(Objects.requireNonNull(user.getName()), user.toJson(), timestamp, true);
+		index.update(Objects.requireNonNull(user.getName()), user.toJson(), true);
 	}
 
 	public boolean delete(User user) {

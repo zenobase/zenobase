@@ -34,11 +34,11 @@ public class CredentialsRepository extends RepositorySupport<Credentials> {
 	}
 
 	public void store(Credentials credentials, DateTime timestamp) {
-		this.index.store(credentials.getId(), credentials.toJson(), timestamp, true);
+		this.index.store(credentials.getId(), credentials.toJson(), true);
 	}
 
 	public void update(Credentials credentials, DateTime timestamp) {
-		index.update(credentials.getId(), credentials.toJson(), timestamp, true);
+		index.update(credentials.getId(), credentials.toJson(), true);
 	}
 
 	public boolean delete(String credentialsId) {

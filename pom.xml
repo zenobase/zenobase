@@ -281,7 +281,22 @@
                     <compilerArgs>
                         <arg>-XDcompilePolicy=simple</arg>
                         <arg>--should-stop=ifError=FLOW</arg>
-                        <arg>-Xplugin:ErrorProne -XepDisableAllChecks -XepOpt:NullAway:OnlyNullMarked=true -Xep:NullAway:ERROR -Xep:MissingOverride:ERROR -Xep:ImmutableEnumChecker:ERROR -Xep:CheckReturnValue:ERROR -Xep:ReturnValueIgnored:ERROR -Xep:MutablePublicArray:ERROR -Xep:MutableConstantField:ERROR -XepExcludedPaths:.*/src/test/.*</arg>
+                        <arg>
+                            -Xplugin:ErrorProne
+                            -XepExcludedPaths:.*/src/test/.*
+                            -XepDisableAllChecks
+                            -Xep:BoxedPrimitiveEquality:OFF
+                            -Xep:CheckReturnValue:ERROR
+                            -Xep:ImmutableEnumChecker:ERROR
+                            -Xep:MissingOverride:ERROR
+                            -Xep:NullAway:ERROR
+                            -XepOpt:NullAway:OnlyNullMarked=true
+                            -Xep:MutableConstantField:ERROR
+                            -Xep:MutablePublicArray:ERROR
+                            -Xep:ReturnValueIgnored:ERROR
+                            -Xep:UnnecessaryLambda:OFF
+                            -Xep:UnusedVariable:ERROR
+                        </arg>
                     </compilerArgs>
                     <annotationProcessorPaths>
                         <path>

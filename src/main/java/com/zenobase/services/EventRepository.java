@@ -46,7 +46,7 @@ public class EventRepository {
 
 	public void add(String bucketId, Event event, DateTime timestamp) {
 		event.prePersist(bucketId);
-		getIndex(bucketId).store(event.getId(), event.toJson(), timestamp, false);
+		getIndex(bucketId).store(event.getId(), event.toJson(), false);
 		event.postPersist();
 	}
 
@@ -54,7 +54,7 @@ public class EventRepository {
 		for (Event event : events) {
 			event.prePersist(bucketId);
 		}
-		getIndex(bucketId).store(events, timestamp, false);
+		getIndex(bucketId).store(events, false);
 		for (Event event : events) {
 			event.postPersist();
 		}
@@ -64,7 +64,7 @@ public class EventRepository {
 		DomainNode.SEQ_NO.setValue(event.toJson(), DomainNode.SEQ_NO.getValue(from.toJson()));
 		DomainNode.PRIMARY_TERM.setValue(event.toJson(), DomainNode.PRIMARY_TERM.getValue(from.toJson()));
 		event.prePersist(bucketId);
-		getIndex(bucketId).update(event.getId(), event.toJson(), timestamp, false);
+		getIndex(bucketId).update(event.getId(), event.toJson(), false);
 		event.postPersist();
 	}
 

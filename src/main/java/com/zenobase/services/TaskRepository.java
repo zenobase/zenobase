@@ -32,11 +32,11 @@ public class TaskRepository extends RepositorySupport<Task> {
 	}
 
 	public void store(Task task, DateTime timestamp) {
-		this.index.store(task.getId(), task.toJson(), timestamp, false);
+		this.index.store(task.getId(), task.toJson(), false);
 	}
 
 	public void update(Task task, DateTime timestamp) {
-		index.update(task.getId(), task.toJson(), timestamp, false);
+		index.update(task.getId(), task.toJson(), false);
 	}
 
 	public boolean delete(String taskId) {

@@ -3,7 +3,6 @@ package com.zenobase.json;
 import static com.zenobase.testing.NodeAssert.assertThat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.joda.time.DateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +41,7 @@ public abstract class FieldTestSupport<T> extends OpenSearchTestSupport {
 		field.setValue(node, value);
 		field.prePersist(node);
 		String id = Generator.id();
-		index.store(id, node, DateTime.now(), true);
+		index.store(id, node, true);
 		field.postPersist(node);
 		ObjectNode foundNode = index.get(id);
 		assertThat(Nodes.readObject(foundNode.toString()))

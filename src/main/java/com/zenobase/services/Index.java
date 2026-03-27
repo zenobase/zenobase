@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
-import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.OpType;
@@ -92,19 +91,19 @@ public class Index {
 		}
 	}
 
-	public void store(String id, ObjectNode node, DateTime timestamp, boolean refresh) {
-		index(id, node, OpType.Create, timestamp, refresh);
+	public void store(String id, ObjectNode node, boolean refresh) {
+		index(id, node, OpType.Create, refresh);
 	}
 
-	public void store(List<? extends DomainNode> nodes, DateTime timestamp, boolean refresh) {
-		index(nodes, OpType.Create, timestamp, refresh);
+	public void store(List<? extends DomainNode> nodes, boolean refresh) {
+		index(nodes, OpType.Create, refresh);
 	}
 
-	public void update(String id, ObjectNode node, DateTime timestamp, boolean refresh) {
-		index(id, node, OpType.Index, timestamp, refresh);
+	public void update(String id, ObjectNode node, boolean refresh) {
+		index(id, node, OpType.Index, refresh);
 	}
 
-	private void index(String id, ObjectNode node, OpType operation, DateTime timestamp, boolean refresh) {
+	private void index(String id, ObjectNode node, OpType operation, boolean refresh) {
 		try {
 			IndexRequest.Builder<ObjectNode> builder = new IndexRequest.Builder<ObjectNode>()
 					.index(indexName)
@@ -129,7 +128,7 @@ public class Index {
 		}
 	}
 
-	private void index(List<? extends DomainNode> nodes, OpType operation, DateTime timestamp, boolean refresh) {
+	private void index(List<? extends DomainNode> nodes, OpType operation, boolean refresh) {
 		int BATCH_SIZE = 10000;
 		for (int begin = 0; begin < nodes.size(); begin += BATCH_SIZE) {
 			List<BulkOperation> operations = new ArrayList<>();

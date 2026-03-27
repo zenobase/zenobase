@@ -7,8 +7,6 @@ import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
@@ -35,8 +33,6 @@ import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
 
 public class UserController extends ControllerSupport {
-
-	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	private final UserRepository users;
 	private final AuthorizationRepository authorizations;
@@ -94,7 +90,7 @@ public class UserController extends ControllerSupport {
 			return;
 		}
 		if (form.getPassword() != null) {
-			updatePassword(req, res, form, user);
+			updatePassword(res, form, user);
 			return;
 		}
 		if (form.isVerified()) {
@@ -145,7 +141,7 @@ public class UserController extends ControllerSupport {
 		sendNoContent(res);
 	}
 
-	private void updatePassword(ServerRequest req, ServerResponse res, UpdateUserForm form, User user) {
+	private void updatePassword(ServerResponse res, UpdateUserForm form, User user) {
 		String key = form.getKey();
 		if (key == null) {
 			sendBadRequest(res, "missing key field");

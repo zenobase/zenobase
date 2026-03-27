@@ -29,16 +29,16 @@ public class OpenGraphController extends ControllerSupport {
 		String url = req.query().first("url").orElse(null);
 		if (url == null || !url.startsWith("http")) {
 			if (url != null) {
-				get(req, res, "http://" + url);
+				get(res, "http://" + url);
 				return;
 			}
 			sendBadRequest(res, "Invalid URL: " + url);
 			return;
 		}
-		get(req, res, url);
+		get(res, url);
 	}
 
-	private void get(ServerRequest req, ServerResponse res, String url) {
+	private void get(ServerResponse res, String url) {
 		if (!isValid(url)) {
 			sendBadRequest(res, "Invalid URL: " + url);
 			return;
