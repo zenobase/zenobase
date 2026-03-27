@@ -47,26 +47,6 @@ const ghActionsRole = new aws.iam.Role("zenobase-github-actions", {
     tags: { Name: "zenobase-github-actions" },
 });
 
-const ghActionsPolicies = [
-    "AmazonEC2FullAccess",
-    "AmazonVPCFullAccess",
-    "ElasticLoadBalancingFullAccess",
-    "AmazonEC2ContainerRegistryFullAccess",
-    "IAMFullAccess",
-    "SecretsManagerReadWrite",
-    "CloudWatchFullAccess",
-    "AmazonS3FullAccess",
-    "AmazonSESFullAccess",
-    "AmazonOpenSearchServiceFullAccess",
-];
-
-for (const policy of ghActionsPolicies) {
-    new aws.iam.RolePolicyAttachment(`zenobase-github-actions-${policy}`, {
-        role: ghActionsRole.name,
-        policyArn: `arn:aws:iam::aws:policy/${policy}`,
-    });
-}
-
 // ---------- VPC ----------
 
 const vpc = new aws.ec2.Vpc("zenobase-vpc", {
@@ -630,6 +610,63 @@ new aws.cloudwatch.LogGroup("zenobase-api-logs", {
 const cluster = new aws.ecs.Cluster("zenobase-cluster", {
     name: "zenobase",
     tags: { Name: "zenobase" },
+});
+
+new aws.iam.RolePolicy("zenobase-github-actions-policy", {
+    role: ghActionsRole.name,
+    policy: pulumi.all([ecrRepo.arn, cluster.arn, ecsExecutionRole.arn, ecsTaskRole.arn]).apply(
+        ([repoArn, clusterArn, execRoleArn, taskRoleArn]) => JSON.stringify({
+            Version: "2012-10-17",
+            Statement: [
+                {
+                    Effect: "Allow",
+                    Action: "ecr:GetAuthorizationToken",
+                    Resource: "*",
+                },
+                {
+                    Effect: "Allow",
+                    Action: [
+                        "ecr:BatchCheckLayerAvailability",
+                        "ecr:PutImage",
+                        "ecr:InitiateLayerUpload",
+                        "ecr:UploadLayerPart",
+                        "ecr:CompleteLayerUpload",
+                        "ecr:BatchGetImage",
+                        "ecr:GetDownloadUrlForLayer",
+                    ],
+                    Resource: repoArn,
+                },
+                {
+                    Effect: "Allow",
+                    Action: [
+                        "ecs:RegisterTaskDefinition",
+                        "ecs:DeregisterTaskDefinition",
+                        "ecs:DescribeTaskDefinition",
+                        "ecs:ListTaskDefinitions",
+                    ],
+                    Resource: "*",
+                },
+                {
+                    Effect: "Allow",
+                    Action: [
+                        "ecs:DescribeServices",
+                        "ecs:UpdateService",
+                    ],
+                    Resource: `arn:aws:ecs:*:*:service/zenobase/*`,
+                },
+                {
+                    Effect: "Allow",
+                    Action: "ecs:DescribeClusters",
+                    Resource: clusterArn,
+                },
+                {
+                    Effect: "Allow",
+                    Action: "iam:PassRole",
+                    Resource: [execRoleArn, taskRoleArn],
+                },
+            ],
+        }),
+    ),
 });
 
 const opensearchReplayUrl = opensearchReplayDomain
