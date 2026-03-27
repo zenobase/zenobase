@@ -40,7 +40,10 @@ abstract class TimelineFacetSupport extends FilteredFacet {
 		return node;
 	}
 
-	protected void addValue(ObjectNode parent, String property, Double value) {
+	protected void addValue(ObjectNode parent, String property, @Nullable Double value) {
+		if (value == null) {
+			return;
+		}
 		if (Doubles.isFinite(value)) {
 			if (unit != Unit.ONE) {
 				ObjectNode node = parent.putObject(property);
