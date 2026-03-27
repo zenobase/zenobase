@@ -59,8 +59,7 @@ public class Main {
 				.addObserver(HealthObserver.builder()
 						.useSystemServices(false)
 						.details(true)
-						.addCheck(
-								createServerCheck(injector.getInstance(Bus.class)), HealthCheckType.LIVENESS, "server")
+						.addCheck(createServerCheck(), HealthCheckType.LIVENESS, "server")
 						.addCheck(createStartupCheck(ready), HealthCheckType.STARTUP, "startup")
 						.addCheck(
 								createOpenSearchCheck(injector.getInstance(IndexManager.class)),
@@ -70,12 +69,8 @@ public class Main {
 				.build();
 	}
 
-	private Supplier<HealthCheckResponse> createServerCheck(Bus bus) {
-		return () -> HealthCheckResponse.builder()
-				.status(true)
-				.detail("read_only", bus.isReadOnly())
-				.detail("scheduler_disabled", bus.isSchedulerDisabled())
-				.build();
+	private Supplier<HealthCheckResponse> createServerCheck() {
+		return () -> HealthCheckResponse.builder().status(true).build();
 	}
 
 	private Supplier<HealthCheckResponse> createStartupCheck(AtomicBoolean ready) {

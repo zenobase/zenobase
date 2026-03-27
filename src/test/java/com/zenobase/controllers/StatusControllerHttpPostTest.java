@@ -4,6 +4,7 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import org.junit.jupiter.api.Test;
 
@@ -17,18 +18,18 @@ public class StatusControllerHttpPostTest extends StatusControllerTestSupport {
 		when(bus.isReadOnly()).thenReturn(false);
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		try (Http1ClientResponse result = call(new StatusInfo(true).toJson())) {
+		try (Http1ClientResponse result = call(new StatusInfo(true, false).toJson())) {
 			assertThat(result).hasStatus(204);
 			verify(bus).setReadOnly(true);
 		}
 	}
 
 	@Test
-	public void testDisableReadOnly() {
+	public void testDisableReadOnly() throws Exception {
 		when(bus.isReadOnly()).thenReturn(true);
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		try (Http1ClientResponse result = call(new StatusInfo(false).toJson())) {
+		try (Http1ClientResponse result = call(new ObjectMapper().readTree("{\"read_only\":false}"))) {
 			assertThat(result).hasStatus(204);
 			verify(bus).setReadOnly(false);
 		}
@@ -37,7 +38,7 @@ public class StatusControllerHttpPostTest extends StatusControllerTestSupport {
 	@Test
 	public void testUnauthorized() {
 		when(bus.isReadOnly()).thenReturn(false);
-		try (Http1ClientResponse result = call(new StatusInfo(true).toJson())) {
+		try (Http1ClientResponse result = call(new StatusInfo(true, false).toJson())) {
 			assertThat(result).hasStatus(401);
 			verify(bus, never()).setReadOnly(true);
 		}
@@ -47,7 +48,7 @@ public class StatusControllerHttpPostTest extends StatusControllerTestSupport {
 	public void testForbidden() {
 		when(bus.isReadOnly()).thenReturn(false);
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		try (Http1ClientResponse result = call(new StatusInfo(true).toJson())) {
+		try (Http1ClientResponse result = call(new StatusInfo(true, false).toJson())) {
 			assertThat(result).hasStatus(403);
 			verify(bus, never()).setReadOnly(true);
 		}
