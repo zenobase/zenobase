@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 import com.google.common.base.Strings;
 import com.google.inject.Guice;
@@ -41,7 +42,7 @@ public class Main {
 	}
 
 	private Config createConfig() {
-		String overridePath = System.getProperty("config.file", "conf/application-local.yaml");
+		var overridePath = System.getProperty("config.file", "conf/application-local.yaml");
 		return Config.builder()
 				.addSource(ConfigSources.environmentVariables())
 				.addSource(ConfigSources.file(overridePath).optional())
@@ -54,36 +55,46 @@ public class Main {
 	}
 
 	private ObserveFeature createObserveFeature(AtomicBoolean ready, Injector injector) {
-		IndexManager indexManager = injector.getInstance(IndexManager.class);
 		return ObserveFeature.builder()
 				.addObserver(HealthObserver.builder()
 						.useSystemServices(false)
+						.details(true)
 						.addCheck(
-								() -> HealthCheckResponse.builder().status(true).build(),
-								HealthCheckType.LIVENESS,
-								"server")
+								createServerCheck(injector.getInstance(Bus.class)), HealthCheckType.LIVENESS, "server")
+						.addCheck(createStartupCheck(ready), HealthCheckType.STARTUP, "startup")
 						.addCheck(
-								() -> HealthCheckResponse.builder()
-										.status(ready.get())
-										.build(),
-								HealthCheckType.STARTUP,
-								"startup")
-						.addCheck(
-								() -> HealthCheckResponse.builder()
-										.status(indexManager
-														.getCluster()
-														.getHealth()
-														.status()
-												!= HealthStatus.Red)
-										.build(),
+								createOpenSearchCheck(injector.getInstance(IndexManager.class)),
 								HealthCheckType.READINESS,
 								"opensearch")
 						.build())
 				.build();
 	}
 
+	private Supplier<HealthCheckResponse> createServerCheck(Bus bus) {
+		return () -> HealthCheckResponse.builder()
+				.status(true)
+				.detail("read_only", bus.isReadOnly())
+				.detail("scheduler_disabled", bus.isSchedulerDisabled())
+				.build();
+	}
+
+	private Supplier<HealthCheckResponse> createStartupCheck(AtomicBoolean ready) {
+		return () -> HealthCheckResponse.builder().status(ready.get()).build();
+	}
+
+	private Supplier<HealthCheckResponse> createOpenSearchCheck(IndexManager indexManager) {
+		return () -> {
+			var health = indexManager.getCluster().getHealth();
+			return HealthCheckResponse.builder()
+					.status(health.status() != HealthStatus.Red)
+					.detail("status", health.status().jsonValue())
+					.detail("data_nodes", health.numberOfDataNodes())
+					.build();
+		};
+	}
+
 	private CorsFeature createCorsFeature(Config config) {
-		Set<String> allowedOrigins = Set.copyOf(
+		var allowedOrigins = Set.copyOf(
 				config.get("cors.allowed.origins").asList(String.class).orElse(List.of("https://zenobase.com")));
 		return CorsFeature.builder()
 				.addPath(CorsPathConfig.builder()
@@ -99,7 +110,7 @@ public class Main {
 	}
 
 	private void startServer(Config config, Injector injector, ObserveFeature observeFeature, CorsFeature corsFeature) {
-		WebServer server = WebServer.builder()
+		var server = WebServer.builder()
 				.config(config.get("server"))
 				.addFeature(observeFeature)
 				.addFeature(corsFeature)
@@ -118,13 +129,13 @@ public class Main {
 	}
 
 	private void replay(Injector injector, Config config) {
-		Config esConfig = config.get("opensearch");
-		String replayHost = esConfig.get("replay").asString().orElse("");
-		String rebuildHost = esConfig.get("rebuild").asString().orElse("");
-		boolean replayConfigured = !Strings.isNullOrEmpty(replayHost);
-		boolean rebuildConfigured = !Strings.isNullOrEmpty(rebuildHost);
+		var esConfig = config.get("opensearch");
+		var replayHost = esConfig.get("replay").asString().orElse("");
+		var rebuildHost = esConfig.get("rebuild").asString().orElse("");
+		var replayConfigured = !Strings.isNullOrEmpty(replayHost);
+		var rebuildConfigured = !Strings.isNullOrEmpty(rebuildHost);
 		if (replayConfigured || rebuildConfigured) {
-			UserRepository users = injector.getInstance(UserRepository.class);
+			var users = injector.getInstance(UserRepository.class);
 			if (!users.isEmpty()) {
 				throw new IllegalStateException(
 						"Migration incomplete: replay/rebuild is configured but target domain already has data");
@@ -138,7 +149,7 @@ public class Main {
 	}
 
 	private void enableWrites(Injector injector) {
-		Bus bus = injector.getInstance(Bus.class);
+		var bus = injector.getInstance(Bus.class);
 		bus.setReadOnly(false);
 	}
 
