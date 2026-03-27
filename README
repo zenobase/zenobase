@@ -23,7 +23,6 @@ Alternatively, run without Docker for faster iteration:
     -Dexec.args="-classpath %classpath com.zenobase.Main"
 
 
-
 Running Tests
 -------------
 
@@ -48,12 +47,9 @@ task starts, passes health checks, then the old task is drained automatically.
 
   1. Push to master. CI runs tests, builds Docker images, and pushes to ECR.
 
-  2. Sign in to AWS with `aws login --profile signin`
+  2. If there are new secrets, sign in to AWS and update them:
 
-  3. If there are infrastructure or configuration changes, update Pulumi config
-     (infra/Pulumi.prod.yaml) and/or the secrets (zenobase/prod/zenobase-api-config) first.
-
-     To edit the secrets:
+       aws login --profile signin
 
        aws secretsmanager get-secret-value --secret-id zenobase/prod/zenobase-api-config \
          --query SecretString --output text > prod.yaml
@@ -61,14 +57,19 @@ task starts, passes health checks, then the old task is drained automatically.
        aws secretsmanager put-secret-value --secret-id zenobase/prod/zenobase-api-config \
          --secret-string file://./prod.yaml
 
-  4. Deploy:
+  3. If there are infrastructure changes, sign in to AWS and run Pulumi:
+
+       aws login --profile signin
 
        cd infra
-       pulumi config set zenobase:imageTag <sha>
        pulumi up
 
+  4. Deploy by triggering the "Deploy" workflow in GitHub Actions for the
+     branch to deploy. The workflow runs `pulumi up` with the branch's
+     HEAD commit SHA as the image tag.
+
      ECS starts a new task with the updated image. The old task continues
-     serving traffic until the new task passes the ALB health check (/status).
+     serving traffic until the new task passes the ALB health check.
 
   5. Verify health (monitor in CloudWatch Logs, check ECS service in AWS console).
 
