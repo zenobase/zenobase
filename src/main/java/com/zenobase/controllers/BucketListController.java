@@ -135,7 +135,8 @@ public class BucketListController extends ControllerSupport {
 			return;
 		}
 		var query = new BucketQuery().principalEqualTo(principal).includeArchived(includeArchived);
-		PartialList<Bucket> found = buckets.find(query, SearchOrder.valueOf(order, Bucket.SCHEMA), offset, limit);
+		var orderBy = order != null ? SearchOrder.valueOf(order, Bucket.SCHEMA) : BucketQuery.DEFAULT_ORDER;
+		PartialList<Bucket> found = buckets.find(query, orderBy, offset, limit);
 		sendOk(res, labelsOnly ? BucketList.toJsonLabelsOnly(found) : BucketList.toJson(found, events));
 	}
 
