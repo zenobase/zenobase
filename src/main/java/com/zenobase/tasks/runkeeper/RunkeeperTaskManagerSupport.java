@@ -27,7 +27,7 @@ abstract class RunkeeperTaskManagerSupport extends OAuthTaskManager {
 	}
 
 	protected static @Nullable LocalDateTime parseMarker(@Nullable String marker) {
-		return marker != null ? LocalDateTime.parse(marker.replaceAll("Z", "")) : null;
+		return marker != null ? LocalDateTime.parse(marker.replace("Z", "")) : null;
 	}
 
 	protected static @Nullable String formatMarker(@Nullable LocalDateTime time) {

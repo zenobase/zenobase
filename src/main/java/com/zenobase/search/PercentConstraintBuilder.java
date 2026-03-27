@@ -10,6 +10,6 @@ public class PercentConstraintBuilder extends TermConstraintBuilder {
 
 	@Override
 	public Query build(String value) {
-		return super.build(value.replaceAll("%", ""));
+		return super.build(value.replace("%", ""));
 	}
 }

@@ -41,7 +41,7 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 
 	private static @Nullable String parseMarker(@Nullable String marker, DateTimeZone timezone) {
 		return marker != null
-				? LocalDateTime.parse(marker.replaceAll("Z", ""))
+				? LocalDateTime.parse(marker.replace("Z", ""))
 						.toDateTime(timezone)
 						.withHourOfDay(12)
 						.toString()

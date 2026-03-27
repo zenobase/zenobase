@@ -91,7 +91,7 @@ public abstract class TaskTestingSupport {
 
 	private static ObjectNode parseQueryString(String url) {
 		ObjectNode node = Nodes.newObject();
-		URI uri = URI.create(url.replaceAll("/#", "").strip());
+		URI uri = URI.create(url.replace("/#", "").strip());
 		for (NameValuePair param : URLEncodedUtils.parse(uri, Charsets.UTF_8.name())) {
 			node.put(param.getName(), param.getValue());
 		}

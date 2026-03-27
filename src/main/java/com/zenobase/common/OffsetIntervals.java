@@ -152,7 +152,7 @@ public class OffsetIntervals extends DateTimeFormatSupport {
 
 	public static @Nullable Interval valueOf(String value) {
 		if (!value.isEmpty() && Character.isDigit(value.charAt(0))) {
-			value = value.replaceAll("Z", "+00:00");
+			value = value.replace("Z", "+00:00");
 			for (IntervalType format : IntervalType.values()) {
 				if (value.length() == format.length) {
 					return format.toInterval(value);

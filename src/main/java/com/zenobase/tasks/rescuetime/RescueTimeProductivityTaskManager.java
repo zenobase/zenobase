@@ -53,7 +53,7 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 
 	private static @Nullable String parseMarker(@Nullable String marker, DateTimeZone timezone) {
 		return marker != null
-				? LocalDateTime.parse(marker.replaceAll("Z", ""))
+				? LocalDateTime.parse(marker.replace("Z", ""))
 						.toDateTime(timezone)
 						.toString()
 				: null;

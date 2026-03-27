@@ -41,7 +41,7 @@ public class WithingsTemperatureTaskManager extends WithingsTaskManagerSupport<W
 
 	private static @Nullable String parseMarker(@Nullable String marker, DateTimeZone timezone) {
 		return marker != null
-				? Long.toString(LocalDateTime.parse(marker.replaceAll("Z", ""))
+				? Long.toString(LocalDateTime.parse(marker.replace("Z", ""))
 								.toDateTime(timezone)
 								.getMillis()
 						/ 1000)

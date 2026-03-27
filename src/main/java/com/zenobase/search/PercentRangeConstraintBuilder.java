@@ -11,6 +11,6 @@ public class PercentRangeConstraintBuilder extends DecimalRangeConstraintBuilder
 
 	@Override
 	public @Nullable Query build(String value) {
-		return super.build(value.replaceAll("%", ""));
+		return super.build(value.replace("%", ""));
 	}
 }
