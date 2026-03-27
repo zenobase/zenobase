@@ -53,10 +53,17 @@ jobs:
         run: ./mvnw -B test
 
       - name: Package
-        run: ./mvnw -B package -DskipTests -Dsentry.skip=false
+        run: ./mvnw -B package -DskipTests
+
+      - name: Create Sentry release
+        run: |
+          npx @sentry/cli releases new "${{ github.sha }}"
+          npx @sentry/cli releases set-commits "${{ github.sha }}" --auto
+          npx @sentry/cli releases finalize "${{ github.sha }}"
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_RELEASE: ${{ github.sha }}
+          SENTRY_ORG: zenobase
+          SENTRY_PROJECT: java-logback
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
