@@ -5,7 +5,6 @@ import java.util.Objects;
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 /**
@@ -63,11 +62,11 @@ public class LocalInterval implements Comparable<LocalInterval> {
 
 	@Override
 	public String toString() {
-		DateTimeFormatter printer = ISODateTimeFormat.dateTime();
-		StringBuffer buf = new StringBuffer(48);
-		printer.printTo(buf, getStart());
-		buf.append('/');
-		printer.printTo(buf, getEnd());
-		return buf.toString();
+		var printer = ISODateTimeFormat.dateTime();
+		var sb = new StringBuilder(48);
+		printer.printTo(sb, getStart());
+		sb.append('/');
+		printer.printTo(sb, getEnd());
+		return sb.toString();
 	}
 }
