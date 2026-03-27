@@ -299,7 +299,7 @@
                     <compilerArgs>
                         <arg>-XDcompilePolicy=simple</arg>
                         <arg>--should-stop=ifError=FLOW</arg>
-                        <arg>-Xplugin:ErrorProne -XepDisableAllChecks -XepOpt:NullAway:OnlyNullMarked=true -Xep:NullAway:ERROR -Xep:MissingOverride:ERROR -XepExcludedPaths:.*/src/test/.*</arg>
+                        <arg>-Xplugin:ErrorProne -XepDisableAllChecks -XepOpt:NullAway:OnlyNullMarked=true -Xep:NullAway:ERROR -Xep:MissingOverride:ERROR -Xep:ImmutableEnumChecker:ERROR -XepExcludedPaths:.*/src/test/.*</arg>
                     </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
