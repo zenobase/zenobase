@@ -679,6 +679,7 @@ const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
                 { name: "HOSTNAME", value: hostname },
                 { name: "API_HOSTNAME", value: apiHostname },
                 { name: "OAUTH_HOSTNAME", value: oauthHostname },
+                { name: "SENTRY_RELEASE", value: imageTag },
             ],
             secrets: [
                 { name: "APPLICATION_CONF", valueFrom: secretArn },
