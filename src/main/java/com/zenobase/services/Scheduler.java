@@ -39,7 +39,11 @@ public class Scheduler {
 	private void schedule(Job job) {
 		schedule(job.getBegin(), job.getPeriod(), () -> {
 			if (!bus.isReadOnly() && !bus.isSchedulerDisabled()) {
-				job.run();
+				try {
+					job.run();
+				} catch (Exception e) {
+					logger.error("Could not run job: {}", job.getLabel(), e);
+				}
 			}
 		});
 	}

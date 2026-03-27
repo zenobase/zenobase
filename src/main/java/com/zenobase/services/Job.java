@@ -18,6 +18,10 @@ public abstract class Job {
 		this.period = period;
 	}
 
+	public String getLabel() {
+		return label;
+	}
+
 	public LocalTime getBegin() {
 		return begin;
 	}

@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.zenobase.commands.*;
 import com.zenobase.common.Globals;
+import com.zenobase.actions.SentryFilter;
 import com.zenobase.controllers.*;
 import com.zenobase.mail.Mailer;
 import com.zenobase.mail.PasswordResetMailer;
@@ -318,6 +319,8 @@ public class Main {
 			jobs.addBinding().to(BucketRefreshJob.class);
 			jobs.addBinding().to(CredentialsCleanupJob.class);
 			jobs.addBinding().to(SnapshotJob.class);
+
+			bind(SentryFilter.class).in(Singleton.class);
 
 			bind(AccountController.class).in(Singleton.class);
 			bind(BucketController.class).in(Singleton.class);

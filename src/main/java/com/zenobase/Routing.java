@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.zenobase.actions.GatekeeperFilter;
 import com.zenobase.actions.QuotaExceptionFilter;
+import com.zenobase.actions.SentryFilter;
 import com.zenobase.controllers.*;
 
 class Routing {
@@ -16,6 +17,7 @@ class Routing {
 
 	static void buildRouting(HttpRouting.Builder routing, Injector injector) {
 		// Filters
+		routing.addFilter(injector.getInstance(SentryFilter.class));
 		routing.addFilter(injector.getInstance(GatekeeperFilter.class));
 		routing.addFilter(injector.getInstance(QuotaExceptionFilter.class));
 

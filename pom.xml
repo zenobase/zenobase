@@ -19,6 +19,7 @@
         <version.lib.junit>6.0.3</version.lib.junit>
         <aws.sdk.version>2.31.1</aws.sdk.version>
         <httpcomponents.version>4.5.14</httpcomponents.version>
+        <sentry.skip>true</sentry.skip>
     </properties>
 
     <dependencies>
@@ -107,6 +108,19 @@
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
             <version>1.4.7</version>
+        </dependency>
+
+        <!-- Sentry -->
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry</artifactId>
+            <version>8.37.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry-logback</artifactId>
+            <version>8.37.1</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Nullability annotations -->
@@ -256,6 +270,27 @@
                         </indent>
                     </java>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.sentry</groupId>
+                <artifactId>sentry-maven-plugin</artifactId>
+                <version>0.11.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <skip>${sentry.skip}</skip>
+                    <debugSentryCli>true</debugSentryCli>
+                    <org>zenobase</org>
+                    <project>java-logback</project>
+                    <authToken>${env.SENTRY_AUTH_TOKEN}</authToken>
+                    <ignoreSourceBundleUploadFailure>true</ignoreSourceBundleUploadFailure>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>uploadSourceBundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
