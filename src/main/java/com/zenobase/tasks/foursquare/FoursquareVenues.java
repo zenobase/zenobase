@@ -1,6 +1,5 @@
 package com.zenobase.tasks.foursquare;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -11,10 +10,11 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.RateLimiter;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.fluent.Request;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.net.URIBuilder;
+import org.apache.hc.core5.util.Timeout;
 
 import com.zenobase.json.Nodes;
 
@@ -28,28 +28,32 @@ public class FoursquareVenues {
 	private final LoadingCache<String, FoursquareVenue> cache = CacheBuilder.newBuilder()
 			.maximumSize(1000L)
 			.expireAfterAccess(5, TimeUnit.MINUTES)
-			.build(new CacheLoader<String, FoursquareVenue>() {
+			.build(new CacheLoader<>() {
 				@Override
 				public FoursquareVenue load(String venueId) {
-					HttpResponse response = request(venueId);
-					int status = response.getStatusLine().getStatusCode();
-					if (status == 400) {
-						return FoursquareVenue.UNKNOWN;
-					}
-					if (status == 502) {
-						response = request(venueId);
-						status = response.getStatusLine().getStatusCode();
-					}
-					Preconditions.checkState(status == 200, "Couldn't find venue <%s>: %s", venueId, status);
-					try {
-						String body = EntityUtils.toString(response.getEntity());
-						JsonNode json = Nodes.read(body);
-						return parse(json.path("response").path("venue"));
-					} catch (IOException e) {
+					try (var response = request(venueId)) {
+						if (response.getCode() == 400) {
+							return FoursquareVenue.UNKNOWN;
+						}
+						if (response.getCode() == 502) {
+							try (var retry = request(venueId)) {
+								return readVenue(venueId, retry);
+							}
+						}
+						return readVenue(venueId, response);
+					} catch (Exception e) {
 						throw new RuntimeException(e);
 					}
 				}
 			});
+
+	private static FoursquareVenue readVenue(String venueId, ClassicHttpResponse response) throws Exception {
+		Preconditions.checkState(
+				response.getCode() == 200, "Couldn't find venue <%s>: %s", venueId, response.getCode());
+		var body = EntityUtils.toString(response.getEntity());
+		var json = Nodes.read(body);
+		return parse(json.path("response").path("venue"));
+	}
 
 	@Inject
 	public FoursquareVenues(
@@ -62,7 +66,7 @@ public class FoursquareVenues {
 		return cache.getUnchecked(venueId);
 	}
 
-	private HttpResponse request(String venueId) {
+	private ClassicHttpResponse request(String venueId) {
 		RATE_LIMITER.acquire();
 		try {
 			String url = new URIBuilder("https://api.foursquare.com/v2/venues/" + venueId)
@@ -71,9 +75,9 @@ public class FoursquareVenues {
 					.addParameter("client_secret", apiSecret)
 					.build()
 					.toString();
-			return Request.Get(url)
-					.connectTimeout(5000)
-					.socketTimeout(5000)
+			return (ClassicHttpResponse) Request.get(url)
+					.connectTimeout(Timeout.ofSeconds(5))
+					.responseTimeout(Timeout.ofSeconds(5))
 					.execute()
 					.returnResponse();
 		} catch (Exception e) {

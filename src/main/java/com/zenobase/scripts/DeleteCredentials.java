@@ -6,9 +6,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.joda.time.DateTime;
 
 import com.zenobase.tasks.Credentials;
@@ -47,7 +47,7 @@ public class DeleteCredentials extends ClientSupport {
 		List<Credentials> credentials = new ArrayList<>();
 		HttpGet request = new HttpGet(
 				String.format("%s/credentials/?code=%s&q=%s&offset=%d&limit=%d", host, token, query, offset, limit));
-		HttpResponse response = client.execute(request);
+		ClassicHttpResponse response = client.execute(request);
 		for (JsonNode eventNode : readObject(response).path("items")) {
 			credentials.add(new Credentials((ObjectNode) eventNode));
 		}
@@ -56,8 +56,7 @@ public class DeleteCredentials extends ClientSupport {
 
 	private void delete(String credentialsId) throws IOException {
 		HttpDelete request = new HttpDelete(String.format("%s/credentials/%s?code=%s", host, credentialsId, token));
-		HttpResponse response = client.execute(request);
-		System.out.format(
-				"Deleted <%s>: %d\n", credentialsId, response.getStatusLine().getStatusCode());
+		ClassicHttpResponse response = client.execute(request);
+		System.out.format("Deleted <%s>: %d\n", credentialsId, response.getCode());
 	}
 }

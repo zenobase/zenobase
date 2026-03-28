@@ -18,7 +18,6 @@
         <maven.compiler.source>25</maven.compiler.source>
         <version.lib.junit>6.0.3</version.lib.junit>
         <aws.sdk.version>2.31.1</aws.sdk.version>
-        <httpcomponents.version>4.5.14</httpcomponents.version>
     </properties>
 
     <dependencies>
@@ -179,21 +178,11 @@
             <version>${aws.sdk.version}</version>
         </dependency>
 
-        <!-- HTTP client -->
+        <!-- HTTP client (httpcore5 and httpclient5 are transitive via opensearch-java) -->
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.4.16</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${httpcomponents.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>fluent-hc</artifactId>
-            <version>${httpcomponents.version}</version>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5-fluent</artifactId>
+            <version>5.6</version>
         </dependency>
 
         <!-- Payments -->

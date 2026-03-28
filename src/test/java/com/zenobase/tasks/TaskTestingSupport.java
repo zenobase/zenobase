@@ -1,13 +1,13 @@
 package com.zenobase.tasks;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Charsets;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.net.URLEncodedUtils;
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,7 +92,7 @@ public abstract class TaskTestingSupport {
 	private static ObjectNode parseQueryString(String url) {
 		ObjectNode node = Nodes.newObject();
 		URI uri = URI.create(url.replace("/#", "").strip());
-		for (NameValuePair param : URLEncodedUtils.parse(uri, Charsets.UTF_8.name())) {
+		for (NameValuePair param : URLEncodedUtils.parse(uri, StandardCharsets.UTF_8)) {
 			node.put(param.getName(), param.getValue());
 		}
 		return node;

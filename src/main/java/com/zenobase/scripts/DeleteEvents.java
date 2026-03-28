@@ -6,10 +6,10 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -38,7 +38,7 @@ public class DeleteEvents extends ClientSupport {
 	private List<Event> find(String query) throws IOException {
 		List<Event> events = new ArrayList<>();
 		HttpGet request = new HttpGet(String.format("%s/buckets/%s/?code=%s&q=%s", host, bucketId, token, query));
-		HttpResponse response = client.execute(request);
+		ClassicHttpResponse response = client.execute(request);
 		ObjectNode node = Nodes.readObject(EntityUtils.toByteArray(response.getEntity()));
 		for (JsonNode eventNode : node.path("events")) {
 			events.add(new Event((ObjectNode) eventNode));
@@ -49,7 +49,7 @@ public class DeleteEvents extends ClientSupport {
 
 	private void delete(String eventId) throws IOException {
 		HttpDelete request = new HttpDelete(String.format("%s/buckets/%s/%s?code=%s", host, bucketId, eventId, token));
-		HttpResponse response = client.execute(request);
-		System.out.format("Delete <%s>: %d\n", eventId, response.getStatusLine().getStatusCode());
+		ClassicHttpResponse response = client.execute(request);
+		System.out.format("Delete <%s>: %d\n", eventId, response.getCode());
 	}
 }

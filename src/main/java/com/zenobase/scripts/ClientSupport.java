@@ -1,23 +1,18 @@
 package com.zenobase.scripts;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import javax.net.ssl.SSLContext;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContexts;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import com.zenobase.json.Nodes;
 
 public abstract class ClientSupport {
 
-	protected final HttpClient client = buildClient();
+	protected final CloseableHttpClient client = HttpClients.createDefault();
 	protected final String host;
 	protected final String callback;
 	protected final String apiKey;
@@ -30,21 +25,7 @@ public abstract class ClientSupport {
 		token = System.getProperty("api.token");
 	}
 
-	private HttpClient buildClient() {
-		try {
-			SSLContext context = SSLContexts.custom().useTLS().build();
-			SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
-					context,
-					new String[] {"TLSv1.1"},
-					null,
-					SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-			return HttpClients.custom().setSSLSocketFactory(f).build();
-		} catch (KeyManagementException | NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected static ObjectNode readObject(HttpResponse response) throws IOException {
+	protected static ObjectNode readObject(ClassicHttpResponse response) throws IOException {
 		return Nodes.readObject(EntityUtils.toByteArray(response.getEntity()));
 	}
 

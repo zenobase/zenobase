@@ -6,11 +6,11 @@ import java.net.URI;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.fluent.Request;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +44,8 @@ public class OpenGraphController extends ControllerSupport {
 			return;
 		}
 		try {
-			HttpResponse response = Request.Get(url).execute().returnResponse();
-			if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+			var response = (ClassicHttpResponse) Request.get(url).execute().returnResponse();
+			if (response.getCode() != HttpStatus.SC_OK) {
 				sendBadRequest(res, "Couldn't retrieve resource: " + url);
 				return;
 			}
@@ -57,7 +57,7 @@ public class OpenGraphController extends ControllerSupport {
 				logger.warn(message);
 				sendBadRequest(res, message);
 			} finally {
-				EntityUtils.consumeQuietly(entity);
+				EntityUtils.consume(entity);
 			}
 		} catch (IOException e) {
 			sendBadRequest(res, "Couldn't retrieve resource: " + url);
