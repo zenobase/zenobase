@@ -85,11 +85,7 @@ public class StandardPeriod implements Comparable<StandardPeriod> {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof StandardPeriod && equals((StandardPeriod) that);
-	}
-
-	private boolean equals(StandardPeriod that) {
-		return period.equals(that.toPeriod());
+		return that instanceof StandardPeriod p && period.equals(p.toPeriod());
 	}
 
 	@Override

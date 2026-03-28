@@ -23,7 +23,7 @@ public abstract class Facet {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof Facet && id.equals(((Facet) that).getId());
+		return that instanceof Facet f && id.equals(f.getId());
 	}
 
 	@Override

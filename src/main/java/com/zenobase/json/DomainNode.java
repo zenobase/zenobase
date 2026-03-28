@@ -107,11 +107,7 @@ public class DomainNode {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof DomainNode && equals((DomainNode) that);
-	}
-
-	private boolean equals(DomainNode that) {
-		return node.equals(that.node);
+		return that instanceof DomainNode n && node.equals(n.node);
 	}
 
 	@Override

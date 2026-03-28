@@ -30,11 +30,7 @@ public class Identity {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof Identity && equals((Identity) that);
-	}
-
-	private boolean equals(Identity that) {
-		return id.equals(that.getId());
+		return that instanceof Identity i && id.equals(i.getId());
 	}
 
 	@Override

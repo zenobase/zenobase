@@ -30,11 +30,10 @@ public class Message {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof Message && equals((Message) that);
-	}
-
-	private boolean equals(Message that) {
-		return to.equals(that.getTo()) && subject.equals(that.getSubject()) && text.equals(that.getText());
+		return that instanceof Message m
+				&& to.equals(m.getTo())
+				&& subject.equals(m.getSubject())
+				&& text.equals(m.getText());
 	}
 
 	@Override

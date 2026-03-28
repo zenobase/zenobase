@@ -284,15 +284,17 @@
                         <arg>
                             -Xplugin:ErrorProne
                             -XepExcludedPaths:.*/src/test/.*
-                            -XepDisableAllChecks
+                            -XepDisableAllWarnings
                             -Xep:BoxedPrimitiveEquality:OFF
-                            -Xep:CheckReturnValue:ERROR
+                            -Xep:EqualsIncompatibleType:ERROR
                             -Xep:ImmutableEnumChecker:ERROR
                             -Xep:MissingOverride:ERROR
+                            -Xep:NonOverridingEquals:ERROR
                             -Xep:NullAway:ERROR
                             -XepOpt:NullAway:OnlyNullMarked=true
                             -Xep:MutableConstantField:ERROR
                             -Xep:MutablePublicArray:ERROR
+                            -Xep:PatternMatchingInstanceof:ERROR
                             -Xep:ReturnValueIgnored:ERROR
                             -Xep:UnnecessaryLambda:OFF
                             -Xep:UnusedVariable:ERROR

@@ -59,11 +59,7 @@ public class SpreadsheetPrinter {
 
 		@Override
 		public boolean equals(Object that) {
-			return that instanceof Field && equals((Field) that);
-		}
-
-		private boolean equals(Field that) {
-			return Objects.equals(path, that.path);
+			return that instanceof Field f && Objects.equals(path, f.path);
 		}
 
 		@Override

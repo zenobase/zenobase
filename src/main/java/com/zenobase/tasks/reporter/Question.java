@@ -30,13 +30,10 @@ public class Question {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof Question && equals((Question) that);
-	}
-
-	private boolean equals(Question that) {
-		return Objects.equals(prompt, that.prompt)
-				&& Objects.equals(tag, that.tag)
-				&& Objects.equals(field, that.field);
+		return that instanceof Question q
+				&& Objects.equals(prompt, q.prompt)
+				&& Objects.equals(tag, q.tag)
+				&& Objects.equals(field, q.field);
 	}
 
 	@Override

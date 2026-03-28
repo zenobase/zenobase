@@ -114,11 +114,7 @@ public class Command extends DomainNode {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof Command && equals((Command) that);
-	}
-
-	private boolean equals(Command that) {
-		return getId().equals(that.getId());
+		return that instanceof Command c && getId().equals(c.getId());
 	}
 
 	@Override
@@ -157,11 +153,7 @@ public class Command extends DomainNode {
 
 		@Override
 		public boolean equals(Object that) {
-			return that instanceof Command.Type && equals((Command.Type) that);
-		}
-
-		private boolean equals(Command.Type that) {
-			return name.equals(that.getName()) && version == that.getVersion();
+			return that instanceof Command.Type t && name.equals(t.getName()) && version == t.getVersion();
 		}
 
 		@Override

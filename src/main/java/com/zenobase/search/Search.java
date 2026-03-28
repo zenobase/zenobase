@@ -77,13 +77,10 @@ public class Search {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof Search s && equals(s);
-	}
-
-	private boolean equals(Search that) {
-		return facets.toString().equals(that.facets.toString())
-				&& toJsonStrings(must).equals(toJsonStrings(that.must))
-				&& toJsonStrings(mustNot).equals(toJsonStrings(that.mustNot));
+		return that instanceof Search s
+				&& facets.toString().equals(s.facets.toString())
+				&& toJsonStrings(must).equals(toJsonStrings(s.must))
+				&& toJsonStrings(mustNot).equals(toJsonStrings(s.mustNot));
 	}
 
 	@Override

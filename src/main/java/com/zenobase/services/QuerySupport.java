@@ -70,11 +70,7 @@ public class QuerySupport {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof QuerySupport qs && equals(qs);
-	}
-
-	private boolean equals(QuerySupport that) {
-		return toJsonStrings(constraints).equals(toJsonStrings(that.constraints));
+		return that instanceof QuerySupport qs && toJsonStrings(constraints).equals(toJsonStrings(qs.constraints));
 	}
 
 	@Override
