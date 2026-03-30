@@ -16,6 +16,7 @@ const hostname = config.get("hostname") || "http://localhost:9000";
 const apiHostname = config.get("apiHostname") || "http://localhost:9000";
 const oauthHostname = config.get("oauthHostname") || "https://zenobase.com";
 const sesIdentity = config.get("sesIdentity") || "";
+const sentryDsn = config.get("sentryDsn") || "";
 const bastionEnabled = config.get("bastionEnabled") === "true";
 const fargateCpu = config.get("fargateCpu") || "1024";
 const fargateMemory = config.get("fargateMemory") || "2048";
@@ -711,6 +712,7 @@ const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
                 { name: "HOSTNAME", value: hostname },
                 { name: "API_HOSTNAME", value: apiHostname },
                 { name: "OAUTH_HOSTNAME", value: oauthHostname },
+                { name: "SENTRY_DSN", value: sentryDsn },
                 { name: "SENTRY_RELEASE", value: imageTag },
             ],
             secrets: [
