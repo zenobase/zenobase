@@ -14,6 +14,7 @@ import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.DeleteCredentialsCommand;
 import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.DeleteUserCommand;
+import com.zenobase.mail.EmailValidator;
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
@@ -39,6 +40,7 @@ public class AccountController extends ControllerSupport {
 	private final CredentialsRepository credentials;
 	private final AuthorizationRepository authorizations;
 	private final CommandDispatcher dispatcher;
+	private final EmailValidator emailValidator;
 	private final VerificationMailer mailer;
 
 	@Inject
@@ -50,6 +52,7 @@ public class AccountController extends ControllerSupport {
 			CredentialsRepository credentials,
 			AuthorizationRepository authorizations,
 			CommandDispatcher dispatcher,
+			EmailValidator emailValidator,
 			VerificationMailer mailer) {
 
 		super(security);
@@ -59,12 +62,13 @@ public class AccountController extends ControllerSupport {
 		this.credentials = credentials;
 		this.authorizations = authorizations;
 		this.dispatcher = dispatcher;
+		this.emailValidator = emailValidator;
 		this.mailer = mailer;
 	}
 
 	public void open(ServerRequest req, ServerResponse res) {
 		var form = new SignUpForm(body(req));
-		if (!form.valid()) {
+		if (!form.valid(emailValidator)) {
 			sendBadRequest(res, "invalid request body");
 			return;
 		}

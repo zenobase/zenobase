@@ -20,6 +20,7 @@ import com.zenobase.commands.OptInCommand;
 import com.zenobase.commands.OptOutCommand;
 import com.zenobase.commands.SuspendUserCommand;
 import com.zenobase.json.Nodes;
+import com.zenobase.mail.EmailValidator;
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
@@ -37,6 +38,7 @@ public class UserController extends ControllerSupport {
 	private final AuthorizationRepository authorizations;
 	private final CommandDispatcher dispatcher;
 	private final VerificationMailer mailer;
+	private final EmailValidator emailValidator;
 
 	@Inject
 	public UserController(
@@ -44,13 +46,15 @@ public class UserController extends ControllerSupport {
 			UserRepository users,
 			AuthorizationRepository authorizations,
 			CommandDispatcher dispatcher,
-			VerificationMailer mailer) {
+			VerificationMailer mailer,
+			EmailValidator emailValidator) {
 
 		super(security);
 		this.users = users;
 		this.authorizations = authorizations;
 		this.dispatcher = dispatcher;
 		this.mailer = mailer;
+		this.emailValidator = emailValidator;
 	}
 
 	public void get(ServerRequest req, ServerResponse res) {
@@ -119,7 +123,7 @@ public class UserController extends ControllerSupport {
 			return;
 		}
 		String email = form.getEmail();
-		if (!SignUpForm.isValidEmail(email)) {
+		if (email == null || !emailValidator.isValid(email)) {
 			sendBadRequest(res, "invalid email address");
 			return;
 		}

@@ -6,12 +6,18 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import io.helidon.config.Config;
+import software.amazon.awssdk.services.sesv2.SesV2Client;
 
 import com.zenobase.actions.SentryFilter;
 import com.zenobase.commands.*;
 import com.zenobase.controllers.*;
+import com.zenobase.mail.ConsoleMailer;
+import com.zenobase.mail.EmailValidator;
 import com.zenobase.mail.Mailer;
 import com.zenobase.mail.PasswordResetMailer;
+import com.zenobase.mail.RegexEmailValidator;
+import com.zenobase.mail.SesEmailValidator;
+import com.zenobase.mail.SesMailer;
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.services.*;
 import com.zenobase.tasks.*;
@@ -64,7 +70,14 @@ class Module extends AbstractModule {
 		bind(CommandParserRegistry.class).in(Singleton.class);
 		bind(CommandHandlerRegistry.class).in(Singleton.class);
 		bind(CommandReplay.class).in(Singleton.class);
-		bind(Mailer.class).in(Singleton.class);
+		if (isConfigured("aws.region")) {
+			bind(SesV2Client.class).toInstance(SesV2Client.create());
+			bind(Mailer.class).to(SesMailer.class).in(Singleton.class);
+			bind(EmailValidator.class).to(SesEmailValidator.class).in(Singleton.class);
+		} else {
+			bind(Mailer.class).to(ConsoleMailer.class).in(Singleton.class);
+			bind(EmailValidator.class).to(RegexEmailValidator.class).in(Singleton.class);
+		}
 		bind(VerificationMailer.class).in(Singleton.class);
 		bind(PasswordResetMailer.class).in(Singleton.class);
 		bind(AuthorizationContext.class).in(Singleton.class);

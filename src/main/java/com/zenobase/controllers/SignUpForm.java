@@ -1,8 +1,6 @@
 package com.zenobase.controllers;
 
 import java.util.regex.Pattern;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
@@ -10,6 +8,7 @@ import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.TokenField;
+import com.zenobase.mail.EmailValidator;
 
 public class SignUpForm extends DomainNode {
 
@@ -41,8 +40,10 @@ public class SignUpForm extends DomainNode {
 		return getValue(EMAIL);
 	}
 
-	public boolean valid() {
-		return isValidUsername(getUsername()) && isValidPassword(getPassword()) && isValidEmail(getEmail());
+	public boolean valid(EmailValidator emailValidator) {
+		return isValidUsername(getUsername())
+				&& isValidPassword(getPassword())
+				&& emailValidator.isValid(Strings.nullToEmpty(getEmail()));
 	}
 
 	public static boolean isValidUsername(@Nullable String value) {
@@ -55,13 +56,5 @@ public class SignUpForm extends DomainNode {
 
 	public static boolean isValidPassword(@Nullable String value) {
 		return !Strings.isNullOrEmpty(value) && value.length() >= 8;
-	}
-
-	public static boolean isValidEmail(@Nullable String value) {
-		try {
-			return value != null && value.indexOf('@') != -1 && InternetAddress.parse(value, true).length == 1;
-		} catch (AddressException e) {
-			return false;
-		}
 	}
 }

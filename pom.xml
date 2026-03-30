@@ -105,12 +105,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Mail -->
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.7</version>
-        </dependency>
+        <!-- Mail (uses SES v2, see below) -->
 
         <!-- Sentry -->
         <dependency>
@@ -174,7 +169,7 @@
         </dependency>
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
-            <artifactId>ses</artifactId>
+            <artifactId>sesv2</artifactId>
             <version>${aws.sdk.version}</version>
         </dependency>
 
@@ -212,12 +207,6 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>5.15.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jvnet.mock-javamail</groupId>
-            <artifactId>mock-javamail</artifactId>
-            <version>1.9</version>
             <scope>test</scope>
         </dependency>
         <dependency>

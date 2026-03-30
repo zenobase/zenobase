@@ -8,6 +8,8 @@ import com.google.inject.Module;
 import io.helidon.webserver.http.HttpRouting;
 import org.junit.jupiter.api.BeforeEach;
 
+import com.zenobase.mail.EmailValidator;
+import com.zenobase.mail.RegexEmailValidator;
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.User;
 import com.zenobase.services.AuthorizationRepository;
@@ -45,7 +47,8 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 				bind(CredentialsRepository.class).toInstance(credentials);
 				bind(AuthorizationRepository.class).toInstance(authorizations);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
-				bind(VerificationMailer.class).toInstance(mailer); // unused
+				bind(VerificationMailer.class).toInstance(mailer);
+				bind(EmailValidator.class).to(RegexEmailValidator.class);
 			}
 		};
 	}

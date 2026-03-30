@@ -19,11 +19,6 @@ aws:
   region: ""
 
 mail:
-  smtp:
-    auth: true
-    starttls:
-      enable: true
-    port: 587
   from: "info@zenobase.com"
 
 cors:

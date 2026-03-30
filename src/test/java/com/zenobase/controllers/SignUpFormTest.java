@@ -4,7 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
+import com.zenobase.mail.RegexEmailValidator;
+
 public class SignUpFormTest {
+
+	private final RegexEmailValidator emailValidator = new RegexEmailValidator();
 
 	@Test
 	public void test() {
@@ -58,6 +62,6 @@ public class SignUpFormTest {
 
 	private void test(String username, String password, String email, boolean valid) {
 		SignUpForm form = new SignUpForm(username, password, email);
-		assertThat(form.valid()).as("valid").isEqualTo(valid);
+		assertThat(form.valid(emailValidator)).as("valid").isEqualTo(valid);
 	}
 }
