@@ -34,7 +34,6 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(dispatcher.dispatch(any(ChangeUserEmailCommand.class))).thenReturn(commandId);
 		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm("jdoe@zenobase.com").toJson())) {
 			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, commandId).isEmpty();
-			verifyNoInteractions(payments);
 		}
 	}
 
@@ -47,7 +46,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		try (Http1ClientResponse result =
 				call(user.getId(), UpdateUserForm.withOptedOut(true).toJson())) {
 			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, commandId).isEmpty();
-			verifyNoInteractions(mailer, payments);
+			verifyNoInteractions(mailer);
 		}
 	}
 
@@ -60,7 +59,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		try (Http1ClientResponse result =
 				call(user.getId(), UpdateUserForm.withOptedOut(false).toJson())) {
 			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, commandId).isEmpty();
-			verifyNoInteractions(mailer, payments);
+			verifyNoInteractions(mailer);
 		}
 	}
 
@@ -70,7 +69,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		try (Http1ClientResponse result =
 				call('@' + user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson())) {
 			assertThat(result).hasStatus(404);
-			verifyNoInteractions(dispatcher, mailer, payments);
+			verifyNoInteractions(dispatcher, mailer);
 		}
 	}
 
@@ -79,7 +78,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(users.find(user.asIdentity())).thenReturn(user);
 		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm("jdoe@zenobase.com").toJson())) {
 			assertThat(result).hasStatus(401);
-			verifyNoInteractions(dispatcher, mailer, payments);
+			verifyNoInteractions(dispatcher, mailer);
 		}
 	}
 
@@ -89,7 +88,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(users.find(user.asIdentity())).thenReturn(user);
 		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm("jdoe@zenobase.com").toJson())) {
 			assertThat(result).hasStatus(403);
-			verifyNoInteractions(dispatcher, mailer, payments);
+			verifyNoInteractions(dispatcher, mailer);
 		}
 	}
 
@@ -99,7 +98,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(users.find(user.asIdentity())).thenReturn(user);
 		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm("jdoe").toJson())) {
 			assertThat(result).hasStatus(400);
-			verifyNoInteractions(dispatcher, mailer, payments);
+			verifyNoInteractions(dispatcher, mailer);
 		}
 	}
 
@@ -121,7 +120,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 					.asObjectNode()
 					.path("access_code")
 					.isNotNull();
-			verifyNoInteractions(payments);
+			verifyNoInteractions(mailer);
 		}
 	}
 
@@ -133,7 +132,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		try (Http1ClientResponse result =
 				call(user.getId(), new UpdateUserForm("123", key.getKey(), key.getExpirationToken()).toJson())) {
 			assertThat(result).hasStatus(400);
-			verifyNoInteractions(auth, dispatcher, payments);
+			verifyNoInteractions(auth, dispatcher);
 		}
 	}
 
@@ -145,7 +144,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		try (Http1ClientResponse result =
 				call(user.getId(), new UpdateUserForm("newpassword", null, key.getExpirationToken()).toJson())) {
 			assertThat(result).hasStatus(400);
-			verifyNoInteractions(auth, dispatcher, payments);
+			verifyNoInteractions(auth, dispatcher);
 		}
 	}
 
@@ -157,7 +156,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		try (Http1ClientResponse result =
 				call(user.getId(), new UpdateUserForm("newpassword", key.getKey(), null).toJson())) {
 			assertThat(result).hasStatus(400);
-			verifyNoInteractions(auth, dispatcher, payments);
+			verifyNoInteractions(auth, dispatcher);
 		}
 	}
 
@@ -171,7 +170,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		try (Http1ClientResponse result = call(
 				user.getId(), new UpdateUserForm("newpassword", key.getKey(), key.getExpirationToken()).toJson())) {
 			assertThat(result).hasStatus(400);
-			verifyNoInteractions(auth, dispatcher, payments);
+			verifyNoInteractions(auth, dispatcher);
 		}
 	}
 
@@ -185,7 +184,6 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm(Boolean.TRUE, key.getKey()).toJson())) {
 			assertThat(result).hasStatus(204);
 			verify(dispatcher).dispatch(ArgumentMatchers.any(ChangeUserVerifiedCommand.class));
-			verify(payments).update(user.getName(), "jdoe@zenobase.com");
 		}
 	}
 
@@ -198,7 +196,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		EmailVerificationKey key = new EmailVerificationKey(user.getName(), user.getEmail());
 		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm(Boolean.TRUE, key.getKey()).toJson())) {
 			assertThat(result).hasStatus(400);
-			verifyNoInteractions(dispatcher, payments);
+			verifyNoInteractions(dispatcher);
 		}
 	}
 
@@ -209,7 +207,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(users.find(user.asIdentity())).thenReturn(user);
 		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm(Boolean.TRUE, null).toJson())) {
 			assertThat(result).hasStatus(400);
-			verifyNoInteractions(dispatcher, payments);
+			verifyNoInteractions(dispatcher);
 		}
 	}
 
@@ -221,7 +219,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		EmailVerificationKey key = new EmailVerificationKey(user.getName(), "jdoe@zenobase.org");
 		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm(Boolean.TRUE, key.getKey()).toJson())) {
 			assertThat(result).hasStatus(400);
-			verifyNoInteractions(dispatcher, payments);
+			verifyNoInteractions(dispatcher);
 		}
 	}
 
@@ -264,7 +262,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(users.find(user.asIdentity())).thenReturn(user);
 		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm(true).toJson())) {
 			assertThat(result).hasStatus(403);
-			verifyNoInteractions(dispatcher, payments);
+			verifyNoInteractions(dispatcher);
 		}
 	}
 
@@ -274,7 +272,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(users.find(user.asIdentity())).thenReturn(user);
 		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm(Nodes.newObject()).toJson())) {
 			assertThat(result).hasStatus(400);
-			verifyNoInteractions(dispatcher, payments);
+			verifyNoInteractions(dispatcher);
 		}
 	}
 

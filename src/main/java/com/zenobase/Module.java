@@ -73,7 +73,6 @@ class Module extends AbstractModule {
 		bind(CredentialsRepository.class).in(Singleton.class);
 		bind(AuthorizationRepository.class).in(Singleton.class);
 		bind(QuotaManager.class).in(Singleton.class);
-		bind(PaymentGateway.class).in(Singleton.class);
 		bind(Scheduler.class).asEagerSingleton();
 
 		if (isConfigured("foursquare")) {
@@ -240,7 +239,6 @@ class Module extends AbstractModule {
 		bind(OAuthController.class).in(Singleton.class);
 		bind(AuthorizationController.class).in(Singleton.class);
 		bind(AuthorizationListController.class).in(Singleton.class);
-		bind(PaymentController.class).in(Singleton.class);
 		bind(SnapshotController.class).in(Singleton.class);
 		bind(SchedulerController.class).in(Singleton.class);
 		bind(RedirectController.class).in(Singleton.class);

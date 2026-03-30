@@ -185,13 +185,6 @@
             <version>5.6</version>
         </dependency>
 
-        <!-- Payments -->
-        <dependency>
-            <groupId>com.braintreepayments.gateway</groupId>
-            <artifactId>braintree-java</artifactId>
-            <version>2.109.0</version>
-        </dependency>
-
         <!-- Test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

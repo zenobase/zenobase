@@ -140,12 +140,6 @@ class Routing {
 		routing.get("/authorizations/{authId}", auth::get);
 		routing.delete("/authorizations/{authId}", auth::delete);
 
-		// Payments
-		var payment = injector.getInstance(PaymentController.class);
-		routing.delete("/users/{userId}/payment", payment::cancel);
-		routing.post("/payments/token", payment::token);
-		routing.post("/payments/", payment::pay);
-
 		// Snapshots
 		var snapshot = injector.getInstance(SnapshotController.class);
 		routing.get("/snapshots/", snapshot::findAll);

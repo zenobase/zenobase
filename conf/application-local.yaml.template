@@ -106,11 +106,6 @@ goodreads:
     key: ""
     secret: ""
 
-braintree:
-  merchant_id: ""
-  public_key: ""
-  private_key: ""
-
 garmin:
   api:
     key: ""

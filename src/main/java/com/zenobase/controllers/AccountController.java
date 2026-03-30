@@ -26,7 +26,6 @@ import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CredentialsQuery;
 import com.zenobase.services.CredentialsRepository;
-import com.zenobase.services.PaymentGateway;
 import com.zenobase.services.TaskQuery;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.UserLookup;
@@ -41,7 +40,6 @@ public class AccountController extends ControllerSupport {
 	private final AuthorizationRepository authorizations;
 	private final CommandDispatcher dispatcher;
 	private final VerificationMailer mailer;
-	private final PaymentGateway payments;
 
 	@Inject
 	public AccountController(
@@ -52,8 +50,7 @@ public class AccountController extends ControllerSupport {
 			CredentialsRepository credentials,
 			AuthorizationRepository authorizations,
 			CommandDispatcher dispatcher,
-			VerificationMailer mailer,
-			PaymentGateway payments) {
+			VerificationMailer mailer) {
 
 		super(security);
 		this.users = users;
@@ -63,7 +60,6 @@ public class AccountController extends ControllerSupport {
 		this.authorizations = authorizations;
 		this.dispatcher = dispatcher;
 		this.mailer = mailer;
-		this.payments = payments;
 	}
 
 	public void open(ServerRequest req, ServerResponse res) {
@@ -109,7 +105,6 @@ public class AccountController extends ControllerSupport {
 			return;
 		}
 		Command command = buildCloseAccountCommand(auth.getPrincipal(), user, auth);
-		payments.cancel(Objects.requireNonNull(user.getName()));
 		String commandId = dispatcher.dispatch(command);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);

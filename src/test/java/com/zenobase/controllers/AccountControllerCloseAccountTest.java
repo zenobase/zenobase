@@ -21,7 +21,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		try (Http1ClientResponse result = call(user.getName())) {
 			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, commandId).isEmpty();
-			verify(payments).cancel(user.getName());
+			verify(dispatcher).dispatch(any(Command.class));
 		}
 	}
 
@@ -30,7 +30,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(users.find(user.getName())).thenReturn(user);
 		try (Http1ClientResponse result = call(user.getName())) {
 			assertThat(result).hasStatus(401);
-			verifyNoInteractions(dispatcher, payments);
+			verifyNoInteractions(dispatcher);
 		}
 	}
 
@@ -39,7 +39,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		try (Http1ClientResponse result = call(user.getName())) {
 			assertThat(result).hasStatus(404);
-			verifyNoInteractions(dispatcher, payments);
+			verifyNoInteractions(dispatcher);
 		}
 	}
 
@@ -49,7 +49,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(users.find(user.getName())).thenReturn(user);
 		try (Http1ClientResponse result = call(user.getName())) {
 			assertThat(result).hasStatus(403);
-			verifyNoInteractions(dispatcher, payments);
+			verifyNoInteractions(dispatcher);
 		}
 	}
 
@@ -63,7 +63,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		try (Http1ClientResponse result = call(user.getName())) {
 			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, commandId).isEmpty();
-			verify(payments).cancel(user.getName());
+			verify(dispatcher).dispatch(any(Command.class));
 		}
 	}
 
