@@ -42,11 +42,6 @@ public class SchemaBuilder {
 		return this;
 	}
 
-	public void setRouting(String path) {
-		// In OpenSearch, _routing.path is removed. Routing is handled by aliases
-		// (indexRouting/searchRouting), so _routing.required is no longer needed.
-	}
-
 	public Schema build() {
 		return new Schema(typeName, schema.deepCopy(), fields.build(), constraintBuilders.build());
 	}
