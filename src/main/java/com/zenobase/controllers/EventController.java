@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 
 import com.zenobase.commands.DeleteEventCommand;
@@ -21,7 +20,6 @@ public class EventController extends ControllerSupport {
 	private final EventRepository events;
 	private final CommandDispatcher dispatcher;
 
-	@Inject
 	public EventController(
 			AuthorizationContext security,
 			BucketRepository buckets,

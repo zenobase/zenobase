@@ -7,7 +7,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Ordering;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -33,7 +32,6 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(FitBarkTaskManager.class);
 
-	@Inject
 	public FitBarkTaskManager(FitBarkCredentialsManager credentialsManager) {
 		super(FitBarkTask.TYPE, credentialsManager);
 	}

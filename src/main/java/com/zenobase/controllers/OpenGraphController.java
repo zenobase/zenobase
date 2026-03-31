@@ -5,7 +5,6 @@ import java.net.URI;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
@@ -20,7 +19,6 @@ public class OpenGraphController extends ControllerSupport {
 
 	private static final Logger logger = LoggerFactory.getLogger(OpenGraphController.class);
 
-	@Inject
 	public OpenGraphController(AuthorizationContext security) {
 		super(security);
 	}

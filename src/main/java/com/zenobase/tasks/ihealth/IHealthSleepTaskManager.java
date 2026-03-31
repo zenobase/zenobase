@@ -3,8 +3,6 @@ package com.zenobase.tasks.ihealth;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -13,9 +11,7 @@ import com.zenobase.tasks.Task;
 
 public class IHealthSleepTaskManager extends IHealthTaskManagerSupport<IHealthSleepTask> {
 
-	@Inject
-	public IHealthSleepTaskManager(
-			IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.sleep") String sv) {
+	public IHealthSleepTaskManager(IHealthCredentialsManager credentialsManager, String sv) {
 		super(IHealthSleepTask.TYPE, credentialsManager, IHealthSleepTask.class);
 		register(
 				"sleep",

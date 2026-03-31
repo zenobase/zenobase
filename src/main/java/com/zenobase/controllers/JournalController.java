@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.commands.Command;
 import com.zenobase.models.CommandList;
@@ -22,7 +21,6 @@ public class JournalController extends ControllerSupport {
 	private final CommandRepository repository;
 	private final UserRepository users;
 
-	@Inject
 	public JournalController(
 			AuthorizationContext security,
 			CommandDispatcher dispatcher,

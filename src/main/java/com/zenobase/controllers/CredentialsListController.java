@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.commands.CreateCredentialsCommand;
 import com.zenobase.models.Identity;
@@ -24,7 +23,6 @@ public class CredentialsListController extends ControllerSupport {
 	private final CredentialsRepository credentials;
 	private final UserRepository users;
 
-	@Inject
 	public CredentialsListController(
 			AuthorizationContext security,
 			CommandDispatcher dispatcher,

@@ -4,8 +4,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;
@@ -25,12 +23,8 @@ public class FitBarkCredentialsManager extends OAuthCredentialsManager {
 
 	private static final String TYPE = "fitbark";
 
-	@Inject
 	public FitBarkCredentialsManager(
-			CredentialsRepository repository,
-			@Named("fitbark.api.key") String apiKey,
-			@Named("fitbark.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+			CredentialsRepository repository, String apiKey, String apiSecret, String callbackUrl) {
 		super(TYPE, repository, new FitBarkApi(), apiKey, apiSecret, callbackUrl);
 	}
 

@@ -8,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +23,6 @@ public class UserListController extends ControllerSupport {
 
 	private final UserRepository repository;
 
-	@Inject
 	public UserListController(AuthorizationContext security, UserRepository repository) {
 		super(security);
 		this.repository = repository;

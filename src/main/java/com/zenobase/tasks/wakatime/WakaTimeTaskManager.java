@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -36,7 +35,6 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 	private static final RateLimiter RATE_LIMITER = RateLimiter.create(5);
 	private static final String HOST = "https://wakatime.com/api/v1";
 
-	@Inject
 	public WakaTimeTaskManager(WakaTimeCredentialsManager credentialsManager) {
 		super(WakaTimeTask.TYPE, credentialsManager);
 	}

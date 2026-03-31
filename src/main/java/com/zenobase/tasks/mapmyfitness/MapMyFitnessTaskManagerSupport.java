@@ -5,7 +5,6 @@ import java.util.Objects;
 
 import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
@@ -30,7 +29,6 @@ abstract class MapMyFitnessTaskManagerSupport extends OAuthTaskManager {
 	private static final RateLimiter RATE_LIMITER = RateLimiter.create(10);
 	protected static final String HOST = "https://oauth2-api.mapmyapi.com";
 
-	@Inject
 	public MapMyFitnessTaskManagerSupport(String type, MapMyFitnessCredentialsManager credentialsManager) {
 		super(type, credentialsManager);
 	}

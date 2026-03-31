@@ -3,7 +3,6 @@ package com.zenobase.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.models.StatusInfo;
 import com.zenobase.oauth.Authorization;
@@ -15,7 +14,6 @@ public class StatusController extends ControllerSupport {
 	private final UserRepository users;
 	private final Bus bus;
 
-	@Inject
 	public StatusController(AuthorizationContext auth, UserRepository users, Bus bus) {
 		super(auth);
 		this.users = users;

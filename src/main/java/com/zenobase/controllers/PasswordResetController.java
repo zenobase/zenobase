@@ -5,7 +5,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.mail.PasswordResetMailer;
@@ -19,7 +18,6 @@ public class PasswordResetController extends ControllerSupport {
 	private final UserRepository users;
 	private final PasswordResetMailer resetMailer;
 
-	@Inject
 	public PasswordResetController(
 			AuthorizationContext security, UserRepository users, PasswordResetMailer resetMailer) {
 		super(security);

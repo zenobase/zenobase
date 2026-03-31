@@ -4,8 +4,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -30,12 +28,8 @@ public class HexoskinCredentialsManager extends OAuthCredentialsManager {
 
 	private static final String TYPE = "hexoskin";
 
-	@Inject
 	public HexoskinCredentialsManager(
-			CredentialsRepository repository,
-			@Named("hexoskin.api.key") String apiKey,
-			@Named("hexoskin.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+			CredentialsRepository repository, String apiKey, String apiSecret, String callbackUrl) {
 		super(TYPE, repository, new HexoskinApi(), apiKey, apiSecret, callbackUrl);
 	}
 

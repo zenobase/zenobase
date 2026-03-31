@@ -5,8 +5,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -15,9 +13,7 @@ import com.zenobase.tasks.Task;
 
 public class IHealthStepsTaskManager extends IHealthTaskManagerSupport<IHealthStepsTask> {
 
-	@Inject
-	public IHealthStepsTaskManager(
-			IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.activity") String sv) {
+	public IHealthStepsTaskManager(IHealthCredentialsManager credentialsManager, String sv) {
 		super(IHealthStepsTask.TYPE, credentialsManager, IHealthStepsTask.class);
 		register(
 				"activity",

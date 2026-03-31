@@ -4,14 +4,12 @@ import io.helidon.webserver.http.Filter;
 import io.helidon.webserver.http.FilterChain;
 import io.helidon.webserver.http.RoutingRequest;
 import io.helidon.webserver.http.RoutingResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.controllers.ControllerSupport;
 import com.zenobase.services.QuotaException;
 
 public class QuotaExceptionFilter implements Filter {
 
-	@Inject
 	public QuotaExceptionFilter() {}
 
 	@Override

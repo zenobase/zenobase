@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
@@ -22,7 +21,6 @@ import com.zenobase.tasks.Task;
 
 public class OuraReadinessTaskManager extends OuraTaskManagerSupport {
 
-	@Inject
 	public OuraReadinessTaskManager(OuraCredentialsManager credentialsManager) {
 		super(OuraReadinessTask.TYPE, credentialsManager);
 	}

@@ -3,7 +3,6 @@ package com.zenobase.commands;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.ObjectField;
@@ -60,7 +59,6 @@ public class DeleteUserCommand extends Command {
 
 		private final UserRepository repository;
 
-		@Inject
 		public Handler(UserRepository repository) {
 			super(DeleteUserCommand.class);
 			this.repository = repository;

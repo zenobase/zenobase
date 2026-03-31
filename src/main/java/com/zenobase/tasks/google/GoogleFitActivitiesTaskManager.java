@@ -18,7 +18,6 @@ import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 import com.google.common.math.Stats;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
@@ -40,7 +39,6 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 
 	private static final Logger logger = LoggerFactory.getLogger(GoogleFitActivitiesTaskManager.class);
 
-	@Inject
 	public GoogleFitActivitiesTaskManager(GoogleCredentialsManager credentialsManager) {
 		super(GoogleFitActivitiesTask.TYPE, credentialsManager, GoogleFitActivitiesTask.class);
 	}

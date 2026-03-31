@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -21,7 +20,6 @@ import com.zenobase.tasks.Task;
 
 public class MapMyFitnessSleepTaskManager extends MapMyFitnessTaskManagerSupport {
 
-	@Inject
 	public MapMyFitnessSleepTaskManager(MapMyFitnessCredentialsManager credentialsManager) {
 		super(MapMyFitnessSleepTask.TYPE, credentialsManager);
 	}

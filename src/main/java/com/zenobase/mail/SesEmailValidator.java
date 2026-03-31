@@ -1,6 +1,5 @@
 package com.zenobase.mail;
 
-import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.sesv2.SesV2Client;
@@ -13,7 +12,6 @@ public class SesEmailValidator implements EmailValidator {
 
 	private final SesV2Client client;
 
-	@Inject
 	public SesEmailValidator(SesV2Client client) {
 		this.client = client;
 	}

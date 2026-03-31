@@ -2,8 +2,6 @@ package com.zenobase.tasks.goodreads;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.jspecify.annotations.Nullable;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.SignatureType;
@@ -24,12 +22,8 @@ public class GoodreadsCredentialsManager extends OAuthCredentialsManager {
 
 	public static final String TYPE = "goodreads";
 
-	@Inject
 	public GoodreadsCredentialsManager(
-			CredentialsRepository integrations,
-			@Named("goodreads.api.key") String apiKey,
-			@Named("goodreads.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+			CredentialsRepository integrations, String apiKey, String apiSecret, String callbackUrl) {
 		super(TYPE, integrations, new GoodreadsApi(callbackUrl + "/oauth/callback/-"), apiKey, apiSecret, callbackUrl);
 	}
 

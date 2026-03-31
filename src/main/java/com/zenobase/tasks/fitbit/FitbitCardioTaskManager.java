@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import jakarta.inject.Inject;
 import org.joda.time.LocalDate;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
@@ -25,7 +24,6 @@ public class FitbitCardioTaskManager extends FitbitTaskManagerSupport<FitbitCard
 
 	private static final Logger logger = LoggerFactory.getLogger(FitbitCardioTaskManager.class);
 
-	@Inject
 	public FitbitCardioTaskManager(FitbitCredentialsManager credentialsManager) {
 		super(FitbitCardioTask.TYPE, FitbitCardioTask.class, credentialsManager);
 	}

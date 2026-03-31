@@ -3,9 +3,6 @@ package com.zenobase.controllers;
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
-import com.google.inject.Module;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import io.helidon.webserver.http.HttpRouting;
 import org.junit.jupiter.api.Test;
@@ -13,8 +10,6 @@ import org.junit.jupiter.api.Test;
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.Bus;
-import com.zenobase.services.LocalBus;
 import com.zenobase.services.UserRepository;
 
 public class WhoControllerTest extends ControllerTestSupport {
@@ -24,20 +19,8 @@ public class WhoControllerTest extends ControllerTestSupport {
 	private final User user = new User("tester");
 
 	@Override
-	protected Module module() {
-		return new AbstractModule() {
-			@Override
-			protected void configure() {
-				bind(Bus.class).to(LocalBus.class);
-				bind(AuthorizationContext.class).toInstance(auth);
-				bind(UserRepository.class).toInstance(users);
-			}
-		};
-	}
-
-	@Override
-	protected void routing(HttpRouting.Builder builder, Injector injector) {
-		WhoController controller = injector.getInstance(WhoController.class);
+	protected void routing(HttpRouting.Builder builder) {
+		var controller = new WhoController(auth, users);
 		builder.get("/who", controller::who);
 	}
 

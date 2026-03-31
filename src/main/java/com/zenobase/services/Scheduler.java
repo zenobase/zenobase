@@ -6,7 +6,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.ImmutableList;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -23,7 +22,6 @@ public class Scheduler {
 	private final ImmutableList<Job> jobs;
 	private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
-	@Inject
 	public Scheduler(Bus bus, Set<Job> jobs) {
 		this.bus = bus;
 		this.jobs = ImmutableList.copyOf(jobs);

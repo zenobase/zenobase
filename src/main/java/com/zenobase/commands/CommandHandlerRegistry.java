@@ -6,13 +6,11 @@ import java.util.Set;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import jakarta.inject.Inject;
 
 public class CommandHandlerRegistry {
 
 	private final Map<Class<? extends Command>, CommandHandler<?>> handlers = Maps.newHashMap();
 
-	@Inject
 	public CommandHandlerRegistry(Set<CommandHandler<?>> handlers) {
 		for (CommandHandler<?> handler : handlers) {
 			this.handlers.put(handler.getType(), handler);

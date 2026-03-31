@@ -3,7 +3,6 @@ package com.zenobase.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
@@ -22,7 +21,6 @@ public class CommandDispatcher {
 	private final CommandRepository repository;
 	private final QuotaManager quotas;
 
-	@Inject
 	public CommandDispatcher(CommandHandlerRegistry handlers, CommandRepository repository, QuotaManager quotas) {
 		this.handlers = handlers;
 		this.repository = repository;

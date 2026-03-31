@@ -4,8 +4,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;
@@ -25,12 +23,8 @@ public class RunkeeperCredentialsManager extends OAuthCredentialsManager {
 
 	public static final String TYPE = "runkeeper";
 
-	@Inject
 	public RunkeeperCredentialsManager(
-			CredentialsRepository integrations,
-			@Named("runkeeper.api.key") String apiKey,
-			@Named("runkeeper.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+			CredentialsRepository integrations, String apiKey, String apiSecret, String callbackUrl) {
 		super(TYPE, integrations, new RunkeeperApi(), apiKey, apiSecret, callbackUrl);
 	}
 

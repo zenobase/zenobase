@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.oauth.Authorization;
@@ -16,7 +15,6 @@ public class AuthorizationController extends ControllerSupport {
 	private final AuthorizationRepository authorizations;
 	private final UserRepository users;
 
-	@Inject
 	public AuthorizationController(
 			AuthorizationContext security,
 			CommandDispatcher dispatcher,

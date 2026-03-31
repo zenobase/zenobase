@@ -7,7 +7,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.jspecify.annotations.Nullable;
@@ -29,7 +28,6 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 
 	private static final Logger logger = LoggerFactory.getLogger(FitbitActivitiesTaskManager.class);
 
-	@Inject
 	public FitbitActivitiesTaskManager(FitbitCredentialsManager credentialsManager) {
 		super(FitbitActivitiesTask.TYPE, FitbitActivitiesTask.class, credentialsManager);
 	}

@@ -3,7 +3,6 @@ package com.zenobase.controllers;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.DeleteTaskCommand;
@@ -32,7 +31,6 @@ public class TaskController extends ControllerSupport {
 	private final TaskRefresher refresher;
 	private final Bus bus;
 
-	@Inject
 	public TaskController(
 			AuthorizationContext security,
 			CommandDispatcher dispatcher,

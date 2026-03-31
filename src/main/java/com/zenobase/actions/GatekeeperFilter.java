@@ -5,7 +5,6 @@ import io.helidon.webserver.http.Filter;
 import io.helidon.webserver.http.FilterChain;
 import io.helidon.webserver.http.RoutingRequest;
 import io.helidon.webserver.http.RoutingResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.controllers.AuthorizationContext;
 import com.zenobase.oauth.Authorization;
@@ -21,7 +20,6 @@ public class GatekeeperFilter implements Filter {
 	private final UserRepository users;
 	private final AuthorizationContext authContext;
 
-	@Inject
 	public GatekeeperFilter(Bus bus, UserRepository users, AuthorizationContext authContext) {
 		this.bus = bus;
 		this.users = users;

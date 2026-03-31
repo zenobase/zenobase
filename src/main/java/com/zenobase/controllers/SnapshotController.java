@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.models.SnapshotList;
 import com.zenobase.oauth.Authorization;
@@ -15,7 +14,6 @@ public class SnapshotController extends ControllerSupport {
 	private final UserRepository users;
 	private final SnapshotManager manager;
 
-	@Inject
 	public SnapshotController(AuthorizationContext security, UserRepository users, IndexManager manager) {
 		super(security);
 		this.users = users;

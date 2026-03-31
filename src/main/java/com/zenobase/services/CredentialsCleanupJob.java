@@ -1,6 +1,5 @@
 package com.zenobase.services;
 
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
@@ -18,7 +17,6 @@ public class CredentialsCleanupJob extends Job {
 	private final CredentialsRepository credentials;
 	private final CommandDispatcher dispatcher;
 
-	@Inject
 	public CredentialsCleanupJob(CredentialsRepository credentials, CommandDispatcher dispatcher) {
 		super("clean up credentials", new LocalTime(4, 0), Period.days(1));
 		this.credentials = credentials;

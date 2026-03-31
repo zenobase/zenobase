@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.SortOrder;
@@ -26,7 +25,6 @@ public class UserRepository extends RepositorySupport<User> {
 
 	private final Index index;
 
-	@Inject
 	public UserRepository(IndexManager manager) {
 		this.index = manager.getIndex(INDEX_NAME);
 		if (!index.exists()) {

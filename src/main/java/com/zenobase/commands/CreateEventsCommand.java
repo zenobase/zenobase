@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
@@ -86,7 +85,6 @@ public class CreateEventsCommand extends Command {
 
 		private final EventRepository repository;
 
-		@Inject
 		public Handler(EventRepository repository) {
 			super(CreateEventsCommand.class);
 			this.repository = repository;

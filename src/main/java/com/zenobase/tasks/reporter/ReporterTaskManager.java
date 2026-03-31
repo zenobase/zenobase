@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -31,7 +30,6 @@ import com.zenobase.tasks.dropbox.ListFolderResult;
 
 public class ReporterTaskManager extends DropboxTaskManagerSupport {
 
-	@Inject
 	public ReporterTaskManager(DropboxCredentialsManager credentialsManager) {
 		super(ReporterTask.TYPE, credentialsManager);
 	}

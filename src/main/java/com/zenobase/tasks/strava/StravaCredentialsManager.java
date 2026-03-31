@@ -4,8 +4,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthConstants;
 import org.scribe.model.OAuthRequest;
@@ -29,12 +27,8 @@ public class StravaCredentialsManager extends OAuthCredentialsManager {
 
 	public static final String TYPE = "strava";
 
-	@Inject
 	public StravaCredentialsManager(
-			CredentialsRepository integrations,
-			@Named("strava.api.key") String apiKey,
-			@Named("strava.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+			CredentialsRepository integrations, String apiKey, String apiSecret, String callbackUrl) {
 		super(TYPE, integrations, new StravaApi(), apiKey, apiSecret, callbackUrl);
 	}
 

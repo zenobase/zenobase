@@ -4,8 +4,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;
@@ -25,12 +23,8 @@ public class RescueTimeCredentialsManager extends OAuthCredentialsManager {
 
 	public static final String TYPE = "rescuetime";
 
-	@Inject
 	public RescueTimeCredentialsManager(
-			CredentialsRepository integrations,
-			@Named("rescuetime.api.key") String apiKey,
-			@Named("rescuetime.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+			CredentialsRepository integrations, String apiKey, String apiSecret, String callbackUrl) {
 		super(TYPE, integrations, new RescueTimeApi(), apiKey, apiSecret, callbackUrl);
 	}
 

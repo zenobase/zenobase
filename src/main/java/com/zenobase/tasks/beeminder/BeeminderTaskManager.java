@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -49,7 +48,6 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 
 	private final EventRepository events;
 
-	@Inject
 	public BeeminderTaskManager(BeeminderCredentialsManager credentialsManager, EventRepository events) {
 		super(BeeminderTask.TYPE, credentialsManager);
 		this.events = events;

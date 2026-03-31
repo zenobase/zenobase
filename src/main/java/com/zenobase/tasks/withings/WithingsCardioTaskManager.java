@@ -2,7 +2,6 @@ package com.zenobase.tasks.withings;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import jakarta.inject.Inject;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.jspecify.annotations.Nullable;
@@ -17,7 +16,6 @@ import com.zenobase.tasks.OAuthCredentials;
 
 public class WithingsCardioTaskManager extends WithingsTaskManagerSupport<WithingsCardioTask> {
 
-	@Inject
 	public WithingsCardioTaskManager(WithingsCredentialsManager credentialsManager) {
 		super(WithingsCardioTask.TYPE, WithingsCardioTask.class, credentialsManager);
 	}

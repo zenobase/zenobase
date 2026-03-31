@@ -3,7 +3,6 @@ package com.zenobase.controllers;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 
 import com.zenobase.commands.Command;
@@ -23,7 +22,6 @@ public class CredentialsController extends ControllerSupport {
 	private final CredentialsRepository credentials;
 	private final UserRepository users;
 
-	@Inject
 	public CredentialsController(
 			AuthorizationContext security,
 			CommandDispatcher dispatcher,

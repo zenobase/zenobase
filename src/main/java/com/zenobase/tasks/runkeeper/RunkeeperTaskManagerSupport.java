@@ -3,7 +3,6 @@ package com.zenobase.tasks.runkeeper;
 import java.util.List;
 import java.util.Objects;
 
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
@@ -21,7 +20,6 @@ abstract class RunkeeperTaskManagerSupport extends OAuthTaskManager {
 
 	protected static final String host = "https://api.runkeeper.com";
 
-	@Inject
 	public RunkeeperTaskManagerSupport(String type, RunkeeperCredentialsManager credentialsManager) {
 		super(type, credentialsManager);
 	}

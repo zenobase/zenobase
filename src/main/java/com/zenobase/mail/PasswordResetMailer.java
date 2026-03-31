@@ -1,8 +1,6 @@
 package com.zenobase.mail;
 
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 
 import com.zenobase.controllers.PasswordResetKey;
 import com.zenobase.models.User;
@@ -12,8 +10,7 @@ public class PasswordResetMailer {
 	private final Mailer mailer;
 	private final String hostname;
 
-	@Inject
-	public PasswordResetMailer(Mailer mailer, @Named("hostname") String hostname) {
+	public PasswordResetMailer(Mailer mailer, String hostname) {
 		this.mailer = mailer;
 		this.hostname = hostname;
 	}

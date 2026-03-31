@@ -7,7 +7,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Ordering;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
@@ -27,7 +26,6 @@ public class FitbitFoodTaskManager extends FitbitTaskManagerSupport<FitbitFoodTa
 
 	private static final Logger logger = LoggerFactory.getLogger(FitbitFoodTaskManager.class);
 
-	@Inject
 	public FitbitFoodTaskManager(FitbitCredentialsManager credentialsManager) {
 		super(FitbitFoodTask.TYPE, FitbitFoodTask.class, credentialsManager);
 	}

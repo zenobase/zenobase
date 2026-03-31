@@ -3,7 +3,6 @@ package com.zenobase.commands;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.ObjectField;
@@ -61,7 +60,6 @@ public class CreateTaskCommand extends Command {
 
 		private final TaskRepository repository;
 
-		@Inject
 		public Handler(TaskRepository repository) {
 			super(CreateTaskCommand.class);
 			this.repository = repository;

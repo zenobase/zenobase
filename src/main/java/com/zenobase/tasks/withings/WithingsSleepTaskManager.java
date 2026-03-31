@@ -5,7 +5,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
@@ -22,7 +21,6 @@ import com.zenobase.tasks.OAuthCredentials;
 
 public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<WithingsSleepTask> {
 
-	@Inject
 	public WithingsSleepTaskManager(WithingsCredentialsManager credentialsManager) {
 		super(WithingsSleepTask.TYPE, WithingsSleepTask.class, credentialsManager);
 	}

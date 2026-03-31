@@ -6,7 +6,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.common.PartialList;
@@ -30,7 +29,6 @@ public class BucketListController extends ControllerSupport {
 	private final EventRepository events;
 	private final UserRepository users;
 
-	@Inject
 	public BucketListController(
 			AuthorizationContext auth,
 			CommandDispatcher dispatcher,

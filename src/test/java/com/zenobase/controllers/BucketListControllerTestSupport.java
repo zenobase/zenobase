@@ -2,17 +2,12 @@ package com.zenobase.controllers;
 
 import static org.mockito.Mockito.mock;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
-import com.google.inject.Module;
 import io.helidon.webserver.http.HttpRouting;
 
 import com.zenobase.models.User;
 import com.zenobase.services.BucketRepository;
-import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.EventRepository;
-import com.zenobase.services.LocalBus;
 import com.zenobase.services.UserRepository;
 
 public abstract class BucketListControllerTestSupport extends ControllerTestSupport {
@@ -25,23 +20,8 @@ public abstract class BucketListControllerTestSupport extends ControllerTestSupp
 	protected final User user = new User("tester");
 
 	@Override
-	protected Module module() {
-		return new AbstractModule() {
-			@Override
-			protected void configure() {
-				bind(Bus.class).to(LocalBus.class);
-				bind(AuthorizationContext.class).toInstance(auth);
-				bind(BucketRepository.class).toInstance(buckets);
-				bind(EventRepository.class).toInstance(events);
-				bind(UserRepository.class).toInstance(users);
-				bind(CommandDispatcher.class).toInstance(dispatcher);
-			}
-		};
-	}
-
-	@Override
-	protected void routing(HttpRouting.Builder builder, Injector injector) {
-		BucketListController controller = injector.getInstance(BucketListController.class);
+	protected void routing(HttpRouting.Builder builder) {
+		var controller = new BucketListController(auth, dispatcher, buckets, events, users);
 		builder.get("/buckets/", controller::findAll);
 		builder.post("/buckets/", controller::post);
 		builder.get("/users/{userId}/buckets/", controller::findByUser);

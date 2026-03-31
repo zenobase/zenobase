@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
-import jakarta.inject.Inject;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
 import org.slf4j.Logger;
@@ -27,7 +26,6 @@ public class BucketRefreshJob extends Job {
 	private final TaskRepository tasks;
 	private final TaskRefresher refresher;
 
-	@Inject
 	public BucketRefreshJob(
 			BucketRepository buckets, UserRepository users, TaskRepository tasks, TaskRefresher refresher) {
 		super("refresh buckets", new LocalTime(2, 0), Period.hours(6));

@@ -3,8 +3,6 @@ package com.zenobase.mail;
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 
 import com.zenobase.controllers.EmailVerificationKey;
 import com.zenobase.models.User;
@@ -14,8 +12,7 @@ public class VerificationMailer {
 	private final Mailer mailer;
 	private final String hostname;
 
-	@Inject
-	public VerificationMailer(Mailer mailer, @Named("hostname") String hostname) {
+	public VerificationMailer(Mailer mailer, String hostname) {
 		this.mailer = mailer;
 		this.hostname = hostname;
 	}

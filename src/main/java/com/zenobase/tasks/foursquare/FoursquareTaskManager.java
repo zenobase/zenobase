@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
@@ -28,7 +27,6 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 	private static final String API_VERSION = "20121128";
 	private static final int LIMIT = 100;
 
-	@Inject
 	public FoursquareTaskManager(FoursquareCredentialsManager credentialsManager) {
 		super(FoursquareTask.TYPE, credentialsManager);
 	}

@@ -4,10 +4,6 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.Singleton;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import io.helidon.webserver.http.HttpRouting;
 import org.junit.jupiter.api.Test;
@@ -15,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import com.zenobase.json.Nodes;
 import com.zenobase.mail.PasswordResetMailer;
 import com.zenobase.models.User;
-import com.zenobase.services.Bus;
-import com.zenobase.services.LocalBus;
 import com.zenobase.services.UserRepository;
 
 public class PasswordResetControllerTest extends ControllerTestSupport {
@@ -27,22 +21,8 @@ public class PasswordResetControllerTest extends ControllerTestSupport {
 	private final User user = new User("tester");
 
 	@Override
-	protected Module module() {
-		return new AbstractModule() {
-			@Override
-			protected void configure() {
-				bind(Bus.class).to(LocalBus.class);
-				bind(AuthorizationContext.class).toInstance(auth);
-				bind(UserRepository.class).toInstance(users);
-				bind(PasswordResetMailer.class).toInstance(mailer);
-				bind(PasswordResetController.class).in(Singleton.class);
-			}
-		};
-	}
-
-	@Override
-	protected void routing(HttpRouting.Builder builder, Injector injector) {
-		PasswordResetController controller = injector.getInstance(PasswordResetController.class);
+	protected void routing(HttpRouting.Builder builder) {
+		var controller = new PasswordResetController(auth, users, mailer);
 		builder.post("/reset", controller::requestReset);
 	}
 

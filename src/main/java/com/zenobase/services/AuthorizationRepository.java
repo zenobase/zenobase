@@ -1,7 +1,6 @@
 package com.zenobase.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.SortOrder;
@@ -22,7 +21,6 @@ public class AuthorizationRepository extends RepositorySupport<Authorization> {
 
 	private final Index index;
 
-	@Inject
 	public AuthorizationRepository(IndexManager manager) {
 		this.index = manager.getIndex(INDEX_NAME);
 		if (!index.exists()) {

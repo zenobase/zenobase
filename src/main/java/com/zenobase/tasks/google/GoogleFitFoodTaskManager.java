@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -20,7 +19,6 @@ import com.zenobase.tasks.Task;
 
 public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<GoogleFitFoodTask> {
 
-	@Inject
 	public GoogleFitFoodTaskManager(GoogleCredentialsManager credentialsManager) {
 		super(GoogleFitFoodTask.TYPE, credentialsManager, GoogleFitFoodTask.class);
 	}

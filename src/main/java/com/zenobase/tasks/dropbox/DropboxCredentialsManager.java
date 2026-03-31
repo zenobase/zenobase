@@ -4,8 +4,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;
@@ -25,12 +23,8 @@ public class DropboxCredentialsManager extends OAuthCredentialsManager {
 
 	private static final String TYPE = "dropbox";
 
-	@Inject
 	public DropboxCredentialsManager(
-			CredentialsRepository repository,
-			@Named("dropbox.api.key") String apiKey,
-			@Named("dropbox.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+			CredentialsRepository repository, String apiKey, String apiSecret, String callbackUrl) {
 		super(TYPE, repository, new DropboxApi(), apiKey, apiSecret, callbackUrl);
 	}
 

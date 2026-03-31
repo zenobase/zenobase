@@ -8,8 +8,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.RateLimiter;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
@@ -55,9 +53,7 @@ public class FoursquareVenues {
 		return parse(json.path("response").path("venue"));
 	}
 
-	@Inject
-	public FoursquareVenues(
-			@Named("foursquare.api.key") String apiKey, @Named("foursquare.api.secret") String apiSecret) {
+	public FoursquareVenues(String apiKey, String apiSecret) {
 		this.apiKey = apiKey;
 		this.apiSecret = apiSecret;
 	}

@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 
 import com.zenobase.commands.CompoundCommand;
@@ -36,7 +35,6 @@ public class BucketController extends ControllerSupport {
 	private final AuthorizationRepository authorizations;
 	private final TaskRepository tasks;
 
-	@Inject
 	public BucketController(
 			AuthorizationContext security,
 			CommandDispatcher dispatcher,

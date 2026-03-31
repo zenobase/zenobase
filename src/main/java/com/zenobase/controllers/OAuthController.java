@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 import org.joda.time.Duration;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -49,7 +48,6 @@ public class OAuthController extends ControllerSupport {
 	private final CommandDispatcher dispatcher;
 	private final UserRepository users;
 
-	@Inject
 	public OAuthController(
 			AuthorizationContext security,
 			AuthorizationRepository authorizations,

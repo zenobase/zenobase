@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;
@@ -13,7 +12,6 @@ public class WhoController extends ControllerSupport {
 
 	private final UserRepository users;
 
-	@Inject
 	public WhoController(AuthorizationContext security, UserRepository users) {
 		super(security);
 		this.users = users;

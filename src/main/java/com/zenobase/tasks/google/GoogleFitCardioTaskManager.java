@@ -8,7 +8,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -21,7 +20,6 @@ import com.zenobase.tasks.Task;
 
 public class GoogleFitCardioTaskManager extends GoogleFitTaskManagerSupport<GoogleFitCardioTask> {
 
-	@Inject
 	public GoogleFitCardioTaskManager(GoogleCredentialsManager credentialsManager) {
 		super(GoogleFitCardioTask.TYPE, credentialsManager, GoogleFitCardioTask.class);
 	}

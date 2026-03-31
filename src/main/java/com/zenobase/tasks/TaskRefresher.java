@@ -1,6 +1,5 @@
 package com.zenobase.tasks;
 
-import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,6 @@ public class TaskRefresher {
 	private final BucketRepository buckets;
 	private final CommandDispatcher dispatcher;
 
-	@Inject
 	public TaskRefresher(TaskManagerRegistry registry, BucketRepository buckets, CommandDispatcher dispatcher) {
 		this.registry = registry;
 		this.buckets = buckets;

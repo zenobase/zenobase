@@ -3,7 +3,6 @@ package com.zenobase.commands;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.BooleanField;
@@ -87,7 +86,6 @@ public class ChangeUserEmailCommand extends Command {
 
 		private final UserRepository repository;
 
-		@Inject
 		public Handler(UserRepository repository) {
 			super(ChangeUserEmailCommand.class);
 			this.repository = repository;

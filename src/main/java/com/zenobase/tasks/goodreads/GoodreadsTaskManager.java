@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
@@ -39,7 +38,6 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 	private static final String HOST = "https://www.goodreads.com";
 	private static final int MAX_PAGES = 10;
 
-	@Inject
 	public GoodreadsTaskManager(GoodreadsCredentialsManager credentialsManager) {
 		super(GoodreadsTask.TYPE, credentialsManager);
 	}

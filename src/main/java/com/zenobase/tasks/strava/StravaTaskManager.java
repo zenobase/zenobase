@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
@@ -30,7 +29,6 @@ public class StravaTaskManager extends OAuthTaskManager {
 
 	private static final String host = "https://www.strava.com/api/v3";
 
-	@Inject
 	public StravaTaskManager(StravaCredentialsManager credentialsManager) {
 		super(StravaTask.TYPE, credentialsManager);
 	}

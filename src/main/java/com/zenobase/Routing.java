@@ -1,25 +1,21 @@
 package com.zenobase;
 
-import com.google.inject.Injector;
 import io.helidon.http.HttpException;
 import io.helidon.webserver.http.HttpRouting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.zenobase.actions.GatekeeperFilter;
-import com.zenobase.actions.QuotaExceptionFilter;
-import com.zenobase.actions.SentryFilter;
 import com.zenobase.controllers.*;
 
 class Routing {
 
 	private static final Logger logger = LoggerFactory.getLogger(Routing.class);
 
-	static void buildRouting(HttpRouting.Builder routing, Injector injector) {
+	static void buildRouting(HttpRouting.Builder routing, Wiring wiring) {
 		// Filters
-		routing.addFilter(injector.getInstance(SentryFilter.class));
-		routing.addFilter(injector.getInstance(GatekeeperFilter.class));
-		routing.addFilter(injector.getInstance(QuotaExceptionFilter.class));
+		routing.addFilter(wiring.sentryFilter());
+		routing.addFilter(wiring.gatekeeperFilter());
+		routing.addFilter(wiring.quotaExceptionFilter());
 
 		// Error handlers
 		routing.error(HttpException.class, (req, res, e) -> {
@@ -35,126 +31,126 @@ class Routing {
 		});
 
 		// Status
-		var status = injector.getInstance(StatusController.class);
+		var status = wiring.statusController();
 		routing.get("/status", status::get);
 		routing.post("/status", status::post);
 
 		// Who
-		var who = injector.getInstance(WhoController.class);
+		var who = wiring.whoController();
 		routing.get("/who", who::who);
 
 		// Password reset
-		var reset = injector.getInstance(PasswordResetController.class);
+		var reset = wiring.passwordResetController();
 		routing.post("/reset", reset::requestReset);
 
 		// Quota
-		var quota = injector.getInstance(QuotaController.class);
+		var quota = wiring.quotaController();
 		routing.get("/users/{userId}/quota", quota::get);
 		routing.post("/users/{userId}/quota", quota::post);
 
 		// Users
-		var userList = injector.getInstance(UserListController.class);
+		var userList = wiring.userListController();
 		routing.get("/users/", userList::find);
 
-		var user = injector.getInstance(UserController.class);
+		var user = wiring.userController();
 		routing.get("/users/{userId}", user::get);
 		routing.post("/users/{userId}", user::update);
 
 		// Accounts
-		var account = injector.getInstance(AccountController.class);
+		var account = wiring.accountController();
 		routing.post("/users/", account::open);
 		routing.delete("/users/{userId}", account::close);
 
 		// Buckets
-		var bucketList = injector.getInstance(BucketListController.class);
+		var bucketList = wiring.bucketListController();
 		routing.get("/buckets/", bucketList::findAll);
 		routing.post("/buckets/", bucketList::post);
 
-		var userBuckets = injector.getInstance(BucketListController.class);
+		var userBuckets = wiring.bucketListController();
 		routing.get("/users/{userId}/buckets/", userBuckets::findByUser);
 
-		var bucket = injector.getInstance(BucketController.class);
+		var bucket = wiring.bucketController();
 		routing.get("/buckets/{bucketId}", bucket::get);
 		routing.get("/buckets/{bucketId}/label", bucket::getLabel);
 		routing.put("/buckets/{bucketId}", bucket::update);
 		routing.delete("/buckets/{bucketId}", bucket::delete);
 
 		// Events
-		var eventList = injector.getInstance(EventListController.class);
+		var eventList = wiring.eventListController();
 		routing.get("/buckets/{bucketId}/", eventList::find);
 		routing.post("/buckets/{bucketId}/", eventList::post);
 
 		routing.get("/events/", eventList::countAll);
 		routing.get("/users/{userId}/events/", eventList::countByUser);
 
-		var event = injector.getInstance(EventController.class);
+		var event = wiring.eventController();
 		routing.get("/buckets/{bucketId}/{eventId}", event::get);
 		routing.put("/buckets/{bucketId}/{eventId}", event::update);
 		routing.delete("/buckets/{bucketId}/{eventId}", event::delete);
 
 		// Tags
-		var tags = injector.getInstance(TagController.class);
+		var tags = wiring.tagController();
 		routing.get("/buckets/{bucketId}/tags/", tags::get);
 
 		// Journal
-		var journal = injector.getInstance(JournalController.class);
+		var journal = wiring.journalController();
 		routing.get("/journal/", journal::findAll);
 		routing.get("/users/{userId}/journal/", journal::findByUser);
 		routing.post("/journal/", journal::post);
 
 		// Credentials
-		var credentialsList = injector.getInstance(CredentialsListController.class);
+		var credentialsList = wiring.credentialsListController();
 		routing.get("/credentials/", credentialsList::findAll);
 		routing.get("/users/{userId}/credentials/", credentialsList::findByUser);
 		routing.post("/credentials/", credentialsList::post);
 
-		var credentials = injector.getInstance(CredentialsController.class);
+		var credentials = wiring.credentialsController();
 		routing.get("/credentials/{credentialsId}", credentials::get);
 		routing.post("/credentials/{credentialsId}", credentials::update);
 		routing.delete("/credentials/{credentialsId}", credentials::delete);
 
 		// Tasks
-		var taskList = injector.getInstance(TaskListController.class);
+		var taskList = wiring.taskListController();
 		routing.get("/tasks/", taskList::findAll);
 		routing.get("/buckets/{bucketId}/tasks/", taskList::findByBucket);
 		routing.get("/users/{userId}/tasks/", taskList::findByUser);
 		routing.post("/tasks/", taskList::post);
 
-		var task = injector.getInstance(TaskController.class);
+		var task = wiring.taskController();
 		routing.get("/tasks/{taskId}", task::get);
 		routing.post("/tasks/{taskId}", task::update);
 		routing.delete("/tasks/{taskId}", task::delete);
 
 		// OAuth
-		var oauth = injector.getInstance(OAuthController.class);
+		var oauth = wiring.oauthController();
 		routing.post("/oauth/authorize", oauth::authorize);
 		routing.post("/oauth/token", oauth::token);
 		routing.get("/oauth/callback/{id}", oauth::callback);
 
 		// Authorizations
-		var authList = injector.getInstance(AuthorizationListController.class);
+		var authList = wiring.authorizationListController();
 		routing.get("/authorizations/", authList::findAll);
 		routing.get("/users/{userId}/authorizations/", authList::findByUser);
 
-		var auth = injector.getInstance(AuthorizationController.class);
+		var auth = wiring.authorizationController();
 		routing.get("/authorizations/{authId}", auth::get);
 		routing.delete("/authorizations/{authId}", auth::delete);
 
 		// Snapshots
-		var snapshot = injector.getInstance(SnapshotController.class);
+		var snapshot = wiring.snapshotController();
 		routing.get("/snapshots/", snapshot::findAll);
 		routing.delete("/snapshots/{snapshotId}", snapshot::delete);
 		routing.post("/snapshots/", snapshot::snapshot);
 
 		// Jobs
-		var scheduler = injector.getInstance(SchedulerController.class);
+		var scheduler = wiring.schedulerController();
 		routing.get("/jobs/", scheduler::findAll);
 
 		// Utility
-		var redirect = injector.getInstance(RedirectController.class);
+		var redirect = wiring.redirectController();
 		routing.get("/to", redirect::get);
 
-		var og = injector.getInstance(OpenGraphController.class);
+		var og = wiring.openGraphController();
 		routing.get("/og", og::get);
 	}
 }

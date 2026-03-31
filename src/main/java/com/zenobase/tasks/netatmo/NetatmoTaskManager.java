@@ -8,7 +8,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.RateLimiter;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
@@ -35,7 +34,6 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(NetatmoTaskManager.class);
 
-	@Inject
 	public NetatmoTaskManager(NetatmoCredentialsManager credentialsManager) {
 		super(NetatmoTask.TYPE, credentialsManager);
 	}

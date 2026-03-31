@@ -3,7 +3,6 @@ package com.zenobase.controllers;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.SpendQuotaCommand;
@@ -20,7 +19,6 @@ public class QuotaController extends ControllerSupport {
 	private final QuotaManager quotas;
 	private final CommandDispatcher dispatcher;
 
-	@Inject
 	public QuotaController(
 			AuthorizationContext security, UserRepository users, QuotaManager quotas, CommandDispatcher dispatcher) {
 		super(security);

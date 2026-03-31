@@ -3,7 +3,6 @@ package com.zenobase.services;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.json.JsonData;
@@ -31,7 +30,6 @@ public class CommandRepository extends RepositorySupport<Command> {
 	private final Index index;
 	private final CommandParserRegistry parsers;
 
-	@Inject
 	public CommandRepository(IndexManager manager, CommandParserRegistry parsers) {
 		this.parsers = parsers;
 		this.index = manager.getIndex(INDEX_NAME);

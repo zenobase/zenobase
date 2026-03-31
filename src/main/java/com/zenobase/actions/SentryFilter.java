@@ -7,7 +7,6 @@ import io.helidon.webserver.http.RoutingResponse;
 import io.sentry.Sentry;
 import io.sentry.protocol.Request;
 import io.sentry.protocol.User;
-import jakarta.inject.Inject;
 
 import com.zenobase.controllers.AuthorizationContext;
 import com.zenobase.oauth.Authorization;
@@ -16,7 +15,6 @@ public class SentryFilter implements Filter {
 
 	private final AuthorizationContext authContext;
 
-	@Inject
 	public SentryFilter(AuthorizationContext authContext) {
 		this.authContext = authContext;
 	}

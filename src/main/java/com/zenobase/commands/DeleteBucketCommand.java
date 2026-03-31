@@ -3,7 +3,6 @@ package com.zenobase.commands;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.ObjectField;
@@ -61,7 +60,6 @@ public class DeleteBucketCommand extends Command {
 
 		private final BucketRepository repository;
 
-		@Inject
 		public Handler(BucketRepository repository) {
 			super(DeleteBucketCommand.class);
 			this.repository = repository;

@@ -4,8 +4,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;
@@ -26,12 +24,8 @@ public class BeeminderCredentialsManager extends OAuthCredentialsManager {
 
 	public static final String TYPE = "beeminder";
 
-	@Inject
 	public BeeminderCredentialsManager(
-			CredentialsRepository integrations,
-			@Named("beeminder.api.key") String apiKey,
-			@Named("beeminder.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+			CredentialsRepository integrations, String apiKey, String apiSecret, String callbackUrl) {
 		super(TYPE, integrations, new BeeminderApi(), apiKey, apiSecret, callbackUrl);
 	}
 

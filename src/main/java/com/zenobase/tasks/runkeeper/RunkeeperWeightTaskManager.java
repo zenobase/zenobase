@@ -8,7 +8,6 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import jakarta.inject.Inject;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
@@ -30,7 +29,6 @@ public class RunkeeperWeightTaskManager extends RunkeeperTaskManagerSupport {
 
 	private static final Logger logger = LoggerFactory.getLogger(RunkeeperWeightTaskManager.class);
 
-	@Inject
 	public RunkeeperWeightTaskManager(RunkeeperCredentialsManager credentialsManager) {
 		super(RunkeeperWeightTask.TYPE, credentialsManager);
 	}

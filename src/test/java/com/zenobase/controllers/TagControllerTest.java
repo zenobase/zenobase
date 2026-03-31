@@ -6,10 +6,6 @@ import static org.mockito.Mockito.*;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.Singleton;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import io.helidon.webserver.http.HttpRouting;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,9 +19,7 @@ import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
-import com.zenobase.services.Bus;
 import com.zenobase.services.EventRepository;
-import com.zenobase.services.LocalBus;
 import com.zenobase.services.UserRepository;
 
 public class TagControllerTest extends ControllerTestSupport {
@@ -38,23 +32,8 @@ public class TagControllerTest extends ControllerTestSupport {
 	private final Bucket bucket = new Bucket();
 
 	@Override
-	protected Module module() {
-		return new AbstractModule() {
-			@Override
-			protected void configure() {
-				bind(Bus.class).to(LocalBus.class);
-				bind(AuthorizationContext.class).toInstance(auth);
-				bind(BucketRepository.class).toInstance(buckets);
-				bind(EventRepository.class).toInstance(events);
-				bind(UserRepository.class).toInstance(users);
-				bind(TagController.class).in(Singleton.class);
-			}
-		};
-	}
-
-	@Override
-	protected void routing(HttpRouting.Builder builder, Injector injector) {
-		TagController controller = injector.getInstance(TagController.class);
+	protected void routing(HttpRouting.Builder builder) {
+		var controller = new TagController(auth, buckets, events);
 		builder.get("/buckets/{bucketId}/tags/", controller::get);
 	}
 

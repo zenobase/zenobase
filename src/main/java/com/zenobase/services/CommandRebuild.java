@@ -13,8 +13,6 @@ import java.util.function.ToIntFunction;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,10 +45,9 @@ public class CommandRebuild {
 	private final BucketRepository targetBuckets;
 	private final TaskRepository targetTasks;
 
-	@Inject
 	public CommandRebuild(
-			@Named("opensearch.rebuild") String sourceHost,
-			@Named("opensearch.rebuild_parallelism") int parallelism,
+			String sourceHost,
+			int parallelism,
 			CommandDispatcher dispatcher,
 			UserRepository targetUsers,
 			AuthorizationRepository targetAuthorizations,

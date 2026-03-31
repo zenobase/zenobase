@@ -3,7 +3,6 @@ package com.zenobase.commands;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.ObjectField;
@@ -67,7 +66,6 @@ public class DeleteEventCommand extends Command {
 
 		private final EventRepository repository;
 
-		@Inject
 		public Handler(EventRepository repository) {
 			super(DeleteEventCommand.class);
 			this.repository = repository;

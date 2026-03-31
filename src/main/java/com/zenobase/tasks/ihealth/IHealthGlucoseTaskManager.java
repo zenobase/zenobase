@@ -3,8 +3,6 @@ package com.zenobase.tasks.ihealth;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -13,9 +11,7 @@ import com.zenobase.tasks.Task;
 
 public class IHealthGlucoseTaskManager extends IHealthTaskManagerSupport<IHealthGlucoseTask> {
 
-	@Inject
-	public IHealthGlucoseTaskManager(
-			IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.glucose") String sv) {
+	public IHealthGlucoseTaskManager(IHealthCredentialsManager credentialsManager, String sv) {
 		super(IHealthGlucoseTask.TYPE, credentialsManager, IHealthGlucoseTask.class);
 		register(
 				"glucose",

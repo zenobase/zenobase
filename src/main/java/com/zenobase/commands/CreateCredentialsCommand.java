@@ -3,7 +3,6 @@ package com.zenobase.commands;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.ObjectField;
@@ -61,7 +60,6 @@ public class CreateCredentialsCommand extends Command {
 
 		private final CredentialsRepository repository;
 
-		@Inject
 		public Handler(CredentialsRepository repository) {
 			super(CreateCredentialsCommand.class);
 			this.repository = repository;

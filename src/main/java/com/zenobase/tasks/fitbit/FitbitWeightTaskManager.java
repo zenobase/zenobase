@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
@@ -26,7 +25,6 @@ public class FitbitWeightTaskManager extends FitbitTaskManagerSupport<FitbitWeig
 
 	private static final Logger logger = LoggerFactory.getLogger(FitbitWeightTaskManager.class);
 
-	@Inject
 	public FitbitWeightTaskManager(FitbitCredentialsManager credentialsManager) {
 		super(FitbitWeightTask.TYPE, FitbitWeightTask.class, credentialsManager);
 	}

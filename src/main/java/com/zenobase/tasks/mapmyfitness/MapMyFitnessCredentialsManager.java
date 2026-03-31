@@ -4,8 +4,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthConstants;
 import org.scribe.model.OAuthRequest;
@@ -29,12 +27,8 @@ public class MapMyFitnessCredentialsManager extends OAuthCredentialsManager {
 
 	private static final String TYPE = "mapmyfitness";
 
-	@Inject
 	public MapMyFitnessCredentialsManager(
-			CredentialsRepository repository,
-			@Named("mapmyfitness.api.key") String apiKey,
-			@Named("mapmyfitness.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+			CredentialsRepository repository, String apiKey, String apiSecret, String callbackUrl) {
 		super(TYPE, repository, new MapMyFitnessApi(), apiKey, apiSecret, callbackUrl);
 	}
 

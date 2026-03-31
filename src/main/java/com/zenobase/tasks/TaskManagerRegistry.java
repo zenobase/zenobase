@@ -5,13 +5,11 @@ import java.util.Set;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import jakarta.inject.Inject;
 
 public class TaskManagerRegistry {
 
 	private final Map<String, TaskManager> managers = Maps.newHashMap();
 
-	@Inject
 	public TaskManagerRegistry(Set<TaskManager> managers) {
 		for (TaskManager manager : managers) {
 			this.managers.put(manager.getType(), manager);

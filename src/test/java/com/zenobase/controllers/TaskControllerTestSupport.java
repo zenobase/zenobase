@@ -2,10 +2,6 @@ package com.zenobase.controllers;
 
 import static org.mockito.Mockito.mock;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.Singleton;
 import io.helidon.webserver.http.HttpRouting;
 
 import com.zenobase.models.User;
@@ -31,26 +27,8 @@ public abstract class TaskControllerTestSupport extends ControllerTestSupport {
 	protected final User user = new User("tester");
 
 	@Override
-	protected Module module() {
-		return new AbstractModule() {
-			@Override
-			protected void configure() {
-				bind(Bus.class).toInstance(bus);
-				bind(AuthorizationContext.class).toInstance(auth);
-				bind(TaskManagerRegistry.class).toInstance(registry);
-				bind(TaskRepository.class).toInstance(tasks);
-				bind(TaskRefresher.class).toInstance(refresher);
-				bind(BucketRepository.class).toInstance(buckets);
-				bind(UserRepository.class).toInstance(users);
-				bind(CommandDispatcher.class).toInstance(dispatcher);
-				bind(TaskController.class).in(Singleton.class);
-			}
-		};
-	}
-
-	@Override
-	protected void routing(HttpRouting.Builder builder, Injector injector) {
-		TaskController controller = injector.getInstance(TaskController.class);
+	protected void routing(HttpRouting.Builder builder) {
+		var controller = new TaskController(auth, dispatcher, registry, tasks, buckets, users, refresher, bus);
 		builder.get("/tasks/{taskId}", controller::get);
 		builder.post("/tasks/{taskId}", controller::update);
 		builder.delete("/tasks/{taskId}", controller::delete);

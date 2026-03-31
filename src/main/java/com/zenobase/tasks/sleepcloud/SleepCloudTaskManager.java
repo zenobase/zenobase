@@ -7,7 +7,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Ordering;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
@@ -31,7 +30,6 @@ import com.zenobase.tasks.google.GoogleCredentialsManager;
 
 public class SleepCloudTaskManager extends OAuthTaskManager {
 
-	@Inject
 	public SleepCloudTaskManager(GoogleCredentialsManager credentialsManager) {
 		super(SleepCloudTask.TYPE, credentialsManager);
 	}

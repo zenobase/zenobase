@@ -12,7 +12,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensearch.client.opensearch._types.OpenSearchException;
@@ -50,7 +49,6 @@ public class EventListController extends ControllerSupport {
 	private final UserRepository users;
 	private final CommandDispatcher dispatcher;
 
-	@Inject
 	public EventListController(
 			AuthorizationContext security,
 			BucketRepository buckets,

@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.IntegerField;
@@ -75,7 +74,6 @@ public class ChangeQuotaCommand extends Command {
 
 		private final UserRepository repository;
 
-		@Inject
 		public Handler(UserRepository repository) {
 			super(ChangeQuotaCommand.class);
 			this.repository = repository;

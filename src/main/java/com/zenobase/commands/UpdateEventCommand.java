@@ -3,7 +3,6 @@ package com.zenobase.commands;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.slf4j.Logger;
@@ -85,7 +84,6 @@ public class UpdateEventCommand extends Command {
 
 		private final EventRepository repository;
 
-		@Inject
 		public Handler(EventRepository repository) {
 			super(UpdateEventCommand.class);
 			this.repository = repository;

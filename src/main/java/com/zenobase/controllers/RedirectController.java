@@ -2,11 +2,9 @@ package com.zenobase.controllers;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 public class RedirectController extends ControllerSupport {
 
-	@Inject
 	public RedirectController(AuthorizationContext security) {
 		super(security);
 	}

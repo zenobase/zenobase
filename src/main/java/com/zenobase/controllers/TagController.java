@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
@@ -17,7 +16,6 @@ public class TagController extends ControllerSupport {
 	private final BucketRepository buckets;
 	private final EventRepository events;
 
-	@Inject
 	public TagController(AuthorizationContext security, BucketRepository buckets, EventRepository events) {
 		super(security);
 		this.buckets = buckets;

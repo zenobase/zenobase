@@ -2,18 +2,13 @@ package com.zenobase.controllers;
 
 import static org.mockito.Mockito.mock;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
-import com.google.inject.Module;
 import io.helidon.webserver.http.HttpRouting;
 
 import com.zenobase.models.Bucket;
 import com.zenobase.models.User;
 import com.zenobase.services.BucketRepository;
-import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.EventRepository;
-import com.zenobase.services.LocalBus;
 import com.zenobase.services.UserRepository;
 
 public abstract class EventControllerTestSupport extends ControllerTestSupport {
@@ -27,23 +22,8 @@ public abstract class EventControllerTestSupport extends ControllerTestSupport {
 	protected final Bucket bucket = new Bucket();
 
 	@Override
-	protected Module module() {
-		return new AbstractModule() {
-			@Override
-			protected void configure() {
-				bind(Bus.class).to(LocalBus.class);
-				bind(UserRepository.class).toInstance(users);
-				bind(AuthorizationContext.class).toInstance(auth);
-				bind(BucketRepository.class).toInstance(buckets);
-				bind(EventRepository.class).toInstance(events);
-				bind(CommandDispatcher.class).toInstance(dispatcher);
-			}
-		};
-	}
-
-	@Override
-	protected void routing(HttpRouting.Builder builder, Injector injector) {
-		EventController controller = injector.getInstance(EventController.class);
+	protected void routing(HttpRouting.Builder builder) {
+		var controller = new EventController(auth, buckets, events, dispatcher);
 		builder.get("/buckets/{bucketId}/{eventId}", controller::get);
 		builder.put("/buckets/{bucketId}/{eventId}", controller::update);
 		builder.delete("/buckets/{bucketId}/{eventId}", controller::delete);

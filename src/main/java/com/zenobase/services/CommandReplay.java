@@ -4,8 +4,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.base.Stopwatch;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +26,7 @@ public class CommandReplay {
 	private final AtomicInteger replayed = new AtomicInteger();
 	private final AtomicInteger failures = new AtomicInteger();
 
-	@Inject
-	public CommandReplay(
-			@Named("opensearch.replay") String sourceHost,
-			CommandParserRegistry parsers,
-			CommandDispatcher dispatcher) {
+	public CommandReplay(String sourceHost, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
 		this.sourceHost = sourceHost;
 		this.parsers = parsers;
 		this.dispatcher = dispatcher;

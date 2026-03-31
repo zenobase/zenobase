@@ -1,7 +1,5 @@
 package com.zenobase.mail;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.sesv2.SesV2Client;
@@ -19,8 +17,7 @@ public class SesMailer implements Mailer {
 	private final SesV2Client client;
 	private final String from;
 
-	@Inject
-	public SesMailer(SesV2Client client, @Named("mail.from") String from) {
+	public SesMailer(SesV2Client client, String from) {
 		this.client = client;
 		this.from = from;
 	}

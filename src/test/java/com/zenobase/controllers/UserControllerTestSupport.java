@@ -2,20 +2,13 @@ package com.zenobase.controllers;
 
 import static org.mockito.Mockito.mock;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.Singleton;
 import io.helidon.webserver.http.HttpRouting;
 
-import com.zenobase.mail.EmailValidator;
 import com.zenobase.mail.RegexEmailValidator;
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.User;
 import com.zenobase.services.AuthorizationRepository;
-import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
-import com.zenobase.services.LocalBus;
 import com.zenobase.services.UserRepository;
 
 public abstract class UserControllerTestSupport extends ControllerTestSupport {
@@ -34,25 +27,8 @@ public abstract class UserControllerTestSupport extends ControllerTestSupport {
 	}
 
 	@Override
-	protected Module module() {
-		return new AbstractModule() {
-			@Override
-			protected void configure() {
-				bind(Bus.class).to(LocalBus.class);
-				bind(AuthorizationContext.class).toInstance(auth);
-				bind(UserRepository.class).toInstance(users);
-				bind(AuthorizationRepository.class).toInstance(authorizations);
-				bind(CommandDispatcher.class).toInstance(dispatcher);
-				bind(VerificationMailer.class).toInstance(mailer);
-				bind(EmailValidator.class).to(RegexEmailValidator.class);
-				bind(UserController.class).in(Singleton.class);
-			}
-		};
-	}
-
-	@Override
-	protected void routing(HttpRouting.Builder builder, Injector injector) {
-		UserController controller = injector.getInstance(UserController.class);
+	protected void routing(HttpRouting.Builder builder) {
+		var controller = new UserController(auth, users, authorizations, dispatcher, mailer, new RegexEmailValidator());
 		builder.get("/users/{userId}", controller::get);
 		builder.post("/users/{userId}", controller::update);
 	}

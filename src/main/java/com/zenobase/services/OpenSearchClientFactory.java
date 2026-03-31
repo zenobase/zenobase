@@ -4,8 +4,6 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.core5.http.HttpHost;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
@@ -27,8 +25,7 @@ public class OpenSearchClientFactory implements ClientFactory {
 	private final String host;
 	private final String region;
 
-	@Inject
-	public OpenSearchClientFactory(@Named("opensearch.host") String host, @Named("aws.region") String region) {
+	public OpenSearchClientFactory(String host, String region) {
 		this.host = host;
 		this.region = region;
 	}

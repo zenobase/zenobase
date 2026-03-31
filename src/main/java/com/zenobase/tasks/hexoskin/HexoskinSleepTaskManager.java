@@ -1,7 +1,6 @@
 package com.zenobase.tasks.hexoskin;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.Response;
 
@@ -9,7 +8,6 @@ import com.zenobase.models.Identity;
 
 public class HexoskinSleepTaskManager extends HexoskinTaskManagerSupport<HexoskinSleepTask> {
 
-	@Inject
 	public HexoskinSleepTaskManager(HexoskinCredentialsManager credentialsManager) {
 		super(HexoskinSleepTask.TYPE, HexoskinSleepTask.class, credentialsManager);
 	}

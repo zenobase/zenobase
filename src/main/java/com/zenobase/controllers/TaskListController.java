@@ -3,7 +3,6 @@ package com.zenobase.controllers;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.commands.CreateTaskCommand;
 import com.zenobase.json.Nodes;
@@ -30,7 +29,6 @@ public class TaskListController extends ControllerSupport {
 	private final BucketRepository buckets;
 	private final UserRepository users;
 
-	@Inject
 	public TaskListController(
 			AuthorizationContext security,
 			CommandDispatcher dispatcher,

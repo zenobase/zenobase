@@ -7,7 +7,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -25,7 +24,6 @@ public class MapMyFitnessActivitiesTaskManager extends MapMyFitnessTaskManagerSu
 	private static final Cache<String, String> TYPES =
 			CacheBuilder.newBuilder().maximumSize(100).build();
 
-	@Inject
 	public MapMyFitnessActivitiesTaskManager(MapMyFitnessCredentialsManager credentialsManager) {
 		super(MapMyFitnessTask.TYPE, credentialsManager);
 	}

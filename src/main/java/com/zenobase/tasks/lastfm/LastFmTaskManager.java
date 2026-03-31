@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.RateLimiter;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
@@ -37,7 +36,6 @@ public class LastFmTaskManager extends OAuthTaskManager {
 
 	private final RateLimiter RATE_LIMIT = RateLimiter.create(5);
 
-	@Inject
 	public LastFmTaskManager(LastFmCredentialsManager credentialsManager) {
 		super(LastFmTask.TYPE, credentialsManager);
 	}

@@ -2,7 +2,6 @@ package com.zenobase.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch.core.SearchRequest;
@@ -23,7 +22,6 @@ public class CredentialsRepository extends RepositorySupport<Credentials> {
 
 	private final Index index;
 
-	@Inject
 	public CredentialsRepository(IndexManager manager) {
 		this.index = manager.getIndex(INDEX_NAME);
 		if (!index.exists()) {

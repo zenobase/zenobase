@@ -2,10 +2,6 @@ package com.zenobase.controllers;
 
 import static org.mockito.Mockito.mock;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.Singleton;
 import io.helidon.webserver.http.HttpRouting;
 
 import com.zenobase.models.User;
@@ -21,21 +17,8 @@ public abstract class StatusControllerTestSupport extends ControllerTestSupport 
 	protected final User user = new User("tester");
 
 	@Override
-	protected Module module() {
-		return new AbstractModule() {
-			@Override
-			protected void configure() {
-				bind(Bus.class).toInstance(bus);
-				bind(AuthorizationContext.class).toInstance(auth);
-				bind(UserRepository.class).toInstance(users);
-				bind(StatusController.class).in(Singleton.class);
-			}
-		};
-	}
-
-	@Override
-	protected void routing(HttpRouting.Builder builder, Injector injector) {
-		StatusController controller = injector.getInstance(StatusController.class);
+	protected void routing(HttpRouting.Builder builder) {
+		var controller = new StatusController(auth, users, bus);
 		builder.get("/status", controller::get);
 		builder.post("/status", controller::post);
 	}

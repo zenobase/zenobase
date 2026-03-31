@@ -6,9 +6,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Key;
 import io.helidon.config.Config;
 import io.helidon.config.ConfigSources;
 import io.helidon.health.HealthCheckResponse;
@@ -22,7 +19,6 @@ import org.opensearch.client.opensearch._types.HealthStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.zenobase.common.Globals;
 import com.zenobase.services.*;
 
 public class Main {
@@ -31,13 +27,12 @@ public class Main {
 
 	void main() {
 		Config config = createConfig();
-		Injector injector = createInjector(config);
-		Globals.put(Injector.class, injector);
+		var wiring = new Wiring(config);
 		AtomicBoolean ready = new AtomicBoolean(false);
-		startServer(config, injector, createObserveFeature(ready, injector), createCorsFeature(config));
-		replay(injector);
-		enableWrites(injector);
-		startScheduler(injector);
+		startServer(config, wiring, createObserveFeature(ready, wiring), createCorsFeature(config));
+		replay(wiring);
+		enableWrites(wiring);
+		startScheduler(wiring);
 		ready.set(true);
 	}
 
@@ -50,21 +45,14 @@ public class Main {
 				.build();
 	}
 
-	private Injector createInjector(Config config) {
-		return Guice.createInjector(new Module(config));
-	}
-
-	private ObserveFeature createObserveFeature(AtomicBoolean ready, Injector injector) {
+	private ObserveFeature createObserveFeature(AtomicBoolean ready, Wiring wiring) {
 		return ObserveFeature.builder()
 				.addObserver(HealthObserver.builder()
 						.useSystemServices(false)
 						.details(true)
 						.addCheck(createServerCheck(), HealthCheckType.LIVENESS, "server")
 						.addCheck(createStartupCheck(ready), HealthCheckType.STARTUP, "startup")
-						.addCheck(
-								createOpenSearchCheck(injector.getInstance(IndexManager.class)),
-								HealthCheckType.READINESS,
-								"opensearch")
+						.addCheck(createOpenSearchCheck(wiring.indexManager()), HealthCheckType.READINESS, "opensearch")
 						.build())
 				.build();
 	}
@@ -104,12 +92,12 @@ public class Main {
 				.build();
 	}
 
-	private void startServer(Config config, Injector injector, ObserveFeature observeFeature, CorsFeature corsFeature) {
+	private void startServer(Config config, Wiring wiring, ObserveFeature observeFeature, CorsFeature corsFeature) {
 		var server = WebServer.builder()
 				.config(config.get("server"))
 				.addFeature(observeFeature)
 				.addFeature(corsFeature)
-				.routing(routing -> Routing.buildRouting(routing, injector))
+				.routing(routing -> Routing.buildRouting(routing, wiring))
 				.build()
 				.start();
 
@@ -117,35 +105,33 @@ public class Main {
 
 		io.helidon.Main.addShutdownHandler(() -> {
 			logger.info("Shutting down...");
-			injector.getInstance(Scheduler.class).close();
-			injector.getInstance(IndexManager.class).close();
-			injector.getInstance(Bus.class).close();
+			wiring.scheduler().close();
+			wiring.indexManager().close();
+			wiring.bus().close();
 		});
 	}
 
-	private void replay(Injector injector) {
-		var replayBinding = injector.getExistingBinding(Key.get(CommandReplay.class));
-		var rebuildBinding = injector.getExistingBinding(Key.get(CommandRebuild.class));
-		if (replayBinding != null || rebuildBinding != null) {
-			var users = injector.getInstance(UserRepository.class);
-			if (!users.isEmpty()) {
+	private void replay(Wiring wiring) {
+		var replay = wiring.commandReplay();
+		var rebuild = wiring.commandRebuild();
+		if (replay != null || rebuild != null) {
+			if (!wiring.userRepository().isEmpty()) {
 				throw new IllegalStateException(
 						"Migration incomplete: replay/rebuild is configured but target domain already has data");
 			}
 		}
-		if (replayBinding != null) {
-			replayBinding.getProvider().get().replay();
-		} else if (rebuildBinding != null) {
-			rebuildBinding.getProvider().get().rebuild();
+		if (replay != null) {
+			replay.replay();
+		} else if (rebuild != null) {
+			rebuild.rebuild();
 		}
 	}
 
-	private void enableWrites(Injector injector) {
-		var bus = injector.getInstance(Bus.class);
-		bus.setReadOnly(false);
+	private void enableWrites(Wiring wiring) {
+		wiring.bus().setReadOnly(false);
 	}
 
-	private void startScheduler(Injector injector) {
-		injector.getInstance(Scheduler.class).start();
+	private void startScheduler(Wiring wiring) {
+		wiring.scheduler().start();
 	}
 }

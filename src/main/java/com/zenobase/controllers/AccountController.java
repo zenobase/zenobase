@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -43,7 +42,6 @@ public class AccountController extends ControllerSupport {
 	private final EmailValidator emailValidator;
 	private final VerificationMailer mailer;
 
-	@Inject
 	public AccountController(
 			AuthorizationContext security,
 			UserRepository users,

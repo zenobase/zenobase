@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import io.helidon.http.HeaderNames;
 import io.helidon.webserver.http.ServerRequest;
-import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.oauth.Authorization;
@@ -14,7 +13,6 @@ public class AuthorizationContext {
 
 	private final AuthorizationRepository authorizations;
 
-	@Inject
 	public AuthorizationContext(AuthorizationRepository authorizations) {
 		this.authorizations = authorizations;
 	}

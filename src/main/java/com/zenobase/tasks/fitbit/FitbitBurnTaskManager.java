@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import jakarta.inject.Inject;
 import org.joda.time.LocalDate;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
@@ -25,7 +24,6 @@ public class FitbitBurnTaskManager extends FitbitTaskManagerSupport<FitbitBurnTa
 
 	private static final Logger logger = LoggerFactory.getLogger(FitbitBurnTaskManager.class);
 
-	@Inject
 	public FitbitBurnTaskManager(FitbitCredentialsManager credentialsManager) {
 		super(FitbitBurnTask.TYPE, FitbitBurnTask.class, credentialsManager);
 	}

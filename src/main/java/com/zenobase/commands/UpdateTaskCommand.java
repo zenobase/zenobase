@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.JsonPatch;
@@ -69,7 +68,6 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 
 		private final TaskRepository repository;
 
-		@Inject
 		public Handler(TaskRepository repository) {
 			super(UpdateTaskCommand.class);
 			this.repository = repository;

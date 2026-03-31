@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.FieldValue;
@@ -33,7 +32,6 @@ public class EventRepository {
 	private final IndexManager manager;
 	private final Index index;
 
-	@Inject
 	public EventRepository(IndexManager manager) {
 		this.manager = manager;
 		this.index = manager.getIndex(INDEX_NAME);

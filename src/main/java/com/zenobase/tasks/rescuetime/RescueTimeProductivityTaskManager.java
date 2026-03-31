@@ -10,7 +10,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.RateLimiter;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -34,7 +33,6 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 
 	private final RateLimiter rateLimit = RateLimiter.create(10);
 
-	@Inject
 	public RescueTimeProductivityTaskManager(RescueTimeCredentialsManager credentialsManager) {
 		super(RescueTimeProductivityTask.TYPE, credentialsManager);
 	}

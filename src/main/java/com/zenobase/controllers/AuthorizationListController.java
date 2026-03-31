@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
@@ -17,7 +16,6 @@ public class AuthorizationListController extends ControllerSupport {
 	private final AuthorizationRepository authorizations;
 	private final UserRepository users;
 
-	@Inject
 	public AuthorizationListController(
 			AuthorizationContext security, AuthorizationRepository authorizations, UserRepository users) {
 		super(security);

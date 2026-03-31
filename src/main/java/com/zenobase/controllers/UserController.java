@@ -5,7 +5,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.commands.ChangeQuotaCommand;
@@ -40,7 +39,6 @@ public class UserController extends ControllerSupport {
 	private final VerificationMailer mailer;
 	private final EmailValidator emailValidator;
 
-	@Inject
 	public UserController(
 			AuthorizationContext security,
 			UserRepository users,

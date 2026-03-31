@@ -2,17 +2,11 @@ package com.zenobase.controllers;
 
 import static org.mockito.Mockito.mock;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.Singleton;
 import io.helidon.webserver.http.HttpRouting;
 
 import com.zenobase.models.Identity;
-import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CredentialsRepository;
-import com.zenobase.services.LocalBus;
 import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.CredentialsManagerRegistry;
 
@@ -26,24 +20,8 @@ public abstract class CredentialsControllerTestSupport extends ControllerTestSup
 	protected final Identity principal = new Identity();
 
 	@Override
-	protected Module module() {
-		return new AbstractModule() {
-			@Override
-			protected void configure() {
-				bind(Bus.class).to(LocalBus.class);
-				bind(AuthorizationContext.class).toInstance(auth);
-				bind(CommandDispatcher.class).toInstance(dispatcher);
-				bind(CredentialsManagerRegistry.class).toInstance(registry);
-				bind(CredentialsRepository.class).toInstance(repository);
-				bind(UserRepository.class).toInstance(users);
-				bind(CredentialsController.class).in(Singleton.class);
-			}
-		};
-	}
-
-	@Override
-	protected void routing(HttpRouting.Builder builder, Injector injector) {
-		CredentialsController controller = injector.getInstance(CredentialsController.class);
+	protected void routing(HttpRouting.Builder builder) {
+		var controller = new CredentialsController(auth, dispatcher, registry, repository, users);
 		builder.get("/credentials/{credentialsId}", controller::get);
 		builder.post("/credentials/{credentialsId}", controller::update);
 		builder.delete("/credentials/{credentialsId}", controller::delete);

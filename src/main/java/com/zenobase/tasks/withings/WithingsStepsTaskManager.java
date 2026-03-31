@@ -6,7 +6,6 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.jspecify.annotations.Nullable;
@@ -23,7 +22,6 @@ import com.zenobase.tasks.OAuthCredentials;
 
 public class WithingsStepsTaskManager extends WithingsTaskManagerSupport<WithingsStepsTask> {
 
-	@Inject
 	public WithingsStepsTaskManager(WithingsCredentialsManager credentialsManager) {
 		super(WithingsStepsTask.TYPE, WithingsStepsTask.class, credentialsManager);
 	}

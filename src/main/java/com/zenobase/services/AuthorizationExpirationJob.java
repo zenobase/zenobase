@@ -1,6 +1,5 @@
 package com.zenobase.services;
 
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
@@ -18,7 +17,6 @@ public class AuthorizationExpirationJob extends Job {
 	private final AuthorizationRepository authorizations;
 	private final CommandDispatcher dispatcher;
 
-	@Inject
 	public AuthorizationExpirationJob(AuthorizationRepository authorizations, CommandDispatcher dispatcher) {
 		super("expire authorizations", new LocalTime(3, 0), Period.days(1));
 		this.authorizations = authorizations;

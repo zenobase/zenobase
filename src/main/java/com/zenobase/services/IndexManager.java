@@ -10,8 +10,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.Uninterruptibles;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import jakarta.json.Json;
 import jakarta.json.JsonObjectBuilder;
 import org.opensearch.client.opensearch.OpenSearchClient;
@@ -32,12 +30,8 @@ public class IndexManager implements Closeable {
 	private final OpenSearchClient client;
 	private final String snapshotRepository;
 
-	@Inject
 	public IndexManager(
-			ClientFactory clientFactory,
-			@Named("opensearch.snapshot.bucket") String snapshotBucket,
-			@Named("aws.region") String snapshotRegion,
-			@Named("opensearch.snapshot_role_arn") String snapshotRoleArn) {
+			ClientFactory clientFactory, String snapshotBucket, String snapshotRegion, String snapshotRoleArn) {
 		client = clientFactory.createClient();
 		var cluster = new Cluster(client);
 		while (!cluster.isReady()) {

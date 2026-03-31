@@ -5,13 +5,11 @@ import java.util.Set;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import jakarta.inject.Inject;
 
 public class CredentialsManagerRegistry {
 
 	private final Map<String, CredentialsManager> managers = Maps.newHashMap();
 
-	@Inject
 	public CredentialsManagerRegistry(Set<CredentialsManager> managers) {
 		for (CredentialsManager manager : managers) {
 			this.managers.put(manager.getType(), manager);
