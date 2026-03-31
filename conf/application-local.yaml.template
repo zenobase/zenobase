@@ -1,9 +1,14 @@
-netatmo:
+beeminder:
   api:
     key: ""
     secret: ""
 
-withings:
+dropbox:
+  api:
+    key: ""
+    secret: ""
+
+fitbark:
   api:
     key: ""
     secret: ""
@@ -18,32 +23,12 @@ foursquare:
     key: ""
     secret: ""
 
-runkeeper:
+garmin:
   api:
     key: ""
     secret: ""
 
-strava:
-  api:
-    key: ""
-    secret: ""
-
-mapmyfitness:
-  api:
-    key: ""
-    secret: ""
-
-dropbox:
-  api:
-    key: ""
-    secret: ""
-
-lastfm:
-  api:
-    key: ""
-    secret: ""
-
-rescuetime:
+goodreads:
   api:
     key: ""
     secret: ""
@@ -55,6 +40,11 @@ google:
   service:
     key: ""
 
+hexoskin:
+  api:
+    key: ""
+    secret: ""
+
 ihealth:
   api:
     key: ""
@@ -63,19 +53,44 @@ ihealth:
     sv:
       activity: ""
       bp: ""
-      glucose: ""
       food: ""
+      glucose: ""
       sleep: ""
       spo2: ""
       sport: ""
       weight: ""
 
-beeminder:
+lastfm:
   api:
     key: ""
     secret: ""
 
-hexoskin:
+mapmyfitness:
+  api:
+    key: ""
+    secret: ""
+
+netatmo:
+  api:
+    key: ""
+    secret: ""
+
+oura:
+  api:
+    key: ""
+    secret: ""
+
+rescuetime:
+  api:
+    key: ""
+    secret: ""
+
+runkeeper:
+  api:
+    key: ""
+    secret: ""
+
+strava:
   api:
     key: ""
     secret: ""
@@ -90,22 +105,7 @@ wakatime:
     key: ""
     secret: ""
 
-fitbark:
-  api:
-    key: ""
-    secret: ""
-
-goodreads:
-  api:
-    key: ""
-    secret: ""
-
-garmin:
-  api:
-    key: ""
-    secret: ""
-
-oura:
+withings:
   api:
     key: ""
     secret: ""
