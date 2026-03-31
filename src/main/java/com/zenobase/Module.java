@@ -294,7 +294,8 @@ class Module extends AbstractModule {
 	}
 
 	private boolean isConfigured(String key) {
-		return config.get(key).asString().filter(s -> !s.isEmpty()).isPresent();
+		var node = config.get(key);
+		return node.isLeaf() ? node.asString().filter(s -> !s.isEmpty()).isPresent() : node.exists();
 	}
 
 	private void bindConfiguration() {
