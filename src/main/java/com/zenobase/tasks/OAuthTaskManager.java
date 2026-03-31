@@ -2,12 +2,12 @@ package com.zenobase.tasks;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
@@ -98,7 +98,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 	protected static String getBody(Response response) {
 		if (isEncoded(response, "gzip")) {
 			try (InputStreamReader in =
-					new InputStreamReader(new GZIPInputStream(response.getStream()), Charsets.UTF_8)) {
+					new InputStreamReader(new GZIPInputStream(response.getStream()), StandardCharsets.UTF_8)) {
 				return CharStreams.toString(in);
 			} catch (IOException e) {
 				throw new RuntimeException(e);

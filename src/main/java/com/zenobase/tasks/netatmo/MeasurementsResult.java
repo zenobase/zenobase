@@ -1,7 +1,6 @@
 package com.zenobase.tasks.netatmo;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.measure.DecimalMeasure;
@@ -45,8 +44,8 @@ class MeasurementsResult {
 	public List<Event> getEvents() {
 		Preconditions.checkState(isSuccess(), "Expected a successful response but got <%s>", node);
 		List<Event> events = new ArrayList<>();
-		for (Iterator<Map.Entry<String, JsonNode>> i = node.path("body").fields(); i.hasNext(); ) {
-			events.add(getEvent(i.next()));
+		for (Map.Entry<String, JsonNode> stringJsonNodeEntry : node.path("body").properties()) {
+			events.add(getEvent(stringJsonNodeEntry));
 		}
 		return events;
 	}

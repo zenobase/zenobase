@@ -8,8 +8,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.cfg.JsonNodeFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
@@ -17,9 +18,10 @@ import com.google.common.base.Strings;
 
 public class Nodes {
 
-	public static final ObjectMapper MAPPER = new ObjectMapper()
+	public static final ObjectMapper MAPPER = JsonMapper.builder()
 			.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
-			.setNodeFactory(JsonNodeFactory.withExactBigDecimals(true));
+			.disable(JsonNodeFeature.STRIP_TRAILING_BIGDECIMAL_ZEROES)
+			.build();
 
 	private Nodes() {}
 

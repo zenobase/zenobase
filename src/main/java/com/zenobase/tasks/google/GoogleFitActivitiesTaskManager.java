@@ -17,7 +17,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
-import com.google.common.math.DoubleMath;
+import com.google.common.math.Stats;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -369,6 +369,6 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 	}
 
 	private static @Nullable BigDecimal mean(Iterable<? extends Number> values) {
-		return !Iterables.isEmpty(values) ? new BigDecimal(DoubleMath.mean(values)) : null;
+		return !Iterables.isEmpty(values) ? new BigDecimal(Stats.meanOf(values)) : null;
 	}
 }

@@ -162,26 +162,28 @@ public class RandomEvent {
 
 		public RandomElement<Movie> parse(File source) {
 			try {
-				return Objects.requireNonNull(Files.readLines(source, StandardCharsets.UTF_8, new LineProcessor<>() {
-					private final RandomElement<Movie> resources = new RandomElement<>();
+				return Objects.requireNonNull(Files.asCharSource(source, StandardCharsets.UTF_8)
+						.readLines(new LineProcessor<>() {
+							private final RandomElement<Movie> resources = new RandomElement<>();
 
-					@Override
-					public boolean processLine(String line) {
-						String[] tokens = line.split("\t");
-						String title = String.format("%s (%d)", tokens[5], Integer.parseInt(tokens[11]));
-						String url = tokens[15];
-						Duration duration =
-								!tokens[10].isEmpty() ? Duration.standardMinutes(Integer.parseInt(tokens[10])) : null;
-						int weight = Integer.parseInt(tokens[13]);
-						resources.add(new Movie(title, url, duration), weight);
-						return true;
-					}
+							@Override
+							public boolean processLine(String line) {
+								String[] tokens = line.split("\t");
+								String title = String.format("%s (%d)", tokens[5], Integer.parseInt(tokens[11]));
+								String url = tokens[15];
+								Duration duration = !tokens[10].isEmpty()
+										? Duration.standardMinutes(Integer.parseInt(tokens[10]))
+										: null;
+								int weight = Integer.parseInt(tokens[13]);
+								resources.add(new Movie(title, url, duration), weight);
+								return true;
+							}
 
-					@Override
-					public RandomElement<Movie> getResult() {
-						return resources;
-					}
-				}));
+							@Override
+							public RandomElement<Movie> getResult() {
+								return resources;
+							}
+						}));
 			} catch (IOException e) {
 				throw new AssertionError(e);
 			}

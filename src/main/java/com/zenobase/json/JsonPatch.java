@@ -1,6 +1,5 @@
 package com.zenobase.json;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,8 +24,7 @@ public class JsonPatch {
 	}
 
 	private void checkState(ObjectNode node, ObjectNode expected) throws IllegalStateException {
-		for (Iterator<Map.Entry<String, JsonNode>> i = expected.fields(); i.hasNext(); ) {
-			Map.Entry<String, JsonNode> entry = i.next();
+		for (Map.Entry<String, JsonNode> entry : expected.properties()) {
 			JsonNode found = node.path(entry.getKey());
 			if (entry.getValue().isNull()) {
 				Preconditions.checkState(
@@ -55,8 +53,7 @@ public class JsonPatch {
 	}
 
 	private static void apply(ObjectNode target, ObjectNode changes) {
-		for (Iterator<Map.Entry<String, JsonNode>> i = changes.fields(); i.hasNext(); ) {
-			Map.Entry<String, JsonNode> entry = i.next();
+		for (Map.Entry<String, JsonNode> entry : changes.properties()) {
 			if (entry.getValue().isNull()) {
 				target.remove(entry.getKey());
 			} else if (entry.getValue().isValueNode()) {
@@ -64,7 +61,7 @@ public class JsonPatch {
 			} else if (target.path(entry.getKey()).isValueNode()) {
 				target.set(entry.getKey(), entry.getValue());
 			} else if (entry.getValue().isObject()) {
-				apply(target.with(entry.getKey()), (ObjectNode) entry.getValue());
+				apply(target.withObject(entry.getKey()), (ObjectNode) entry.getValue());
 			} else {
 				throw new AssertionError();
 			}

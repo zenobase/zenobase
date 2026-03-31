@@ -68,8 +68,8 @@ public abstract class UpdateCommandSupport extends Command {
 		}
 
 		public <V> Builder with(Field<V> field) {
-			fromLeaf = fromLeaf.with(field.getName());
-			toLeaf = toLeaf.with(field.getName());
+			fromLeaf = fromLeaf.withObject(field.getName());
+			toLeaf = toLeaf.withObject(field.getName());
 			return this;
 		}
 

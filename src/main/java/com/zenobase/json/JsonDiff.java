@@ -1,6 +1,5 @@
 package com.zenobase.json;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,8 +24,7 @@ public class JsonDiff {
 	}
 
 	private void addedOrModified(JsonNode original, JsonNode modified) {
-		for (Iterator<Map.Entry<String, JsonNode>> i = modified.fields(); i.hasNext(); ) {
-			Map.Entry<String, JsonNode> entry = i.next();
+		for (Map.Entry<String, JsonNode> entry : modified.properties()) {
 			JsonNode value = original.path(entry.getKey());
 			if (value.isMissingNode()) {
 				from.set(entry.getKey(), NullNode.getInstance());
