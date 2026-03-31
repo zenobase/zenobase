@@ -46,18 +46,12 @@ public class DurationFormat {
 	}
 
 	private static Duration valueOf(long amount, String unit) {
-		if ("d".equals(unit)) {
-			return Duration.standardDays(amount);
-		}
-		if ("h".equals(unit)) {
-			return Duration.standardHours(amount);
-		}
-		if ("min".equals(unit)) {
-			return Duration.standardMinutes(amount);
-		}
-		if ("s".equals(unit)) {
-			return Duration.standardSeconds(amount);
-		}
-		throw new IllegalArgumentException(String.format("Can't handle unit <%s>", unit));
+		return switch (unit) {
+			case "d" -> Duration.standardDays(amount);
+			case "h" -> Duration.standardHours(amount);
+			case "min" -> Duration.standardMinutes(amount);
+			case "s" -> Duration.standardSeconds(amount);
+			case null, default -> throw new IllegalArgumentException(String.format("Can't handle unit <%s>", unit));
+		};
 	}
 }
