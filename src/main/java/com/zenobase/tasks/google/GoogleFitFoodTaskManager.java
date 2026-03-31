@@ -93,7 +93,7 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 		event.setValue(Event.AUTHOR, task.getPrincipal());
 		DataStream origin = streams.get(point.getOrigin());
 		if (origin != null) {
-			event.setValue(Event.SOURCE, origin.getSource());
+			event.setValue(Event.SOURCE, origin.source());
 		}
 		return event;
 	}

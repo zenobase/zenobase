@@ -28,11 +28,10 @@ public class CommandParserRegistry {
 	public Command parse(ObjectNode node) {
 		Command.Type type = Command.TYPE.getValue(node);
 		Preconditions.checkNotNull(type, "Missing type field in %s", node);
-		CommandParser parser = parsers.get(type.getName());
-		Preconditions.checkNotNull(parser, "Missing parser for type '%s'", type.getName());
-		Command command = parser.parse(node, type.getVersion());
-		Preconditions.checkNotNull(
-				command, "Missing parser for version %s of type '%s'", type.getVersion(), type.getName());
+		CommandParser parser = parsers.get(type.name());
+		Preconditions.checkNotNull(parser, "Missing parser for type '%s'", type.name());
+		Command command = parser.parse(node, type.version());
+		Preconditions.checkNotNull(command, "Missing parser for version %s of type '%s'", type.version(), type.name());
 		return command;
 	}
 }

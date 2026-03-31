@@ -25,7 +25,7 @@ public class Configuration {
 	}
 
 	public void addQuestion(Question question) {
-		questions.put(question.getPrompt(), question);
+		questions.put(question.prompt(), question);
 	}
 
 	public boolean valid() {

@@ -70,8 +70,8 @@ public class SnapshotsResult {
 		if (q != null) {
 			event.setValue(Event.ID, Generator.id());
 			boolean add = false;
-			if (q.getTag() != null) {
-				event.addValue(Event.TAG, q.getTag());
+			if (q.tag() != null) {
+				event.addValue(Event.TAG, q.tag());
 			}
 			for (JsonNode optionNode : node.path("answeredOptions")) {
 				event.addValue(Event.TAG, textValue(optionNode));
@@ -80,11 +80,11 @@ public class SnapshotsResult {
 			for (JsonNode tokenNode : node.path("tokens")) {
 				String text = textValue(tokenNode);
 				if (text != null) {
-					if (q.getField() == null || Event.NOTE.getName().equals(q.getField())) {
+					if (q.field() == null || Event.NOTE.getName().equals(q.field())) {
 						event.addValue(Event.NOTE, text);
 						add |= true;
 					}
-					if (Event.TAG.getName().equals(q.getField())) {
+					if (Event.TAG.getName().equals(q.field())) {
 						event.addValue(Event.TAG, text);
 						add |= true;
 					}
@@ -150,11 +150,11 @@ public class SnapshotsResult {
 
 	private boolean setNumericValue(JsonNode node, Question q, Event event) {
 		if (node.asInt() > 0 || "0".equals(node.textValue())) {
-			if (q.getField() == null || Event.COUNT.getName().equals(q.getField())) {
+			if (q.field() == null || Event.COUNT.getName().equals(q.field())) {
 				event.setValue(Event.COUNT, node.asInt());
 				return true;
 			}
-			if (Event.RATING.getName().equals(q.getField())) {
+			if (Event.RATING.getName().equals(q.field())) {
 				event.setValue(Event.RATING, Rating.valueOf(node.asInt() * 10));
 				return true;
 			}

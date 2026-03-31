@@ -54,7 +54,7 @@ public class UpdateCredentialsCommand extends UpdateCommandSupport {
 
 		@Override
 		public String getTypeName() {
-			return TYPE.getName();
+			return TYPE.name();
 		}
 
 		@Override

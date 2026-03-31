@@ -22,6 +22,6 @@ public class ConsoleMailer implements Mailer {
 
 				%s
 				--
-				%n""", from, message.getTo(), message.getSubject(), message.getText());
+				%n""", from, message.to(), message.subject(), message.text());
 	}
 }

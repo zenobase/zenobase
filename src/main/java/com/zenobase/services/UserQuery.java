@@ -6,7 +6,7 @@ import com.zenobase.models.User;
 public class UserQuery extends QuerySupport {
 
 	public UserQuery principalEqualTo(Identity principal) {
-		equalTo(User.ID, principal.getId());
+		equalTo(User.ID, principal.id());
 		return this;
 	}
 

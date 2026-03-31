@@ -189,7 +189,7 @@ public class OAuthController extends ControllerSupport {
 		}
 		ObjectNode result = Nodes.newObject();
 		result.put("access_token", auth.getId());
-		result.put("client_id", principal.getId());
+		result.put("client_id", principal.id());
 		if (scope != null) {
 			result.put("scope", scope);
 		} else {

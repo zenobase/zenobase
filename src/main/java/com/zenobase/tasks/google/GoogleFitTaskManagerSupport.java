@@ -66,7 +66,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 	private ImmutableMap<String, DataStream> getDataStreams(OAuthCredentials credentials) {
 		var request = new OAuthRequest(Verb.GET, "https://www.googleapis.com/fitness/v1/users/me/dataSources");
 		Response response = send(request, credentials);
-		return Maps.uniqueIndex(new DataSourcesResult(parseObject(response)).get(), DataStream::getId);
+		return Maps.uniqueIndex(new DataSourcesResult(parseObject(response)).get(), DataStream::id);
 	}
 
 	protected List<DataPoint> getDataPoints(
@@ -81,7 +81,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 				Verb.GET,
 				String.format(
 						"https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%d-%d",
-						UrlEscapers.urlPathSegmentEscaper().escape(stream.getId()),
+						UrlEscapers.urlPathSegmentEscaper().escape(stream.id()),
 						begin.getMillis() * 1000000,
 						end.getMillis() * 1000000));
 		Response response = send(request, credentials);
@@ -112,7 +112,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 					Verb.GET,
 					String.format(
 							"https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%d-%d",
-							UrlEscapers.urlPathSegmentEscaper().escape(stream.getId()),
+							UrlEscapers.urlPathSegmentEscaper().escape(stream.id()),
 							begin.getMillis() * 1000000,
 							end.getMillis() * 1000000));
 			request.addQuerystringParameter("limit", "1000");
@@ -136,7 +136,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 	protected Iterable<DataStream> filter(Iterable<DataStream> streams, String... dataTypes) {
 		return Iterables.filter(streams, stream -> {
 			for (String dataType : dataTypes) {
-				if (dataType.equals(stream.getDataType())) {
+				if (dataType.equals(stream.dataType())) {
 					return true;
 				}
 			}

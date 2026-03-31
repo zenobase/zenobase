@@ -9,12 +9,12 @@ import com.zenobase.oauth.Authorization;
 public class AuthorizationQuery extends QuerySupport {
 
 	public AuthorizationQuery principalEqualTo(Identity principal) {
-		equalTo(Authorization.PRINCIPAL, principal.getId());
+		equalTo(Authorization.PRINCIPAL, principal.id());
 		return this;
 	}
 
 	public AuthorizationQuery clientEqualTo(Identity client) {
-		equalTo(Authorization.CLIENT, client.getId());
+		equalTo(Authorization.CLIENT, client.id());
 		return this;
 	}
 

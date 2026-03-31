@@ -37,8 +37,8 @@ public class CommandTypeField extends Field<Command.Type> {
 	public JsonNode toJson(Command.@Nullable Type value) {
 		Preconditions.checkNotNull(value);
 		ObjectNode node = Nodes.newObject();
-		NAME.setValue(node, value.getName());
-		VERSION.setValue(node, value.getVersion());
+		NAME.setValue(node, value.name());
+		VERSION.setValue(node, value.version());
 		return node;
 	}
 }

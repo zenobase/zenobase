@@ -22,9 +22,9 @@ public class WorkoutsResultTest extends ResultTestSupport {
 		assertThat(workouts).hasSize(2);
 
 		Workout w1 = workouts.get(0);
-		assertThat(w1.getTypeId()).isEqualTo("9");
-		assertThat(w1.getRouteId()).isEqualTo("400640020");
-		Event e1 = new Event(w1.getEvent().getId());
+		assertThat(w1.typeId()).isEqualTo("9");
+		assertThat(w1.routeId()).isEqualTo("400640020");
+		Event e1 = new Event(w1.event().getId());
 		e1.setValue(Event.TIMESTAMP, dateTime("2014-04-24T15:36:33-07:00"));
 		e1.setValue(Event.DURATION, Duration.standardSeconds(2992));
 		e1.setValue(Event.COUNT, 1000);
@@ -34,16 +34,16 @@ public class WorkoutsResultTest extends ResultTestSupport {
 		e1.setValue(Event.FREQUENCY, DecimalMeasure.valueOf("115 bpm"));
 		e1.setValue(Event.AUTHOR, TESTER);
 		e1.setValue(Event.SOURCE, new Resource("MapMyFitness", "https://www.mapmyfitness.com/workout/547836386"));
-		assertThat(w1.getEvent()).isEqualTo(e1);
+		assertThat(w1.event()).isEqualTo(e1);
 
 		Workout w2 = workouts.get(1);
-		assertThat(w2.getTypeId()).isEqualTo("285");
-		assertThat(w2.getRouteId()).isNull();
-		Event e2 = new Event(w2.getEvent().getId());
+		assertThat(w2.typeId()).isEqualTo("285");
+		assertThat(w2.routeId()).isNull();
+		Event e2 = new Event(w2.event().getId());
 		e2.setValue(Event.TIMESTAMP, dateTime("2014-11-06T11:00:00-08:00"));
 		e2.setValue(Event.DURATION, Duration.standardMinutes(10));
 		e2.setValue(Event.AUTHOR, TESTER);
 		e2.setValue(Event.SOURCE, new Resource("MapMyFitness", "https://www.mapmyfitness.com/workout/787788009"));
-		assertThat(w2.getEvent()).isEqualTo(e2);
+		assertThat(w2.event()).isEqualTo(e2);
 	}
 }

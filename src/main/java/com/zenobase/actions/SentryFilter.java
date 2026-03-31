@@ -27,7 +27,7 @@ public class SentryFilter implements Filter {
 			Authorization auth = authContext.current(req);
 			if (auth != null) {
 				User user = new User();
-				user.setId(auth.getPrincipal().getId());
+				user.setId(auth.getPrincipal().id());
 				Sentry.setUser(user);
 			}
 			Sentry.configureScope(scope -> {

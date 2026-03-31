@@ -12,50 +12,50 @@ public class LocalIntervalsTest {
 	@Test
 	public void testForYear() {
 		LocalInterval year = LocalIntervals.valueOf("2012");
-		assertThat(year.getStart()).isEqualTo(LocalDateTime.parse("2012-01-01T00:00"));
-		assertThat(year.getEnd()).isEqualTo(LocalDateTime.parse("2013-01-01T00:00"));
+		assertThat(year.start()).isEqualTo(LocalDateTime.parse("2012-01-01T00:00"));
+		assertThat(year.end()).isEqualTo(LocalDateTime.parse("2013-01-01T00:00"));
 	}
 
 	@Test
 	public void testForMonth() {
 		LocalInterval month = LocalIntervals.valueOf("2012-01");
-		assertThat(month.getStart()).isEqualTo(LocalDateTime.parse("2012-01-01T00:00"));
-		assertThat(month.getEnd()).isEqualTo(LocalDateTime.parse("2012-02-01T00:00"));
+		assertThat(month.start()).isEqualTo(LocalDateTime.parse("2012-01-01T00:00"));
+		assertThat(month.end()).isEqualTo(LocalDateTime.parse("2012-02-01T00:00"));
 	}
 
 	@Test
 	public void testForWeek() {
 		LocalInterval week = LocalIntervals.valueOf("2012-W50");
-		assertThat(week.getStart()).isEqualTo(LocalDateTime.parse("2012-12-10T00:00"));
-		assertThat(week.getEnd()).isEqualTo(LocalDateTime.parse("2012-12-17T00:00"));
+		assertThat(week.start()).isEqualTo(LocalDateTime.parse("2012-12-10T00:00"));
+		assertThat(week.end()).isEqualTo(LocalDateTime.parse("2012-12-17T00:00"));
 	}
 
 	@Test
 	public void testForDay() {
 		LocalInterval day = LocalIntervals.valueOf("2012-01-01");
-		assertThat(day.getStart()).isEqualTo(LocalDateTime.parse("2012-01-01T00:00"));
-		assertThat(day.getEnd()).isEqualTo(LocalDateTime.parse("2012-01-02T00:00"));
+		assertThat(day.start()).isEqualTo(LocalDateTime.parse("2012-01-01T00:00"));
+		assertThat(day.end()).isEqualTo(LocalDateTime.parse("2012-01-02T00:00"));
 	}
 
 	@Test
 	public void testForHour() {
 		LocalInterval hour = LocalIntervals.valueOf("2012-01-01T14");
-		assertThat(hour.getStart()).isEqualTo(LocalDateTime.parse("2012-01-01T14:00"));
-		assertThat(hour.getEnd()).isEqualTo(LocalDateTime.parse("2012-01-01T15:00"));
+		assertThat(hour.start()).isEqualTo(LocalDateTime.parse("2012-01-01T14:00"));
+		assertThat(hour.end()).isEqualTo(LocalDateTime.parse("2012-01-01T15:00"));
 	}
 
 	@Test
 	public void testForMinute() {
 		LocalInterval minute = LocalIntervals.valueOf("2012-01-01T14:59");
-		assertThat(minute.getStart()).isEqualTo(LocalDateTime.parse("2012-01-01T14:59"));
-		assertThat(minute.getEnd()).isEqualTo(LocalDateTime.parse("2012-01-01T15:00"));
+		assertThat(minute.start()).isEqualTo(LocalDateTime.parse("2012-01-01T14:59"));
+		assertThat(minute.end()).isEqualTo(LocalDateTime.parse("2012-01-01T15:00"));
 	}
 
 	@Test
 	public void testForSecond() {
 		LocalInterval second = LocalIntervals.valueOf("2012-01-01T14:00:05");
-		assertThat(second.getStart()).isEqualTo(LocalDateTime.parse("2012-01-01T14:00:05"));
-		assertThat(second.getEnd()).isEqualTo(LocalDateTime.parse("2012-01-01T14:00:06"));
+		assertThat(second.start()).isEqualTo(LocalDateTime.parse("2012-01-01T14:00:05"));
+		assertThat(second.end()).isEqualTo(LocalDateTime.parse("2012-01-01T14:00:06"));
 	}
 
 	@Test

@@ -105,8 +105,8 @@ public class CommandRepository extends RepositorySupport<Command> {
 	}
 
 	private static Query createFilter(Identity principal, DateTime since) {
-		return Query.of(q -> q.bool(b -> b.must(Query.of(q2 ->
-						q2.term(t -> t.field(Command.PRINCIPAL.getName()).value(FieldValue.of(principal.getId())))))
+		return Query.of(q -> q.bool(b -> b.must(Query.of(
+						q2 -> q2.term(t -> t.field(Command.PRINCIPAL.getName()).value(FieldValue.of(principal.id())))))
 				.must(Query.of(q3 ->
 						q3.range(r -> r.field(Command.TIMESTAMP.getName()).gte(JsonData.of(since.getMillis())))))));
 	}

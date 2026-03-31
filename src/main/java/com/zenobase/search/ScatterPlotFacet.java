@@ -79,9 +79,9 @@ public class ScatterPlotFacet extends Facet {
 
 	private void process(
 			SearchResponse<ObjectNode> response, Map<Long, ObjectNode> values, String field, Series series, int lag) {
-		Aggregate agg = Objects.requireNonNull(response.aggregations().get(series.getId()));
+		Aggregate agg = Objects.requireNonNull(response.aggregations().get(series.id()));
 		if (agg.isFilter()) {
-			agg = Objects.requireNonNull(agg.filter().aggregations().get(series.getId()));
+			agg = Objects.requireNonNull(agg.filter().aggregations().get(series.id()));
 		}
 		for (DateHistogramBucket bucket : agg.dateHistogram().buckets().array()) {
 			if (bucket.docCount() > 0) {
@@ -123,25 +123,12 @@ public class ScatterPlotFacet extends Facet {
 		return node;
 	}
 
-	private static class Series {
-
-		private final String id;
-		private final String field;
-		private final Unit<?> unit;
-		private final Statistic statistic;
-		private final @Nullable Query filter;
-
-		public Series(String id, String field, Unit<?> unit, Statistic statistic, @Nullable Query filter) {
-			this.id = id;
-			this.field = field;
-			this.unit = unit;
-			this.statistic = statistic;
-			this.filter = filter;
-		}
-
-		public String getId() {
-			return id;
-		}
+	private record Series(
+			String id,
+			String field,
+			Unit<?> unit,
+			Statistic statistic,
+			@Nullable Query filter) {
 
 		public void addAggregation(
 				String keyField, String interval, @Nullable DateTimeZone timezone, SearchRequest.Builder builder) {

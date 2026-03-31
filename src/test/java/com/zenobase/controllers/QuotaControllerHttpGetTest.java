@@ -41,7 +41,7 @@ public class QuotaControllerHttpGetTest extends QuotaControllerTestSupport {
 	public void testForbidden() {
 		Identity someone = new Identity();
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		try (Http1ClientResponse result = call(someone.getId())) {
+		try (Http1ClientResponse result = call(someone.id())) {
 			assertThat(result).hasStatus(403);
 		}
 	}
@@ -53,7 +53,7 @@ public class QuotaControllerHttpGetTest extends QuotaControllerTestSupport {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(quotas.getQuota(someone)).thenReturn(expected);
-		try (Http1ClientResponse result = call(someone.getId())) {
+		try (Http1ClientResponse result = call(someone.id())) {
 			assertThat(result).hasStatus(200).hasContent(expected.toJson());
 		}
 	}

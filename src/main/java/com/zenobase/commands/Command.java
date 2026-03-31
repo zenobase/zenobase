@@ -133,34 +133,7 @@ public class Command extends DomainNode {
 				.build();
 	}
 
-	public static class Type {
-
-		private final String name;
-		private final int version;
-
-		public Type(String name, int version) {
-			this.name = name;
-			this.version = version;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public int getVersion() {
-			return version;
-		}
-
-		@Override
-		public boolean equals(Object that) {
-			return that instanceof Command.Type t && name.equals(t.getName()) && version == t.getVersion();
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(name, version);
-		}
-
+	public record Type(String name, int version) {
 		@Override
 		public String toString() {
 			return String.format("%s (%s)", name, version);

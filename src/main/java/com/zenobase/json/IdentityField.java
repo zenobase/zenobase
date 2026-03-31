@@ -23,7 +23,7 @@ public class IdentityField extends Field<Identity> {
 
 	@Override
 	public JsonNode toJson(@Nullable Identity value) {
-		return value != null ? new TextNode(value.getId()) : NullNode.getInstance();
+		return value != null ? new TextNode(value.id()) : NullNode.getInstance();
 	}
 
 	@Override

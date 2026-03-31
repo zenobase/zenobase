@@ -69,8 +69,8 @@ public class MapMyFitnessActivitiesTaskManager extends MapMyFitnessTaskManagerSu
 
 	private void resolveTypes(Iterable<Workout> workouts, OAuthCredentials credentials) {
 		for (Workout workout : workouts) {
-			if (workout.getTypeId() != null) {
-				String name = resolveType(workout.getTypeId(), credentials);
+			if (workout.typeId() != null) {
+				String name = resolveType(workout.typeId(), credentials);
 				if (name != null) {
 					workout.addTag(name);
 				}
@@ -93,8 +93,8 @@ public class MapMyFitnessActivitiesTaskManager extends MapMyFitnessTaskManagerSu
 
 	private void resolveRoutes(Iterable<Workout> workouts, OAuthCredentials credentials) {
 		for (Workout workout : workouts) {
-			if (workout.getRouteId() != null) {
-				OAuthRequest request = new OAuthRequest(Verb.GET, HOST + "/v7.0/route/" + workout.getRouteId() + "/");
+			if (workout.routeId() != null) {
+				OAuthRequest request = new OAuthRequest(Verb.GET, HOST + "/v7.0/route/" + workout.routeId() + "/");
 				Response response = send(request, credentials);
 				workout.setLocation(Objects.requireNonNull(new RouteResult(parseObject(response)).getLocation()));
 			}
@@ -104,7 +104,7 @@ public class MapMyFitnessActivitiesTaskManager extends MapMyFitnessTaskManagerSu
 	private List<Event> getEvents(List<Workout> workouts) {
 		List<Event> events = new ArrayList<>(workouts.size());
 		for (Workout workout : workouts) {
-			events.add(workout.getEvent());
+			events.add(workout.event());
 		}
 		return events;
 	}

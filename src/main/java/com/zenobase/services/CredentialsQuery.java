@@ -10,7 +10,7 @@ public class CredentialsQuery extends QuerySupport {
 	private SearchOrder order = new SearchOrder(Credentials.CREATED.getName(), false);
 
 	public CredentialsQuery principalEqualTo(Identity principal) {
-		equalTo(Credentials.PRINCIPAL, principal.getId());
+		equalTo(Credentials.PRINCIPAL, principal.id());
 		return this;
 	}
 

@@ -5,17 +5,7 @@ import org.locationtech.spatial4j.io.GeohashUtils;
 import org.locationtech.spatial4j.shape.Point;
 import org.locationtech.spatial4j.shape.Rectangle;
 
-public class GeoCluster {
-
-	private final long count;
-	private final String geohash;
-	private final Point center;
-
-	public GeoCluster(long count, String geohash, Point center) {
-		this.count = count;
-		this.geohash = geohash;
-		this.center = center;
-	}
+public record GeoCluster(long count, String geohash, Point center) {
 
 	public GeoCluster merge(GeoCluster that) {
 		long count = this.count + that.count();
@@ -27,18 +17,6 @@ public class GeoCluster {
 		double lat = (left.getY() * leftWeight + right.getY() * rightWeight) / (leftWeight + rightWeight);
 		double lon = (left.getX() * leftWeight + right.getX() * rightWeight) / (leftWeight + rightWeight);
 		return SpatialContext.GEO.getShapeFactory().pointXY(lon, lat);
-	}
-
-	public long count() {
-		return count;
-	}
-
-	public String geohash() {
-		return geohash;
-	}
-
-	public Point center() {
-		return center;
 	}
 
 	public GeoBoundingBox bounds() {

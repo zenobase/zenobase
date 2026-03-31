@@ -71,7 +71,7 @@ public class ChangeUserEmailCommand extends Command {
 
 		@Override
 		public String getTypeName() {
-			return TYPE.getName();
+			return TYPE.name();
 		}
 
 		@Override

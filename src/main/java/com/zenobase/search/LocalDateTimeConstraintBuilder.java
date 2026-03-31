@@ -25,12 +25,12 @@ public class LocalDateTimeConstraintBuilder extends ConstraintBuilder {
 		if (interval == null) {
 			return null;
 		} else if (interval.toDurationMillis() > 1L) {
-			String gte = toString(interval.getStart());
-			String lt = toString(interval.getEnd());
+			String gte = toString(interval.start());
+			String lt = toString(interval.end());
 			return Query.of(
 					q -> q.range(r -> r.field(getPath()).gte(JsonData.of(gte)).lt(JsonData.of(lt))));
 		} else {
-			String val = toString(interval.getStart());
+			String val = toString(interval.start());
 			return Query.of(q -> q.term(t -> t.field(getPath()).value(FieldValue.of(val))));
 		}
 	}

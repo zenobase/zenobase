@@ -27,27 +27,26 @@ public class SesMailer implements Mailer {
 
 	@Override
 	public void send(Message message) {
-		logger.info("Sending message: {}", message.getSubject());
+		logger.info("Sending message: {}", message.subject());
 		try {
 			client.sendEmail(SendEmailRequest.builder()
 					.fromEmailAddress(from)
-					.destination(
-							Destination.builder().toAddresses(message.getTo()).build())
+					.destination(Destination.builder().toAddresses(message.to()).build())
 					.content(EmailContent.builder()
 							.simple(software.amazon.awssdk.services.sesv2.model.Message.builder()
 									.subject(Content.builder()
-											.data(message.getSubject())
+											.data(message.subject())
 											.build())
 									.body(Body.builder()
 											.text(Content.builder()
-													.data(message.getText())
+													.data(message.text())
 													.build())
 											.build())
 									.build())
 							.build())
 					.build());
 		} catch (SesV2Exception e) {
-			logger.error("Couldn't send message: {}", message.getSubject(), e);
+			logger.error("Couldn't send message: {}", message.subject(), e);
 		}
 	}
 }

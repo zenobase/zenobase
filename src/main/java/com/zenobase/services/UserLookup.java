@@ -32,7 +32,7 @@ public class UserLookup {
 	private User find(Identity identity) {
 		User user = repository.find(identity);
 		if (user == null) {
-			user = new User(identity.getId(), null, null);
+			user = new User(identity.id(), null, null);
 		}
 		return user;
 	}

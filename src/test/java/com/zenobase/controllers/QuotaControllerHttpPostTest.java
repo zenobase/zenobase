@@ -22,7 +22,7 @@ public class QuotaControllerHttpPostTest extends QuotaControllerTestSupport {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(expected.getId());
-		try (Http1ClientResponse result = call(expected.getPrincipal().getId(), expected.getCost())) {
+		try (Http1ClientResponse result = call(expected.getPrincipal().id(), expected.getCost())) {
 			assertThat(result).hasStatus(204).isEmpty();
 			assertThat(commandArg.getValue().getPrincipal()).isEqualTo(expected.getPrincipal());
 			assertThat(commandArg.getValue().getCost()).isEqualTo(expected.getCost());
@@ -32,7 +32,7 @@ public class QuotaControllerHttpPostTest extends QuotaControllerTestSupport {
 	@Test
 	public void testUnauthorized() {
 		SpendQuotaCommand expected = new SpendQuotaCommand(new Identity(), -1000);
-		try (Http1ClientResponse result = call(expected.getPrincipal().getId(), expected.getCost())) {
+		try (Http1ClientResponse result = call(expected.getPrincipal().id(), expected.getCost())) {
 			assertThat(result).hasStatus(401);
 			verifyNoInteractions(dispatcher);
 		}
@@ -42,7 +42,7 @@ public class QuotaControllerHttpPostTest extends QuotaControllerTestSupport {
 	public void testForbidden() {
 		SpendQuotaCommand expected = new SpendQuotaCommand(new Identity(), -1000);
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		try (Http1ClientResponse result = call(expected.getPrincipal().getId(), expected.getCost())) {
+		try (Http1ClientResponse result = call(expected.getPrincipal().id(), expected.getCost())) {
 			assertThat(result).hasStatus(403);
 			verifyNoInteractions(dispatcher);
 		}
@@ -53,7 +53,7 @@ public class QuotaControllerHttpPostTest extends QuotaControllerTestSupport {
 		SpendQuotaCommand expected = new SpendQuotaCommand(new Identity(), -1000);
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		try (Http1ClientResponse result = call(expected.getPrincipal().getId(), 0)) {
+		try (Http1ClientResponse result = call(expected.getPrincipal().id(), 0)) {
 			assertThat(result).hasStatus(400);
 			verifyNoInteractions(dispatcher);
 		}

@@ -15,7 +15,7 @@ public class BucketQuery extends QuerySupport {
 	public BucketQuery principalEqualTo(Identity principal) {
 		add(Query.of(q -> q.nested(n -> n.path(Bucket.ROLES.getName())
 				.query(Query.of(q2 -> q2.term(t -> t.field(Bucket.ROLES.getName() + "." + RolesField.PRINCIPAL)
-						.value(FieldValue.of(principal.getId())))))
+						.value(FieldValue.of(principal.id())))))
 				.scoreMode(ChildScoreMode.None))));
 		return this;
 	}

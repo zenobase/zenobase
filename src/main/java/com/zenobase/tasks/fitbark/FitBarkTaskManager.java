@@ -56,13 +56,13 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 		Dog dog = findDog(Objects.requireNonNull(task.getName()), credentials);
 		if (dog != null) {
 			DateTime marker =
-					Objects.requireNonNull(Ordering.natural().max(parseMarker(task.getMarker()), dog.getCreated()));
+					Objects.requireNonNull(Ordering.natural().max(parseMarker(task.getMarker()), dog.created()));
 			LocalDate from = marker.toLocalDate();
-			while (!from.isAfter(dog.getModified().toLocalDate())) {
+			while (!from.isAfter(dog.modified().toLocalDate())) {
 				LocalDate to = task.isHourly() ? from.plusDays(7) : from.plusMonths(1);
 				ObjectNode payload = Nodes.newObject();
 				payload.putObject("activity_series")
-						.put("slug", dog.getId())
+						.put("slug", dog.id())
 						.put("resolution", task.isHourly() ? "HOURLY" : "DAILY")
 						.put("from", from.toString())
 						.put("to", to.toString());
@@ -71,10 +71,10 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 				request.addPayload(payload.toString());
 				Response response = send(request, credentials);
 				events.addAll(new ActivitySeriesResult(
-								dog.getName(),
+								dog.name(),
 								task.getPrincipal(),
 								marker,
-								dog.getModified().getZone(),
+								dog.modified().getZone(),
 								parseObject(response))
 						.getEvents());
 				from = to;
@@ -92,7 +92,7 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 		var request = new OAuthRequest(Verb.GET, "https://app.fitbark.com/api/v2/dog_relations");
 		Response response = send(request, credentials);
 		for (Dog dog : new DogsResult(parse(response)).getDogs()) {
-			if (dog.getName().equalsIgnoreCase(name)) {
+			if (dog.name().equalsIgnoreCase(name)) {
 				return dog;
 			}
 		}

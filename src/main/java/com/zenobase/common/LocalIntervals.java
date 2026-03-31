@@ -119,7 +119,7 @@ public class LocalIntervals extends DateTimeFormatSupport {
 
 		public List<LocalDateTime> toList(LocalInterval interval) {
 			List<LocalDateTime> instants = new ArrayList<>();
-			for (LocalDateTime start = interval.getStart(); interval.contains(start); start = start.plus(period)) {
+			for (LocalDateTime start = interval.start(); interval.contains(start); start = start.plus(period)) {
 				if (instants.size() > 1440) {
 					return Collections.emptyList();
 				}

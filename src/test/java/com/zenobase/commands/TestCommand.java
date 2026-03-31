@@ -39,19 +39,19 @@ public class TestCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("%s: %s", TYPE.getName(), getTag());
+		return String.format("%s: %s", TYPE.name(), getTag());
 	}
 
 	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {
-			return TYPE.getName();
+			return TYPE.name();
 		}
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			Preconditions.checkArgument(version == TYPE.getVersion());
+			Preconditions.checkArgument(version == TYPE.version());
 			return new TestCommand(node);
 		}
 	}

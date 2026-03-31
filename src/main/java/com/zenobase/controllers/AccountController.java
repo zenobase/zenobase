@@ -81,7 +81,7 @@ public class AccountController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
-		var user = new User(auth.getPrincipal().getId(), Objects.requireNonNull(form.getUsername()));
+		var user = new User(auth.getPrincipal().id(), Objects.requireNonNull(form.getUsername()));
 		user.setEmail(Objects.requireNonNull(form.getEmail()));
 		user.setHashedPassword(User.hashPassword(Objects.requireNonNull(form.getPassword())));
 		user.setSuperuser(users.isEmpty());

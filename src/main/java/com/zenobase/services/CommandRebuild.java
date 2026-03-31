@@ -134,7 +134,7 @@ public class CommandRebuild {
 		runInParallel(
 				allBuckets,
 				bucket -> Objects.requireNonNull(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)))
-						.getId(),
+						.id(),
 				bucket -> {
 					Identity owner = Objects.requireNonNull(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)));
 					dispatcher.dispatch(new CreateBucketCommand(owner, bucket));

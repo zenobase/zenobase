@@ -19,9 +19,9 @@ public class ConfigurationResultTest extends ResultTestSupport {
 		Configuration config = result.get();
 
 		assertThat(config.getTimezone()).isEqualTo(DateTimeZone.forID("America/New_York"));
-		assertThat(config.getQuestion(q1.getPrompt())).isEqualTo(q1);
-		assertThat(config.getQuestion(q2.getPrompt())).isEqualTo(q2);
-		assertThat(config.getQuestion(q3.getPrompt())).isEqualTo(q3);
+		assertThat(config.getQuestion(q1.prompt())).isEqualTo(q1);
+		assertThat(config.getQuestion(q2.prompt())).isEqualTo(q2);
+		assertThat(config.getQuestion(q3.prompt())).isEqualTo(q3);
 		assertThat(config.getQuestion("Huh?")).isNull();
 	}
 }

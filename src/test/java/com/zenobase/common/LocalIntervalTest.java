@@ -15,8 +15,8 @@ public class LocalIntervalTest {
 	@Test
 	public void test() {
 		LocalInterval interval = new LocalInterval(start, end);
-		assertThat(interval.getStart()).isEqualTo(start);
-		assertThat(interval.getEnd()).isEqualTo(end);
+		assertThat(interval.start()).isEqualTo(start);
+		assertThat(interval.end()).isEqualTo(end);
 		assertThat(interval.contains(start)).isTrue();
 		assertThat(interval.contains(end)).isFalse();
 		assertThat(interval.toDurationMillis()).isEqualTo(86400000L);

@@ -19,6 +19,6 @@ public class VerificationMailerTest {
 		new VerificationMailer(mailer, "http://localhost").send(user);
 		ArgumentCaptor<Message> arg = ArgumentCaptor.forClass(Message.class);
 		verify(mailer).send(arg.capture());
-		assertThat(arg.getValue().getTo()).isEqualTo(user.getEmail());
+		assertThat(arg.getValue().to()).isEqualTo(user.getEmail());
 	}
 }

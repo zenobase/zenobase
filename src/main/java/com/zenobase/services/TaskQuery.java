@@ -6,7 +6,7 @@ import com.zenobase.tasks.Task;
 public class TaskQuery extends QuerySupport {
 
 	public TaskQuery principalEqualTo(Identity principal) {
-		equalTo(Task.PRINCIPAL, principal.getId());
+		equalTo(Task.PRINCIPAL, principal.id());
 		return this;
 	}
 

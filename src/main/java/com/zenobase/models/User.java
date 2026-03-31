@@ -126,7 +126,7 @@ public class User extends DomainNode {
 	}
 
 	public boolean is(Identity identity) {
-		return getId().equals(identity.getId());
+		return getId().equals(identity.id());
 	}
 
 	public @Nullable Integer getQuota() {

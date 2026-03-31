@@ -60,7 +60,7 @@ public class CommandReplay {
 		logger.info("Replaying {} commands from {}...", repository.size(), sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
 		repository.find(new CommandQuery(), ORDER, command -> {
-			if (identities.mightContain(command.getPrincipal().getId())) {
+			if (identities.mightContain(command.getPrincipal().id())) {
 				dispatchWithRetry(command);
 			} else {
 				dispatcher.discard(command);

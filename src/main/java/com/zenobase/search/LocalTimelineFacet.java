@@ -110,8 +110,8 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 	private Map<String, ObjectNode> getMap(@Nullable LocalInterval interval) {
 		Map<String, ObjectNode> counts = Maps.newTreeMap();
 		if (interval != null) {
-			for (LocalDateTime time : LocalIntervals.expand(
-					interval.getStart(), interval.getEnd(), Objects.requireNonNull(this.interval))) {
+			for (LocalDateTime time :
+					LocalIntervals.expand(interval.start(), interval.end(), Objects.requireNonNull(this.interval))) {
 				String label = getLabel(time);
 				ObjectNode node = Nodes.newObject();
 				node.put("label", label);

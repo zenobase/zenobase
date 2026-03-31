@@ -12,7 +12,7 @@ public class IdentityTest {
 		Identity me = new Identity();
 		Identity you = new Identity();
 		new EqualsTester()
-				.addEqualityGroup(me, new Identity(me.getId()))
+				.addEqualityGroup(me, new Identity(me.id()))
 				.addEqualityGroup(you)
 				.testEquals();
 	}

@@ -31,7 +31,7 @@ public class IdentitiesFilterBuilder {
 		users.find(user -> filter.put(user.getId()));
 		authorizations.find(
 				new AuthorizationQuery().clientIsNull(),
-				authorization -> filter.put(authorization.getPrincipal().getId()));
+				authorization -> filter.put(authorization.getPrincipal().id()));
 		return filter;
 	}
 }

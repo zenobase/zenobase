@@ -125,7 +125,7 @@ public class EventRepository {
 
 	public long size(Identity author) {
 		return index.count(Query.of(
-				q -> q.term(t -> t.field(Event.AUTHOR.getName()).value(FieldValue.of(author.getId())))));
+				q -> q.term(t -> t.field(Event.AUTHOR.getName()).value(FieldValue.of(author.id())))));
 	}
 
 	public long size(String bucketId) {

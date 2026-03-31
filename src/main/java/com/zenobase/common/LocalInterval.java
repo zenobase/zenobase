@@ -1,7 +1,5 @@
 package com.zenobase.common;
 
-import java.util.Objects;
-
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
@@ -10,22 +8,10 @@ import org.joda.time.format.ISODateTimeFormat;
 /**
  * Interval without a time zone.
  */
-public class LocalInterval implements Comparable<LocalInterval> {
+public record LocalInterval(LocalDateTime start, LocalDateTime end) implements Comparable<LocalInterval> {
 
-	private final LocalDateTime start, end;
-
-	public LocalInterval(LocalDateTime start, LocalDateTime end) {
+	public LocalInterval {
 		Preconditions.checkArgument(!end.isBefore(start), "The end instant must be greater or equal to the start");
-		this.start = start;
-		this.end = end;
-	}
-
-	public LocalDateTime getStart() {
-		return start;
-	}
-
-	public LocalDateTime getEnd() {
-		return end;
 	}
 
 	public boolean contains(LocalDateTime time) {
@@ -47,22 +33,12 @@ public class LocalInterval implements Comparable<LocalInterval> {
 	}
 
 	@Override
-	public boolean equals(Object that) {
-		return that instanceof LocalInterval i && start.equals(i.start) && end.equals(i.end);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(start, end);
-	}
-
-	@Override
 	public String toString() {
 		var printer = ISODateTimeFormat.dateTime();
 		var sb = new StringBuilder(48);
-		printer.printTo(sb, getStart());
+		printer.printTo(sb, start());
 		sb.append('/');
-		printer.printTo(sb, getEnd());
+		printer.printTo(sb, end());
 		return sb.toString();
 	}
 }
