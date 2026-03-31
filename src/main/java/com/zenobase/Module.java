@@ -1,5 +1,7 @@
 package com.zenobase;
 
+import java.util.List;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
@@ -266,27 +268,67 @@ class Module extends AbstractModule {
 	}
 
 	private boolean isConfigured(String key) {
-		return config.get(key).exists();
+		return config.get(key).asString().filter(s -> !s.isEmpty()).isPresent();
 	}
 
 	private void bindConfiguration() {
-		bindConfigNode(config);
+		// Core
+		bindString("hostname");
+		bindString("oauth.hostname");
+
+		// OpenSearch
+		bindString("opensearch.host");
+		bindString("opensearch.replay");
+		bindString("opensearch.rebuild");
+		bindString("opensearch.rebuild_parallelism");
+		bindString("opensearch.snapshot.bucket");
+		bindString("opensearch.snapshot_role_arn");
+		bindString("aws.region");
+
+		// Mail
+		bindString("mail.from");
+
+		// Integration API keys (only when their prefix is configured)
+		for (String prefix : List.of(
+				"beeminder",
+				"dropbox",
+				"fitbark",
+				"fitbit",
+				"foursquare",
+				"goodreads",
+				"google",
+				"hexoskin",
+				"ihealth",
+				"lastfm",
+				"mapmyfitness",
+				"netatmo",
+				"oura",
+				"rescuetime",
+				"runkeeper",
+				"strava",
+				"trakt",
+				"wakatime",
+				"withings")) {
+			if (isConfigured(prefix)) {
+				bindAllLeaves(config.get(prefix));
+			}
+		}
 	}
 
-	private void bindConfigNode(Config node) {
+	private void bindString(String key) {
+		config.get(key)
+				.asString()
+				.ifPresent(
+						value -> bindConstant().annotatedWith(Names.named(key)).to(value));
+	}
+
+	private void bindAllLeaves(Config node) {
 		if (node.isLeaf()) {
-			node.asString().ifPresent(value -> {
-				String key = node.key().toString();
-				try {
-					bindConstant().annotatedWith(Names.named(key)).to(value);
-				} catch (Exception e) {
-					// ignore non-bindable values
-				}
-			});
+			bindString(node.key().toString());
 		} else {
 			node.asNodeList().ifPresent(children -> {
 				for (Config child : children) {
-					bindConfigNode(child);
+					bindAllLeaves(child);
 				}
 			});
 		}

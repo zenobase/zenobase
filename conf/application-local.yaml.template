@@ -1,9 +1,3 @@
-mail:
-  smtp:
-    host: "email-smtp.us-east-1.amazonaws.com"
-  user: ""
-  pass: ""
-
 netatmo:
   api:
     key: ""
@@ -118,4 +112,6 @@ oura:
 
 cors:
   allowed:
-    origin: "http://localhost:8080"
+    origins:
+      - "http://localhost:8080"
+      - "http://localhost:5173"
