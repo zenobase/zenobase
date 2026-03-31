@@ -75,18 +75,18 @@ public class SnapshotsResult {
 			}
 			for (JsonNode optionNode : node.path("answeredOptions")) {
 				event.addValue(Event.TAG, textValue(optionNode));
-				add |= true;
+				add = true;
 			}
 			for (JsonNode tokenNode : node.path("tokens")) {
 				String text = textValue(tokenNode);
 				if (text != null) {
 					if (q.field() == null || Event.NOTE.getName().equals(q.field())) {
 						event.addValue(Event.NOTE, text);
-						add |= true;
+						add = true;
 					}
 					if (Event.TAG.getName().equals(q.field())) {
 						event.addValue(Event.TAG, text);
-						add |= true;
+						add = true;
 					}
 				} else {
 					logger.warn("Couldn't extract text from token node: {}", tokenNode);
@@ -94,12 +94,12 @@ public class SnapshotsResult {
 			}
 			for (JsonNode textNode : node.path("textResponses")) {
 				event.addValue(Event.NOTE, textValue(textNode));
-				add |= true;
+				add = true;
 			}
 			JsonNode textNode = node.path("textResponse");
 			if (textNode.isTextual()) {
 				event.addValue(Event.NOTE, textValue(textNode));
-				add |= true;
+				add = true;
 			}
 			add |= setNumericValue(node.path("numericResponse"), q, event);
 			if (add) {
