@@ -114,7 +114,7 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 
 	private void removeLast(List<Event> events) {
 		if (!events.isEmpty()) {
-			events.remove(events.size() - 1);
+			events.removeLast();
 		}
 	}
 

@@ -50,7 +50,7 @@ public class CompoundCommand extends Command {
 	}
 
 	public Command unwrap() {
-		return commands.size() == 1 ? commands.get(0) : this;
+		return commands.size() == 1 ? commands.getFirst() : this;
 	}
 
 	public ImmutableList<Command> getCommands() {

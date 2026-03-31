@@ -57,7 +57,7 @@ public abstract class Field<T> {
 
 	public final @Nullable T getValue(ObjectNode node) {
 		JsonNode fieldNode = node.get(name);
-		if (fieldNode != null && fieldNode.isArray() && fieldNode.size() > 0) {
+		if (fieldNode != null && fieldNode.isArray() && !fieldNode.isEmpty()) {
 			return getValue(Objects.requireNonNull(Iterables.getOnlyElement(fieldNode)));
 		}
 		if (fieldNode != null) {

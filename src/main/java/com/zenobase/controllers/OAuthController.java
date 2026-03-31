@@ -1,13 +1,14 @@
 package com.zenobase.controllers;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Charsets;
 import com.google.common.collect.Iterables;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
@@ -31,18 +32,18 @@ public class OAuthController extends ControllerSupport {
 
 	private static final Logger logger = LoggerFactory.getLogger(OAuthController.class);
 
-	static String RESPONSE_TYPE_TOKEN = "token";
-	static String UNSUPPORTED_RESPONSE_TYPE = "unsupported_response_type";
-	static String INVALID_REQUEST = "invalid_request";
-	static String UNAUTHORIZED_CLIENT = "unauthorized_client";
-	static String INVALID_REDIRECT_URI = "invalid_redirect_uri";
-	static String INVALID_SCOPE = "invalid_scope";
+	static final String RESPONSE_TYPE_TOKEN = "token";
+	static final String UNSUPPORTED_RESPONSE_TYPE = "unsupported_response_type";
+	static final String INVALID_REQUEST = "invalid_request";
+	static final String UNAUTHORIZED_CLIENT = "unauthorized_client";
+	static final String INVALID_REDIRECT_URI = "invalid_redirect_uri";
+	static final String INVALID_SCOPE = "invalid_scope";
 
-	static String GRANT_TYPE_PASSWORD = "password";
-	static String UNSUPPORTED_GRANT_TYPE = "unsupported_grant_type";
-	static String ACCESS_DENIED = "access_denied";
+	static final String GRANT_TYPE_PASSWORD = "password";
+	static final String UNSUPPORTED_GRANT_TYPE = "unsupported_grant_type";
+	static final String ACCESS_DENIED = "access_denied";
 
-	static String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
+	static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
 
 	private final AuthorizationRepository authorizations;
 	private final CommandDispatcher dispatcher;
@@ -126,13 +127,9 @@ public class OAuthController extends ControllerSupport {
 		}
 		for (String pair : body.split("&")) {
 			String[] kv = pair.split("=", 2);
-			try {
-				String key = URLDecoder.decode(kv[0], Charsets.UTF_8.name());
-				String value = kv.length > 1 ? URLDecoder.decode(kv[1], Charsets.UTF_8.name()) : "";
-				params.put(key, value);
-			} catch (UnsupportedEncodingException e) {
-				throw new RuntimeException(e);
-			}
+			String key = URLDecoder.decode(kv[0], StandardCharsets.UTF_8);
+			String value = kv.length > 1 ? URLDecoder.decode(kv[1], StandardCharsets.UTF_8) : "";
+			params.put(key, value);
 		}
 		return params;
 	}
@@ -209,25 +206,21 @@ public class OAuthController extends ControllerSupport {
 	}
 
 	private static String toQueryString(ServerRequest req) {
+		StringBuilder builder = new StringBuilder();
+		Set<String> names;
 		try {
-			StringBuilder builder = new StringBuilder();
-			java.util.Set<String> names;
-			try {
-				names = req.query().names();
-			} catch (java.util.NoSuchElementException e) {
-				return "";
-			}
-			for (String name : names) {
-				for (String value : req.query().all(name)) {
-					if (builder.length() > 0) {
-						builder.append('&');
-					}
-					builder.append(name).append('=').append(URLEncoder.encode(value, Charsets.UTF_8.name()));
-				}
-			}
-			return builder.toString();
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
+			names = req.query().names();
+		} catch (NoSuchElementException e) {
+			return "";
 		}
+		for (String name : names) {
+			for (String value : req.query().all(name)) {
+				if (!builder.isEmpty()) {
+					builder.append('&');
+				}
+				builder.append(name).append('=').append(URLEncoder.encode(value, StandardCharsets.UTF_8));
+			}
+		}
+		return builder.toString();
 	}
 }

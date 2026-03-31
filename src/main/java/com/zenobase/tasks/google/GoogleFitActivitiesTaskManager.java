@@ -142,7 +142,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 			});
 		}
 		if (!events.isEmpty()) {
-			events.remove(events.size() - 1); // could still be in progress
+			events.removeLast(); // could still be in progress
 		}
 		return events;
 	}

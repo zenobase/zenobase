@@ -83,7 +83,7 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 			logger.warn("Dog not found: {}", task.getName());
 		}
 		if (!events.isEmpty()) {
-			events.remove(events.size() - 1); // the most recent record could be incomplete
+			events.removeLast(); // the most recent record could be incomplete
 		}
 		return createCommand(task, events);
 	}

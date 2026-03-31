@@ -97,8 +97,8 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		}
 		if (events.size() >= 10000) {
 			logger.warn("Reached maximum number of measurements: {}", events.size());
-		} else if (events.size() > 0 && task.isHourly()) {
-			events.remove(events.size() - 1); // data for the last hour can still change
+		} else if (!events.isEmpty() && task.isHourly()) {
+			events.removeLast(); // data for the last hour can still change
 		}
 		return events;
 	}

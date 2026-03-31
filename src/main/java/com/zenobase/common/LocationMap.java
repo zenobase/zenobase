@@ -47,7 +47,7 @@ public class LocationMap {
 		ImmutableList<DateTime> times = event.getValues(Event.TIMESTAMP);
 		Preconditions.checkState(!times.isEmpty());
 		Location location = times.size() == 1
-				? get(times.get(0))
+				? get(times.getFirst())
 				: getFirst(Range.closedOpen(
 						Objects.requireNonNull(Ordering.natural().min(times)),
 						Objects.requireNonNull(Ordering.natural().max(times))));

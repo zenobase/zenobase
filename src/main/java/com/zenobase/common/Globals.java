@@ -6,7 +6,7 @@ import org.jspecify.annotations.Nullable;
 
 public class Globals {
 
-	public static ClassToInstanceMap<Object> instances = MutableClassToInstanceMap.create();
+	public static final ClassToInstanceMap<Object> instances = MutableClassToInstanceMap.create();
 
 	private Globals() {}
 

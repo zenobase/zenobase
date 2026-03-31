@@ -3,12 +3,12 @@ package com.zenobase.commands;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Random;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.common.io.LineProcessor;
 import org.joda.time.DateTime;
@@ -28,9 +28,9 @@ public class RandomEvent {
 	private static final RandomElement<Builder> builders = new RandomElement<Builder>()
 			.add(
 					new Builder() {
-						RandomElement<String> meals =
+						final RandomElement<String> meals =
 								new RandomElement<String>().add("lunch", 1).add("dinner", 1);
-						RandomElement<String> order = new RandomElement<String>()
+						final RandomElement<String> order = new RandomElement<String>()
 								.add("pizza", 1)
 								.add("sushi", 1)
 								.add("mexican", 2)
@@ -57,7 +57,7 @@ public class RandomEvent {
 					2)
 			.add(
 					new Builder() {
-						RandomElement<Movie> movies = new MovieParser().parse(new File("data/movies.tsv"));
+						final RandomElement<Movie> movies = new MovieParser().parse(new File("data/movies.tsv"));
 
 						@Override
 						protected void addFields(Event event) {
@@ -162,28 +162,26 @@ public class RandomEvent {
 
 		public RandomElement<Movie> parse(File source) {
 			try {
-				return Objects.requireNonNull(Files.readLines(
-						source, Charsets.UTF_8, new LineProcessor<RandomElement<Movie>>() {
-							private final RandomElement<Movie> resources = new RandomElement<>();
+				return Objects.requireNonNull(Files.readLines(source, StandardCharsets.UTF_8, new LineProcessor<>() {
+					private final RandomElement<Movie> resources = new RandomElement<>();
 
-							@Override
-							public boolean processLine(String line) {
-								String[] tokens = line.split("\t");
-								String title = String.format("%s (%d)", tokens[5], Integer.parseInt(tokens[11]));
-								String url = tokens[15];
-								Duration duration = !tokens[10].isEmpty()
-										? Duration.standardMinutes(Integer.parseInt(tokens[10]))
-										: null;
-								int weight = Integer.parseInt(tokens[13]);
-								resources.add(new Movie(title, url, duration), weight);
-								return true;
-							}
+					@Override
+					public boolean processLine(String line) {
+						String[] tokens = line.split("\t");
+						String title = String.format("%s (%d)", tokens[5], Integer.parseInt(tokens[11]));
+						String url = tokens[15];
+						Duration duration =
+								!tokens[10].isEmpty() ? Duration.standardMinutes(Integer.parseInt(tokens[10])) : null;
+						int weight = Integer.parseInt(tokens[13]);
+						resources.add(new Movie(title, url, duration), weight);
+						return true;
+					}
 
-							@Override
-							public RandomElement<Movie> getResult() {
-								return resources;
-							}
-						}));
+					@Override
+					public RandomElement<Movie> getResult() {
+						return resources;
+					}
+				}));
 			} catch (IOException e) {
 				throw new AssertionError(e);
 			}

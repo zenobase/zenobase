@@ -56,7 +56,7 @@ public class FilterBuilderSupport {
 			}
 		}
 		if (builders.size() == 1) {
-			return addConstraint(builders.get(0), negated);
+			return addConstraint(builders.getFirst(), negated);
 		} else if (builders.size() > 1) {
 			Query or = Query.of(q -> q.bool(b -> b.should(builders)));
 			return addConstraint(or, negated);

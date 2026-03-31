@@ -9,7 +9,7 @@ import com.zenobase.tasks.CustomApi20;
 
 public class MapMyFitnessApi extends CustomApi20 {
 
-	static String ACCESS_TOKEN_ENDPOINT = "https://api.ua.com/v7.0/oauth2/uacf/access_token/";
+	static final String ACCESS_TOKEN_ENDPOINT = "https://api.ua.com/v7.0/oauth2/uacf/access_token/";
 
 	@Override
 	public String getAccessTokenEndpoint() {

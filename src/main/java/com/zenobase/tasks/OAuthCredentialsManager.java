@@ -75,7 +75,7 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 
 	@Override
 	public @Nullable Command authorize(Credentials credentials, ObjectNode config) {
-		return config.size() != 0
+		return !config.isEmpty()
 				? authorize(credentials.as(OAuthCredentials.class), config)
 				: deauthorize(credentials.as(OAuthCredentials.class));
 	}

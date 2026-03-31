@@ -29,7 +29,7 @@ public class FacetOptions {
 			return defaultValue;
 		}
 		if (type.equals(String.class)) {
-			return (T) String.valueOf(value);
+			return (T) value;
 		}
 		if (type.equals(Integer.class)) {
 			return (T) Integer.valueOf(value);
