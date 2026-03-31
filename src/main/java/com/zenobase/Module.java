@@ -57,7 +57,16 @@ class Module extends AbstractModule {
 	@Override
 	protected void configure() {
 		bindConfiguration();
+		bindServices();
+		bindCommandParsers();
+		bindCommandHandlers();
+		bindCredentialsManagers();
+		bindTaskManagers();
+		bindJobs();
+		bindControllers();
+	}
 
+	private void bindServices() {
 		Bus bus = new LocalBus();
 		bus.setReadOnly(true);
 		bind(Bus.class).toInstance(bus);
@@ -71,7 +80,13 @@ class Module extends AbstractModule {
 		bind(UserRepository.class).in(Singleton.class);
 		bind(CommandParserRegistry.class).in(Singleton.class);
 		bind(CommandHandlerRegistry.class).in(Singleton.class);
-		bind(CommandReplay.class).in(Singleton.class);
+
+		if (isConfigured("opensearch.replay")) {
+			bind(CommandReplay.class).in(Singleton.class);
+		} else if (isConfigured("opensearch.rebuild")) {
+			bind(CommandRebuild.class).in(Singleton.class);
+		}
+
 		if (isConfigured("aws.region")) {
 			bind(SesV2Client.class).toInstance(SesV2Client.create());
 			bind(Mailer.class).to(SesMailer.class).in(Singleton.class);
@@ -80,6 +95,7 @@ class Module extends AbstractModule {
 			bind(Mailer.class).to(ConsoleMailer.class).in(Singleton.class);
 			bind(EmailValidator.class).to(RegexEmailValidator.class).in(Singleton.class);
 		}
+
 		bind(VerificationMailer.class).in(Singleton.class);
 		bind(PasswordResetMailer.class).in(Singleton.class);
 		bind(AuthorizationContext.class).in(Singleton.class);
@@ -93,8 +109,10 @@ class Module extends AbstractModule {
 		if (isConfigured("foursquare")) {
 			bind(FoursquareVenues.class).in(Singleton.class);
 		}
+	}
 
-		Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
+	private void bindCommandParsers() {
+		var parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 		parsers.addBinding().to(CreateBucketCommand.Parser.class);
 		parsers.addBinding().to(DeleteBucketCommand.Parser.class);
 		parsers.addBinding().to(RestoreBucketCommand.Parser.class);
@@ -123,9 +141,10 @@ class Module extends AbstractModule {
 		parsers.addBinding().to(CompoundCommand.Parser.class);
 		parsers.addBinding().to(CreateAuthorizationCommand.Parser.class);
 		parsers.addBinding().to(DeleteAuthorizationCommand.Parser.class);
+	}
 
-		Multibinder<CommandHandler<?>> handlers =
-				Multibinder.newSetBinder(binder(), new TypeLiteral<CommandHandler<?>>() {});
+	private void bindCommandHandlers() {
+		var handlers = Multibinder.newSetBinder(binder(), new TypeLiteral<CommandHandler<?>>() {});
 		handlers.addBinding().to(CreateBucketCommand.Handler.class);
 		handlers.addBinding().to(DeleteBucketCommand.Handler.class);
 		handlers.addBinding().to(RestoreBucketCommand.Handler.class);
@@ -153,33 +172,39 @@ class Module extends AbstractModule {
 		handlers.addBinding().to(DeleteCredentialsCommand.Handler.class);
 		handlers.addBinding().to(CreateAuthorizationCommand.Handler.class);
 		handlers.addBinding().to(DeleteAuthorizationCommand.Handler.class);
+	}
 
-		Multibinder<CredentialsManager> credentials =
-				Multibinder.newSetBinder(binder(), new TypeLiteral<CredentialsManager>() {});
+	private void bindCredentialsManagers() {
+		var credentials = Multibinder.newSetBinder(binder(), new TypeLiteral<CredentialsManager>() {});
 		credentials.addBinding().to(DemoCredentialsManager.class);
+		bindIfConfigured("beeminder", BeeminderCredentialsManager.class, credentials);
+		bindIfConfigured("dropbox", DropboxCredentialsManager.class, credentials);
+		bindIfConfigured("fitbark", FitBarkCredentialsManager.class, credentials);
 		bindIfConfigured("fitbit", FitbitCredentialsManager.class, credentials);
 		bindIfConfigured("foursquare", FoursquareCredentialsManager.class, credentials);
-		bindIfConfigured("withings", WithingsCredentialsManager.class, credentials);
+		bindIfConfigured("goodreads", GoodreadsCredentialsManager.class, credentials);
+		bindIfConfigured("google", GoogleCredentialsManager.class, credentials);
+		bindIfConfigured("hexoskin", HexoskinCredentialsManager.class, credentials);
+		bindIfConfigured("ihealth", IHealthCredentialsManager.class, credentials);
+		bindIfConfigured("lastfm", LastFmCredentialsManager.class, credentials);
+		bindIfConfigured("mapmyfitness", MapMyFitnessCredentialsManager.class, credentials);
 		bindIfConfigured("netatmo", NetatmoCredentialsManager.class, credentials);
+		bindIfConfigured("oura", OuraCredentialsManager.class, credentials);
+		bindIfConfigured("rescuetime", RescueTimeCredentialsManager.class, credentials);
 		bindIfConfigured("runkeeper", RunkeeperCredentialsManager.class, credentials);
 		bindIfConfigured("strava", StravaCredentialsManager.class, credentials);
-		bindIfConfigured("mapmyfitness", MapMyFitnessCredentialsManager.class, credentials);
-		bindIfConfigured("dropbox", DropboxCredentialsManager.class, credentials);
-		bindIfConfigured("lastfm", LastFmCredentialsManager.class, credentials);
-		bindIfConfigured("rescuetime", RescueTimeCredentialsManager.class, credentials);
-		bindIfConfigured("google", GoogleCredentialsManager.class, credentials);
-		bindIfConfigured("ihealth", IHealthCredentialsManager.class, credentials);
-		bindIfConfigured("beeminder", BeeminderCredentialsManager.class, credentials);
-		bindIfConfigured("hexoskin", HexoskinCredentialsManager.class, credentials);
 		bindIfConfigured("trakt", TraktCredentialsManager.class, credentials);
 		bindIfConfigured("wakatime", WakaTimeCredentialsManager.class, credentials);
-		bindIfConfigured("fitbark", FitBarkCredentialsManager.class, credentials);
-		bindIfConfigured("goodreads", GoodreadsCredentialsManager.class, credentials);
-		bindIfConfigured("oura", OuraCredentialsManager.class, credentials);
+		bindIfConfigured("withings", WithingsCredentialsManager.class, credentials);
 		bind(CredentialsManagerRegistry.class).in(Singleton.class);
+	}
 
-		Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
+	private void bindTaskManagers() {
+		var tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
 		tasks.addBinding().to(DemoTaskManager.class);
+		bindIfConfigured("beeminder", BeeminderTaskManager.class, tasks);
+		bindIfConfigured("dropbox", ReporterTaskManager.class, tasks);
+		bindIfConfigured("fitbark", FitBarkTaskManager.class, tasks);
 		bindIfConfigured("fitbit", FitbitActivitiesTaskManager.class, tasks);
 		bindIfConfigured("fitbit", FitbitBurnTaskManager.class, tasks);
 		bindIfConfigured("fitbit", FitbitCardioTaskManager.class, tasks);
@@ -188,26 +213,14 @@ class Module extends AbstractModule {
 		bindIfConfigured("fitbit", FitbitWeightTaskManager.class, tasks);
 		bindIfConfigured("fitbit", FitbitFoodTaskManager.class, tasks);
 		bindIfConfigured("foursquare", FoursquareTaskManager.class, tasks);
-		bindIfConfigured("withings", WithingsCardioTaskManager.class, tasks);
-		bindIfConfigured("withings", WithingsStepsTaskManager.class, tasks);
-		bindIfConfigured("withings", WithingsWeightTaskManager.class, tasks);
-		bindIfConfigured("withings", WithingsSleepTaskManager.class, tasks);
-		bindIfConfigured("withings", WithingsTemperatureTaskManager.class, tasks);
-		bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
-		bindIfConfigured("runkeeper", RunkeeperActivitiesTaskManager.class, tasks);
-		bindIfConfigured("runkeeper", RunkeeperWeightTaskManager.class, tasks);
-		bindIfConfigured("strava", StravaTaskManager.class, tasks);
-		bindIfConfigured("mapmyfitness", MapMyFitnessActivitiesTaskManager.class, tasks);
-		bindIfConfigured("mapmyfitness", MapMyFitnessSleepTaskManager.class, tasks);
-		bindIfConfigured("mapmyfitness", MapMyFitnessWeightTaskManager.class, tasks);
-		bindIfConfigured("dropbox", ReporterTaskManager.class, tasks);
-		bindIfConfigured("lastfm", LastFmTaskManager.class, tasks);
-		bindIfConfigured("rescuetime", RescueTimeProductivityTaskManager.class, tasks);
+		bindIfConfigured("goodreads", GoodreadsTaskManager.class, tasks);
 		bindIfConfigured("google", SleepCloudTaskManager.class, tasks);
 		bindIfConfigured("google", GoogleFitActivitiesTaskManager.class, tasks);
 		bindIfConfigured("google", GoogleFitCardioTaskManager.class, tasks);
 		bindIfConfigured("google", GoogleFitFoodTaskManager.class, tasks);
 		bindIfConfigured("google", GoogleFitWeightTaskManager.class, tasks);
+		bindIfConfigured("hexoskin", HexoskinActivitiesTaskManager.class, tasks);
+		bindIfConfigured("hexoskin", HexoskinSleepTaskManager.class, tasks);
 		bindIfConfigured("ihealth", IHealthActivitiesTaskManager.class, tasks);
 		bindIfConfigured("ihealth", IHealthCardioTaskManager.class, tasks);
 		bindIfConfigured("ihealth", IHealthFoodTaskManager.class, tasks);
@@ -215,24 +228,37 @@ class Module extends AbstractModule {
 		bindIfConfigured("ihealth", IHealthSleepTaskManager.class, tasks);
 		bindIfConfigured("ihealth", IHealthStepsTaskManager.class, tasks);
 		bindIfConfigured("ihealth", IHealthWeightTaskManager.class, tasks);
-		bindIfConfigured("beeminder", BeeminderTaskManager.class, tasks);
-		bindIfConfigured("hexoskin", HexoskinActivitiesTaskManager.class, tasks);
-		bindIfConfigured("hexoskin", HexoskinSleepTaskManager.class, tasks);
-		bindIfConfigured("trakt", TraktTaskManager.class, tasks);
-		bindIfConfigured("wakatime", WakaTimeTaskManager.class, tasks);
-		bindIfConfigured("fitbark", FitBarkTaskManager.class, tasks);
-		bindIfConfigured("goodreads", GoodreadsTaskManager.class, tasks);
+		bindIfConfigured("lastfm", LastFmTaskManager.class, tasks);
+		bindIfConfigured("mapmyfitness", MapMyFitnessActivitiesTaskManager.class, tasks);
+		bindIfConfigured("mapmyfitness", MapMyFitnessSleepTaskManager.class, tasks);
+		bindIfConfigured("mapmyfitness", MapMyFitnessWeightTaskManager.class, tasks);
+		bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
 		bindIfConfigured("oura", OuraSleepTaskManager.class, tasks);
 		bindIfConfigured("oura", OuraStepsTaskManager.class, tasks);
 		bindIfConfigured("oura", OuraReadinessTaskManager.class, tasks);
+		bindIfConfigured("rescuetime", RescueTimeProductivityTaskManager.class, tasks);
+		bindIfConfigured("runkeeper", RunkeeperActivitiesTaskManager.class, tasks);
+		bindIfConfigured("runkeeper", RunkeeperWeightTaskManager.class, tasks);
+		bindIfConfigured("strava", StravaTaskManager.class, tasks);
+		bindIfConfigured("trakt", TraktTaskManager.class, tasks);
+		bindIfConfigured("wakatime", WakaTimeTaskManager.class, tasks);
+		bindIfConfigured("withings", WithingsCardioTaskManager.class, tasks);
+		bindIfConfigured("withings", WithingsStepsTaskManager.class, tasks);
+		bindIfConfigured("withings", WithingsWeightTaskManager.class, tasks);
+		bindIfConfigured("withings", WithingsSleepTaskManager.class, tasks);
+		bindIfConfigured("withings", WithingsTemperatureTaskManager.class, tasks);
 		bind(TaskManagerRegistry.class).in(Singleton.class);
+	}
 
+	private void bindJobs() {
 		Multibinder<Job> jobs = Multibinder.newSetBinder(binder(), Job.class);
 		jobs.addBinding().to(AuthorizationExpirationJob.class);
 		jobs.addBinding().to(BucketRefreshJob.class);
 		jobs.addBinding().to(CredentialsCleanupJob.class);
 		jobs.addBinding().to(SnapshotJob.class);
+	}
 
+	private void bindControllers() {
 		bind(SentryFilter.class).in(Singleton.class);
 
 		bind(AccountController.class).in(Singleton.class);

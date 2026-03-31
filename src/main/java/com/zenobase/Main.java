@@ -6,9 +6,9 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
-import com.google.common.base.Strings;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import io.helidon.config.Config;
 import io.helidon.config.ConfigSources;
 import io.helidon.health.HealthCheckResponse;
@@ -35,7 +35,7 @@ public class Main {
 		Globals.put(Injector.class, injector);
 		AtomicBoolean ready = new AtomicBoolean(false);
 		startServer(config, injector, createObserveFeature(ready, injector), createCorsFeature(config));
-		replay(injector, config);
+		replay(injector);
 		enableWrites(injector);
 		startScheduler(injector);
 		ready.set(true);
@@ -123,22 +123,19 @@ public class Main {
 		});
 	}
 
-	private void replay(Injector injector, Config config) {
-		var esConfig = config.get("opensearch");
-		var replayHost = esConfig.get("replay").asString().orElse("");
-		var rebuildHost = esConfig.get("rebuild").asString().orElse("");
-		var replayConfigured = !Strings.isNullOrEmpty(replayHost);
-		var rebuildConfigured = !Strings.isNullOrEmpty(rebuildHost);
-		if (replayConfigured || rebuildConfigured) {
+	private void replay(Injector injector) {
+		var replayBinding = injector.getExistingBinding(Key.get(CommandReplay.class));
+		var rebuildBinding = injector.getExistingBinding(Key.get(CommandRebuild.class));
+		if (replayBinding != null || rebuildBinding != null) {
 			var users = injector.getInstance(UserRepository.class);
 			if (!users.isEmpty()) {
 				throw new IllegalStateException(
 						"Migration incomplete: replay/rebuild is configured but target domain already has data");
 			}
-			if (replayConfigured) {
-				injector.getInstance(CommandReplay.class).replay();
-			} else {
-				injector.getInstance(CommandRebuild.class).rebuild();
+			if (replayBinding != null) {
+				replayBinding.getProvider().get().replay();
+			} else if (rebuildBinding != null) {
+				rebuildBinding.getProvider().get().rebuild();
 			}
 		}
 	}
