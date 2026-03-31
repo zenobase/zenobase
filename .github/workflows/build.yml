@@ -10,6 +10,7 @@ on:
     paths:
       - 'docker/**'
       - 'src/**'
+      - '!src/main/java/com/zenobase/scripts/**'
       - 'pom.xml'
   workflow_dispatch:
 
