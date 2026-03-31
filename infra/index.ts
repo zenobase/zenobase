@@ -723,6 +723,13 @@ const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
             secrets: [
                 { name: "APPLICATION_CONF", valueFrom: secretArn },
             ],
+            healthCheck: {
+                command: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9000/observe/health/live"],
+                interval: 30,
+                timeout: 5,
+                retries: 3,
+                startPeriod: 60,
+            },
             logConfiguration: {
                 logDriver: "awslogs",
                 options: {
