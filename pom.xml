@@ -154,6 +154,13 @@
             <version>2.3</version>
         </dependency>
 
+        <!-- CLI (for scripts, excluded from production via maven-jar-plugin) -->
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
+            <version>4.7.7</version>
+        </dependency>
+
         <!-- OAuth (Scribe) -->
         <dependency>
             <groupId>org.scribe</groupId>
@@ -287,12 +294,29 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>com/zenobase/scripts/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>copy-libs</id>
+                        <configuration>
+                            <excludeArtifactIds>picocli</excludeArtifactIds>
+                        </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
             </plugin>
         </plugins>
     </build>

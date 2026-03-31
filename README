@@ -272,3 +272,19 @@ An on-demand bastion instance can be enabled for direct access to the OpenSearch
         pulumi up
 
 The bastion creates a `t4g.nano` instance, a security group, an IAM role with SSM access, and an ingress rule on the OpenSearch security group. All resources are removed when disabled.
+
+
+Scripts
+-------
+
+One-off admin scripts are located in src/main/java/com/zenobase/scripts/. Some scripts need AWS credentials configured in the environment, or an API token in ~/.zeno/token.
+
+Example — list all buckets for a user:
+
+  ./mvnw compile exec:exec -Dexec.executable=java \
+    -Dexec.args="-classpath %classpath com.zenobase.scripts.ListBuckets <userId>"
+
+Show usage help for a script:
+
+  ./mvnw compile exec:exec -Dexec.executable=java \
+    -Dexec.args="-classpath %classpath com.zenobase.scripts.ListBuckets --help"
