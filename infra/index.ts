@@ -412,6 +412,11 @@ new aws.iam.RolePolicy("zenobase-ecs-task-policy", {
             },
             {
                 Effect: "Allow",
+                Action: ["ses:GetEmailAddressInsights"],
+                Resource: ["*"],
+            },
+            {
+                Effect: "Allow",
                 Action: ["iam:PassRole"],
                 Resource: [snapshotRoleArn],
             },
