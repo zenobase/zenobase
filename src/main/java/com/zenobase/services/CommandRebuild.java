@@ -170,7 +170,7 @@ public class CommandRebuild {
 				try {
 					action.accept(item);
 				} catch (RuntimeException e) {
-					logger.error("Couldn't rebuild: " + itemLabel.apply(item), e);
+					logger.error("Couldn't rebuild: {}", itemLabel.apply(item), e);
 					failures.incrementAndGet();
 				}
 			});

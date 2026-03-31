@@ -84,20 +84,20 @@ public class CommandReplay {
 			dispatcher.dispatch(command);
 			replayed.incrementAndGet();
 		} catch (NonExistentUserException e) {
-			logger.warn("Skipping command applying to a non-existent user: " + command);
+			logger.warn("Skipping command applying to a non-existent user: {}", command);
 		} catch (OpenSearchException e) {
 			if (e.status() == 404) {
-				logger.warn("Skipping command for deleted bucket: " + command);
+				logger.warn("Skipping command for deleted bucket: {}", command);
 			} else if (e.status() == 409) {
-				logger.warn("Skipping duplicate command: " + command);
+				logger.warn("Skipping duplicate command: {}", command);
 			} else {
-				logger.error("Couldn't replay command: " + command, e);
+				logger.error("Couldn't replay command: {}", command, e);
 				failures.incrementAndGet();
 			}
 		} catch (IllegalStateException e) {
 			retryCommand(command, e);
 		} catch (RuntimeException e) {
-			logger.error("Couldn't replay command: " + command, e);
+			logger.error("Couldn't replay command: {}", command, e);
 			failures.incrementAndGet();
 		}
 	}
@@ -117,7 +117,7 @@ public class CommandReplay {
 				break;
 			}
 		}
-		logger.error("Couldn't replay command: " + command, cause);
+		logger.error("Couldn't replay command: {}", command, cause);
 		failures.incrementAndGet();
 	}
 }
