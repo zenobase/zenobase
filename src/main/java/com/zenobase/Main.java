@@ -132,11 +132,11 @@ public class Main {
 				throw new IllegalStateException(
 						"Migration incomplete: replay/rebuild is configured but target domain already has data");
 			}
-			if (replayBinding != null) {
-				replayBinding.getProvider().get().replay();
-			} else if (rebuildBinding != null) {
-				rebuildBinding.getProvider().get().rebuild();
-			}
+		}
+		if (replayBinding != null) {
+			replayBinding.getProvider().get().replay();
+		} else if (rebuildBinding != null) {
+			rebuildBinding.getProvider().get().rebuild();
 		}
 	}
 
