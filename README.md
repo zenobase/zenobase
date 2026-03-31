@@ -63,10 +63,10 @@ task starts, passes health checks, then the old task is drained automatically.
    aws login --profile signin
 
    aws secretsmanager get-secret-value --secret-id zenobase/prod/zenobase-api-config \
-     --query SecretString --output text > prod.yaml
+     --query SecretString --output text > application-prod.yaml
 
    aws secretsmanager put-secret-value --secret-id zenobase/prod/zenobase-api-config \
-     --secret-string file://./prod.yaml
+     --secret-string file://./application-prod.yaml
    ```
 
 3. If there are infrastructure changes, sign in to AWS and run Pulumi:
