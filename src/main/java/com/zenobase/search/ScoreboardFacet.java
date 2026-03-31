@@ -75,10 +75,16 @@ public class ScoreboardFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Aggregate agg = Objects.requireNonNull(getAggregate(response));
-		for (StringTermsBucket bucket : agg.sterms().buckets().array()) {
-			ExtendedStatsAggregate stats =
-					Objects.requireNonNull(bucket.aggregations().get(getId())).extendedStats();
+		Aggregate aggregate = getAggregate(response);
+		if (aggregate == null) {
+			return result;
+		}
+		for (StringTermsBucket bucket : aggregate.sterms().buckets().array()) {
+			Aggregate bucketAggregate = bucket.aggregations().get(getId());
+			if (bucketAggregate == null) {
+				continue;
+			}
+			ExtendedStatsAggregate stats = bucketAggregate.extendedStats();
 			if (stats.count() > 0) {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", bucket.key());
@@ -92,7 +98,7 @@ public class ScoreboardFacet extends FilteredFacet {
 		return result;
 	}
 
-	private void addValue(ObjectNode parent, String property, Double value) {
+	private void addValue(ObjectNode parent, String property, @Nullable Double value) {
 		if (value == null) {
 			return;
 		}

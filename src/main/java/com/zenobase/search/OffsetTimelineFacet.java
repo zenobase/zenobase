@@ -61,8 +61,11 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
-		Aggregate agg = Objects.requireNonNull(getAggregate(response));
-		List<DateHistogramBucket> buckets = agg.dateHistogram().buckets().array();
+		Aggregate aggregate = getAggregate(response);
+		if (aggregate == null) {
+			return Nodes.newArray();
+		}
+		List<DateHistogramBucket> buckets = aggregate.dateHistogram().buckets().array();
 		Map<String, ObjectNode> counts = Collections.emptyMap();
 		if (!buckets.isEmpty()) {
 			counts = getMap(getInterval(buckets));
@@ -75,10 +78,12 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 						entryNode.put("label", key);
 						entryNode.put("time", addOffset(bucketTime));
 						entryNode.put("count", bucket.docCount());
-						if (!keyField.equals(valueField) && bucket.docCount() > 0) {
-							StatsAggregate stats = Objects.requireNonNull(
-											bucket.aggregations().get(getId()))
-									.stats();
+						if (!keyField.equals(valueField)) {
+							Aggregate bucketAggregate = bucket.aggregations().get(getId());
+							if (bucketAggregate == null) {
+								continue;
+							}
+							StatsAggregate stats = bucketAggregate.stats();
 							addValue(entryNode, "min", stats.min());
 							addValue(entryNode, "max", stats.max());
 							addValue(entryNode, "sum", stats.sum());

@@ -55,16 +55,19 @@ public class CountFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Aggregate agg = Objects.requireNonNull(getAggregate(response));
-		List<StringTermsBucket> entries = agg.sterms().buckets().array();
+		Aggregate aggregate = getAggregate(response);
+		if (aggregate == null) {
+			return result;
+		}
+		List<StringTermsBucket> entries = aggregate.sterms().buckets().array();
 		if (offset < entries.size()) {
 			for (StringTermsBucket entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", entry.key());
 				entryNode.put("count", entry.docCount());
 			}
-			long sumOther = agg.sterms().sumOtherDocCount();
-			if (sumOther > 0) {
+			Long sumOther = aggregate.sterms().sumOtherDocCount();
+			if (sumOther != null && sumOther > 0) {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", LABEL_MORE);
 				entryNode.put("count", sumOther);

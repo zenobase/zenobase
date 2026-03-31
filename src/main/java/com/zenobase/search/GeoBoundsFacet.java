@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.GeoLocation;
 import org.opensearch.client.opensearch._types.TopLeftBottomRightGeoBounds;
+import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.GeoBoundsAggregate;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
@@ -35,8 +36,11 @@ public class GeoBoundsFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ObjectNode result = Nodes.newObject();
-		GeoBoundsAggregate bounds =
-				Objects.requireNonNull(getAggregate(response)).geoBounds();
+		Aggregate aggregate = getAggregate(response);
+		if (aggregate == null) {
+			return result;
+		}
+		GeoBoundsAggregate bounds = aggregate.geoBounds();
 		if (bounds.bounds() != null
 				&& bounds.bounds()._kind() == org.opensearch.client.opensearch._types.GeoBounds.Kind.Tlbr) {
 			TopLeftBottomRightGeoBounds tlbr = bounds.bounds().tlbr();

@@ -61,37 +61,38 @@ public class PolarFacet extends FilteredFacet {
 
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
-		Aggregate agg = Objects.requireNonNull(getAggregate(response));
-		List<LongTermsBucket> buckets = agg.lterms().buckets().array();
-		Map<Integer, StatsAggregate> result = Collections.emptyMap();
+		Aggregate aggregate = getAggregate(response);
+		if (aggregate == null) {
+			return Nodes.newArray();
+		}
+		List<LongTermsBucket> buckets = aggregate.lterms().buckets().array();
+		Map<Integer, @Nullable StatsAggregate> result = Collections.emptyMap();
 		if (!buckets.isEmpty()) {
 			result = interval.emptyMap();
 			for (LongTermsBucket bucket : buckets) {
-				StatsAggregate stats = Objects.requireNonNull(
-								bucket.aggregations().get(getId()))
-						.stats();
-				result.put(bucket.key().signed().intValue(), stats);
+				Aggregate bucketAggregate = bucket.aggregations().get(getId());
+				if (bucketAggregate == null) {
+					continue;
+				}
+				result.put(bucket.key().signed().intValue(), bucketAggregate.stats());
 			}
 		}
 		return toJson(result);
 	}
 
-	private JsonNode toJson(Map<Integer, StatsAggregate> map) {
+	private JsonNode toJson(Map<Integer, @Nullable StatsAggregate> map) {
 		ArrayNode node = Nodes.newArray();
-		for (Map.Entry<Integer, StatsAggregate> entry : map.entrySet()) {
+		for (Map.Entry<Integer, @Nullable StatsAggregate> entry : map.entrySet()) {
 			ObjectNode entryNode = Nodes.newObject();
 			entryNode.put("value", entry.getKey());
 			entryNode.put("label", interval.getLabel(entry.getKey()));
-			if (entry.getValue() != null) {
-				entryNode.put("count", entry.getValue().count());
-				if (!keyField.equals(valueField) && entry.getValue().count() > 0) {
-					addValue(entryNode, "min", entry.getValue().min());
-					addValue(entryNode, "max", entry.getValue().max());
-					addValue(entryNode, "sum", entry.getValue().sum());
-					addValue(entryNode, "avg", entry.getValue().avg());
-				}
-			} else {
-				entryNode.put("count", 0);
+			StatsAggregate stats = entry.getValue();
+			entryNode.put("count", stats != null ? stats.count() : 0);
+			if (!keyField.equals(valueField) && stats != null && stats.count() > 0) {
+				addValue(entryNode, "min", stats.min());
+				addValue(entryNode, "max", stats.max());
+				addValue(entryNode, "sum", stats.sum());
+				addValue(entryNode, "avg", stats.avg());
 			}
 			node.add(entryNode);
 		}
@@ -159,8 +160,8 @@ public class PolarFacet extends FilteredFacet {
 			this.size = size;
 		}
 
-		public Map<Integer, StatsAggregate> emptyMap() {
-			Map<Integer, StatsAggregate> map = Maps.newTreeMap();
+		public Map<Integer, @Nullable StatsAggregate> emptyMap() {
+			Map<Integer, @Nullable StatsAggregate> map = Maps.newTreeMap();
 			for (int i = offset; i < offset + size; ++i) {
 				map.put(i, null);
 			}

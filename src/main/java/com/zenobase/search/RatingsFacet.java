@@ -53,9 +53,12 @@ public class RatingsFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Aggregate agg = Objects.requireNonNull(getAggregate(response));
+		Aggregate aggregate = getAggregate(response);
+		if (aggregate == null) {
+			return result;
+		}
 		for (RangeBucket entry :
-				ImmutableList.copyOf(agg.range().buckets().array()).reverse()) {
+				ImmutableList.copyOf(aggregate.range().buckets().array()).reverse()) {
 			if (entry.docCount() > 0L) {
 				ObjectNode entryNode = result.addObject();
 				Double fromValue = entry.from();

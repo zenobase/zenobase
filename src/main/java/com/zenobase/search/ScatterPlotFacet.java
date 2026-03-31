@@ -153,11 +153,12 @@ public class ScatterPlotFacet extends Facet {
 		}
 
 		public @Nullable BigDecimal getValue(DateHistogramBucket bucket) {
-			long count = Objects.requireNonNull(bucket.aggregations().get("_count"))
-					.valueCount()
-					.value()
-					.longValue();
-			if (count == 0) {
+			Aggregate aggregate = bucket.aggregations().get("_count");
+			if (aggregate == null) {
+				return null;
+			}
+			Double count = aggregate.valueCount().value();
+			if (count == null || count.longValue() == 0) {
 				return null;
 			}
 			double value = statistic.getValue(bucket);
@@ -177,9 +178,7 @@ public class ScatterPlotFacet extends Facet {
 
 			@Override
 			double getValue(DateHistogramBucket bucket) {
-				return Objects.requireNonNull(bucket.aggregations().get("stats"))
-						.avg()
-						.value();
+				return unbox(getStatsAggregate(bucket).avg().value());
 			}
 		},
 		MIN {
@@ -190,9 +189,7 @@ public class ScatterPlotFacet extends Facet {
 
 			@Override
 			double getValue(DateHistogramBucket bucket) {
-				return Objects.requireNonNull(bucket.aggregations().get("stats"))
-						.min()
-						.value();
+				return unbox(getStatsAggregate(bucket).min().value());
 			}
 		},
 		MAX {
@@ -203,9 +200,7 @@ public class ScatterPlotFacet extends Facet {
 
 			@Override
 			double getValue(DateHistogramBucket bucket) {
-				return Objects.requireNonNull(bucket.aggregations().get("stats"))
-						.max()
-						.value();
+				return unbox(getStatsAggregate(bucket).max().value());
 			}
 		},
 		SUM {
@@ -216,9 +211,7 @@ public class ScatterPlotFacet extends Facet {
 
 			@Override
 			double getValue(DateHistogramBucket bucket) {
-				return Objects.requireNonNull(bucket.aggregations().get("stats"))
-						.sum()
-						.value();
+				return unbox(getStatsAggregate(bucket).sum().value());
 			}
 		},
 		COUNT {
@@ -229,15 +222,21 @@ public class ScatterPlotFacet extends Facet {
 
 			@Override
 			double getValue(DateHistogramBucket bucket) {
-				return Objects.requireNonNull(bucket.aggregations().get("stats"))
-						.valueCount()
-						.value();
+				return unbox(getStatsAggregate(bucket).valueCount().value());
 			}
 		};
 
 		abstract Aggregation createAggregation(String field);
 
 		abstract double getValue(DateHistogramBucket bucket);
+
+		private static Aggregate getStatsAggregate(DateHistogramBucket bucket) {
+			return Objects.requireNonNull(bucket.aggregations().get("stats"));
+		}
+
+		private static double unbox(@Nullable Double value) {
+			return value != null ? value : 0.0;
+		}
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {

@@ -70,8 +70,12 @@ public class HistogramFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Aggregate agg = Objects.requireNonNull(getAggregate(response));
-		for (HistogramBucket bucket : Lists.reverse(agg.histogram().buckets().array())) {
+		Aggregate aggregate = getAggregate(response);
+		if (aggregate == null) {
+			return result;
+		}
+		for (HistogramBucket bucket :
+				Lists.reverse(aggregate.histogram().buckets().array())) {
 			if (bucket.docCount() > 0) {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("count", bucket.docCount());

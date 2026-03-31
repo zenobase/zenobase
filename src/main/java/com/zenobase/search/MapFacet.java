@@ -10,7 +10,6 @@ import com.google.common.primitives.Ints;
 import org.jspecify.annotations.Nullable;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.io.GeohashUtils;
-import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.GeoHashGridBucket;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
@@ -47,9 +46,12 @@ public class MapFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Aggregate agg = Objects.requireNonNull(getAggregate(response));
+		var aggregate = getAggregate(response);
+		if (aggregate == null) {
+			return result;
+		}
 		var builder = new GeoClusterBuilder();
-		for (GeoHashGridBucket bucket : agg.geohashGrid().buckets().array()) {
+		for (GeoHashGridBucket bucket : aggregate.geohashGrid().buckets().array()) {
 			builder.add(bucket.docCount(), bucket.key(), GeohashUtils.decode(bucket.key(), SpatialContext.GEO));
 		}
 		for (GeoCluster cluster : builder.build()) {

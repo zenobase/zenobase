@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
-import org.opensearch.client.opensearch._types.aggregations.ExtendedStatsAggregate;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
@@ -40,9 +39,12 @@ public class StatsFacet extends FilteredFacet {
 
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
-		ExtendedStatsAggregate stats =
-				Objects.requireNonNull(getAggregate(response)).extendedStats();
-		ObjectNode node = Nodes.newObject();
+		var aggregate = getAggregate(response);
+		var node = Nodes.newObject();
+		if (aggregate == null) {
+			return node;
+		}
+		var stats = aggregate.extendedStats();
 		node.put("count", stats.count());
 		if (stats.count() > 0) {
 			put(node, "min", stats.min());
@@ -54,7 +56,10 @@ public class StatsFacet extends FilteredFacet {
 		return node;
 	}
 
-	private void put(ObjectNode parent, String property, double value) {
+	private void put(ObjectNode parent, String property, @Nullable Double value) {
+		if (value == null) {
+			return;
+		}
 		if (unit != Unit.ONE) {
 			ObjectNode node = parent.putObject(property);
 			node.put("@value", Measures.convert(value, unit));

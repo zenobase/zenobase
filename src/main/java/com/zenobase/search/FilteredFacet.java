@@ -26,16 +26,15 @@ public abstract class FilteredFacet extends Facet {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	protected @Nullable Aggregate getAggregate(SearchResponse<ObjectNode> response) {
 		var aggregations = response.aggregations();
 		if (aggregations == null) {
 			return null;
 		}
-		Aggregate agg = aggregations.get(getId());
-		if (agg != null && agg.isFilter()) {
-			return agg.filter().aggregations().get(getId());
+		var aggregate = aggregations.get(getId());
+		if (aggregate != null && aggregate.isFilter()) {
+			return aggregate.filter().aggregations().get(getId());
 		}
-		return agg;
+		return aggregate;
 	}
 }

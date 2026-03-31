@@ -77,10 +77,16 @@ public class GanttFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Aggregate agg = Objects.requireNonNull(getAggregate(response));
-		for (StringTermsBucket bucket : agg.sterms().buckets().array()) {
-			StatsAggregate stats =
-					Objects.requireNonNull(bucket.aggregations().get(getId())).stats();
+		Aggregate aggregate = getAggregate(response);
+		if (aggregate == null) {
+			return result;
+		}
+		for (StringTermsBucket bucket : aggregate.sterms().buckets().array()) {
+			Aggregate bucketAggregate = bucket.aggregations().get(getId());
+			if (bucketAggregate == null) {
+				continue;
+			}
+			StatsAggregate stats = bucketAggregate.stats();
 			DateTime first = asDateTime(stats.min());
 			if (first != null) {
 				ObjectNode entryNode = result.addObject();

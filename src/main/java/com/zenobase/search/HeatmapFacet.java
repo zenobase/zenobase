@@ -1,6 +1,8 @@
 package com.zenobase.search;
 
 import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalDouble;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -68,19 +70,22 @@ public class HeatmapFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Aggregate agg = Objects.requireNonNull(getAggregate(response));
-		for (GeoHashGridBucket bucket : agg.geohashGrid().buckets().array()) {
-			Aggregate sumAgg = bucket.aggregations().get("sum");
-			double sumValue = sumAgg != null ? sumAgg.sum().value() : -1;
-			if (sumAgg == null || sumValue > 0.0) {
+		Aggregate aggregate = getAggregate(response);
+		if (aggregate == null) {
+			return result;
+		}
+		for (GeoHashGridBucket bucket : aggregate.geohashGrid().buckets().array()) {
+			var sumValue = Optional.ofNullable(bucket.aggregations().get("sum"))
+					.map(a -> a.sum().value())
+					.map(OptionalDouble::of)
+					.orElse(OptionalDouble.empty());
+			if (sumValue.isEmpty() || sumValue.getAsDouble() > 0.0) {
 				ObjectNode entryNode = result.addObject();
 				Point point = GeohashUtils.decode(bucket.key(), SpatialContext.GEO);
 				entryNode.put("lat", point.getY());
 				entryNode.put("lon", point.getX());
 				entryNode.put("count", bucket.docCount());
-				if (sumAgg != null) {
-					addValue(entryNode, "sum", sumValue);
-				}
+				sumValue.ifPresent(v -> addValue(entryNode, "sum", v));
 			}
 		}
 		return result;
