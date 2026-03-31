@@ -29,7 +29,7 @@ public class RatingsFacet extends FilteredFacet {
 	public RatingsFacet(String id, String field, int scale, @Nullable Query filter) {
 		super(id, filter);
 		this.field = field;
-		step = Rating.MAX_VALUE / scale;
+		step = (double) Rating.MAX_VALUE / scale;
 		from = step / 2;
 		to = Rating.MAX_VALUE - from;
 	}
