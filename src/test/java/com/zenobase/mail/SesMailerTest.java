@@ -7,6 +7,9 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.services.sesv2.SesV2Client;
 
+import com.zenobase.testing.Integration;
+
+@Integration
 public class SesMailerTest {
 
 	private SesV2Client client;

@@ -26,9 +26,13 @@ Alternatively, run without Docker for faster iteration:
 Running Tests
 -------------
 
-To run all tests:
+To run unit tests only (no Docker or AWS credentials needed):
 
   ./mvnw test
+
+To run all tests including integration tests (needs Docker for OpenSearch):
+
+  ./mvnw verify
 
 To run a specific test class:
 

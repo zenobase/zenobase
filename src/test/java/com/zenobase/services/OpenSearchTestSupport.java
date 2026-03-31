@@ -15,7 +15,9 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.zenobase.common.Callback;
+import com.zenobase.testing.Integration;
 
+@Integration
 public abstract class OpenSearchTestSupport {
 
 	private static final GenericContainer<?> container;

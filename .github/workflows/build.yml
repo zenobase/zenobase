@@ -50,7 +50,7 @@ jobs:
         run: ./mvnw -B spotless:check
 
       - name: Test
-        run: ./mvnw -B test
+        run: ./mvnw -B verify
 
       - name: Package
         run: ./mvnw -B package -DskipTests
