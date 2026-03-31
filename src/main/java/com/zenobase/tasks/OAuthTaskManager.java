@@ -35,7 +35,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 	public @Nullable Command execute(Task task) {
 		try {
 			OAuthCredentials credentials = getCredentials(task.getPrincipal());
-			return credentials != null ? execute(task, credentials) : null;
+			return execute(task, credentials);
 		} catch (InvalidTokenException e) {
 			return createCommand(e);
 		}

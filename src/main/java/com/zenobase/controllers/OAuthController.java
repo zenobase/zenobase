@@ -120,7 +120,7 @@ public class OAuthController extends ControllerSupport {
 		return new TokenForm(params.get("grant_type"), params.get("username"), params.get("password"));
 	}
 
-	private static Map<String, String> parseFormEncoded(String body) {
+	private static Map<String, String> parseFormEncoded(@Nullable String body) {
 		Map<String, String> params = new LinkedHashMap<>();
 		if (body == null || body.isEmpty()) {
 			return params;

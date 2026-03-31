@@ -32,7 +32,7 @@ public class OpenGraphController extends ControllerSupport {
 				get(res, "http://" + url);
 				return;
 			}
-			sendBadRequest(res, "Invalid URL: " + url);
+			sendBadRequest(res, "URL is required");
 			return;
 		}
 		get(res, url);
