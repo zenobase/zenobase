@@ -73,11 +73,11 @@ public class CredentialsController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		CredentialsManager manager = registry.find(credentials.getType());
-		if (manager == null) {
+		if (!registry.exists(credentials.getType())) {
 			sendBadRequest(res, "unsupported credentials type: " + credentials.getType());
 			return;
 		}
+		CredentialsManager manager = registry.find(credentials.getType());
 		ObjectNode body = body(req);
 		if (body.size() != 1) {
 			sendBadRequest(res, "expected a single property");

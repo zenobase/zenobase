@@ -30,6 +30,7 @@ public class TaskListControllerHttpPostTest extends TaskListControllerTestSuppor
 		String commandId = Generator.id();
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(registry.exists(type)).thenReturn(true);
 		when(registry.find(type)).thenReturn(manager);
 		when(manager.newTask(eq(bucket.getId()), eq(user.asIdentity()), any())).thenReturn(task);
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);

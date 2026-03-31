@@ -19,7 +19,6 @@ import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.IncompleteCredentialsException;
 import com.zenobase.tasks.MissingCredentialsException;
 import com.zenobase.tasks.Task;
-import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
 
@@ -98,8 +97,7 @@ public class TaskController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		TaskManager manager = registry.find(task.getType());
-		if (manager == null) {
+		if (!registry.exists(task.getType())) {
 			sendBadRequest(res, "unsupported task type: " + task.getType());
 			return;
 		}

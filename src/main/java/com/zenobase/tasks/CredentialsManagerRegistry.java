@@ -18,6 +18,10 @@ public class CredentialsManagerRegistry {
 		}
 	}
 
+	public boolean exists(String type) {
+		return managers.containsKey(type);
+	}
+
 	public CredentialsManager find(String type) {
 		Preconditions.checkNotNull(type);
 		CredentialsManager manager = managers.get(type);

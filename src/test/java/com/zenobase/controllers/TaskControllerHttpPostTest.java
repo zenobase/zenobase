@@ -31,6 +31,7 @@ public class TaskControllerHttpPostTest extends TaskControllerTestSupport {
 		String commandId = Generator.id();
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(task.getId())).thenReturn(task.copy());
+		when(registry.exists(task.getType())).thenReturn(true);
 		when(registry.find(task.getType())).thenReturn(manager);
 		when(dispatcher.dispatch(any(UpdateTaskCommand.class))).thenReturn(commandId);
 		try (Http1ClientResponse result = call(task.getId(), newSettings())) {
@@ -41,7 +42,7 @@ public class TaskControllerHttpPostTest extends TaskControllerTestSupport {
 	@Test
 	public void testUpdateTaskEmptyBody() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		when(registry.find(task.getType())).thenReturn(manager);
+		when(registry.exists(task.getType())).thenReturn(true);
 		when(tasks.find(task.getId())).thenReturn(task.copy());
 		try (Http1ClientResponse result = call(task.getId(), Nodes.newObject())) {
 			assertThat(result).hasStatus(400);
@@ -52,7 +53,7 @@ public class TaskControllerHttpPostTest extends TaskControllerTestSupport {
 	@Test
 	public void testUpdateTaskInvalidField() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		when(registry.find(task.getType())).thenReturn(manager);
+		when(registry.exists(task.getType())).thenReturn(true);
 		when(tasks.find(task.getId())).thenReturn(task.copy());
 		try (Http1ClientResponse result = call(task.getId(), Nodes.newObject("name", "Foo"))) {
 			assertThat(result).hasStatus(400);

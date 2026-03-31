@@ -36,6 +36,7 @@ public class CredentialsControllerHttpPostTest extends CredentialsControllerTest
 	public void test() {
 		when(auth.current(any())).thenReturn(new Authorization(principal));
 		when(repository.find(from.getId())).thenReturn(from.copy());
+		when(registry.exists(from.getType())).thenReturn(true);
 		when(registry.find(from.getType())).thenReturn(manager);
 		when(manager.authorize(from, Credentials.CREDENTIALS.getValue(update))).thenReturn(command);
 		when(dispatcher.dispatch(command)).thenReturn(command.getId());
@@ -88,6 +89,7 @@ public class CredentialsControllerHttpPostTest extends CredentialsControllerTest
 	public void testEmptyBody() {
 		when(auth.current(any())).thenReturn(new Authorization(principal));
 		when(repository.find(from.getId())).thenReturn(from.copy());
+		when(registry.exists(from.getType())).thenReturn(true);
 		when(registry.find(from.getType())).thenReturn(manager);
 		try (Http1ClientResponse result = call(from.getId(), Nodes.newObject())) {
 			assertThat(result).hasStatus(400);
@@ -99,6 +101,7 @@ public class CredentialsControllerHttpPostTest extends CredentialsControllerTest
 	public void testMissingCredentials() {
 		when(auth.current(any())).thenReturn(new Authorization(principal));
 		when(repository.find(from.getId())).thenReturn(from.copy());
+		when(registry.exists(from.getType())).thenReturn(true);
 		when(registry.find(from.getType())).thenReturn(manager);
 		try (Http1ClientResponse result = call(from.getId(), Nodes.newObject("foo", "bar"))) {
 			assertThat(result).hasStatus(400);
@@ -111,6 +114,7 @@ public class CredentialsControllerHttpPostTest extends CredentialsControllerTest
 		from.setAuthorizationUrl(null);
 		when(auth.current(any())).thenReturn(new Authorization(principal));
 		when(repository.find(from.getId())).thenReturn(from.copy());
+		when(registry.exists(from.getType())).thenReturn(true);
 		when(registry.find(from.getType())).thenReturn(manager);
 		try (Http1ClientResponse result = call(from.getId(), update)) {
 			assertThat(result).hasStatus(400);
@@ -122,6 +126,7 @@ public class CredentialsControllerHttpPostTest extends CredentialsControllerTest
 	public void testInvalidToken() {
 		when(auth.current(any())).thenReturn(new Authorization(principal));
 		when(repository.find(from.getId())).thenReturn(from.copy());
+		when(registry.exists(from.getType())).thenReturn(true);
 		when(registry.find(from.getType())).thenReturn(manager);
 		when(manager.authorize(from, update)).thenReturn(null);
 		try (Http1ClientResponse result = call(from.getId(), update)) {
@@ -135,6 +140,7 @@ public class CredentialsControllerHttpPostTest extends CredentialsControllerTest
 	public void testConflict() {
 		when(auth.current(any())).thenReturn(new Authorization(principal));
 		when(repository.find(from.getId())).thenReturn(from.copy());
+		when(registry.exists(from.getType())).thenReturn(true);
 		when(registry.find(from.getType())).thenReturn(manager);
 		when(manager.authorize(from, Credentials.CREDENTIALS.getValue(update))).thenReturn(command);
 		when(dispatcher.dispatch(command))

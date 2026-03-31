@@ -1,7 +1,5 @@
 package com.zenobase.controllers;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
@@ -160,7 +158,7 @@ public class TaskListController extends ControllerSupport {
 			sendBadRequest(res, "bad request");
 			return;
 		}
-		Bucket bucket = buckets.find(Objects.requireNonNull(form.getBucketId()));
+		Bucket bucket = buckets.find(form.getBucketId());
 		if (bucket == null) {
 			sendBadRequest(res, "bucket not found");
 			return;
@@ -169,16 +167,16 @@ public class TaskListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		TaskManager manager = registry.find(Objects.requireNonNull(form.getType()));
-		if (manager == null) {
+		if (!registry.exists(form.getType())) {
 			sendBadRequest(res, "unknown task type");
 			return;
 		}
+		TaskManager manager = registry.find(form.getType());
 		ObjectNode settings = form.getSettings();
 		if (settings == null) {
 			settings = Nodes.newObject();
 		}
-		Task task = manager.newTask(Objects.requireNonNull(form.getBucketId()), auth.getPrincipal(), settings);
+		Task task = manager.newTask(form.getBucketId(), auth.getPrincipal(), settings);
 		String commandId = dispatcher.dispatch(new CreateTaskCommand(auth.getPrincipal(), task));
 		setHeader(res, LOCATION, "/tasks/" + task.getId());
 		setHeader(res, COMMAND_ID, commandId);

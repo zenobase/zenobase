@@ -25,6 +25,7 @@ public class CredentialsListControllerHttpPostTest extends CredentialsListContro
 		Credentials credentials = new Credentials(type, user.asIdentity());
 		String commandId = Generator.id();
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(registry.exists(type)).thenReturn(true);
 		when(registry.find(type)).thenReturn(manager);
 		when(manager.newCredentials(user.asIdentity())).thenReturn(credentials);
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
@@ -66,6 +67,7 @@ public class CredentialsListControllerHttpPostTest extends CredentialsListContro
 		CredentialsManager manager = mock(CredentialsManager.class);
 		Credentials credentials = new Credentials(type, user.asIdentity());
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(registry.exists(type)).thenReturn(true);
 		when(registry.find(type)).thenReturn(manager);
 		when(repository.find(user.asIdentity(), type)).thenReturn(credentials);
 		try (Http1ClientResponse result = call(form)) {

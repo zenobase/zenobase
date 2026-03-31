@@ -32,6 +32,7 @@ public class TaskRefresherTest {
 		Command command = mock(Command.class);
 
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(registry.exists(taskType)).thenReturn(true);
 		when(registry.find(taskType)).thenReturn(manager);
 		when(manager.execute(task)).thenReturn(command);
 		when(dispatcher.dispatch(ArgumentMatchers.any(Command.class))).thenReturn(commandId);
@@ -95,6 +96,7 @@ public class TaskRefresherTest {
 		Task task = new Task(taskType, bucket.getId(), user.asIdentity());
 
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(registry.exists(taskType)).thenReturn(true);
 		when(registry.find(taskType)).thenReturn(manager);
 
 		new TaskRefresher(registry, buckets, dispatcher).refresh(task);

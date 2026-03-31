@@ -18,6 +18,10 @@ public class TaskManagerRegistry {
 		}
 	}
 
+	public boolean exists(String type) {
+		return managers.containsKey(type);
+	}
+
 	public TaskManager find(String type) {
 		Preconditions.checkNotNull(type);
 		TaskManager manager = managers.get(type);

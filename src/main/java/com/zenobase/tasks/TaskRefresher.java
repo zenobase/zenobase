@@ -35,10 +35,10 @@ public class TaskRefresher {
 		if (!bucket.hasRole(new Authorization(task.getPrincipal()), Role.OWNER)) {
 			return;
 		}
-		TaskManager manager = registry.find(task.getType());
-		if (manager == null) {
+		if (!registry.exists(task.getType())) {
 			return;
 		}
+		TaskManager manager = registry.find(task.getType());
 		Command command = manager.execute(task);
 		if (command != null) {
 			dispatcher.dispatch(command);

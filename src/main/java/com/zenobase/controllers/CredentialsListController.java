@@ -1,7 +1,5 @@
 package com.zenobase.controllers;
 
-import java.util.Objects;
-
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
@@ -122,12 +120,12 @@ public class CredentialsListController extends ControllerSupport {
 			sendBadRequest(res, "bad request");
 			return;
 		}
-		CredentialsManager manager = registry.find(Objects.requireNonNull(form.getType()));
-		if (manager == null) {
+		if (!registry.exists(form.getType())) {
 			sendBadRequest(res, "unknown type");
 			return;
 		}
-		if (credentials.find(auth.getPrincipal(), Objects.requireNonNull(form.getType())) != null) {
+		CredentialsManager manager = registry.find(form.getType());
+		if (credentials.find(auth.getPrincipal(), form.getType()) != null) {
 			sendBadRequest(res, "already connected");
 			return;
 		}
