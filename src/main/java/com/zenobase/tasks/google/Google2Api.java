@@ -19,7 +19,7 @@ import com.zenobase.oauth.OAuth2TokenExtractor;
 /**
  * Google OAuth2.0
  * Released under the same license as scribe (MIT License)
- * https://gist.github.com/yincrash/2465453
+ * <a href="https://gist.github.com/yincrash/2465453">...</a>
  */
 public class Google2Api extends DefaultApi20 {
 
