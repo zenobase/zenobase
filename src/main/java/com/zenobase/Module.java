@@ -39,7 +39,6 @@ import com.zenobase.tasks.netatmo.*;
 import com.zenobase.tasks.oura.*;
 import com.zenobase.tasks.reporter.*;
 import com.zenobase.tasks.rescuetime.*;
-import com.zenobase.tasks.runkeeper.*;
 import com.zenobase.tasks.sleepcloud.*;
 import com.zenobase.tasks.strava.*;
 import com.zenobase.tasks.trakt.*;
@@ -191,7 +190,6 @@ class Module extends AbstractModule {
 		bindIfConfigured("netatmo", NetatmoCredentialsManager.class, credentials);
 		bindIfConfigured("oura", OuraCredentialsManager.class, credentials);
 		bindIfConfigured("rescuetime", RescueTimeCredentialsManager.class, credentials);
-		bindIfConfigured("runkeeper", RunkeeperCredentialsManager.class, credentials);
 		bindIfConfigured("strava", StravaCredentialsManager.class, credentials);
 		bindIfConfigured("trakt", TraktCredentialsManager.class, credentials);
 		bindIfConfigured("wakatime", WakaTimeCredentialsManager.class, credentials);
@@ -237,8 +235,6 @@ class Module extends AbstractModule {
 		bindIfConfigured("oura", OuraStepsTaskManager.class, tasks);
 		bindIfConfigured("oura", OuraReadinessTaskManager.class, tasks);
 		bindIfConfigured("rescuetime", RescueTimeProductivityTaskManager.class, tasks);
-		bindIfConfigured("runkeeper", RunkeeperActivitiesTaskManager.class, tasks);
-		bindIfConfigured("runkeeper", RunkeeperWeightTaskManager.class, tasks);
 		bindIfConfigured("strava", StravaTaskManager.class, tasks);
 		bindIfConfigured("trakt", TraktTaskManager.class, tasks);
 		bindIfConfigured("wakatime", WakaTimeTaskManager.class, tasks);
@@ -331,7 +327,6 @@ class Module extends AbstractModule {
 				"netatmo",
 				"oura",
 				"rescuetime",
-				"runkeeper",
 				"strava",
 				"trakt",
 				"wakatime",

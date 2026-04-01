@@ -85,11 +85,6 @@ rescuetime:
     key: ""
     secret: ""
 
-runkeeper:
-  api:
-    key: ""
-    secret: ""
-
 strava:
   api:
     key: ""
