@@ -740,7 +740,7 @@ const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
             },
         }]),
     ),
-});
+}, imageTag ? {} : { ignoreChanges: ["containerDefinitions"] });
 
 new aws.ecs.Service("zenobase-service", {
     name: "zenobase-api",
