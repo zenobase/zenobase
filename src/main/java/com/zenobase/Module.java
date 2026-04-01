@@ -23,7 +23,6 @@ import com.zenobase.mail.SesMailer;
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.services.*;
 import com.zenobase.tasks.*;
-import com.zenobase.tasks.beeminder.*;
 import com.zenobase.tasks.demo.*;
 import com.zenobase.tasks.dropbox.*;
 import com.zenobase.tasks.fitbit.*;
@@ -175,7 +174,6 @@ class Module extends AbstractModule {
 	private void bindCredentialsManagers() {
 		var credentials = Multibinder.newSetBinder(binder(), new TypeLiteral<CredentialsManager>() {});
 		credentials.addBinding().to(DemoCredentialsManager.class);
-		bindIfConfigured("beeminder", BeeminderCredentialsManager.class, credentials);
 		bindIfConfigured("dropbox", DropboxCredentialsManager.class, credentials);
 		bindIfConfigured("fitbit", FitbitCredentialsManager.class, credentials);
 		bindIfConfigured("foursquare", FoursquareCredentialsManager.class, credentials);
@@ -198,7 +196,6 @@ class Module extends AbstractModule {
 	private void bindTaskManagers() {
 		var tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
 		tasks.addBinding().to(DemoTaskManager.class);
-		bindIfConfigured("beeminder", BeeminderTaskManager.class, tasks);
 		bindIfConfigured("dropbox", ReporterTaskManager.class, tasks);
 		bindIfConfigured("fitbit", FitbitActivitiesTaskManager.class, tasks);
 		bindIfConfigured("fitbit", FitbitBurnTaskManager.class, tasks);
@@ -310,7 +307,6 @@ class Module extends AbstractModule {
 
 		// Integration API keys (only when their prefix is configured)
 		for (String prefix : List.of(
-				"beeminder",
 				"dropbox",
 				"fitbit",
 				"foursquare",
