@@ -497,7 +497,7 @@ const httpsListener = new aws.lb.Listener("zenobase-https", {
     port: 443,
     protocol: "HTTPS",
     certificateArn: certificateArn,
-    sslPolicy: "ELBSecurityPolicy-TLS13-1-2-2021-06",
+    sslPolicy: "ELBSecurityPolicy-TLS13-1-3-2021-06",
     defaultActions: [{
         type: "forward",
         targetGroupArn: tg.arn,
