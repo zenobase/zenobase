@@ -8,11 +8,6 @@ dropbox:
     key: ""
     secret: ""
 
-fitbark:
-  api:
-    key: ""
-    secret: ""
-
 fitbit:
   api:
     key: ""

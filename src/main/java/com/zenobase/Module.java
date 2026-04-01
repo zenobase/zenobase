@@ -26,7 +26,6 @@ import com.zenobase.tasks.*;
 import com.zenobase.tasks.beeminder.*;
 import com.zenobase.tasks.demo.*;
 import com.zenobase.tasks.dropbox.*;
-import com.zenobase.tasks.fitbark.*;
 import com.zenobase.tasks.fitbit.*;
 import com.zenobase.tasks.foursquare.*;
 import com.zenobase.tasks.goodreads.*;
@@ -178,7 +177,6 @@ class Module extends AbstractModule {
 		credentials.addBinding().to(DemoCredentialsManager.class);
 		bindIfConfigured("beeminder", BeeminderCredentialsManager.class, credentials);
 		bindIfConfigured("dropbox", DropboxCredentialsManager.class, credentials);
-		bindIfConfigured("fitbark", FitBarkCredentialsManager.class, credentials);
 		bindIfConfigured("fitbit", FitbitCredentialsManager.class, credentials);
 		bindIfConfigured("foursquare", FoursquareCredentialsManager.class, credentials);
 		bindIfConfigured("goodreads", GoodreadsCredentialsManager.class, credentials);
@@ -202,7 +200,6 @@ class Module extends AbstractModule {
 		tasks.addBinding().to(DemoTaskManager.class);
 		bindIfConfigured("beeminder", BeeminderTaskManager.class, tasks);
 		bindIfConfigured("dropbox", ReporterTaskManager.class, tasks);
-		bindIfConfigured("fitbark", FitBarkTaskManager.class, tasks);
 		bindIfConfigured("fitbit", FitbitActivitiesTaskManager.class, tasks);
 		bindIfConfigured("fitbit", FitbitBurnTaskManager.class, tasks);
 		bindIfConfigured("fitbit", FitbitCardioTaskManager.class, tasks);
@@ -315,7 +312,6 @@ class Module extends AbstractModule {
 		for (String prefix : List.of(
 				"beeminder",
 				"dropbox",
-				"fitbark",
 				"fitbit",
 				"foursquare",
 				"goodreads",
