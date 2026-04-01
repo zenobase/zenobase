@@ -35,21 +35,6 @@ hexoskin:
     key: ""
     secret: ""
 
-ihealth:
-  api:
-    key: ""
-    secret: ""
-    sc: ""
-    sv:
-      activity: ""
-      bp: ""
-      food: ""
-      glucose: ""
-      sleep: ""
-      spo2: ""
-      sport: ""
-      weight: ""
-
 lastfm:
   api:
     key: ""

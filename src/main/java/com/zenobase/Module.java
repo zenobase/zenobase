@@ -30,7 +30,6 @@ import com.zenobase.tasks.foursquare.*;
 import com.zenobase.tasks.goodreads.*;
 import com.zenobase.tasks.google.*;
 import com.zenobase.tasks.hexoskin.*;
-import com.zenobase.tasks.ihealth.*;
 import com.zenobase.tasks.lastfm.*;
 import com.zenobase.tasks.mapmyfitness.*;
 import com.zenobase.tasks.netatmo.*;
@@ -180,7 +179,6 @@ class Module extends AbstractModule {
 		bindIfConfigured("goodreads", GoodreadsCredentialsManager.class, credentials);
 		bindIfConfigured("google", GoogleCredentialsManager.class, credentials);
 		bindIfConfigured("hexoskin", HexoskinCredentialsManager.class, credentials);
-		bindIfConfigured("ihealth", IHealthCredentialsManager.class, credentials);
 		bindIfConfigured("lastfm", LastFmCredentialsManager.class, credentials);
 		bindIfConfigured("mapmyfitness", MapMyFitnessCredentialsManager.class, credentials);
 		bindIfConfigured("netatmo", NetatmoCredentialsManager.class, credentials);
@@ -213,13 +211,6 @@ class Module extends AbstractModule {
 		bindIfConfigured("google", GoogleFitWeightTaskManager.class, tasks);
 		bindIfConfigured("hexoskin", HexoskinActivitiesTaskManager.class, tasks);
 		bindIfConfigured("hexoskin", HexoskinSleepTaskManager.class, tasks);
-		bindIfConfigured("ihealth", IHealthActivitiesTaskManager.class, tasks);
-		bindIfConfigured("ihealth", IHealthCardioTaskManager.class, tasks);
-		bindIfConfigured("ihealth", IHealthFoodTaskManager.class, tasks);
-		bindIfConfigured("ihealth", IHealthGlucoseTaskManager.class, tasks);
-		bindIfConfigured("ihealth", IHealthSleepTaskManager.class, tasks);
-		bindIfConfigured("ihealth", IHealthStepsTaskManager.class, tasks);
-		bindIfConfigured("ihealth", IHealthWeightTaskManager.class, tasks);
 		bindIfConfigured("lastfm", LastFmTaskManager.class, tasks);
 		bindIfConfigured("mapmyfitness", MapMyFitnessActivitiesTaskManager.class, tasks);
 		bindIfConfigured("mapmyfitness", MapMyFitnessSleepTaskManager.class, tasks);
@@ -313,7 +304,6 @@ class Module extends AbstractModule {
 				"goodreads",
 				"google",
 				"hexoskin",
-				"ihealth",
 				"lastfm",
 				"mapmyfitness",
 				"netatmo",
