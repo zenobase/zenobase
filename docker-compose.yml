@@ -20,7 +20,8 @@ services:
       timeout: 10s
       start_period: 60s
       retries: 3
-    mem_limit: 1g
+    mem_limit: 2g
+    stop_grace_period: 30s
     ulimits:
       nofile:
         soft: 64000
