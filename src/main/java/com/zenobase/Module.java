@@ -24,7 +24,6 @@ import com.zenobase.mail.VerificationMailer;
 import com.zenobase.services.*;
 import com.zenobase.tasks.*;
 import com.zenobase.tasks.demo.*;
-import com.zenobase.tasks.dropbox.*;
 import com.zenobase.tasks.fitbit.*;
 import com.zenobase.tasks.foursquare.*;
 import com.zenobase.tasks.goodreads.*;
@@ -34,7 +33,6 @@ import com.zenobase.tasks.lastfm.*;
 import com.zenobase.tasks.mapmyfitness.*;
 import com.zenobase.tasks.netatmo.*;
 import com.zenobase.tasks.oura.*;
-import com.zenobase.tasks.reporter.*;
 import com.zenobase.tasks.rescuetime.*;
 import com.zenobase.tasks.sleepcloud.*;
 import com.zenobase.tasks.strava.*;
@@ -173,7 +171,6 @@ class Module extends AbstractModule {
 	private void bindCredentialsManagers() {
 		var credentials = Multibinder.newSetBinder(binder(), new TypeLiteral<CredentialsManager>() {});
 		credentials.addBinding().to(DemoCredentialsManager.class);
-		bindIfConfigured("dropbox", DropboxCredentialsManager.class, credentials);
 		bindIfConfigured("fitbit", FitbitCredentialsManager.class, credentials);
 		bindIfConfigured("foursquare", FoursquareCredentialsManager.class, credentials);
 		bindIfConfigured("goodreads", GoodreadsCredentialsManager.class, credentials);
@@ -194,7 +191,6 @@ class Module extends AbstractModule {
 	private void bindTaskManagers() {
 		var tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
 		tasks.addBinding().to(DemoTaskManager.class);
-		bindIfConfigured("dropbox", ReporterTaskManager.class, tasks);
 		bindIfConfigured("fitbit", FitbitActivitiesTaskManager.class, tasks);
 		bindIfConfigured("fitbit", FitbitBurnTaskManager.class, tasks);
 		bindIfConfigured("fitbit", FitbitCardioTaskManager.class, tasks);
@@ -298,7 +294,6 @@ class Module extends AbstractModule {
 
 		// Integration API keys (only when their prefix is configured)
 		for (String prefix : List.of(
-				"dropbox",
 				"fitbit",
 				"foursquare",
 				"goodreads",
