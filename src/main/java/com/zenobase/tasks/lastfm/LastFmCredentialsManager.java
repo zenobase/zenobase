@@ -79,8 +79,8 @@ public class LastFmCredentialsManager extends OAuthCredentialsManager {
 		ObjectNode result = Nodes.readObject(response.getBody());
 		String token = result.path("session").path("key").textValue();
 		String scope = result.path("session").path("name").textValue();
-		Preconditions.checkNotNull(token, "Expected a key: " + result);
-		Preconditions.checkNotNull(scope, "Expected a name: " + result);
+		Preconditions.checkNotNull(token, "Expected a key: %s", result);
+		Preconditions.checkNotNull(scope, "Expected a name: %s", result);
 		return new LastFmToken(token, scope);
 	}
 

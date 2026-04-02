@@ -25,7 +25,7 @@ public class TaskManagerRegistry {
 	public TaskManager find(String type) {
 		Preconditions.checkNotNull(type);
 		TaskManager manager = managers.get(type);
-		Preconditions.checkNotNull(manager, "Missing manager for task type '%s': " + managers.keySet(), type);
+		Preconditions.checkNotNull(manager, "Missing manager for task type '%s': %s", type, managers.keySet());
 		return manager;
 	}
 }

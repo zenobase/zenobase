@@ -37,7 +37,7 @@ public class FilterBuilderSupport {
 
 	public FilterBuilderSupport addConstraint(String expression) {
 		String[] tokens = expression.split(":", 2);
-		Preconditions.checkArgument(tokens.length == 2, "Can't parse constraint: " + expression);
+		Preconditions.checkArgument(tokens.length == 2, "Can't parse constraint: %s", expression);
 		String field = tokens[0];
 		String[] values = tokens[1].split(" OR ");
 		boolean negated = false;
