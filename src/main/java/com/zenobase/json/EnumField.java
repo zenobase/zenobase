@@ -1,5 +1,7 @@
 package com.zenobase.json;
 
+import java.util.Locale;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -23,12 +25,12 @@ public class EnumField<E extends Enum<E>> extends Field<E> {
 	@SuppressWarnings("unchecked")
 	protected @Nullable E getValue(JsonNode node) {
 		String value = node.textValue();
-		return value != null ? Enum.valueOf((Class<E>) getType(), value.toUpperCase()) : null;
+		return value != null ? Enum.valueOf((Class<E>) getType(), value.toUpperCase(Locale.ROOT)) : null;
 	}
 
 	@Override
 	public JsonNode toJson(@Nullable E value) {
-		return value != null ? new TextNode(value.toString().toLowerCase()) : NullNode.getInstance();
+		return value != null ? new TextNode(value.toString().toLowerCase(Locale.ROOT)) : NullNode.getInstance();
 	}
 
 	@Override

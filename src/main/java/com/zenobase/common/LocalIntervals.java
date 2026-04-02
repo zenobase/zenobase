@@ -3,6 +3,7 @@ package com.zenobase.common;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import com.google.common.base.Preconditions;
 import org.joda.time.DurationFieldType;
@@ -145,13 +146,13 @@ public class LocalIntervals extends DateTimeFormatSupport {
 	}
 
 	public static String toString(LocalDateTime time, String interval) {
-		IntervalType format = IntervalType.valueOf(interval.toUpperCase());
+		IntervalType format = IntervalType.valueOf(interval.toUpperCase(Locale.ROOT));
 		Preconditions.checkNotNull(format, "Unsupported interval: %s", interval);
 		return format.toString(time);
 	}
 
 	public static List<LocalDateTime> expand(LocalDateTime start, LocalDateTime end, String interval) {
-		IntervalType format = IntervalType.valueOf(interval.toUpperCase());
+		IntervalType format = IntervalType.valueOf(interval.toUpperCase(Locale.ROOT));
 		Preconditions.checkNotNull(format, "Unsupported interval: %s", interval);
 		return format.toList(new LocalInterval(start, end));
 	}

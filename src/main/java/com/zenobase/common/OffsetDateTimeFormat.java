@@ -1,5 +1,6 @@
 package com.zenobase.common;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Preconditions;
@@ -37,7 +38,7 @@ public class OffsetDateTimeFormat extends DateTimeFormatSupport {
 			.withOffsetParsed();
 
 	public static DateTime parse(String s) {
-		Preconditions.checkArgument(s.equals(s.toUpperCase()), "Invalid timestamp casing: %s", s);
+		Preconditions.checkArgument(s.equals(s.toUpperCase(Locale.ROOT)), "Invalid timestamp casing: %s", s);
 		return s.contains("W") ? PARSER_WEEK.parseDateTime(s) : PARSER.parseDateTime(s);
 	}
 

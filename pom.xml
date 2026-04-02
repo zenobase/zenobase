@@ -280,6 +280,7 @@
                             -Xep:PatternMatchingInstanceof:ERROR
                             -Xep:ReferenceEquality:ERROR
                             -Xep:ReturnValueIgnored:ERROR
+                            -Xep:StringCaseLocaleUsage:ERROR
                             -Xep:UnnecessaryLambda:OFF
                             -Xep:UnusedVariable:ERROR
                         </arg>

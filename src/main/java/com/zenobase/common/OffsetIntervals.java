@@ -1,9 +1,6 @@
 package com.zenobase.common;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
@@ -164,14 +161,14 @@ public class OffsetIntervals extends DateTimeFormatSupport {
 
 	public static String toString(DateTime time, @Nullable String interval) {
 		IntervalType format =
-				IntervalType.valueOf(Objects.requireNonNull(interval).toUpperCase());
+				IntervalType.valueOf(Objects.requireNonNull(interval).toUpperCase(Locale.ROOT));
 		Preconditions.checkNotNull(format, "Unsupported interval: %s", interval);
 		return format.toString(time);
 	}
 
 	public static List<DateTime> expand(DateTime start, DateTime end, @Nullable String interval) {
 		IntervalType format =
-				IntervalType.valueOf(Objects.requireNonNull(interval).toUpperCase());
+				IntervalType.valueOf(Objects.requireNonNull(interval).toUpperCase(Locale.ROOT));
 		Preconditions.checkNotNull(format, "Unsupported interval: %s", interval);
 		return format.toList(new Interval(start, end));
 	}

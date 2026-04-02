@@ -1,6 +1,7 @@
 package com.zenobase.search;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import javax.measure.unit.Unit;
@@ -271,6 +272,6 @@ public class ScatterPlotFacet extends Facet {
 	}
 
 	private static Statistic parseStatistic(String value) {
-		return Statistic.valueOf(value.toUpperCase());
+		return Statistic.valueOf(value.toUpperCase(Locale.ROOT));
 	}
 }

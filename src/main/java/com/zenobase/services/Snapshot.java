@@ -1,5 +1,7 @@
 package com.zenobase.services;
 
+import java.util.Locale;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -20,7 +22,9 @@ public class Snapshot extends DomainNode {
 
 	public Snapshot(SnapshotInfo info) {
 		setValue(ID, info.snapshot());
-		setValue(STATE, info.state() != null ? info.state().toLowerCase().replace('_', ' ') : "unknown");
+		setValue(
+				STATE,
+				info.state() != null ? info.state().toLowerCase(Locale.ROOT).replace('_', ' ') : "unknown");
 		long startTime = info.startTimeInMillis() != null ? info.startTimeInMillis() : 0;
 		setValue(CREATED, new DateTime(startTime, DateTimeZone.UTC));
 		long endTime = info.endTimeInMillis() != null ? info.endTimeInMillis() : 0;

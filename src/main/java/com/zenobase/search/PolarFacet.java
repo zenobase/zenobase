@@ -171,7 +171,7 @@ public class PolarFacet extends FilteredFacet {
 		}
 
 		public String getField(String parent) {
-			return LocalDateTimeField.getLocalTimePath(parent, toString().toLowerCase());
+			return LocalDateTimeField.getLocalTimePath(parent, toString().toLowerCase(Locale.ROOT));
 		}
 
 		public abstract String getLabel(int i);
@@ -185,7 +185,7 @@ public class PolarFacet extends FilteredFacet {
 					Objects.requireNonNull(options.get("key_field", String.class, Event.TIMESTAMP.getName())),
 					Objects.requireNonNull(options.get("value_field", String.class, Event.TIMESTAMP.getName())),
 					Interval.valueOf(
-							Objects.requireNonNull(options.get("interval")).toUpperCase()),
+							Objects.requireNonNull(options.get("interval")).toUpperCase(Locale.ROOT)),
 					unit != null ? Units.valueOf(unit) : Unit.ONE,
 					filterParser.parse(options.get("filter")));
 		};
