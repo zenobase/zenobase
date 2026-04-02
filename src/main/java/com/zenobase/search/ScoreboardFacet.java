@@ -69,7 +69,9 @@ public class ScoreboardFacet extends FilteredFacet {
 	}
 
 	private String getValueField() {
-		return unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
+		return Units.isDimensionless(unit)
+				? valueField
+				: Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
 	}
 
 	@Override
@@ -102,7 +104,7 @@ public class ScoreboardFacet extends FilteredFacet {
 		if (value == null) {
 			return;
 		}
-		if (unit != Unit.ONE) {
+		if (!Units.isDimensionless(unit)) {
 			ObjectNode node = parent.putObject(property);
 			node.put("@value", Measures.convert(value, unit));
 			node.put("unit", unit.toString());

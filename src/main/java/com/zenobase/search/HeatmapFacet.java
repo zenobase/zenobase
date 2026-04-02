@@ -56,7 +56,8 @@ public class HeatmapFacet extends FilteredFacet {
 		String vf = valueField;
 		Aggregation aggregation;
 		if (vf != null) {
-			String sumField = unit == Unit.ONE ? vf : Field.concat(vf, DecimalMeasureField.VALUE_SI.getName());
+			String sumField =
+					Units.isDimensionless(unit) ? vf : Field.concat(vf, DecimalMeasureField.VALUE_SI.getName());
 			aggregation =
 					Aggregation.of(a -> a.geohashGrid(g -> g.field(keyField).precision(p -> p.geohashLength(precision)))
 							.aggregations("sum", Aggregation.of(sa -> sa.sum(s -> s.field(sumField)))));
@@ -92,7 +93,7 @@ public class HeatmapFacet extends FilteredFacet {
 	}
 
 	private void addValue(ObjectNode parent, String property, double value) {
-		if (unit != Unit.ONE) {
+		if (!Units.isDimensionless(unit)) {
 			ObjectNode node = parent.putObject(property);
 			node.put("@value", Measures.convert(value, unit));
 			node.put("unit", unit.toString());

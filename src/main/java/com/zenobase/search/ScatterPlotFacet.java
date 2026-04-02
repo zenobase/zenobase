@@ -137,7 +137,8 @@ public class ScatterPlotFacet extends Facet {
 					.toZoneId()
 					.getId();
 			String dateField = timezone != null ? keyField : LocalDateTimeField.getLocalTimePath(keyField);
-			String valueField = unit == Unit.ONE ? field : Field.concat(field, DecimalMeasureField.VALUE_SI.getName());
+			String valueField =
+					Units.isDimensionless(unit) ? field : Field.concat(field, DecimalMeasureField.VALUE_SI.getName());
 			CalendarInterval calendarInterval = DateHistograms.parseInterval(interval);
 			Aggregation dateHistogram = Aggregation.of(a -> a.dateHistogram(dh -> dh.field(dateField)
 							.calendarInterval(calendarInterval)
@@ -165,7 +166,7 @@ public class ScatterPlotFacet extends Facet {
 			if (Double.isNaN(value) || Double.isInfinite(value)) {
 				return null;
 			}
-			return unit == Unit.ONE ? Measures.round(value) : Measures.convert(value, unit);
+			return Units.isDimensionless(unit) ? Measures.round(value) : Measures.convert(value, unit);
 		}
 	}
 

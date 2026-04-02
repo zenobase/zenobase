@@ -60,7 +60,7 @@ public class UpdateUserForm extends DomainNode {
 	}
 
 	public boolean isVerified() {
-		return getValue(VERIFIED) == Boolean.TRUE;
+		return Boolean.TRUE.equals(getValue(VERIFIED));
 	}
 
 	public @Nullable String getPassword() {

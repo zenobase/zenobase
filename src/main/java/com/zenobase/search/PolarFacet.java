@@ -51,7 +51,9 @@ public class PolarFacet extends FilteredFacet {
 
 	@Override
 	public void configure(SearchRequest.Builder builder) {
-		String vf = unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
+		String vf = Units.isDimensionless(unit)
+				? valueField
+				: Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
 		Aggregation terms = Aggregation.of(a -> a.terms(t -> t.field(interval.getField(keyField))
 						.order(Collections.singletonMap("_key", SortOrder.Asc))
 						.size(31))
@@ -103,7 +105,7 @@ public class PolarFacet extends FilteredFacet {
 		if (value == null) {
 			return;
 		}
-		if (unit != Unit.ONE) {
+		if (!Units.isDimensionless(unit)) {
 			ObjectNode node = parent.putObject(property);
 			node.put("@value", Measures.convert(value, unit));
 			node.put("unit", unit.toString());

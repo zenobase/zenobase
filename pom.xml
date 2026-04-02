@@ -264,6 +264,7 @@
                             -XepExcludedPaths:.*/src/test/.*
                             -XepDisableAllWarnings
                             -Xep:BoxedPrimitiveEquality:OFF
+                            -Xep:EffectivelyPrivate:OFF
                             -Xep:EqualsIncompatibleType:ERROR
                             -Xep:ImmutableEnumChecker:ERROR
                             -Xep:MissingOverride:ERROR
@@ -273,6 +274,7 @@
                             -Xep:MutableConstantField:ERROR
                             -Xep:MutablePublicArray:ERROR
                             -Xep:PatternMatchingInstanceof:ERROR
+                            -Xep:ReferenceEquality:ERROR
                             -Xep:ReturnValueIgnored:ERROR
                             -Xep:UnnecessaryLambda:OFF
                             -Xep:UnusedVariable:ERROR

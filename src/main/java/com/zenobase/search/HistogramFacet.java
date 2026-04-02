@@ -38,7 +38,9 @@ public class HistogramFacet extends FilteredFacet {
 
 	@Override
 	public void configure(SearchRequest.Builder builder) {
-		String f = unit == Unit.ONE ? this.field : Field.concat(this.field, DecimalMeasureField.VALUE_SI.getName());
+		String f = Units.isDimensionless(unit)
+				? this.field
+				: Field.concat(this.field, DecimalMeasureField.VALUE_SI.getName());
 		double stdInterval = getStandardInterval();
 		double stdOffset = getStandardOffset();
 		Aggregation histogram = Aggregation.of(
@@ -88,7 +90,7 @@ public class HistogramFacet extends FilteredFacet {
 	}
 
 	private void addValue(ObjectNode parent, String property, double value) {
-		if (unit != Unit.ONE) {
+		if (!Units.isDimensionless(unit)) {
 			ObjectNode node = parent.putObject(property);
 			node.put("@value", Measures.convert(value, unit));
 			node.put("unit", unit.toString());

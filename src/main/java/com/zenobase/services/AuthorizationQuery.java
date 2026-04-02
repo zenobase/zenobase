@@ -29,9 +29,9 @@ public class AuthorizationQuery extends QuerySupport {
 	}
 
 	public AuthorizationQuery clientNotNull(@Nullable Boolean notNull) {
-		if (notNull == Boolean.TRUE) {
+		if (Boolean.TRUE.equals(notNull)) {
 			notNull(Authorization.CLIENT);
-		} else if (notNull == Boolean.FALSE) {
+		} else if (Boolean.FALSE.equals(notNull)) {
 			isNull(Authorization.CLIENT);
 		}
 		return this;

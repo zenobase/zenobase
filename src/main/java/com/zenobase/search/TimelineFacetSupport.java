@@ -10,6 +10,7 @@ import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.json.DecimalMeasureField;
 import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
@@ -29,7 +30,9 @@ abstract class TimelineFacetSupport extends FilteredFacet {
 	}
 
 	protected String getField() {
-		return unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
+		return Units.isDimensionless(unit)
+				? valueField
+				: Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
 	}
 
 	protected JsonNode toJson(Iterable<ObjectNode> values) {
@@ -45,7 +48,7 @@ abstract class TimelineFacetSupport extends FilteredFacet {
 			return;
 		}
 		if (Doubles.isFinite(value)) {
-			if (unit != Unit.ONE) {
+			if (!Units.isDimensionless(unit)) {
 				ObjectNode node = parent.putObject(property);
 				node.put("@value", Measures.convert(value, unit));
 				node.put("unit", unit.toString());

@@ -32,7 +32,7 @@ public class StatsFacet extends FilteredFacet {
 
 	@Override
 	public void configure(SearchRequest.Builder builder) {
-		String f = unit == Unit.ONE ? field : Field.concat(field, DecimalMeasureField.VALUE_SI.getName());
+		String f = Units.isDimensionless(unit) ? field : Field.concat(field, DecimalMeasureField.VALUE_SI.getName());
 		Aggregation stats = Aggregation.of(a -> a.extendedStats(e -> e.field(f)));
 		addAggregation(getId(), stats, builder);
 	}
@@ -60,7 +60,7 @@ public class StatsFacet extends FilteredFacet {
 		if (value == null) {
 			return;
 		}
-		if (unit != Unit.ONE) {
+		if (!Units.isDimensionless(unit)) {
 			ObjectNode node = parent.putObject(property);
 			node.put("@value", Measures.convert(value, unit));
 			node.put("unit", unit.toString());
