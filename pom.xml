@@ -264,6 +264,7 @@
                             -XepExcludedPaths:.*/src/test/.*
                             -XepDisableAllWarnings
                             -Xep:BoxedPrimitiveEquality:OFF
+                            -Xep:DefaultCharset:ERROR
                             -Xep:EffectivelyPrivate:OFF
                             -Xep:EqualsIncompatibleType:ERROR
                             -Xep:ImmutableEnumChecker:ERROR

@@ -3,6 +3,7 @@ package com.zenobase.json;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -78,7 +79,7 @@ public class Nodes {
 		try {
 			return MAPPER.readTree(in);
 		} catch (IOException e) {
-			throw new IllegalArgumentException("Can't read json: '" + new String(in) + "'");
+			throw new IllegalArgumentException("Can't read json: '" + new String(in, StandardCharsets.UTF_8) + "'");
 		}
 	}
 

@@ -2,6 +2,7 @@ package com.zenobase.controllers;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -187,7 +188,7 @@ public class EventListController extends ControllerSupport {
 	private void streamEventRows(ServerResponse res, String bucketId, Iterable<String> constraints) {
 		try (var out = res.outputStream()) {
 			ObjectNode result = events.find(bucketId, createExportSearch(constraints, 0));
-			OutputStreamWriter writer = new OutputStreamWriter(out);
+			OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
 			new SpreadsheetPrinter(writer).print((ArrayNode) result.get(EVENTS.getName()));
 			writer.flush();
 		} catch (IOException e) {

@@ -1,6 +1,7 @@
 package com.zenobase.controllers;
 
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
@@ -75,7 +76,7 @@ public class BucketListController extends ControllerSupport {
 
 	private void findAllStreaming(ServerResponse res) {
 		setHeader(res, "Content-Type", "text/plain");
-		try (var writer = new OutputStreamWriter(res.outputStream())) {
+		try (var writer = new OutputStreamWriter(res.outputStream(), StandardCharsets.UTF_8)) {
 			buckets.findAll(bucket -> {
 				try {
 					writer.write(toString(bucket));

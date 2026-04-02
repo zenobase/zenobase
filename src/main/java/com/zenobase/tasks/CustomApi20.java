@@ -1,5 +1,7 @@
 package com.zenobase.tasks;
 
+import java.nio.charset.StandardCharsets;
+
 import com.google.common.base.Joiner;
 import com.google.common.io.BaseEncoding;
 import org.scribe.builder.api.DefaultApi20;
@@ -75,7 +77,7 @@ public abstract class CustomApi20 extends DefaultApi20 {
 
 	public static void addBasicAuthHeader(OAuthRequest request, String clientId, String clientSecret) {
 		String value = Joiner.on(':').join(clientId, clientSecret);
-		String encoded = BaseEncoding.base64().encode(value.getBytes());
+		String encoded = BaseEncoding.base64().encode(value.getBytes(StandardCharsets.UTF_8));
 		request.addHeader("Authorization", "Basic " + encoded);
 	}
 
