@@ -99,7 +99,7 @@ public class Main {
 						.allowHeaders(Set.of("*"))
 						.exposeHeaders(Set.of("Link", "Location", "X-Command-ID", "X-Credentials"))
 						.allowCredentials(true)
-						.maxAge(Duration.ofSeconds(3600))
+						.maxAge(Duration.ofHours(1))
 						.build())
 				.build();
 	}
