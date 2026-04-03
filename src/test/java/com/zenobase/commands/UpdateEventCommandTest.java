@@ -9,6 +9,7 @@ import org.opensearch.client.opensearch._types.ErrorResponse;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 
 import com.zenobase.common.Generator;
+import com.zenobase.json.OptimisticLock;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.services.EventRepository;
@@ -65,6 +66,7 @@ public class UpdateEventCommandTest {
 				.update(eq(bucketId), any(Event.class), any(Event.class), eq(command.getTimestamp()));
 		Event current = from.copy();
 		current.setVersion(1);
+		current.setOptimisticLock(new OptimisticLock(1, 1));
 		when(repository.find(bucketId, to.getId())).thenReturn(current);
 		registry.execute(command);
 		verify(repository, times(2))

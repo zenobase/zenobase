@@ -41,7 +41,7 @@ public class UserRepository extends RepositorySupport<User> {
 	}
 
 	public void update(User user, DateTime timestamp) {
-		index.update(Objects.requireNonNull(user.getName()), user.toJson(), true);
+		index.update(Objects.requireNonNull(user.getName()), user, true);
 	}
 
 	public boolean delete(User user) {

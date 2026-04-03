@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.opensearch.client.opensearch._types.ErrorResponse;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 
+import com.zenobase.json.OptimisticLock;
 import com.zenobase.models.Alias;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
@@ -67,6 +68,7 @@ public class UpdateBucketCommandTest {
 
 		Bucket from2 = from.copy();
 		from2.setVersion(1);
+		from2.setOptimisticLock(new OptimisticLock(1, 1));
 		Bucket to2 = to.copy();
 		to2.setVersion(1);
 
@@ -76,6 +78,7 @@ public class UpdateBucketCommandTest {
 		doThrow(e).when(repository).update(from, to, command.getTimestamp());
 		Bucket current = from.copy();
 		current.setVersion(1);
+		current.setOptimisticLock(new OptimisticLock(1, 1));
 		when(repository.find(to.getId())).thenReturn(current);
 		registry.execute(command);
 		verify(repository).update(from2, to2, command.getTimestamp());

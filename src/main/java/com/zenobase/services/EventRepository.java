@@ -3,6 +3,7 @@ package com.zenobase.services;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
@@ -19,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zenobase.common.Callback;
-import com.zenobase.json.DomainNode;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.search.Search;
@@ -46,7 +46,7 @@ public class EventRepository {
 
 	public void add(String bucketId, Event event, DateTime timestamp) {
 		event.prePersist(bucketId);
-		getIndex(bucketId).store(event.getId(), event.toJson(), false);
+		getIndex(bucketId).store(event, false);
 		event.postPersist();
 	}
 
@@ -61,10 +61,9 @@ public class EventRepository {
 	}
 
 	public void update(String bucketId, Event from, Event event, DateTime timestamp) {
-		DomainNode.SEQ_NO.setValue(event.toJson(), DomainNode.SEQ_NO.getValue(from.toJson()));
-		DomainNode.PRIMARY_TERM.setValue(event.toJson(), DomainNode.PRIMARY_TERM.getValue(from.toJson()));
+		event.setOptimisticLock(Objects.requireNonNull(from.getOptimisticLock()));
 		event.prePersist(bucketId);
-		getIndex(bucketId).update(event.getId(), event.toJson(), false);
+		getIndex(bucketId).update(event, false);
 		event.postPersist();
 	}
 

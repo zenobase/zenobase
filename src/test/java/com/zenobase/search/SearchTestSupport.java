@@ -33,7 +33,7 @@ public class SearchTestSupport extends OpenSearchTestSupport {
 
 	protected void addEvent(Event event, DateTime timestamp) {
 		event.prePersist(bucketId);
-		index.store(event.getId(), event.toJson(), true);
+		index.store(event, true);
 		event.postPersist();
 	}
 

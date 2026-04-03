@@ -152,6 +152,30 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 	}
 
 	@Test
+	public void testOptimisticLockFailure() {
+
+		Bucket bucket = new Bucket();
+		new BucketRepository(getManager()).store(bucket, DateTime.now());
+
+		Event event = new Event();
+		event.setValue(Event.AUTHOR, me);
+		event.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
+		event.addValue(Event.TAG, "original");
+		repository.add(bucket.getId(), event, DateTime.now());
+		repository.refresh(bucket.getId());
+
+		Event current = repository.find(bucket.getId(), event.getId());
+		Event stale = current.copy();
+
+		current.addValue(Event.TAG, "updated");
+		repository.update(bucket.getId(), current, current, DateTime.now());
+
+		stale.addValue(Event.TAG, "conflict");
+		assertThatThrownBy(() -> repository.update(bucket.getId(), stale, stale, DateTime.now()))
+				.hasMessageContaining("409 Conflict");
+	}
+
+	@Test
 	public void testTimestamp() {
 
 		Bucket bucket = new Bucket();

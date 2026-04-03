@@ -9,7 +9,6 @@ import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.zenobase.json.DomainNode;
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Event;
@@ -109,9 +108,7 @@ public class UpdateEventCommand extends Command {
 							current.getVersion());
 					Event correctedFrom = command.getFrom().copy();
 					correctedFrom.setVersion(current.getVersion());
-					DomainNode.SEQ_NO.setValue(correctedFrom.toJson(), DomainNode.SEQ_NO.getValue(current.toJson()));
-					DomainNode.PRIMARY_TERM.setValue(
-							correctedFrom.toJson(), DomainNode.PRIMARY_TERM.getValue(current.toJson()));
+					correctedFrom.setOptimisticLock(Objects.requireNonNull(current.getOptimisticLock()));
 					command.setParameter(FROM, correctedFrom.toJson());
 					Event correctedTo = command.getTo().copy();
 					correctedTo.setVersion(current.getVersion());

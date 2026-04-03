@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
-import com.zenobase.json.DomainNode;
 import com.zenobase.models.Alias;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
@@ -44,7 +43,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 
 	public void store(Bucket bucket, DateTime timestamp) {
 		realias(bucket);
-		index.store(bucket.getId(), bucket.toJson(), true);
+		index.store(bucket, true);
 	}
 
 	public void realias(Bucket bucket) {
@@ -58,9 +57,8 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 		if (!Objects.equals(from.getAliases(), to.getAliases())) {
 			manager.updateAlias(EventRepository.INDEX_NAME, from.getId(), to.getAliases());
 		}
-		DomainNode.SEQ_NO.setValue(to.toJson(), DomainNode.SEQ_NO.getValue(from.toJson()));
-		DomainNode.PRIMARY_TERM.setValue(to.toJson(), DomainNode.PRIMARY_TERM.getValue(from.toJson()));
-		index.update(to.getId(), to.toJson(), true);
+		to.setOptimisticLock(Objects.requireNonNull(from.getOptimisticLock()));
+		index.update(to, true);
 	}
 
 	public boolean delete(String bucketId) {

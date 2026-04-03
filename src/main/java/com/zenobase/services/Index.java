@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import com.zenobase.common.Callback;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.NodeList;
+import com.zenobase.json.OptimisticLock;
 import com.zenobase.json.Schema;
 
 public class Index {
@@ -92,37 +93,57 @@ public class Index {
 	}
 
 	public void store(String id, ObjectNode node, boolean refresh) {
-		index(id, node, OpType.Create, refresh);
+		index(id, node, refresh);
+	}
+
+	public void store(DomainNode node, boolean refresh) {
+		index(node.getId(), node, OpType.Create, refresh);
 	}
 
 	public void store(List<? extends DomainNode> nodes, boolean refresh) {
 		index(nodes, OpType.Create, refresh);
 	}
 
-	public void update(String id, ObjectNode node, boolean refresh) {
+	public void update(DomainNode node, boolean refresh) {
+		update(node.getId(), node, refresh);
+	}
+
+	public void update(String id, DomainNode node, boolean refresh) {
 		index(id, node, OpType.Index, refresh);
 	}
 
-	private void index(String id, ObjectNode node, OpType operation, boolean refresh) {
+	private void index(String id, ObjectNode node, boolean refresh) {
 		try {
 			IndexRequest.Builder<ObjectNode> builder = new IndexRequest.Builder<ObjectNode>()
 					.index(indexName)
 					.id(id)
 					.document(stripMetadata(node))
+					.opType(OpType.Create)
+					.refresh(refreshPolicy(refresh));
+			IndexResponse response = client.index(builder.build());
+			DomainNode.VERSION.setValue(node, response.version());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void index(String id, DomainNode node, OpType operation, boolean refresh) {
+		try {
+			IndexRequest.Builder<ObjectNode> builder = new IndexRequest.Builder<ObjectNode>()
+					.index(indexName)
+					.id(id)
+					.document(stripMetadata(node.toJson()))
 					.opType(operation)
 					.refresh(refreshPolicy(refresh));
 			if (operation == OpType.Index) {
-				Long seqNo = DomainNode.SEQ_NO.getValue(node);
-				Long primaryTerm = DomainNode.PRIMARY_TERM.getValue(node);
-				Preconditions.checkNotNull(seqNo, "Missing seq_no field: %s", node);
-				Preconditions.checkNotNull(primaryTerm, "Missing primary_term field: %s", node);
-				builder.ifSeqNo(seqNo);
-				builder.ifPrimaryTerm(primaryTerm);
+				OptimisticLock lock = Preconditions.checkNotNull(
+						node.getOptimisticLock(), "Missing optimistic lock: %s", node.toJson());
+				builder.ifSeqNo(lock.seqNo());
+				builder.ifPrimaryTerm(lock.primaryTerm());
 			}
 			IndexResponse response = client.index(builder.build());
-			DomainNode.VERSION.setValue(node, response.version());
-			DomainNode.SEQ_NO.setValue(node, response.seqNo());
-			DomainNode.PRIMARY_TERM.setValue(node, response.primaryTerm());
+			node.setVersion(response.version());
+			node.setOptimisticLock(new OptimisticLock(response.seqNo(), response.primaryTerm()));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -139,15 +160,13 @@ public class Index {
 				if (operation == OpType.Create) {
 					opBuilder.create(c -> c.index(indexName).id(node.getId()).document(doc));
 				} else {
-					Long seqNo = DomainNode.SEQ_NO.getValue(node.toJson());
-					Long primaryTerm = DomainNode.PRIMARY_TERM.getValue(node.toJson());
-					Preconditions.checkNotNull(seqNo, "Missing seq_no field: %s", node.toJson());
-					Preconditions.checkNotNull(primaryTerm, "Missing primary_term field: %s", node.toJson());
+					OptimisticLock lock = Preconditions.checkNotNull(
+							node.getOptimisticLock(), "Missing optimistic lock: %s", node.toJson());
 					opBuilder.index(idx -> idx.index(indexName)
 							.id(node.getId())
 							.document(doc)
-							.ifSeqNo(seqNo)
-							.ifPrimaryTerm(primaryTerm));
+							.ifSeqNo(lock.seqNo())
+							.ifPrimaryTerm(lock.primaryTerm()));
 				}
 				operations.add(opBuilder.build());
 			}
@@ -171,8 +190,8 @@ public class Index {
 				for (int i = 0; i < items.size(); ++i) {
 					DomainNode node = nodes.get(begin + i);
 					node.setVersion(items.get(i).version());
-					DomainNode.SEQ_NO.setValue(node.toJson(), items.get(i).seqNo());
-					DomainNode.PRIMARY_TERM.setValue(node.toJson(), items.get(i).primaryTerm());
+					node.setOptimisticLock(new OptimisticLock(
+							items.get(i).seqNo(), items.get(i).primaryTerm()));
 				}
 			} catch (IOException e) {
 				throw new RuntimeException(e);
@@ -192,8 +211,8 @@ public class Index {
 	private static ObjectNode stripMetadata(ObjectNode node) {
 		ObjectNode copy = node.deepCopy();
 		copy.remove(DomainNode.VERSION.getName());
-		copy.remove(DomainNode.SEQ_NO.getName());
-		copy.remove(DomainNode.PRIMARY_TERM.getName());
+		copy.remove(DomainNode.SEQ_NO_FIELD);
+		copy.remove(DomainNode.PRIMARY_TERM_FIELD);
 		return copy;
 	}
 
@@ -328,8 +347,8 @@ public class Index {
 			if (!response.found()) return null;
 			ObjectNode node = response.source();
 			DomainNode.VERSION.setValue(node, response.version());
-			DomainNode.SEQ_NO.setValue(node, response.seqNo());
-			DomainNode.PRIMARY_TERM.setValue(node, response.primaryTerm());
+			node.put(DomainNode.SEQ_NO_FIELD, response.seqNo());
+			node.put(DomainNode.PRIMARY_TERM_FIELD, response.primaryTerm());
 			return node;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -341,8 +360,8 @@ public class Index {
 		if (hit.version() != null) {
 			DomainNode.VERSION.setValue(node, hit.version());
 		}
-		DomainNode.SEQ_NO.setValue(node, hit.seqNo());
-		DomainNode.PRIMARY_TERM.setValue(node, hit.primaryTerm());
+		node.put(DomainNode.SEQ_NO_FIELD, hit.seqNo());
+		node.put(DomainNode.PRIMARY_TERM_FIELD, hit.primaryTerm());
 		return node;
 	}
 

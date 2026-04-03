@@ -11,8 +11,8 @@ import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.search.Hit;
 
-import com.zenobase.json.DomainNode;
 import com.zenobase.json.Nodes;
+import com.zenobase.json.OptimisticLock;
 import com.zenobase.json.Schema;
 import com.zenobase.models.Event;
 import com.zenobase.services.SearchOrder;
@@ -50,12 +50,12 @@ public class ListFacet extends Facet {
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode eventsNode = Nodes.newArray();
 		for (Hit<ObjectNode> hit : response.hits().hits()) {
-			Event event = new Event(hit.source());
+			Event event = new Event(Objects.requireNonNull(hit.source()));
 			if (hit.version() != null) {
 				event.setVersion(hit.version());
 			}
-			DomainNode.SEQ_NO.setValue(event.toJson(), hit.seqNo());
-			DomainNode.PRIMARY_TERM.setValue(event.toJson(), hit.primaryTerm());
+			event.setOptimisticLock(
+					new OptimisticLock(Objects.requireNonNull(hit.seqNo()), Objects.requireNonNull(hit.primaryTerm())));
 			eventsNode.add(event.toJson());
 		}
 		return eventsNode;

@@ -33,7 +33,7 @@ public class AuthorizationRepository extends RepositorySupport<Authorization> {
 	}
 
 	public void store(Authorization authorization, DateTime timestamp) {
-		this.index.store(authorization.getId(), authorization.toJson(), true);
+		this.index.store(authorization, true);
 	}
 
 	public boolean delete(String authId) {

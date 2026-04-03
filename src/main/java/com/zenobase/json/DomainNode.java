@@ -13,8 +13,8 @@ public class DomainNode {
 
 	public static final TokenField ID = new TokenField("@id", false);
 	public static final LongField VERSION = new LongField("version", false);
-	public static final LongField SEQ_NO = new LongField("seq_no", false);
-	public static final LongField PRIMARY_TERM = new LongField("primary_term", false);
+	public static final String SEQ_NO_FIELD = "seq_no";
+	public static final String PRIMARY_TERM_FIELD = "primary_term";
 
 	private final ObjectNode node;
 
@@ -36,6 +36,20 @@ public class DomainNode {
 
 	public void setVersion(long version) {
 		setValue(VERSION, version);
+	}
+
+	public @Nullable OptimisticLock getOptimisticLock() {
+		if (node.has(SEQ_NO_FIELD) && node.has(PRIMARY_TERM_FIELD)) {
+			return new OptimisticLock(
+					node.get(SEQ_NO_FIELD).asLong(),
+					node.get(PRIMARY_TERM_FIELD).asLong());
+		}
+		return null;
+	}
+
+	public void setOptimisticLock(OptimisticLock optimisticLock) {
+		node.put(SEQ_NO_FIELD, optimisticLock.seqNo());
+		node.put(PRIMARY_TERM_FIELD, optimisticLock.primaryTerm());
 	}
 
 	protected <T> @Nullable T getValue(Field<T> field) {

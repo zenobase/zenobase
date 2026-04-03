@@ -43,7 +43,7 @@ public class CommandRepository extends RepositorySupport<Command> {
 	}
 
 	public void put(Command command) {
-		index.store(command.getId(), command.toJson(), false);
+		index.store(command, false);
 	}
 
 	public @Nullable Command find(String id) {

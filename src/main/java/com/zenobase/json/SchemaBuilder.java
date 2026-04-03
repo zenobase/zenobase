@@ -31,8 +31,8 @@ public class SchemaBuilder {
 		excludesNode.add("*._*");
 		excludesNode.add("*$*");
 		excludesNode.add(DomainNode.VERSION.getName());
-		excludesNode.add(DomainNode.SEQ_NO.getName());
-		excludesNode.add(DomainNode.PRIMARY_TERM.getName());
+		excludesNode.add(DomainNode.SEQ_NO_FIELD);
+		excludesNode.add(DomainNode.PRIMARY_TERM_FIELD);
 	}
 
 	public SchemaBuilder add(Field<?> field) {
