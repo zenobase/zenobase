@@ -1,6 +1,7 @@
 package com.zenobase;
 
 import com.google.inject.Injector;
+import io.helidon.http.HeaderNames;
 import io.helidon.http.HttpException;
 import io.helidon.webserver.http.HttpRouting;
 import org.slf4j.Logger;
@@ -34,6 +35,12 @@ class Routing {
 					req.prologue().uriPath().rawPath(),
 					e);
 			ControllerSupport.sendInternalServerError(res, "internal error");
+		});
+
+		// Robots
+		routing.get("/robots.txt", (req, res) -> {
+			res.header(HeaderNames.CONTENT_TYPE, "text/plain");
+			res.send("User-agent: *\nDisallow: /\n");
 		});
 
 		// Status
