@@ -106,9 +106,9 @@ public class BucketListController extends ControllerSupport {
 		int offset = Integer.parseInt(req.query().first("offset").orElse("0"));
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
 		boolean labelsOnly =
-				Boolean.parseBoolean(req.query().first("labelsOnly").orElse("false"));
+				Boolean.parseBoolean(req.query().first("labels_only").orElse("false"));
 		boolean includeArchived =
-				Boolean.parseBoolean(req.query().first("includeArchived").orElse("false"));
+				Boolean.parseBoolean(req.query().first("include_archived").orElse("false"));
 		if (offset < 0 || offset > 1000) {
 			sendBadRequest(res, "expected offset in [0..1000]");
 			return;

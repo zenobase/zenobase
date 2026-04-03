@@ -135,8 +135,8 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 				.queryParam("order", String.valueOf(order))
 				.queryParam("offset", String.valueOf(offset))
 				.queryParam("limit", String.valueOf(limit))
-				.queryParam("labelsOnly", String.valueOf(labelsOnly))
-				.queryParam("includeArchived", String.valueOf(includeArchived))
+				.queryParam("labels_only", String.valueOf(labelsOnly))
+				.queryParam("include_archived", String.valueOf(includeArchived))
 				.request();
 	}
 }
