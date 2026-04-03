@@ -96,8 +96,12 @@ public class Index {
 		index(id, node, refresh);
 	}
 
+	public void store(String id, DomainNode node, boolean refresh) {
+		index(id, node, OpType.Create, refresh);
+	}
+
 	public void store(DomainNode node, boolean refresh) {
-		index(node.getId(), node, OpType.Create, refresh);
+		store(node.getId(), node, refresh);
 	}
 
 	public void store(List<? extends DomainNode> nodes, boolean refresh) {
