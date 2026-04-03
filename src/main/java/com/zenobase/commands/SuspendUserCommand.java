@@ -78,7 +78,7 @@ public class SuspendUserCommand extends Command {
 			User user = repository.find(command.getName());
 			if (user != null) {
 				user.setSuspended(command.isSuspend());
-				repository.update(user, command.getTimestamp());
+				repository.update(user);
 			} else {
 				throw new NonExistentUserException("Tried to suspend a nonexistent user: " + command.getName());
 			}

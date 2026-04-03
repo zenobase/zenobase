@@ -71,7 +71,7 @@ public class OptInCommand extends Command {
 			User user = repository.find(command.getName());
 			if (user != null) {
 				user.setOptedOut(false);
-				repository.update(user, command.getTimestamp());
+				repository.update(user);
 			} else {
 				throw new NonExistentUserException("Tried to opt in a nonexistent user: " + command.getName());
 			}

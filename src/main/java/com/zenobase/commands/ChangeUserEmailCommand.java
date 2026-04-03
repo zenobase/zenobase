@@ -99,7 +99,7 @@ public class ChangeUserEmailCommand extends Command {
 			if (user != null) {
 				user.setEmail(command.getTo());
 				user.setVerified(command.getToVerified());
-				repository.update(user, command.getTimestamp());
+				repository.update(user);
 			} else {
 				throw new NonExistentUserException(
 						"Tried to change the email of a nonexistent user: " + command.getUsername());

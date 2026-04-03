@@ -71,7 +71,7 @@ public class OptOutCommand extends Command {
 			User user = repository.find(command.getName());
 			if (user != null) {
 				user.setOptedOut(true);
-				repository.update(user, command.getTimestamp());
+				repository.update(user);
 			} else {
 				throw new NonExistentUserException("Tried to opt out a nonexistent user: " + command.getName());
 			}

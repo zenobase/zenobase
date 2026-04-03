@@ -47,7 +47,7 @@ public class CommandRebuildTest extends OpenSearchTestSupport {
 		Task task = new Task("test", bucket.getId(), user.asIdentity());
 
 		DateTime now = DateTime.now();
-		users.store(user, now);
+		users.store(user);
 		authorizations.store(authorization, now);
 		credentials.store(credential, now);
 		buckets.store(bucket, now);

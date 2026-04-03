@@ -91,7 +91,7 @@ public class ChangeQuotaCommand extends Command {
 						command.getFrom(),
 						user.getQuota());
 				user.setQuota(command.getTo());
-				repository.update(user, command.getTimestamp());
+				repository.update(user);
 			} else {
 				throw new NonExistentUserException(
 						"Tried to change the quota of a nonexistent user: " + command.getUsername());

@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import org.joda.time.DateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +37,7 @@ public class UserRepositoryTest extends OpenSearchTestSupport {
 		assertThat(repository.delete(user)).isFalse();
 
 		// store and retrieve user
-		repository.store(user, DateTime.now());
+		repository.store(user);
 		assertThat(repository.isEmpty()).isFalse();
 		assertThat(repository.find(user.getName()).toJson()).isEqualTo(user.toJson());
 		assertThat(repository.find(user.asIdentity()).toJson()).isEqualTo(user.toJson());
@@ -48,7 +47,7 @@ public class UserRepositoryTest extends OpenSearchTestSupport {
 		// update user
 		user.setVerified(true);
 		user.setSuperuser(true);
-		repository.update(user, DateTime.now());
+		repository.update(user);
 		assertThat(repository.isSuperuser(user.asIdentity())).isTrue();
 		assertThat(repository.find(user.getName()).toJson()).isEqualTo(user.toJson());
 
@@ -84,7 +83,7 @@ public class UserRepositoryTest extends OpenSearchTestSupport {
 		for (int i = 0; i < size; ++i) {
 			User user = new User(String.format("user%03d", i + 1));
 			users.add(user);
-			repository.store(user, DateTime.now());
+			repository.store(user);
 		}
 		return users;
 	}

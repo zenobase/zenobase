@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
-import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -33,7 +32,7 @@ public class CommandReplayTest extends OpenSearchTestSupport {
 
 		CommandDispatcher dispatcher = Mockito.mock(CommandDispatcher.class);
 
-		new UserRepository(getManager()).store(user, DateTime.now());
+		new UserRepository(getManager()).store(user);
 		new CommandReplay("", parsers, dispatcher)
 				.replay(
 						getManager(),

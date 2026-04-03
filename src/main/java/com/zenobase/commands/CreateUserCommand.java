@@ -68,7 +68,7 @@ public class CreateUserCommand extends Command {
 
 		@Override
 		public void executeTyped(CreateUserCommand command) {
-			repository.store(command.getUser(), command.getTimestamp());
+			repository.store(command.getUser());
 		}
 	}
 }

@@ -5,7 +5,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
 import jakarta.inject.Inject;
-import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch.core.SearchRequest;
@@ -36,11 +35,11 @@ public class UserRepository extends RepositorySupport<User> {
 		}
 	}
 
-	public void store(User user, DateTime timestamp) {
+	public void store(User user) {
 		index.store(Objects.requireNonNull(user.getName()), user, true);
 	}
 
-	public void update(User user, DateTime timestamp) {
+	public void update(User user) {
 		index.update(Objects.requireNonNull(user.getName()), user, true);
 	}
 

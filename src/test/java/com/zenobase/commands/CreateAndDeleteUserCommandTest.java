@@ -21,7 +21,7 @@ public class CreateAndDeleteUserCommandTest {
 
 		Command command = new CreateUserCommand(user.asIdentity(), user);
 		registry.execute(command);
-		verify(repository).store(user, command.getTimestamp());
+		verify(repository).store(user);
 		reset(repository);
 
 		Command undo = command.reverse(user.asIdentity());
@@ -32,7 +32,7 @@ public class CreateAndDeleteUserCommandTest {
 
 		Command redo = undo.reverse(user.asIdentity());
 		registry.execute(redo);
-		verify(repository).store(user, redo.getTimestamp());
+		verify(repository).store(user);
 		reset(repository);
 	}
 
