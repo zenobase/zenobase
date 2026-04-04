@@ -6,6 +6,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
+import org.jspecify.annotations.Nullable;
+import org.opensearch.client.opensearch._types.ErrorCause;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
@@ -86,6 +89,25 @@ public class Search {
 	@Override
 	public int hashCode() {
 		return Objects.hash(facets.toString(), toJsonStrings(must), toJsonStrings(mustNot));
+	}
+
+	public static boolean hasCauseOfType(OpenSearchException e, String type) {
+		return hasCauseOfType(e.error(), type);
+	}
+
+	private static boolean hasCauseOfType(@Nullable ErrorCause error, String type) {
+		if (error == null) {
+			return false;
+		}
+		if (type.equals(error.type())) {
+			return true;
+		}
+		for (ErrorCause rootCause : error.rootCause()) {
+			if (type.equals(rootCause.type())) {
+				return true;
+			}
+		}
+		return hasCauseOfType(error.causedBy(), type);
 	}
 
 	private static String toJsonStrings(ImmutableList<Query> queries) {

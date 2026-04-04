@@ -17,6 +17,8 @@ import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensearch.client.opensearch._types.OpenSearchException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.CreateEventsCommand;
@@ -41,6 +43,8 @@ import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
 
 public class EventListController extends ControllerSupport {
+
+	private static final Logger logger = LoggerFactory.getLogger(EventListController.class);
 
 	public static final ObjectField EVENTS = new ObjectField("events");
 
@@ -141,8 +145,9 @@ public class EventListController extends ControllerSupport {
 		} catch (IllegalArgumentException e) {
 			sendBadRequest(res, "Invalid parameters");
 		} catch (OpenSearchException e) {
-			if (e.getMessage() != null && e.getMessage().contains("too_many_buckets")) {
-				sendBadRequest(res, "Too many data points for the selected interval; try a coarser interval");
+			if (Search.hasCauseOfType(e, "too_many_buckets")) {
+				logger.warn("Search failed due to too many buckets in <{}>", bucketId, e);
+				sendBadRequest(res, "One or more aggregations create too many bins; try setting larger intervals");
 			} else {
 				throw e;
 			}
