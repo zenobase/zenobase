@@ -69,7 +69,7 @@ public class NetatmoCredentialsManager extends OAuthCredentialsManager {
 	}
 
 	private void reauthorize(OAuthCredentials credentials) {
-		var request = new OAuthRequest(Verb.POST, "https://api.netatmo.net/oauth2/token");
+		var request = new OAuthRequest(Verb.POST, "https://api.netatmo.com/oauth2/token");
 		request.addBodyParameter("grant_type", "refresh_token");
 		request.addBodyParameter(
 				"refresh_token", ((ExpiringToken) Objects.requireNonNull(credentials.getToken())).getRefreshToken());
