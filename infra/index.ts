@@ -141,24 +141,11 @@ const ecsSg = new aws.ec2.SecurityGroup("zenobase-ecs-sg", {
     tags: { Name: "zenobase-ecs" },
 });
 
-// TODO: Remove ec2Sg and its reference in osSg ingress. This will cause 15-30 min downtime.
-const ec2Sg = new aws.ec2.SecurityGroup("zenobase-ec2-sg", {
-    vpcId: vpc.id,
-    description: "EC2 - app traffic from ALB (retained for migration rollback)",
-    ingress: [
-        { protocol: "tcp", fromPort: 9000, toPort: 9000, securityGroups: [albSg.id] },
-    ],
-    egress: [
-        { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"] },
-    ],
-    tags: { Name: "zenobase-ec2" },
-});
-
 const osSg = new aws.ec2.SecurityGroup("zenobase-os-sg", {
     vpcId: vpc.id,
-    description: "OpenSearch - HTTPS from ECS and EC2",
+    description: "OpenSearch - HTTPS from ECS",
     ingress: [
-        { protocol: "tcp", fromPort: 443, toPort: 443, securityGroups: [ecsSg.id, ec2Sg.id] },
+        { protocol: "tcp", fromPort: 443, toPort: 443, securityGroups: [ecsSg.id] },
     ],
     egress: [
         { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"] },
