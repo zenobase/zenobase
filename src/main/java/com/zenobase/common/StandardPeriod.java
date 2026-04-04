@@ -97,8 +97,8 @@ public class StandardPeriod implements Comparable<StandardPeriod> {
 	 * Returns true if a string contains a field symbol (and therefore contains a potential period).
 	 */
 	public static boolean hasPeriod(String s) {
-		for (char c : s.toCharArray()) {
-			if (FIELDS.containsKey(c)) {
+		for (int i = 0; i < s.length(); ++i) {
+			if (FIELDS.containsKey(s.charAt(i))) {
 				return true;
 			}
 		}

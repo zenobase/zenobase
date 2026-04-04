@@ -271,6 +271,7 @@
                             -Xep:EqualsIncompatibleType:ERROR
                             -Xep:FormatStringShouldUsePlaceholders:ERROR
                             -Xep:ImmutableEnumChecker:ERROR
+                            -Xep:LoopOverCharArray:ERROR
                             -Xep:MissingOverride:ERROR
                             -Xep:NonOverridingEquals:ERROR
                             -Xep:NullAway:ERROR
