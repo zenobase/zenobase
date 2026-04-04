@@ -13,7 +13,7 @@
 		<minimumBreadcrumbLevel>INFO</minimumBreadcrumbLevel>
 	</appender>
 
-	<root level="WARN">
+	<root level="INFO">
 		<appender-ref ref="Console"/>
 		<appender-ref ref="Sentry"/>
 	</root>
