@@ -48,6 +48,26 @@ const ghActionsRole = new aws.iam.Role("zenobase-github-actions", {
     tags: { Name: "zenobase-github-actions" },
 });
 
+// ---------- Snyk IAM Role ----------
+
+const snykRole = new aws.iam.Role("zenobase-snyk", {
+    name: "ZenobaseSnyk",
+    assumeRolePolicy: JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [{
+            Effect: "Allow",
+            Principal: { AWS: "arn:aws:iam::198361731867:user/ecr-integration-user" },
+            Action: "sts:AssumeRole",
+            Condition: {
+                StringEquals: {
+                    "sts:ExternalId": "b937945a-4634-4cd6-9105-b254d5824443",
+                },
+            },
+        }],
+    }),
+    tags: { Name: "zenobase-snyk" },
+});
+
 // ---------- VPC ----------
 
 const vpc = new aws.ec2.Vpc("zenobase-vpc", {
@@ -218,7 +238,7 @@ if (bastionEnabled) {
 
 const ecrRepo = new aws.ecr.Repository("zenobase-api", {
     name: "zenobase-api",
-    imageTagMutability: "IMMUTABLE",
+    imageTagMutability: "MUTABLE",
 });
 
 new aws.ecr.LifecyclePolicy("zenobase-api-lifecycle", {
@@ -236,6 +256,35 @@ new aws.ecr.LifecyclePolicy("zenobase-api-lifecycle", {
         }],
     }),
 });
+
+new aws.iam.RolePolicy("zenobase-snyk-policy", {
+    role: snykRole.name,
+    policy: JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [
+            {
+                Sid: "SnykAllowPull",
+                Effect: "Allow",
+                Action: [
+                    "ecr:GetLifecyclePolicyPreview",
+                    "ecr:GetDownloadUrlForLayer",
+                    "ecr:BatchGetImage",
+                    "ecr:DescribeImages",
+                    "ecr:GetAuthorizationToken",
+                    "ecr:DescribeRepositories",
+                    "ecr:ListTagsForResource",
+                    "ecr:ListImages",
+                    "ecr:BatchCheckLayerAvailability",
+                    "ecr:GetRepositoryPolicy",
+                    "ecr:GetLifecyclePolicy",
+                ],
+                Resource: "*",
+            },
+        ],
+    }),
+});
+
+export const snykRoleArn = snykRole.arn;
 
 // ---------- OpenSearch Service ----------
 
