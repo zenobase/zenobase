@@ -155,8 +155,28 @@ const osSg = new aws.ec2.SecurityGroup("zenobase-os-sg", {
 
 // ---------- Bastion (for OpenSearch diagnostics) ----------
 
+const bastionRole = new aws.iam.Role("zenobase-bastion-role", {
+    assumeRolePolicy: JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [{
+            Action: "sts:AssumeRole",
+            Effect: "Allow",
+            Principal: { Service: "ec2.amazonaws.com" },
+        }],
+    }),
+    tags: { Name: "zenobase-bastion" },
+});
+
+new aws.iam.RolePolicyAttachment("zenobase-bastion-ssm", {
+    role: bastionRole.name,
+    policyArn: "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+});
+
+const bastionInstanceProfile = new aws.iam.InstanceProfile("zenobase-bastion-profile", {
+    role: bastionRole.name,
+});
+
 let bastionInstanceId: pulumi.Output<string> = pulumi.output("");
-let bastionRoleName: pulumi.Output<string> | undefined;
 
 if (bastionEnabled) {
     const bastionSg = new aws.ec2.SecurityGroup("zenobase-bastion-sg", {
@@ -175,27 +195,6 @@ if (bastionEnabled) {
         fromPort: 443,
         toPort: 443,
         sourceSecurityGroupId: bastionSg.id,
-    });
-
-    const bastionRole = new aws.iam.Role("zenobase-bastion-role", {
-        assumeRolePolicy: JSON.stringify({
-            Version: "2012-10-17",
-            Statement: [{
-                Action: "sts:AssumeRole",
-                Effect: "Allow",
-                Principal: { Service: "ec2.amazonaws.com" },
-            }],
-        }),
-        tags: { Name: "zenobase-bastion" },
-    });
-
-    new aws.iam.RolePolicyAttachment("zenobase-bastion-ssm", {
-        role: bastionRole.name,
-        policyArn: "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
-    });
-
-    const bastionInstanceProfile = new aws.iam.InstanceProfile("zenobase-bastion-profile", {
-        role: bastionRole.name,
     });
 
     const al2023Ami = aws.ec2.getAmi({
@@ -218,7 +217,6 @@ if (bastionEnabled) {
     });
 
     bastionInstanceId = bastion.id;
-    bastionRoleName = bastionRole.name;
 }
 
 // ---------- ECR Repositories ----------
@@ -280,6 +278,30 @@ const osLogGroup = new aws.cloudwatch.LogGroup("zenobase-opensearch-logs", {
     retentionInDays: 30,
 });
 
+const ecsTaskRole = new aws.iam.Role("zenobase-ecs-task-role", {
+    assumeRolePolicy: JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [{
+            Action: "sts:AssumeRole",
+            Effect: "Allow",
+            Principal: { Service: "ecs-tasks.amazonaws.com" },
+        }],
+    }),
+    tags: { Name: "zenobase-ecs-task" },
+});
+
+const osSnapshotRole = new aws.iam.Role("zenobase-os-snapshot-role", {
+    assumeRolePolicy: JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [{
+            Action: "sts:AssumeRole",
+            Effect: "Allow",
+            Principal: { Service: "es.amazonaws.com" },
+        }],
+    }),
+    tags: { Name: "zenobase-os-snapshot" },
+});
+
 new aws.cloudwatch.LogResourcePolicy("zenobase-opensearch-log-policy", {
     policyName: "zenobase-opensearch-log-policy",
     policyDocument: pulumi.all([accountId]).apply(([account]) => JSON.stringify({
@@ -318,11 +340,11 @@ const osDomain = new aws.opensearch.Domain(`zenobase-os-${opensearchDomain}`, {
     encryptAtRest: {
         enabled: true,
     },
-    accessPolicies: pulumi.all([accountId]).apply(([account]) => JSON.stringify({
+    accessPolicies: pulumi.all([accountId, ecsTaskRole.arn, osSnapshotRole.arn, bastionRole.arn]).apply(([account, taskArn, snapshotArn, bastionArn]) => JSON.stringify({
         Version: "2012-10-17",
         Statement: [{
             Effect: "Allow",
-            Principal: { AWS: "*" },
+            Principal: { AWS: [taskArn, snapshotArn, bastionArn] },
             Action: "es:*",
             Resource: `arn:aws:es:${region}:${account}:domain/${opensearchDomain}/*`,
         }],
@@ -344,19 +366,6 @@ const osDomain = new aws.opensearch.Domain(`zenobase-os-${opensearchDomain}`, {
     tags: { Name: opensearchDomain },
 }, { retainOnDelete: true });
 
-// Snapshot IAM role for OpenSearch to access S3
-const osSnapshotRole = new aws.iam.Role("zenobase-os-snapshot-role", {
-    assumeRolePolicy: JSON.stringify({
-        Version: "2012-10-17",
-        Statement: [{
-            Action: "sts:AssumeRole",
-            Effect: "Allow",
-            Principal: { Service: "es.amazonaws.com" },
-        }],
-    }),
-    tags: { Name: "zenobase-os-snapshot" },
-});
-
 new aws.iam.RolePolicy("zenobase-os-snapshot-policy", {
     role: osSnapshotRole.id,
     policy: JSON.stringify({
@@ -372,26 +381,24 @@ new aws.iam.RolePolicy("zenobase-os-snapshot-policy", {
     }),
 });
 
-if (bastionRoleName) {
-    new aws.iam.RolePolicy("zenobase-bastion-opensearch", {
-        role: bastionRoleName,
-        policy: pulumi.all([osDomain.arn, osSnapshotRole.arn]).apply(([domainArn, snapshotRoleArn]) => JSON.stringify({
-            Version: "2012-10-17",
-            Statement: [
-                {
-                    Effect: "Allow",
-                    Action: "es:ESHttp*",
-                    Resource: `${domainArn}/*`,
-                },
-                {
-                    Effect: "Allow",
-                    Action: "iam:PassRole",
-                    Resource: snapshotRoleArn,
-                },
-            ],
-        })),
-    });
-}
+new aws.iam.RolePolicy("zenobase-bastion-opensearch", {
+    role: bastionRole.name,
+    policy: pulumi.all([osDomain.arn, osSnapshotRole.arn]).apply(([domainArn, snapshotRoleArn]) => JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [
+            {
+                Effect: "Allow",
+                Action: "es:ESHttp*",
+                Resource: `${domainArn}/*`,
+            },
+            {
+                Effect: "Allow",
+                Action: "iam:PassRole",
+                Resource: snapshotRoleArn,
+            },
+        ],
+    })),
+});
 
 // ---------- IAM ----------
 
@@ -422,18 +429,6 @@ new aws.iam.RolePolicy("zenobase-ecs-execution-secrets", {
             Resource: [`arn:aws:secretsmanager:${region}:${account}:secret:zenobase/*`],
         }],
     })),
-});
-
-const ecsTaskRole = new aws.iam.Role("zenobase-ecs-task-role", {
-    assumeRolePolicy: JSON.stringify({
-        Version: "2012-10-17",
-        Statement: [{
-            Action: "sts:AssumeRole",
-            Effect: "Allow",
-            Principal: { Service: "ecs-tasks.amazonaws.com" },
-        }],
-    }),
-    tags: { Name: "zenobase-ecs-task" },
 });
 
 new aws.iam.RolePolicy("zenobase-ecs-task-policy", {
