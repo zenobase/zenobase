@@ -30,18 +30,23 @@ public class TaskRefresher {
 		logger.info("Refreshing: {}", task.getId());
 		Bucket bucket = buckets.find(task.getBucketId());
 		if (bucket == null) {
+			logger.warn("Task {} references a missing bucket: {}", task.getId(), task.getBucketId());
 			return;
 		}
 		if (!bucket.hasRole(new Authorization(task.getPrincipal()), Role.OWNER)) {
+			logger.warn("Task {} does not belong to the bucket owner", task.getId());
 			return;
 		}
 		if (!registry.exists(task.getType())) {
+			logger.warn("Task {} is unsupported: {}", task.getId(), task.getType());
 			return;
 		}
 		TaskManager manager = registry.find(task.getType());
 		Command command = manager.execute(task);
 		if (command != null) {
 			dispatcher.dispatch(command);
+		} else {
+			logger.info("Task {} completed with nothing to do", task.getId());
 		}
 	}
 }
