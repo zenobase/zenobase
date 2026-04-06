@@ -20,11 +20,8 @@ public class AuthorizationContext {
 	}
 
 	public @Nullable Authorization current(ServerRequest request) {
-		String token = request.query().first("code").orElse(null);
-		if (token == null) {
-			token = extractToken(
-					request.headers().first(HeaderNames.AUTHORIZATION).orElse(null));
-		}
+		String token =
+				extractToken(request.headers().first(HeaderNames.AUTHORIZATION).orElse(null));
 		return token != null ? authorizations.find(token) : null;
 	}
 
