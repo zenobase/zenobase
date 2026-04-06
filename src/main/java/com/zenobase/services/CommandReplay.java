@@ -40,7 +40,7 @@ public class CommandReplay {
 
 	public void replay() {
 		if (!sourceHost.isEmpty()) {
-			ClientFactory factory = () -> OpenSearchClientFactory.createHttpClient(sourceHost);
+			ClientFactory factory = () -> OpenSearchClientFactory.createClient(sourceHost, System.getenv("AWS_REGION"));
 			IndexManager indexManager = new IndexManager(factory);
 			replay(indexManager);
 			indexManager.close();

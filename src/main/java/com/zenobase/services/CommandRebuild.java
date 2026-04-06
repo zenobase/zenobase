@@ -69,7 +69,7 @@ public class CommandRebuild {
 
 	public void rebuild() {
 		if (!sourceHost.isEmpty()) {
-			ClientFactory factory = () -> OpenSearchClientFactory.createHttpClient(sourceHost);
+			ClientFactory factory = () -> OpenSearchClientFactory.createClient(sourceHost, System.getenv("AWS_REGION"));
 			IndexManager indexManager = new IndexManager(factory);
 			rebuild(indexManager);
 			indexManager.close();

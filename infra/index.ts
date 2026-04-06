@@ -790,7 +790,7 @@ new aws.ecs.Service("zenobase-service", {
         containerName: "api",
         containerPort: 9000,
     }],
-    healthCheckGracePeriodSeconds: 60, // allow time for container startup before health checks begin
+    healthCheckGracePeriodSeconds: 21600, // 6 hours: allow time for replay/rebuild before ALB health checks matter
     deploymentCircuitBreaker: {
         enable: true,
         rollback: true,

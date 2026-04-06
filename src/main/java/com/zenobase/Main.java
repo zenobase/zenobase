@@ -30,15 +30,20 @@ public class Main {
 	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
 	void main() {
-		Config config = createConfig();
-		Injector injector = createInjector(config);
+		var config = createConfig();
+		var injector = createInjector(config);
 		Globals.put(Injector.class, injector);
-		AtomicBoolean ready = new AtomicBoolean(false);
+		var ready = new AtomicBoolean(false);
 		startServer(config, injector, createObserveFeature(ready, injector), createCorsFeature(config));
-		replay(injector);
-		enableWrites(injector);
-		startScheduler(injector);
-		ready.set(true);
+		try {
+			replay(injector);
+			enableWrites(injector);
+			startScheduler(injector);
+			ready.set(true);
+		} catch (Exception e) {
+			logger.error("Startup failed", e);
+			System.exit(1);
+		}
 	}
 
 	private Config createConfig() {
@@ -60,11 +65,10 @@ public class Main {
 						.useSystemServices(false)
 						.details(true)
 						.addCheck(createServerCheck(), HealthCheckType.LIVENESS, "server")
-						.addCheck(createStartupCheck(ready), HealthCheckType.STARTUP, "startup")
 						.addCheck(
-								createOpenSearchCheck(injector.getInstance(IndexManager.class)),
+								createReadinessCheck(ready, injector.getInstance(IndexManager.class)),
 								HealthCheckType.READINESS,
-								"opensearch")
+								"readiness")
 						.build())
 				.build();
 	}
@@ -73,12 +77,11 @@ public class Main {
 		return () -> HealthCheckResponse.builder().status(true).build();
 	}
 
-	private Supplier<HealthCheckResponse> createStartupCheck(AtomicBoolean ready) {
-		return () -> HealthCheckResponse.builder().status(ready.get()).build();
-	}
-
-	private Supplier<HealthCheckResponse> createOpenSearchCheck(IndexManager indexManager) {
+	private Supplier<HealthCheckResponse> createReadinessCheck(AtomicBoolean ready, IndexManager indexManager) {
 		return () -> {
+			if (!ready.get()) {
+				return HealthCheckResponse.builder().status(false).build();
+			}
 			var health = indexManager.getCluster().getHealth();
 			return HealthCheckResponse.builder()
 					.status(health.status() != HealthStatus.Red)

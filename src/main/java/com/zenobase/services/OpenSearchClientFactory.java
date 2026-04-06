@@ -12,11 +12,9 @@ import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.transport.aws.AwsSdk2Transport;
 import org.opensearch.client.transport.aws.AwsSdk2TransportOptions;
-import org.opensearch.client.transport.httpclient5.ApacheHttpClient5Transport;
 import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import software.amazon.awssdk.http.SdkHttpClient;
 import software.amazon.awssdk.http.crt.AwsCrtHttpClient;
 import software.amazon.awssdk.regions.Region;
 
@@ -36,12 +34,16 @@ public class OpenSearchClientFactory implements ClientFactory {
 	@Override
 	public OpenSearchClient createClient() {
 		logger.info("Connecting to {}...", host);
-		URI uri = URI.create(host);
+		return createClient(host, region);
+	}
+
+	public static OpenSearchClient createClient(String host, String region) {
+		var uri = URI.create(host);
 		if ("https".equals(uri.getScheme())) {
-			SdkHttpClient httpClient = AwsCrtHttpClient.builder()
+			var httpClient = AwsCrtHttpClient.builder()
 					.connectionTimeout(Duration.ofSeconds(30))
 					.build();
-			AwsSdk2Transport transport = new AwsSdk2Transport(
+			var transport = new AwsSdk2Transport(
 					httpClient,
 					uri.getHost(),
 					"es",
@@ -49,15 +51,7 @@ public class OpenSearchClientFactory implements ClientFactory {
 					AwsSdk2TransportOptions.builder().build());
 			return new OpenSearchClient(transport);
 		}
-		HttpHost httpHost = HttpHost.create(uri);
-		ApacheHttpClient5Transport transport = ApacheHttpClient5TransportBuilder.builder(httpHost)
-				.setMapper(new JacksonJsonpMapper())
-				.build();
-		return new OpenSearchClient(transport);
-	}
-
-	public static OpenSearchClient createHttpClient(String host) {
-		HttpHost httpHost = HttpHost.create(URI.create(host));
+		var httpHost = HttpHost.create(uri);
 		return new OpenSearchClient(ApacheHttpClient5TransportBuilder.builder(httpHost)
 				.setMapper(new JacksonJsonpMapper())
 				.setHttpClientConfigCallback(builder -> builder.addRequestInterceptorFirst(
