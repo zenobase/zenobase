@@ -7,6 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
@@ -37,6 +38,7 @@ import com.zenobase.tasks.Task;
 public class CommandRebuild {
 
 	private static final Logger logger = LoggerFactory.getLogger(CommandRebuild.class);
+	private static final long MAX_BATCH_BYTES = 5_000_000;
 
 	private final String sourceHost;
 	private final int parallelism;
@@ -196,18 +198,25 @@ public class CommandRebuild {
 	private void rebuildEvents(EventRepository events, Identity owner, String bucketId, DateTime timestamp) {
 		List<Event> batch = new ArrayList<>();
 		var batchNum = new AtomicInteger(1);
+		var batchSize = new AtomicLong();
 		events.findAll(bucketId, event -> {
 			batch.add(event);
-			if (batch.size() == 5000) {
+			batchSize.addAndGet(estimateSize(event));
+			if (batchSize.get() >= MAX_BATCH_BYTES) {
 				dispatcher.dispatch(
 						new CreateEventsCommand(owner, bucketId, batch, timestamp.plusMillis(batchNum.get())));
 				batch.clear();
+				batchSize.set(0);
 				batchNum.incrementAndGet();
 			}
 		});
 		if (!batch.isEmpty()) {
 			dispatcher.dispatch(new CreateEventsCommand(owner, bucketId, batch, timestamp.plusMillis(batchNum.get())));
 		}
+	}
+
+	private static long estimateSize(Event event) {
+		return event.toJson().toString().length();
 	}
 
 	private int rebuildTasks(IndexManager indexManager) {
