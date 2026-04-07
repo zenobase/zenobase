@@ -129,18 +129,20 @@ public class Main {
 	private void replay(Injector injector) {
 		var replayBinding = injector.getExistingBinding(Key.get(CommandReplay.class));
 		var rebuildBinding = injector.getExistingBinding(Key.get(CommandRebuild.class));
-		if (replayBinding != null || rebuildBinding != null) {
-			var users = injector.getInstance(UserRepository.class);
-			if (!users.isEmpty()) {
-				throw new IllegalStateException(
-						"Migration incomplete: replay/rebuild is configured but target domain already has data");
-			}
+		if (replayBinding == null && rebuildBinding == null) {
+			return;
+		}
+		var users = injector.getInstance(UserRepository.class);
+		if (!users.isEmpty()) {
+			throw new IllegalStateException(
+					"Migration incomplete: replay/rebuild is configured but target domain already has data");
 		}
 		if (replayBinding != null) {
 			replayBinding.getProvider().get().replay();
 		} else if (rebuildBinding != null) {
 			rebuildBinding.getProvider().get().rebuild();
 		}
+		injector.getInstance(IndexManager.class).flushAll();
 	}
 
 	private void enableWrites(Injector injector) {

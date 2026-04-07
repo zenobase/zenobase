@@ -182,6 +182,14 @@ public class IndexManager implements Closeable {
 		}
 	}
 
+	public void flushAll() {
+		try {
+			client.indices().flush(f -> f.index("_all"));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	@Override
 	public void close() {
 		try {
