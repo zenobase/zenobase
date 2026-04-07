@@ -39,6 +39,7 @@ public class CommandRebuild {
 
 	private static final Logger logger = LoggerFactory.getLogger(CommandRebuild.class);
 	private static final long MAX_BATCH_BYTES = 5_000_000;
+	private static final int MAX_FAILURES = 1;
 
 	private final String sourceHost;
 	private final int parallelism;
@@ -167,6 +168,10 @@ public class CommandRebuild {
 					});
 		}
 		for (T item : items) {
+			if (failures.get() >= MAX_FAILURES) {
+				logger.warn("Aborting rebuild after {} failures", failures.get());
+				break;
+			}
 			int lane = Math.abs(laneKey.apply(item).hashCode() % effectiveParallelism);
 			lanes[lane].execute(() -> {
 				try {
