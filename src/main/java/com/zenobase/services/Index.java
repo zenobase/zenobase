@@ -154,7 +154,7 @@ public class Index {
 	}
 
 	private void index(List<? extends DomainNode> nodes, OpType operation, boolean refresh) {
-		int BATCH_SIZE = 10000;
+		int BATCH_SIZE = 5000;
 		for (int begin = 0; begin < nodes.size(); begin += BATCH_SIZE) {
 			List<BulkOperation> operations = new ArrayList<>();
 			for (int i = 0; i < BATCH_SIZE && begin + i < nodes.size(); ++i) {
