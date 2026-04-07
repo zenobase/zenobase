@@ -57,11 +57,9 @@ task starts, passes health checks, then the old task is drained automatically.
 
 1. Push to master. CI runs tests, builds Docker images, and pushes to ECR.
 
-2. If there are new secrets, sign in to AWS and update them:
+2. If there are new secrets, update them:
 
    ```sh
-   aws login --profile signin
-
    aws secretsmanager get-secret-value --secret-id zenobase/prod/zenobase-api-config \
      --query SecretString --output text > application-prod.yaml
 
@@ -69,11 +67,9 @@ task starts, passes health checks, then the old task is drained automatically.
      --secret-string file://./application-prod.yaml
    ```
 
-3. If there are infrastructure changes, sign in to AWS and run Pulumi:
+3. If there are infrastructure changes, run Pulumi:
 
    ```sh
-   aws login --profile signin
-
    cd infra
    pulumi up
    ```
