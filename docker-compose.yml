@@ -2,7 +2,7 @@ name: zenobase-api
 services:
   opensearch:
     container_name: opensearch
-    image: opensearchproject/opensearch:3.3.2
+    image: opensearchproject/opensearch:3.5.0
     ports:
       - "9200:9200"
     volumes:

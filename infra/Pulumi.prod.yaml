@@ -8,9 +8,9 @@ config:
   zenobase:sesIdentity: info@zenobase.com
   zenobase:sentryDsn: https://d77d19131a735ac1eb015d4ca1589803@o4511113690677248.ingest.us.sentry.io/4511113719709696
   zenobase:opensearchSnapshotBucket: zeno-snapshots
-  zenobase:opensearchVersion: "OpenSearch_3.3"
+  zenobase:opensearchVersion: "OpenSearch_3.5"
 #  zenobase:opensearchInstanceType: "m8g.large.search"
-  zenobase:opensearchDomain: zeno-opensearch-121
+  zenobase:opensearchDomain: "zeno-opensearch-122"
   zenobase:opensearchReplayDomain: ""
   zenobase:opensearchRebuildDomain: ""
 #  zenobase:fargateCpu: "2048"
