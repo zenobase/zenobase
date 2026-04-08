@@ -1,7 +1,5 @@
 package com.zenobase.services;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
@@ -95,13 +93,16 @@ public class CommandRepository extends RepositorySupport<Command> {
 		if (aggregations == null) {
 			return 0;
 		}
-		double value = Objects.requireNonNull(Objects.requireNonNull(aggregations.get(id))
-						.filter()
-						.aggregations()
-						.get(id))
-				.sum()
-				.value();
-		return (int) value;
+		var outer = aggregations.get(id);
+		if (outer == null) {
+			return 0;
+		}
+		var inner = outer.filter().aggregations().get(id);
+		if (inner == null) {
+			return 0;
+		}
+		Double value = inner.sum().value();
+		return value != null ? value.intValue() : 0;
 	}
 
 	private static Query createFilter(Identity principal, DateTime since) {
