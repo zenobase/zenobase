@@ -62,7 +62,11 @@ public abstract class OAuthTaskManager extends TaskManager {
 	public abstract @Nullable Command execute(Task task, OAuthCredentials credentials);
 
 	protected void reauthorize(OAuthCredentials credentials) {
-		credentialsManager.reauthorize(credentials);
+		try {
+			credentialsManager.reauthorize(credentials);
+		} catch (IllegalArgumentException e) {
+			throw new InvalidTokenException(credentials);
+		}
 	}
 
 	protected Response send(OAuthRequest request, OAuthCredentials credentials) {
@@ -71,9 +75,9 @@ public abstract class OAuthTaskManager extends TaskManager {
 		Response response = credentialsManager.send(request, credentials);
 		if (!isSuccessful(response)) {
 			if (response.getCode() == 401) {
-				throw new InvalidTokenException(request, credentials);
+				throw new InvalidTokenException(credentials);
 			} else {
-				throw new InvalidStatusException(request, response.getCode(), getBody(response));
+				throw new InvalidStatusException(request.getCompleteUrl(), response.getCode(), getBody(response));
 			}
 		}
 		return response;

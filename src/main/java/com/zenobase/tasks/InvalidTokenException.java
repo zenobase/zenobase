@@ -1,15 +1,12 @@
 package com.zenobase.tasks;
 
-import org.scribe.model.OAuthRequest;
-
-public class InvalidTokenException extends OAuthException {
+public class InvalidTokenException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
 	private final OAuthCredentials credentials;
 
-	public InvalidTokenException(OAuthRequest request, OAuthCredentials credentials) {
-		super(request);
+	public InvalidTokenException(OAuthCredentials credentials) {
 		this.credentials = credentials;
 	}
 

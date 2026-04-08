@@ -57,10 +57,10 @@ abstract class WithingsTaskManagerSupport<T extends Task> extends OAuthTaskManag
 
 	protected void checkStatus(WithingsResult result, OAuthRequest request, OAuthCredentials credentials) {
 		if (RESPONSE_CODES_UNAUTHORIZED.contains(result.getStatus())) {
-			throw new InvalidTokenException(request, credentials);
+			throw new InvalidTokenException(credentials);
 		}
 		if (result.getStatus() != 0) {
-			throw new InvalidStatusException(request, result.getStatus(), result.node.toString());
+			throw new InvalidStatusException(request.getCompleteUrl(), result.getStatus(), result.node.toString());
 		}
 	}
 
