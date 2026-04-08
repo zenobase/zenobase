@@ -53,7 +53,7 @@ public class CommandRepository extends RepositorySupport<Command> {
 		SearchRequest.Builder builder = new SearchRequest.Builder()
 				.index(index.getIndexName())
 				.query(query.build())
-				.size(100);
+				.size(1000);
 		order.apply(builder);
 		index.find(builder, node -> callback.call(toObject(node)));
 	}
