@@ -3,6 +3,7 @@ package com.zenobase.services;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
@@ -10,10 +11,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.OpType;
-import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.opensearch.client.opensearch._types.Refresh;
-import org.opensearch.client.opensearch._types.Time;
+import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.BulkResponse;
 import org.opensearch.client.opensearch.core.GetResponse;
@@ -24,8 +25,6 @@ import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.bulk.BulkOperation;
 import org.opensearch.client.opensearch.core.bulk.BulkResponseItem;
 import org.opensearch.client.opensearch.core.search.Hit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.zenobase.common.Callback;
 import com.zenobase.json.DomainNode;
@@ -35,9 +34,6 @@ import com.zenobase.json.Schema;
 
 public class Index {
 
-	private static final Logger logger = LoggerFactory.getLogger(Index.class);
-
-	private static final Time SCROLL_TIMEOUT = Time.of(t -> t.time("5m"));
 	private final String indexName;
 	private final OpenSearchClient client;
 	private boolean disableRefresh;
@@ -296,52 +292,39 @@ public class Index {
 		}
 	}
 
-	public void find(Query query, Callback<ObjectNode> callback, int scrollSize) {
-		SearchRequest.Builder builder = new SearchRequest.Builder()
-				.index(indexName)
-				.query(query)
-				.size(scrollSize)
-				.version(true)
-				.seqNoPrimaryTerm(true);
-		find(builder, callback);
+	public void find(Query query, Callback<ObjectNode> callback, int pageSize) {
+		find(
+				() -> new SearchRequest.Builder()
+						.index(indexName)
+						.query(query)
+						.size(pageSize)
+						.version(true)
+						.seqNoPrimaryTerm(true)
+						.sort(s -> s.field(f -> f.field("_id").order(SortOrder.Asc))),
+				callback);
 	}
 
-	public void find(SearchRequest.Builder requestBuilder, Callback<ObjectNode> callback) {
+	public void find(Supplier<SearchRequest.Builder> requestBuilder, Callback<ObjectNode> callback) {
 		try {
-			SearchRequest searchRequest = requestBuilder.scroll(SCROLL_TIMEOUT).build();
-			SearchResponse<ObjectNode> response = client.search(searchRequest, ObjectNode.class);
-			while (!response.hits().hits().isEmpty()) {
-				for (Hit<ObjectNode> hit : response.hits().hits()) {
+			List<FieldValue> searchAfter = null;
+			while (true) {
+				SearchRequest.Builder builder = requestBuilder.get();
+				if (searchAfter != null) {
+					builder.searchAfter(searchAfter);
+				}
+				SearchResponse<ObjectNode> response = client.search(builder.build(), ObjectNode.class);
+				var hits = response.hits().hits();
+				if (hits.isEmpty()) {
+					break;
+				}
+				for (Hit<ObjectNode> hit : hits) {
 					callback.call(read(hit));
 				}
-				String scrollId = response.scrollId();
-				response = scrollWithRetry(scrollId);
+				searchAfter = hits.getLast().sort();
 			}
-			String finalScrollId = response.scrollId();
-			client.clearScroll(c -> c.scrollId(finalScrollId));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private SearchResponse<ObjectNode> scrollWithRetry(String scrollId) throws IOException {
-		final int maxScrollAttempts = 5;
-		OpenSearchException lastException = null;
-		for (int attempt = 1; attempt <= maxScrollAttempts; attempt++) {
-			try {
-				return client.scroll(sr -> sr.scrollId(scrollId).scroll(SCROLL_TIMEOUT), ObjectNode.class);
-			} catch (OpenSearchException e) {
-				lastException = e;
-				logger.warn("Scroll attempt {}/{} failed: {}", attempt, maxScrollAttempts, e.getMessage());
-				try {
-					Thread.sleep(attempt * 5000L);
-				} catch (InterruptedException ie) {
-					Thread.currentThread().interrupt();
-					break;
-				}
-			}
-		}
-		throw new RuntimeException(lastException);
 	}
 
 	public @Nullable ObjectNode get(String id) {
