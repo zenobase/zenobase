@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zenobase.actions.GatekeeperFilter;
+import com.zenobase.actions.LogContextFilter;
 import com.zenobase.actions.QuotaExceptionFilter;
 import com.zenobase.actions.SecurityHeadersFilter;
 import com.zenobase.actions.SentryFilter;
@@ -22,6 +23,7 @@ class Routing {
 	static void buildRouting(HttpRouting.Builder routing, Injector injector) {
 		// Filters
 		routing.addFilter(new SecurityHeadersFilter());
+		routing.addFilter(injector.getInstance(LogContextFilter.class));
 		routing.addFilter(injector.getInstance(SentryFilter.class));
 		routing.addFilter(injector.getInstance(GatekeeperFilter.class));
 		routing.addFilter(injector.getInstance(QuotaExceptionFilter.class));
@@ -31,11 +33,7 @@ class Routing {
 			ControllerSupport.sendError(res, e.status(), String.valueOf(e.getMessage()));
 		});
 		routing.error(OpenSearchException.class, (req, res, e) -> {
-			logger.warn(
-					"Unhandled OpenSearch exception for {} {}",
-					req.prologue().method(),
-					req.prologue().uriPath().rawPath(),
-					e);
+			logger.warn("Unhandled OpenSearch exception", e);
 			Sentry.captureException(e, scope -> {
 				scope.setContexts("opensearch.status", e.status());
 				scope.setContexts("opensearch.type", e.error().type());
@@ -49,11 +47,7 @@ class Routing {
 			ControllerSupport.sendInternalServerError(res, "internal error");
 		});
 		routing.error(Exception.class, (req, res, e) -> {
-			logger.warn(
-					"Unhandled exception for {} {}",
-					req.prologue().method(),
-					req.prologue().uriPath().rawPath(),
-					e);
+			logger.warn("Unhandled exception", e);
 			Sentry.captureException(e);
 			ControllerSupport.sendInternalServerError(res, "internal error");
 		});
