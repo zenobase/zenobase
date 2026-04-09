@@ -4,6 +4,8 @@ import com.google.inject.Injector;
 import io.helidon.http.HeaderNames;
 import io.helidon.http.HttpException;
 import io.helidon.webserver.http.HttpRouting;
+import io.sentry.Sentry;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,12 +30,31 @@ class Routing {
 		routing.error(HttpException.class, (req, res, e) -> {
 			ControllerSupport.sendError(res, e.status(), String.valueOf(e.getMessage()));
 		});
-		routing.error(Exception.class, (req, res, e) -> {
-			logger.error(
-					"Unhandled exception: {} {}",
+		routing.error(OpenSearchException.class, (req, res, e) -> {
+			logger.warn(
+					"Unhandled OpenSearch exception for {} {}",
 					req.prologue().method(),
 					req.prologue().uriPath().rawPath(),
 					e);
+			Sentry.captureException(e, scope -> {
+				scope.setContexts("opensearch.status", e.status());
+				scope.setContexts("opensearch.type", e.error().type());
+				scope.setContexts("opensearch.reason", e.error().reason());
+				scope.setContexts(
+						"opensearch.root_causes",
+						e.error().rootCause().stream()
+								.map(rc -> rc.type() + ": " + rc.reason())
+								.toList());
+			});
+			ControllerSupport.sendInternalServerError(res, "internal error");
+		});
+		routing.error(Exception.class, (req, res, e) -> {
+			logger.warn(
+					"Unhandled exception for {} {}",
+					req.prologue().method(),
+					req.prologue().uriPath().rawPath(),
+					e);
+			Sentry.captureException(e);
 			ControllerSupport.sendInternalServerError(res, "internal error");
 		});
 
