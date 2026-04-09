@@ -1,10 +1,5 @@
 package com.zenobase.controllers;
 
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-
-import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
@@ -63,41 +58,11 @@ public class BucketListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		if (limit == Integer.MAX_VALUE) {
-			findAllStreaming(res);
-			return;
-		}
 		BucketQuery query = new BucketQuery();
 		if (q != null) {
 			query = query.queryString(q);
 		}
 		sendOk(res, BucketList.toJson(buckets.find(query, BucketQuery.DEFAULT_ORDER, offset, limit), events));
-	}
-
-	private void findAllStreaming(ServerResponse res) {
-		setHeader(res, "Content-Type", "text/plain");
-		try (var writer = new OutputStreamWriter(res.outputStream(), StandardCharsets.UTF_8)) {
-			buckets.findAll(bucket -> {
-				try {
-					writer.write(toString(bucket));
-				} catch (java.io.IOException e) {
-					throw new RuntimeException(e);
-				}
-			});
-		} catch (java.io.IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private String toString(Bucket bucket) {
-		return Joiner.on('\t')
-				.join(
-						bucket.getId(),
-						Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)),
-						bucket.hasRole(new Authorization(Identity.PUBLIC), Role.VIEWER) ? "published" : "unpublished",
-						bucket.getCreated(),
-						events.size(bucket.getId()),
-						"\n");
 	}
 
 	public void findByUser(ServerRequest req, ServerResponse res) {
