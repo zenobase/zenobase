@@ -48,7 +48,7 @@ public class EventListController extends ControllerSupport {
 
 	public static final ObjectField EVENTS = new ObjectField("events");
 
-	private static final int EXPORT_LIMIT = 16000;
+	private static final int EXPORT_LIMIT = 10000;
 
 	private final BucketRepository buckets;
 	private final EventRepository events;
