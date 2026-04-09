@@ -58,7 +58,7 @@ public class Search {
 			return Query.of(q -> q.matchAll(m -> m));
 		}
 		return Query.of(q -> q.bool(b -> {
-			if (!must.isEmpty()) b.must(must);
+			if (!must.isEmpty()) b.filter(must);
 			if (!mustNot.isEmpty()) b.mustNot(mustNot);
 			return b;
 		}));
