@@ -77,7 +77,7 @@ public class CredentialsRepository extends RepositorySupport<Credentials> {
 	}
 
 	public void find(CredentialsQuery query, Callback<Credentials> callback) {
-		find(query.build(), callback);
+		find(query.build(), SearchOrder.asc(Credentials.CREATED, Credentials.ID), callback);
 	}
 
 	@Override

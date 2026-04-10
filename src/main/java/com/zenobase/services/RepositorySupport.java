@@ -15,12 +15,12 @@ public abstract class RepositorySupport<T> {
 		getIndex().refresh();
 	}
 
-	public void findAll(Callback<T> callback) {
-		find(Query.of(q -> q.matchAll(m -> m)), callback);
+	public void findAll(SearchOrder order, Callback<T> callback) {
+		find(Query.of(q -> q.matchAll(m -> m)), order, callback);
 	}
 
-	protected void find(Query query, Callback<T> callback) {
-		getIndex().find(query, node -> callback.call(toObject(node)), 1000);
+	protected void find(Query query, SearchOrder order, Callback<T> callback) {
+		getIndex().find(query, order, node -> callback.call(toObject(node)), 1000);
 	}
 
 	protected abstract Index getIndex();

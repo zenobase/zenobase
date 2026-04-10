@@ -63,7 +63,7 @@ public class AuthorizationRepository extends RepositorySupport<Authorization> {
 	}
 
 	public void find(AuthorizationQuery query, Callback<Authorization> callback) {
-		super.find(query.build(), callback);
+		super.find(query.build(), SearchOrder.asc(Authorization.CREATED, Authorization.ID), callback);
 	}
 
 	@Override

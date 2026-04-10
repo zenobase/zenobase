@@ -6,7 +6,6 @@ import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.FieldValue;
-import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
@@ -56,8 +55,7 @@ public class CommandRepository extends RepositorySupport<Command> {
 					var builder = new SearchRequest.Builder()
 							.index(index.getIndexName())
 							.query(query.build())
-							.size(100)
-							.sort(s -> s.field(f -> f.field("_id").order(SortOrder.Asc)));
+							.size(100);
 					order.apply(builder);
 					return builder;
 				},

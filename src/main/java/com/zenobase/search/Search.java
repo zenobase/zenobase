@@ -14,9 +14,11 @@ import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
 
 import com.zenobase.common.Callback;
+import com.zenobase.json.DomainNode;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.Nodes;
 import com.zenobase.services.Index;
+import com.zenobase.services.SearchOrder;
 
 public class Search {
 
@@ -38,7 +40,7 @@ public class Search {
 	}
 
 	public void execute(Index index, Callback<ObjectNode> callback) {
-		index.find(buildQuery(), callback, 1000);
+		index.find(buildQuery(), SearchOrder.asc(DomainNode.ID), callback, 1000);
 	}
 
 	private SearchRequest buildSearch(String indexName) {

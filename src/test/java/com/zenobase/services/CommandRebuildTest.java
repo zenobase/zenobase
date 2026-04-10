@@ -51,7 +51,7 @@ public class CommandRebuildTest extends OpenSearchTestSupport {
 		authorizations.store(authorization, now);
 		credentials.store(credential, now);
 		buckets.store(bucket, now);
-		buckets.store(view, now);
+		buckets.store(view, now.plusMillis(1));
 		events.add(bucket.getId(), event, now);
 		events.refresh(bucket.getId());
 		tasks.store(task, now);

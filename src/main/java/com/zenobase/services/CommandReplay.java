@@ -19,7 +19,6 @@ public class CommandReplay {
 
 	private static final Logger logger = LoggerFactory.getLogger(CommandReplay.class);
 
-	private static final SearchOrder ORDER = new SearchOrder(Command.TIMESTAMP.getName(), true);
 	private static final int MAX_FAILURES = 1;
 
 	private final String sourceHost;
@@ -60,7 +59,7 @@ public class CommandReplay {
 		StringFilter identities = identitiesFilterBuilder.build();
 		logger.info("Replaying {} commands from {}...", repository.size(), sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
-		repository.find(new CommandQuery(), ORDER, command -> {
+		repository.find(new CommandQuery(), SearchOrder.asc(Command.TIMESTAMP, Command.ID), command -> {
 			if (failures.get() >= MAX_FAILURES) {
 				throw new IllegalStateException("Aborting replay after " + failures.get() + " failures");
 			}

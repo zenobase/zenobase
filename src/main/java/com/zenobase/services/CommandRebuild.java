@@ -108,14 +108,15 @@ public class CommandRebuild {
 
 	private int rebuildUsers(IndexManager indexManager) {
 		List<User> allUsers = new ArrayList<>();
-		new UserRepository(indexManager).findAll(allUsers::add);
+		new UserRepository(indexManager).findAll(SearchOrder.asc(User.CREATED, User.ID), allUsers::add);
 		allUsers.forEach(user -> dispatcher.dispatch(new CreateUserCommand(user.asIdentity(), user)));
 		return allUsers.size();
 	}
 
 	private int rebuildAuthorizations(IndexManager indexManager) {
 		List<Authorization> allAuthorizations = new ArrayList<>();
-		new AuthorizationRepository(indexManager).findAll(allAuthorizations::add);
+		new AuthorizationRepository(indexManager)
+				.findAll(SearchOrder.asc(Authorization.CREATED, Authorization.ID), allAuthorizations::add);
 		allAuthorizations.forEach(authorization ->
 				dispatcher.dispatch(new CreateAuthorizationCommand(authorization.getPrincipal(), authorization)));
 		return allAuthorizations.size();
@@ -123,7 +124,8 @@ public class CommandRebuild {
 
 	private int rebuildCredentials(IndexManager indexManager) {
 		List<Credentials> allCredentials = new ArrayList<>();
-		new CredentialsRepository(indexManager).findAll(allCredentials::add);
+		new CredentialsRepository(indexManager)
+				.findAll(SearchOrder.asc(Credentials.CREATED, Credentials.ID), allCredentials::add);
 		allCredentials.forEach(
 				credential -> dispatcher.dispatch(new CreateCredentialsCommand(credential.getPrincipal(), credential)));
 		return allCredentials.size();
@@ -133,7 +135,7 @@ public class CommandRebuild {
 		var events = new EventRepository(indexManager);
 		var buckets = new BucketRepository(indexManager);
 		List<Bucket> allBuckets = new ArrayList<>();
-		buckets.findAll(allBuckets::add);
+		buckets.findAll(SearchOrder.asc(Bucket.CREATED, Bucket.ID), allBuckets::add);
 		runInParallel(
 				allBuckets,
 				bucket -> Objects.requireNonNull(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)))
@@ -226,7 +228,7 @@ public class CommandRebuild {
 
 	private int rebuildTasks(IndexManager indexManager) {
 		List<Task> allTasks = new ArrayList<>();
-		new TaskRepository(indexManager).findAll(allTasks::add);
+		new TaskRepository(indexManager).findAll(SearchOrder.asc(Task.CREATED, Task.ID), allTasks::add);
 		allTasks.forEach(task -> {
 			task.setUndoId(null);
 			dispatcher.dispatch(new CreateTaskCommand(task.getPrincipal(), task));

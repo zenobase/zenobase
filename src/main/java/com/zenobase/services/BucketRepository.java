@@ -102,7 +102,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 	}
 
 	public void find(BucketQuery query, Callback<Bucket> callback) {
-		super.find(query.build(), callback);
+		super.find(query.build(), SearchOrder.asc(Bucket.CREATED, Bucket.ID), callback);
 	}
 
 	@Override

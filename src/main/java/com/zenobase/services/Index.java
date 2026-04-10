@@ -14,7 +14,6 @@ import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.OpType;
 import org.opensearch.client.opensearch._types.Refresh;
-import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.BulkResponse;
 import org.opensearch.client.opensearch.core.GetResponse;
@@ -292,15 +291,18 @@ public class Index {
 		}
 	}
 
-	public void find(Query query, Callback<ObjectNode> callback, int pageSize) {
+	public void find(Query query, SearchOrder order, Callback<ObjectNode> callback, int pageSize) {
 		find(
-				() -> new SearchRequest.Builder()
-						.index(indexName)
-						.query(query)
-						.size(pageSize)
-						.version(true)
-						.seqNoPrimaryTerm(true)
-						.sort(s -> s.field(f -> f.field("_id").order(SortOrder.Asc))),
+				() -> {
+					var builder = new SearchRequest.Builder()
+							.index(indexName)
+							.query(query)
+							.size(pageSize)
+							.version(true)
+							.seqNoPrimaryTerm(true);
+					order.apply(builder);
+					return builder;
+				},
 				callback);
 	}
 

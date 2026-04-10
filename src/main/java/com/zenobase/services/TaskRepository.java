@@ -70,7 +70,7 @@ public class TaskRepository extends RepositorySupport<Task> {
 	}
 
 	public void find(TaskQuery query, Callback<Task> callback) {
-		super.find(query.build(), callback);
+		super.find(query.build(), SearchOrder.asc(Task.CREATED, Task.ID), callback);
 	}
 
 	@Override
