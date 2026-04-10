@@ -94,7 +94,7 @@ public class CreateEventsCommand extends Command {
 
 		@Override
 		public void executeTyped(CreateEventsCommand command) {
-			repository.add(command.getBucketId(), command.getEvents(), command.getTimestamp());
+			repository.add(command.getBucketId(), command.getEvents());
 		}
 	}
 }

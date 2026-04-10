@@ -7,7 +7,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
-import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.SortOrder;
@@ -44,13 +43,13 @@ public class EventRepository {
 		}
 	}
 
-	public void add(String bucketId, Event event, DateTime timestamp) {
+	public void add(String bucketId, Event event) {
 		event.prePersist(bucketId);
 		getIndex(bucketId).store(event, false);
 		event.postPersist();
 	}
 
-	public void add(String bucketId, List<Event> events, DateTime timestamp) {
+	public void add(String bucketId, List<Event> events) {
 		for (Event event : events) {
 			event.prePersist(bucketId);
 		}
@@ -60,7 +59,7 @@ public class EventRepository {
 		}
 	}
 
-	public void update(String bucketId, Event from, Event event, DateTime timestamp) {
+	public void update(String bucketId, Event from, Event event) {
 		event.setOptimisticLock(Objects.requireNonNull(from.getOptimisticLock()));
 		event.prePersist(bucketId);
 		getIndex(bucketId).update(event, false);

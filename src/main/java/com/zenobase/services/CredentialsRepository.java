@@ -3,7 +3,6 @@ package com.zenobase.services;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
 import jakarta.inject.Inject;
-import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.slf4j.Logger;
@@ -33,11 +32,11 @@ public class CredentialsRepository extends RepositorySupport<Credentials> {
 		}
 	}
 
-	public void store(Credentials credentials, DateTime timestamp) {
+	public void store(Credentials credentials) {
 		this.index.store(credentials, true);
 	}
 
-	public void update(Credentials credentials, DateTime timestamp) {
+	public void update(Credentials credentials) {
 		index.update(credentials, true);
 	}
 

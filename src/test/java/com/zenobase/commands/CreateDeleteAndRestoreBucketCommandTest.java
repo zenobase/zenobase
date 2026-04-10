@@ -25,7 +25,7 @@ public class CreateDeleteAndRestoreBucketCommandTest {
 
 		Command command = new CreateBucketCommand(principal, bucket);
 		registry.execute(command);
-		verify(repository).store(bucket, command.getTimestamp());
+		verify(repository).store(bucket);
 		reset(repository);
 
 		Command undo = command.reverse(principal);
@@ -35,7 +35,7 @@ public class CreateDeleteAndRestoreBucketCommandTest {
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(repository).store(bucket, redo.getTimestamp());
+		verify(repository).store(bucket);
 		reset(repository);
 
 		Command unredo = redo.reverse(principal);

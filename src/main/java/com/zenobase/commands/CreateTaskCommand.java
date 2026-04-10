@@ -69,7 +69,7 @@ public class CreateTaskCommand extends Command {
 
 		@Override
 		public void executeTyped(CreateTaskCommand command) {
-			repository.store(command.getTask(), command.getTimestamp());
+			repository.store(command.getTask());
 		}
 	}
 }

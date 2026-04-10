@@ -111,8 +111,7 @@ public class UpdateBucketCommand extends Command {
 		private void update(UpdateBucketCommand command) {
 			repository.update(
 					command.getFrom(),
-					command.getTo().copy(),
-					command.getTimestamp()); // copy to prevent the version number from being incremented
+					command.getTo().copy()); // copy to prevent the version number from being incremented
 		}
 	}
 }

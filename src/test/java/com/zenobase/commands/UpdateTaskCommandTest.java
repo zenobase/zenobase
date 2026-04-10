@@ -31,19 +31,19 @@ public class UpdateTaskCommandTest {
 				.build();
 		when(repository.find(from.getId())).thenReturn(from.copy());
 		registry.execute(command);
-		verify(repository).update(to, command.getTimestamp());
+		verify(repository).update(to);
 		reset(repository);
 
 		Command undo = command.reverse(principal);
 		when(repository.find(from.getId())).thenReturn(to.copy());
 		registry.execute(undo);
-		verify(repository).update(from, undo.getTimestamp());
+		verify(repository).update(from);
 		reset(repository);
 
 		Command redo = undo.reverse(principal);
 		when(repository.find(from.getId())).thenReturn(from.copy());
 		registry.execute(redo);
-		verify(repository).update(to, redo.getTimestamp());
+		verify(repository).update(to);
 		reset(repository);
 	}
 }

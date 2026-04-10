@@ -2,7 +2,9 @@ package com.zenobase.services;
 
 import static org.mockito.ArgumentMatchers.isA;
 
-import org.joda.time.DateTime;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.util.concurrent.Uninterruptibles;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -40,21 +42,22 @@ public class CommandRebuildTest extends OpenSearchTestSupport {
 		Credentials credential = new Credentials("test", user.asIdentity());
 		Bucket bucket = new Bucket();
 		bucket.addRole(user.asIdentity(), Role.OWNER);
+		Uninterruptibles.sleepUninterruptibly(
+				2, TimeUnit.MILLISECONDS); // ensure that the view has a later created timestamp
 		Bucket view = new Bucket();
 		view.addRole(user.asIdentity(), Role.OWNER);
 		view.addAlias(new Alias(bucket.getId()));
 		Event event = new Event();
 		Task task = new Task("test", bucket.getId(), user.asIdentity());
 
-		DateTime now = DateTime.now();
 		users.store(user);
-		authorizations.store(authorization, now);
-		credentials.store(credential, now);
-		buckets.store(bucket, now);
-		buckets.store(view, now.plusMillis(1));
-		events.add(bucket.getId(), event, now);
+		authorizations.store(authorization);
+		credentials.store(credential);
+		buckets.store(bucket);
+		buckets.store(view);
+		events.add(bucket.getId(), event);
 		events.refresh(bucket.getId());
-		tasks.store(task, now);
+		tasks.store(task);
 		tasks.refresh();
 
 		new CommandRebuild("", 1, dispatcher, users, authorizations, credentials, buckets, tasks).rebuild(getManager());

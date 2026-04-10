@@ -2,7 +2,6 @@ package com.zenobase.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.joda.time.DateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,25 +28,25 @@ public class VirtualBucketTest extends OpenSearchTestSupport {
 	public void test() {
 
 		Bucket b1 = newBucket("First Bucket", me);
-		buckets.store(b1, DateTime.now());
+		buckets.store(b1);
 		assertThat(buckets.isAliased(b1.getId())).isFalse();
 
 		Bucket b2 = newBucket("Second Bucket", me);
-		buckets.store(b2, DateTime.now());
+		buckets.store(b2);
 		assertThat(buckets.isAliased(b2.getId())).isFalse();
 
 		Bucket b3 = newBucket("My Data", me);
 		b3.addAlias(new Alias(b1.getId()));
 		b3.addAlias(new Alias(b2.getId(), "tag:bar"));
-		buckets.store(b3, DateTime.now());
+		buckets.store(b3);
 		assertThat(buckets.isAliased(b1.getId())).isTrue();
 		assertThat(buckets.isAliased(b2.getId())).isTrue();
 		assertThat(buckets.isAliased(b3.getId())).isFalse();
 		NodeAssert.assertThat(buckets.find(b3.getId()).toJson()).isEqualTo(b3.toJson());
 
-		events.add(b1.getId(), newEvent("foo"), DateTime.now());
-		events.add(b2.getId(), newEvent("bar"), DateTime.now());
-		events.add(b2.getId(), newEvent("baz"), DateTime.now());
+		events.add(b1.getId(), newEvent("foo"));
+		events.add(b2.getId(), newEvent("bar"));
+		events.add(b2.getId(), newEvent("baz"));
 		events.refresh(b1.getId());
 		events.refresh(b2.getId());
 

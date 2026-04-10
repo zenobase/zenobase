@@ -70,7 +70,7 @@ public class CreateBucketCommand extends Command {
 
 		@Override
 		public void executeTyped(CreateBucketCommand command) {
-			repository.store(command.getBucket(), command.getTimestamp());
+			repository.store(command.getBucket());
 		}
 	}
 }

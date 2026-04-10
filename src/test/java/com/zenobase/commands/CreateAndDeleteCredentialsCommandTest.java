@@ -23,7 +23,7 @@ public class CreateAndDeleteCredentialsCommandTest {
 
 		Command command = new CreateCredentialsCommand(principal, task);
 		registry.execute(command);
-		verify(repository).store(task, command.getTimestamp());
+		verify(repository).store(task);
 		reset(repository);
 
 		Command undo = command.reverse(principal);
@@ -33,7 +33,7 @@ public class CreateAndDeleteCredentialsCommandTest {
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(repository).store(task, redo.getTimestamp());
+		verify(repository).store(task);
 		reset(repository);
 	}
 }

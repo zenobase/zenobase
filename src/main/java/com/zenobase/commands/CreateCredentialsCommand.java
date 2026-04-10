@@ -69,7 +69,7 @@ public class CreateCredentialsCommand extends Command {
 
 		@Override
 		public void executeTyped(CreateCredentialsCommand command) {
-			repository.store(command.getCredentials(), command.getTimestamp());
+			repository.store(command.getCredentials());
 		}
 	}
 }

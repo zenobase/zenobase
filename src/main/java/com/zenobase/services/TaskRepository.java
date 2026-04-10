@@ -2,7 +2,6 @@ package com.zenobase.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
-import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.slf4j.Logger;
@@ -31,11 +30,11 @@ public class TaskRepository extends RepositorySupport<Task> {
 		}
 	}
 
-	public void store(Task task, DateTime timestamp) {
+	public void store(Task task) {
 		this.index.store(task, false);
 	}
 
-	public void update(Task task, DateTime timestamp) {
+	public void update(Task task) {
 		index.update(task, false);
 	}
 

@@ -124,12 +124,11 @@ public class UpdateEventCommand extends Command {
 			repository.update(
 					command.getBucketId(),
 					command.getFrom(),
-					command.getTo().copy(),
-					command.getTimestamp()); // copy to prevent the version number from being incremented
+					command.getTo().copy()); // copy to prevent the version number from being incremented
 		}
 
 		private void create(UpdateEventCommand command) {
-			repository.add(command.getBucketId(), command.getTo().copy(), command.getTimestamp());
+			repository.add(command.getBucketId(), command.getTo().copy());
 		}
 	}
 }

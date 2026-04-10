@@ -68,7 +68,7 @@ public class CreateAuthorizationCommand extends Command {
 
 		@Override
 		public void executeTyped(CreateAuthorizationCommand command) {
-			repository.store(command.getAuthorization(), command.getTimestamp());
+			repository.store(command.getAuthorization());
 		}
 	}
 }

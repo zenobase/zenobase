@@ -36,7 +36,7 @@ public class AuthorizationRepositoryTest extends OpenSearchTestSupport {
 		Authorization authorization = new Authorization(new Identity(), new Identity(), Generator.id());
 		assertThat(repository.find(authorization.getId())).isNull();
 		assertThat(repository.delete(authorization.getId())).isFalse();
-		repository.store(authorization, DateTime.now());
+		repository.store(authorization);
 		assertThat(repository.find(authorization.getId()).toJson()).isEqualTo(authorization.toJson());
 		assertThat(repository.delete(authorization.getId())).isTrue();
 		assertThat(repository.find(authorization.getId())).isNull();
@@ -137,7 +137,7 @@ public class AuthorizationRepositoryTest extends OpenSearchTestSupport {
 	}
 
 	private Authorization insert(Authorization authorization) {
-		repository.store(authorization, DateTime.now());
+		repository.store(authorization);
 		return authorization;
 	}
 }

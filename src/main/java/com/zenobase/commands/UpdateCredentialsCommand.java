@@ -80,7 +80,7 @@ public class UpdateCredentialsCommand extends UpdateCommandSupport {
 		public void executeTyped(UpdateCredentialsCommand command) {
 			Credentials credentials = repository.find(Objects.requireNonNull(command.getObjectId()));
 			Preconditions.checkNotNull(credentials, "Can't find credentials: %s", command.getObjectId());
-			repository.update(command.apply(credentials), command.getTimestamp());
+			repository.update(command.apply(credentials));
 		}
 	}
 }

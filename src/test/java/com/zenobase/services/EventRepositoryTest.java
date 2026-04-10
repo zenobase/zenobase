@@ -35,7 +35,7 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 	public void testCRUD() {
 
 		Bucket bucket = new Bucket();
-		new BucketRepository(getManager()).store(bucket, DateTime.now());
+		new BucketRepository(getManager()).store(bucket);
 
 		// create event
 		Event event = new Event();
@@ -48,7 +48,7 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		assertThat(repository.size()).as("repository size").isZero();
 		assertThat(repository.size(me)).as("event count for user").isZero();
 		assertThat(repository.size(bucket.getId())).as("bucket size").isZero();
-		repository.add(bucket.getId(), event, DateTime.now());
+		repository.add(bucket.getId(), event);
 		repository.refresh(bucket.getId());
 		assertThat(repository.size()).as("repository size").isEqualTo(1L);
 		assertThat(repository.size(me)).as("event count for user").isEqualTo(1L);
@@ -67,7 +67,7 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		// update event
 		Event before = event.copy();
 		event.addValue(Event.TAG, "updated");
-		repository.update(bucket.getId(), before, event, DateTime.now());
+		repository.update(bucket.getId(), before, event);
 		repository.refresh(bucket.getId());
 		assertThat(repository.find(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
 		assertThat(repository.terms(bucket.getId(), Event.TAG.getName()))
@@ -90,7 +90,7 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 	public void testBulk() {
 
 		Bucket bucket = new Bucket();
-		new BucketRepository(getManager()).store(bucket, DateTime.now());
+		new BucketRepository(getManager()).store(bucket);
 
 		// create events
 		Event e1 = new Event();
@@ -103,7 +103,7 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		e2.addValue(Event.TAG, "bar");
 
 		// add events
-		repository.add(bucket.getId(), Lists.newArrayList(e1, e2), DateTime.now());
+		repository.add(bucket.getId(), Lists.newArrayList(e1, e2));
 		repository.refresh(bucket.getId());
 		assertThat(repository.size()).as("repository size").isEqualTo(2L);
 
@@ -117,14 +117,14 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 	public void testBulkWithNoValidEvents() {
 
 		Bucket bucket = new Bucket();
-		new BucketRepository(getManager()).store(bucket, DateTime.now());
+		new BucketRepository(getManager()).store(bucket);
 
 		// create event
 		Event e1 = new Event(Nodes.newObject("foo", "bar"));
 		e1.addValue(Event.TAG, "bad");
 
 		// add event
-		assertThatThrownBy(() -> repository.add(bucket.getId(), Lists.newArrayList(e1), DateTime.now()))
+		assertThatThrownBy(() -> repository.add(bucket.getId(), Lists.newArrayList(e1)))
 				.isInstanceOf(RuntimeException.class)
 				.hasMessageContaining("is not allowed");
 		repository.refresh(bucket.getId());
@@ -135,7 +135,7 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 	public void testBulkWithInvalidEvent() {
 
 		Bucket bucket = new Bucket();
-		new BucketRepository(getManager()).store(bucket, DateTime.now());
+		new BucketRepository(getManager()).store(bucket);
 
 		// create events
 		Event e1 = new Event();
@@ -144,7 +144,7 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		e2.addValue(Event.TAG, "bad");
 
 		// add events
-		assertThatThrownBy(() -> repository.add(bucket.getId(), Lists.newArrayList(e1, e2), DateTime.now()))
+		assertThatThrownBy(() -> repository.add(bucket.getId(), Lists.newArrayList(e1, e2)))
 				.isInstanceOf(RuntimeException.class)
 				.hasMessageContaining("is not allowed");
 		repository.refresh(bucket.getId());
@@ -155,23 +155,23 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 	public void testOptimisticLockFailure() {
 
 		Bucket bucket = new Bucket();
-		new BucketRepository(getManager()).store(bucket, DateTime.now());
+		new BucketRepository(getManager()).store(bucket);
 
 		Event event = new Event();
 		event.setValue(Event.AUTHOR, me);
 		event.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
 		event.addValue(Event.TAG, "original");
-		repository.add(bucket.getId(), event, DateTime.now());
+		repository.add(bucket.getId(), event);
 		repository.refresh(bucket.getId());
 
 		Event current = repository.find(bucket.getId(), event.getId());
 		Event stale = current.copy();
 
 		current.addValue(Event.TAG, "updated");
-		repository.update(bucket.getId(), current, current, DateTime.now());
+		repository.update(bucket.getId(), current, current);
 
 		stale.addValue(Event.TAG, "conflict");
-		assertThatThrownBy(() -> repository.update(bucket.getId(), stale, stale, DateTime.now()))
+		assertThatThrownBy(() -> repository.update(bucket.getId(), stale, stale))
 				.hasMessageContaining("409 Conflict");
 	}
 
@@ -179,11 +179,11 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 	public void testTimestamp() {
 
 		Bucket bucket = new Bucket();
-		new BucketRepository(getManager()).store(bucket, DateTime.now());
+		new BucketRepository(getManager()).store(bucket);
 		Event event = new Event();
 		event.setValue(Event.AUTHOR, me);
 		event.addValue(Event.TAG, "test");
 		event.toJson().put("timestamp", "2012-10-24T13:10:00.000-00:00");
-		repository.add(bucket.getId(), event, DateTime.now());
+		repository.add(bucket.getId(), event);
 	}
 }

@@ -27,7 +27,7 @@ public class CreateAndDeleteEventCommandTest {
 
 		Command command = new CreateEventCommand(principal, bucketId, event);
 		registry.execute(command);
-		verify(repository).add(bucketId, event, command.getTimestamp());
+		verify(repository).add(bucketId, event);
 		reset(repository);
 
 		Command undo = command.reverse(principal);
@@ -37,7 +37,7 @@ public class CreateAndDeleteEventCommandTest {
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(repository).add(bucketId, event, redo.getTimestamp());
+		verify(repository).add(bucketId, event);
 		reset(repository);
 	}
 }

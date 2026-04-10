@@ -25,7 +25,7 @@ public class CreateAndDeleteTaskCommandTest {
 
 		Command command = new CreateTaskCommand(principal, task);
 		registry.execute(command);
-		verify(repository).store(task, command.getTimestamp());
+		verify(repository).store(task);
 		reset(repository);
 
 		Command undo = command.reverse(principal);
@@ -35,7 +35,7 @@ public class CreateAndDeleteTaskCommandTest {
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(repository).store(task, redo.getTimestamp());
+		verify(repository).store(task);
 		reset(repository);
 	}
 }

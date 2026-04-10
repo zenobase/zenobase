@@ -7,7 +7,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
-import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
@@ -41,7 +40,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 		}
 	}
 
-	public void store(Bucket bucket, DateTime timestamp) {
+	public void store(Bucket bucket) {
 		realias(bucket);
 		index.store(bucket, true);
 	}
@@ -53,7 +52,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 				bucket.isVirtual() ? bucket.getAliases() : new ArrayList<>(List.of(new Alias(bucket.getId()))));
 	}
 
-	public void update(Bucket from, Bucket to, DateTime timestamp) {
+	public void update(Bucket from, Bucket to) {
 		if (!Objects.equals(from.getAliases(), to.getAliases())) {
 			manager.updateAlias(EventRepository.INDEX_NAME, from.getId(), to.getAliases());
 		}

@@ -23,7 +23,7 @@ public class CreateAndDeleteAuthorizationCommandTest {
 
 		Command command = new CreateAuthorizationCommand(principal, authorization);
 		registry.execute(command);
-		verify(repository).store(authorization, command.getTimestamp());
+		verify(repository).store(authorization);
 		reset(repository);
 
 		Command undo = command.reverse(principal);
@@ -33,7 +33,7 @@ public class CreateAndDeleteAuthorizationCommandTest {
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(repository).store(authorization, redo.getTimestamp());
+		verify(repository).store(authorization);
 		reset(repository);
 	}
 }

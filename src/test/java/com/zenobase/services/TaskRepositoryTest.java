@@ -38,10 +38,10 @@ public class TaskRepositoryTest extends OpenSearchTestSupport {
 		Task task = new Task(TYPE, BUCKET, ME);
 		assertThat(repository.find(task.getId())).isNull();
 		assertThat(repository.delete(task.getId())).isFalse();
-		repository.store(task, DateTime.now());
+		repository.store(task);
 		assertThat(repository.find(task.getId()).toJson()).isEqualTo(task.toJson());
 		task.setCompleted(DateTime.now());
-		repository.update(task, DateTime.now());
+		repository.update(task);
 		assertThat(repository.find(task.getId()).toJson()).isEqualTo(task.toJson());
 		assertThat(repository.delete(task.getId())).isTrue();
 		assertThat(repository.find(task.getId())).isNull();
@@ -90,7 +90,7 @@ public class TaskRepositoryTest extends OpenSearchTestSupport {
 			tasks.add(task);
 			Uninterruptibles.sleepUninterruptibly(
 					5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
-			repository.store(task, DateTime.now());
+			repository.store(task);
 		}
 		repository.refresh();
 		return Lists.reverse(tasks);
@@ -98,7 +98,7 @@ public class TaskRepositoryTest extends OpenSearchTestSupport {
 
 	private Task insert(String bucketId, Identity principal) {
 		Task task = new Task(TYPE, bucketId, principal);
-		repository.store(task, DateTime.now());
+		repository.store(task);
 		repository.refresh();
 		return task;
 	}

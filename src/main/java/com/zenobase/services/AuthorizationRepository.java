@@ -2,7 +2,6 @@ package com.zenobase.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
-import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch.core.SearchRequest;
@@ -32,7 +31,7 @@ public class AuthorizationRepository extends RepositorySupport<Authorization> {
 		}
 	}
 
-	public void store(Authorization authorization, DateTime timestamp) {
+	public void store(Authorization authorization) {
 		this.index.store(authorization, true);
 	}
 

@@ -30,7 +30,7 @@ public class CreateAndDeleteEventsCommandTest {
 
 		Command command = new CreateEventsCommand(principal, bucketId, Lists.newArrayList(e1, e2));
 		registry.execute(command);
-		verify(repository).add(bucketId, Lists.newArrayList(e1, e2), command.getTimestamp());
+		verify(repository).add(bucketId, Lists.newArrayList(e1, e2));
 		reset(repository);
 
 		Command undo = command.reverse(principal);
@@ -40,7 +40,7 @@ public class CreateAndDeleteEventsCommandTest {
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(repository).add(bucketId, Lists.newArrayList(e1, e2), redo.getTimestamp());
+		verify(repository).add(bucketId, Lists.newArrayList(e1, e2));
 		reset(repository);
 	}
 }

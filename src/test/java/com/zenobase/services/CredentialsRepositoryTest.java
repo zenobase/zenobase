@@ -36,10 +36,10 @@ public class CredentialsRepositoryTest extends OpenSearchTestSupport {
 		Credentials credentials = new Credentials(TYPE, new Identity());
 		assertThat(repository.find(credentials.getId())).isNull();
 		assertThat(repository.delete(credentials.getId())).isFalse();
-		repository.store(credentials, DateTime.now());
+		repository.store(credentials);
 		assertThat(repository.find(credentials.getId()).toJson()).isEqualTo(credentials.toJson());
 		credentials.setAuthorizationUrl("http://localhost/");
-		repository.update(credentials, DateTime.now());
+		repository.update(credentials);
 		assertThat(repository.find(credentials.getId()).toJson()).isEqualTo(credentials.toJson());
 		assertThat(repository.delete(credentials.getId())).isTrue();
 		assertThat(repository.find(credentials.getId())).isNull();
@@ -111,6 +111,6 @@ public class CredentialsRepositoryTest extends OpenSearchTestSupport {
 	}
 
 	private void store(Credentials credentials) {
-		repository.store(credentials, DateTime.now());
+		repository.store(credentials);
 	}
 }

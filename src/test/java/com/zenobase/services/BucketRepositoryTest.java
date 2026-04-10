@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
-import org.joda.time.DateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,20 +42,20 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 		b1.setWidgets(List.of(newWidget()));
 
 		// store and retrieve bucket
-		repository.store(b1, DateTime.now());
+		repository.store(b1);
 		assertThat(repository.find(b1.getId()).toJson()).isEqualTo(b1.toJson());
 
 		// update bucket
 		Bucket b2 = b1.copy();
 		b2.setDescription("just a test");
-		repository.update(b1, b2, DateTime.now());
+		repository.update(b1, b2);
 		assertThat(repository.find(b2.getId()).toJson()).isEqualTo(b2.toJson());
 
 		// delete and recreate bucket
 		assertThat(repository.delete(b2.getId())).isTrue();
 		assertThat(repository.find(b2.getId())).as("bucket").isNull();
 		assertThat(repository.delete(b2.getId())).isFalse();
-		repository.store(b2, DateTime.now());
+		repository.store(b2);
 		assertThat(repository.find(b2.getId()).toJson()).isEqualTo(b2.toJson());
 	}
 
@@ -69,12 +68,12 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 		Bucket v1 = newBucket("View", ME);
 		v1.setAliases(List.of(new Alias(b1.getId()), new Alias(b2.getId())));
-		repository.store(v1, DateTime.now());
+		repository.store(v1);
 		assertThat(repository.find(v1.getId()).getAliases()).isEqualTo(v1.getAliases());
 
 		Bucket v2 = v1.copy();
 		v2.setAliases(List.of(new Alias(b1.getId()), new Alias(b3.getId())));
-		repository.update(v1, v2, DateTime.now());
+		repository.update(v1, v2);
 		assertThat(repository.find(v2.getId()).getAliases()).isEqualTo(v2.getAliases());
 	}
 
@@ -147,11 +146,11 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 		Bucket b1 = newBucket("foo", ME);
 		b1.setRefresh(false);
-		repository.store(b1, DateTime.now());
+		repository.store(b1);
 
 		Bucket b2 = newBucket("bar", ME);
 		b2.setRefresh(true);
-		repository.store(b2, DateTime.now());
+		repository.store(b2);
 
 		Callback<Bucket> c = mock(Callback.class);
 		repository.find(new BucketQuery().isRefreshable(), c);
@@ -163,11 +162,11 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 		Bucket b1 = newBucket("foo", ME);
 		b1.setArchived(false);
-		repository.store(b1, DateTime.now());
+		repository.store(b1);
 
 		Bucket b2 = newBucket("bar", ME);
 		b2.setArchived(true);
-		repository.store(b2, DateTime.now());
+		repository.store(b2);
 
 		Callback<Bucket> c1 = mock(Callback.class);
 		repository.find(new BucketQuery().includeArchived(false), c1);
@@ -185,7 +184,7 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 					5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
 			Bucket bucket = newBucket(String.format("bucket%03d", i + 1), ME);
 			buckets.add(bucket);
-			repository.store(bucket, DateTime.now());
+			repository.store(bucket);
 		}
 		return buckets;
 	}
@@ -196,7 +195,7 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 	private Bucket insert(String label, Identity owner, String aliasId) {
 		Bucket bucket = newBucket(label, owner, aliasId);
-		repository.store(bucket, DateTime.now());
+		repository.store(bucket);
 		return bucket;
 	}
 

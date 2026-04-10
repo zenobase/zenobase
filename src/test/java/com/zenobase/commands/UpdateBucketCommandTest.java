@@ -36,17 +36,17 @@ public class UpdateBucketCommandTest {
 
 		Command command = new UpdateBucketCommand(principal, from, to);
 		registry.execute(command);
-		verify(repository).update(from, to, command.getTimestamp());
+		verify(repository).update(from, to);
 		reset(repository);
 
 		Command undo = command.reverse(principal);
 		registry.execute(undo);
-		verify(repository).update(to, from, undo.getTimestamp());
+		verify(repository).update(to, from);
 		reset(repository);
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(repository).update(from, to, redo.getTimestamp());
+		verify(repository).update(from, to);
 		reset(repository);
 	}
 
@@ -60,7 +60,7 @@ public class UpdateBucketCommandTest {
 
 		Command command = new UpdateBucketCommand(principal, from, to);
 		registry.execute(command);
-		verify(repository).update(from, to, command.getTimestamp());
+		verify(repository).update(from, to);
 	}
 
 	@Test
@@ -75,13 +75,13 @@ public class UpdateBucketCommandTest {
 		Command command = new UpdateBucketCommand(principal, from, to);
 		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409)
 				.error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
-		doThrow(e).when(repository).update(from, to, command.getTimestamp());
+		doThrow(e).when(repository).update(from, to);
 		Bucket current = from.copy();
 		current.setVersion(1);
 		current.setOptimisticLock(new OptimisticLock(1, 1));
 		when(repository.find(to.getId())).thenReturn(current);
 		registry.execute(command);
-		verify(repository).update(from2, to2, command.getTimestamp());
+		verify(repository).update(from2, to2);
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class UpdateBucketCommandTest {
 		Command command = new UpdateBucketCommand(principal, from, to);
 		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409)
 				.error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
-		doThrow(e).when(repository).update(from, to, command.getTimestamp());
+		doThrow(e).when(repository).update(from, to);
 		Bucket current = from.copy();
 		current.setVersion(3);
 		when(repository.find(to.getId())).thenReturn(current);
