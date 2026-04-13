@@ -8,9 +8,7 @@ import com.google.inject.Module;
 import com.google.inject.Singleton;
 import io.helidon.webserver.http.HttpRouting;
 
-import com.zenobase.mail.EmailValidator;
-import com.zenobase.mail.RegexEmailValidator;
-import com.zenobase.mail.VerificationMailer;
+import com.zenobase.auth.UserDirectory;
 import com.zenobase.models.User;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.Bus;
@@ -24,7 +22,7 @@ public abstract class UserControllerTestSupport extends ControllerTestSupport {
 	protected final UserRepository users = mock(UserRepository.class);
 	protected final AuthorizationRepository authorizations = mock(AuthorizationRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
-	protected final VerificationMailer mailer = mock(VerificationMailer.class);
+	protected final UserDirectory userDirectory = mock(UserDirectory.class);
 	protected final User user = newUser("tester");
 
 	private static User newUser(String name) {
@@ -43,8 +41,7 @@ public abstract class UserControllerTestSupport extends ControllerTestSupport {
 				bind(UserRepository.class).toInstance(users);
 				bind(AuthorizationRepository.class).toInstance(authorizations);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
-				bind(VerificationMailer.class).toInstance(mailer);
-				bind(EmailValidator.class).to(RegexEmailValidator.class);
+				bind(UserDirectory.class).toInstance(userDirectory);
 				bind(UserController.class).in(Singleton.class);
 			}
 		};

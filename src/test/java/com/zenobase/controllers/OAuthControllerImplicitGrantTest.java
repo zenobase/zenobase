@@ -1,21 +1,16 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 import io.helidon.webclient.http1.Http1ClientResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
-import com.zenobase.commands.CreateAuthorizationCommand;
-import com.zenobase.common.DefaultPartialList;
 import com.zenobase.common.Generator;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.AuthorizationQuery;
 
 public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport {
 
@@ -35,41 +30,9 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 	public void test() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(oauthClient.asIdentity())).thenReturn(oauthClient);
-		AuthorizationQuery query = new AuthorizationQuery()
-				.principalEqualTo(user.asIdentity())
-				.clientEqualTo(oauthClient.asIdentity())
-				.scopeEqualTo(scope);
-		when(authorizations.find(eq(query), anyInt(), anyInt())).thenReturn(DefaultPartialList.of());
-		ArgumentCaptor<CreateAuthorizationCommand> arg = ArgumentCaptor.forClass(CreateAuthorizationCommand.class);
-		when(dispatcher.dispatch(arg.capture())).thenReturn("c1");
 		try (Http1ClientResponse result = call(
 				new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, scope))) {
 			assertGranted(result);
-			Authorization auth = arg.getValue().getAuthorization();
-			assertThat(auth.getId()).isNotNull();
-			assertThat(auth.getPrincipal()).isEqualTo(user.asIdentity());
-			assertThat(auth.getClient()).isEqualTo(oauthClient.asIdentity());
-			assertThat(auth.getScope()).isEqualTo(scope);
-		}
-	}
-
-	@Test
-	public void testReusesTokenOnSecondRequest() {
-		Authorization authorization = new Authorization(user.asIdentity(), oauthClient.asIdentity(), scope);
-		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		when(users.find(oauthClient.asIdentity())).thenReturn(oauthClient);
-		AuthorizationQuery query = new AuthorizationQuery()
-				.principalEqualTo(user.asIdentity())
-				.clientEqualTo(oauthClient.asIdentity())
-				.scopeEqualTo(scope);
-		when(authorizations.find(eq(query), anyInt(), anyInt())).thenReturn(DefaultPartialList.of(authorization));
-		try (Http1ClientResponse result = call(
-				new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, oauthClient.asIdentity(), redirectUri, scope))) {
-			assertThat(result)
-					.hasStatus(200)
-					.asObjectNode()
-					.path("access_token")
-					.isEqualTo(authorization.getId());
 		}
 	}
 

@@ -29,7 +29,6 @@ public class UserRepositoryTest extends OpenSearchTestSupport {
 		// create user
 		User user = new User("tester");
 		user.setEmail("jdoe@zenobase.com");
-		user.setPassword("secret123");
 
 		assertThat(repository.isEmpty()).isTrue();
 		assertThat(repository.exists(user.getName())).isFalse();

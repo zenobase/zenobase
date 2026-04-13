@@ -67,10 +67,6 @@ class Routing {
 		var who = injector.getInstance(WhoController.class);
 		routing.get("/who", who::who);
 
-		// Password reset
-		var reset = injector.getInstance(PasswordResetController.class);
-		routing.post("/reset", reset::requestReset);
-
 		// Quota
 		var quota = injector.getInstance(QuotaController.class);
 		routing.get("/users/{userId}/quota", quota::get);
@@ -86,7 +82,6 @@ class Routing {
 
 		// Accounts
 		var account = injector.getInstance(AccountController.class);
-		routing.post("/users/", account::open);
 		routing.delete("/users/{userId}", account::close);
 
 		// Buckets

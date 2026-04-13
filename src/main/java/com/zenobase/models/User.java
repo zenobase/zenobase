@@ -8,7 +8,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
 
-import com.zenobase.common.BCryptUtils;
 import com.zenobase.common.Generator;
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DateTimeField;
@@ -23,9 +22,9 @@ public class User extends DomainNode {
 	public static final String TYPE_NAME = "user";
 
 	public static final TokenField ID = new TokenField("@id");
+	public static final TokenField EXTERNAL_ID = new TokenField("external_id");
 	public static final TokenField NAME = new TokenField("name");
 	public static final DateTimeField CREATED = new DateTimeField("created");
-	public static final TokenField PASSWORD = new TokenField("password", false);
 	public static final TokenField EMAIL = new TokenField("email");
 	public static final BooleanField VERIFIED = new BooleanField("verified");
 	public static final BooleanField SUSPENDED = new BooleanField("suspended");
@@ -56,33 +55,20 @@ public class User extends DomainNode {
 		return Objects.requireNonNull(getValue(ID));
 	}
 
+	public @Nullable String getExternalId() {
+		return getValue(EXTERNAL_ID);
+	}
+
+	public void setExternalId(String externalId) {
+		setValue(EXTERNAL_ID, externalId);
+	}
+
 	public @Nullable String getName() {
 		return getValue(NAME);
 	}
 
 	public @Nullable DateTime getCreated() {
 		return getValue(CREATED);
-	}
-
-	public @Nullable String getHashedPassword() {
-		return getValue(PASSWORD);
-	}
-
-	public static String hashPassword(String password) {
-		return BCryptUtils.hashpw(password);
-	}
-
-	public void setHashedPassword(String hashed) {
-		setValue(PASSWORD, hashed);
-	}
-
-	public void setPassword(String password) {
-		setHashedPassword(hashPassword(password));
-	}
-
-	public boolean passwordEquals(String password) {
-		String hashed = getHashedPassword();
-		return hashed != null && BCryptUtils.checkpw(password, hashed);
 	}
 
 	public @Nullable String getEmail() {
@@ -152,7 +138,7 @@ public class User extends DomainNode {
 				.add(ID)
 				.add(NAME)
 				.add(CREATED)
-				.add(PASSWORD)
+				.add(EXTERNAL_ID)
 				.add(EMAIL)
 				.add(VERIFIED)
 				.add(SUSPENDED)

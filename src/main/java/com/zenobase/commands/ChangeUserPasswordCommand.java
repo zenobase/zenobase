@@ -8,8 +8,6 @@ import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
-import com.zenobase.models.User;
-import com.zenobase.services.UserRepository;
 
 public class ChangeUserPasswordCommand extends Command {
 
@@ -74,19 +72,14 @@ public class ChangeUserPasswordCommand extends Command {
 
 	public static class Handler extends CommandHandler<ChangeUserPasswordCommand> {
 
-		private final UserRepository repository;
-
 		@Inject
-		public Handler(UserRepository repository) {
+		public Handler() {
 			super(ChangeUserPasswordCommand.class);
-			this.repository = repository;
 		}
 
 		@Override
 		public void executeTyped(ChangeUserPasswordCommand command) {
-			User user = Objects.requireNonNull(repository.find(Objects.requireNonNull(command.getUsername())));
-			user.setHashedPassword(Objects.requireNonNull(command.getTo()));
-			repository.update(user);
+			// No-op: passwords are now managed by Auth0
 		}
 	}
 }

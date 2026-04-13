@@ -1,24 +1,19 @@
 package com.zenobase.controllers;
 
-import java.util.Objects;
-
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
 
+import com.zenobase.auth.UserDirectory;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.DeleteCredentialsCommand;
 import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.DeleteUserCommand;
-import com.zenobase.mail.EmailValidator;
-import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
-import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.AuthorizationQuery;
 import com.zenobase.services.AuthorizationRepository;
@@ -40,8 +35,7 @@ public class AccountController extends ControllerSupport {
 	private final CredentialsRepository credentials;
 	private final AuthorizationRepository authorizations;
 	private final CommandDispatcher dispatcher;
-	private final EmailValidator emailValidator;
-	private final VerificationMailer mailer;
+	private final UserDirectory userDirectory;
 
 	@Inject
 	public AccountController(
@@ -52,8 +46,7 @@ public class AccountController extends ControllerSupport {
 			CredentialsRepository credentials,
 			AuthorizationRepository authorizations,
 			CommandDispatcher dispatcher,
-			EmailValidator emailValidator,
-			VerificationMailer mailer) {
+			UserDirectory userDirectory) {
 
 		super(security);
 		this.users = users;
@@ -62,34 +55,7 @@ public class AccountController extends ControllerSupport {
 		this.credentials = credentials;
 		this.authorizations = authorizations;
 		this.dispatcher = dispatcher;
-		this.emailValidator = emailValidator;
-		this.mailer = mailer;
-	}
-
-	public void open(ServerRequest req, ServerResponse res) {
-		var form = new SignUpForm(body(req));
-		if (!form.valid(emailValidator)) {
-			sendBadRequest(res, "invalid request body");
-			return;
-		}
-		if (users.exists(Objects.requireNonNull(form.getUsername()))) {
-			sendConflict(res, "user exists");
-			return;
-		}
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null || auth.getScope() != null) {
-			sendUnauthorized(res);
-			return;
-		}
-		var user = new User(auth.getPrincipal().id(), Objects.requireNonNull(form.getUsername()));
-		user.setEmail(Objects.requireNonNull(form.getEmail()));
-		user.setHashedPassword(User.hashPassword(Objects.requireNonNull(form.getPassword())));
-		user.setSuperuser(users.isEmpty());
-		String commandId = dispatcher.dispatch(new CreateUserCommand(auth.getPrincipal(), user));
-		mailer.send(user);
-		setHeader(res, LOCATION, "/users/" + user.getName());
-		setHeader(res, COMMAND_ID, commandId);
-		sendCreated(res, new UserProfile(user).toJson());
+		this.userDirectory = userDirectory;
 	}
 
 	public void close(ServerRequest req, ServerResponse res) {
@@ -110,6 +76,7 @@ public class AccountController extends ControllerSupport {
 		}
 		Command command = buildCloseAccountCommand(auth.getPrincipal(), user, auth);
 		String commandId = dispatcher.dispatch(command);
+		userDirectory.deleteUser(user);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}

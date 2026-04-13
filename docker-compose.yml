@@ -30,6 +30,14 @@ services:
         soft: -1
         hard: -1
 
+  localauth0:
+    container_name: localauth0
+    image: public.ecr.aws/primaassicurazioni/localauth0:0.8.3
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./conf/localauth0.toml:/localauth0.toml:ro
+
   helidon:
     container_name: helidon
     image: zenobase:latest

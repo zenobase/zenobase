@@ -1,46 +1,25 @@
 package com.zenobase.controllers;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import io.helidon.http.HeaderNames;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-
-import com.zenobase.commands.CreateAuthorizationCommand;
-import com.zenobase.oauth.Authorization;
 
 public class OAuthControllerClientCredentialsGrantTest extends OAuthControllerTestSupport {
 
 	@Test
 	public void test() {
-		ArgumentCaptor<CreateAuthorizationCommand> arg = ArgumentCaptor.forClass(CreateAuthorizationCommand.class);
-		when(dispatcher.dispatch(arg.capture())).thenReturn("c");
-		try (Http1ClientResponse result =
-				call(new TokenForm(OAuthController.GRANT_TYPE_CLIENT_CREDENTIALS, null, null))) {
+		try (Http1ClientResponse result = call(new TokenForm(OAuthController.GRANT_TYPE_CLIENT_CREDENTIALS))) {
 			assertGranted(result);
-			Authorization auth = arg.getValue().getAuthorization();
-			assertThat(auth.getId()).isNotNull();
-			assertThat(auth.getPrincipal()).isNotNull();
-			assertThat(auth.getClient()).isNull();
-			assertThat(auth.getScope()).isNull();
+			assertExpires(result, 31 * 24 * 60 * 60);
 		}
 	}
 
 	@Test
 	public void testWithJson() {
-		ArgumentCaptor<CreateAuthorizationCommand> arg = ArgumentCaptor.forClass(CreateAuthorizationCommand.class);
-		when(dispatcher.dispatch(arg.capture())).thenReturn("c");
-		try (Http1ClientResponse result =
-				call(new TokenForm(OAuthController.GRANT_TYPE_CLIENT_CREDENTIALS, null, null).toJson())) {
+		try (Http1ClientResponse result = call(new TokenForm(OAuthController.GRANT_TYPE_CLIENT_CREDENTIALS).toJson())) {
 			assertGranted(result);
-			Authorization auth = arg.getValue().getAuthorization();
-			assertThat(auth.getId()).isNotNull();
-			assertThat(auth.getPrincipal()).isNotNull();
-			assertThat(auth.getClient()).isNull();
-			assertThat(auth.getScope()).isNull();
+			assertExpires(result, 31 * 24 * 60 * 60);
 		}
 	}
 

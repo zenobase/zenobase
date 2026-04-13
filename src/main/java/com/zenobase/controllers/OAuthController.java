@@ -9,7 +9,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Iterables;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
@@ -18,14 +17,11 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.zenobase.commands.CreateAuthorizationCommand;
+import com.zenobase.auth.local.LocalTokenService;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.AuthorizationQuery;
-import com.zenobase.services.AuthorizationRepository;
-import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
 
 public class OAuthController extends ControllerSupport {
@@ -39,25 +35,17 @@ public class OAuthController extends ControllerSupport {
 	static final String INVALID_REDIRECT_URI = "invalid_redirect_uri";
 	static final String INVALID_SCOPE = "invalid_scope";
 
-	static final String GRANT_TYPE_PASSWORD = "password";
 	static final String UNSUPPORTED_GRANT_TYPE = "unsupported_grant_type";
-	static final String ACCESS_DENIED = "access_denied";
 
 	static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
 
-	private final AuthorizationRepository authorizations;
-	private final CommandDispatcher dispatcher;
+	private final LocalTokenService localTokenService;
 	private final UserRepository users;
 
 	@Inject
-	public OAuthController(
-			AuthorizationContext security,
-			AuthorizationRepository authorizations,
-			CommandDispatcher dispatcher,
-			UserRepository users) {
+	public OAuthController(AuthorizationContext security, LocalTokenService localTokenService, UserRepository users) {
 		super(security);
-		this.authorizations = authorizations;
-		this.dispatcher = dispatcher;
+		this.localTokenService = localTokenService;
 		this.users = users;
 	}
 
@@ -97,7 +85,12 @@ public class OAuthController extends ControllerSupport {
 			deny(res, INVALID_SCOPE, "scope must be a bucket");
 			return;
 		}
-		grant(res, auth.getPrincipal(), form.getClient(), form.getScope());
+		String token = localTokenService.createScopedToken(auth.getPrincipal(), form.getClient(), form.getScope());
+		ObjectNode result = Nodes.newObject();
+		result.put("access_token", token);
+		result.put("client_id", auth.getPrincipal().id());
+		result.put("scope", form.getScope());
+		sendOk(res, result);
 	}
 
 	public void token(ServerRequest req, ServerResponse res) {
@@ -110,14 +103,11 @@ public class OAuthController extends ControllerSupport {
 				req.headers().first(io.helidon.http.HeaderNames.CONTENT_TYPE).orElse("");
 		if (contentType.contains("application/json")) {
 			ObjectNode node = body(req);
-			return new TokenForm(
-					node.has("grant_type") ? node.get("grant_type").asText() : null,
-					node.has("username") ? node.get("username").asText() : null,
-					node.has("password") ? node.get("password").asText() : null);
+			return new TokenForm(node.has("grant_type") ? node.get("grant_type").asText() : null);
 		}
 		String body = req.content().as(String.class);
 		Map<String, String> params = parseFormEncoded(body);
-		return new TokenForm(params.get("grant_type"), params.get("username"), params.get("password"));
+		return new TokenForm(params.get("grant_type"));
 	}
 
 	private static Map<String, String> parseFormEncoded(@Nullable String body) {
@@ -136,34 +126,19 @@ public class OAuthController extends ControllerSupport {
 
 	private void token(ServerResponse res, TokenForm form) {
 		if (GRANT_TYPE_CLIENT_CREDENTIALS.equals(form.getGrant_type())) {
-			grant(res, new Identity(), null, null);
-			return;
-		}
-		if (GRANT_TYPE_PASSWORD.equals(form.getGrant_type())) {
-			if (form.getUsername() == null) {
-				deny(res, INVALID_REQUEST, "username is required");
-				return;
-			}
-			if (form.getPassword() == null) {
-				deny(res, INVALID_REQUEST, "password is required");
-				return;
-			}
-			User user = users.find(form.getUsername());
-			if (user == null || !user.passwordEquals(form.getPassword())) {
-				deny(res, ACCESS_DENIED, "invalid username or password for " + form.getUsername());
-				return;
-			}
-			if (user.isSuspended()) {
-				deny(res, ACCESS_DENIED, "user suspended");
-				return;
-			}
-			grant(res, user.asIdentity(), null, null);
+			String token = localTokenService.createGuestToken();
+			Identity guest = new Identity(com.auth0.jwt.JWT.decode(token).getSubject());
+			ObjectNode result = Nodes.newObject();
+			result.put("access_token", token);
+			result.put("client_id", guest.id());
+			result.put("expires_in", Duration.standardDays(31).getStandardSeconds());
+			sendOk(res, result);
 			return;
 		}
 		deny(
 				res,
 				UNSUPPORTED_GRANT_TYPE,
-				String.format("grant_type must be '%s', got %s", GRANT_TYPE_PASSWORD, form.getGrant_type()));
+				String.format("grant_type must be '%s', got %s", GRANT_TYPE_CLIENT_CREDENTIALS, form.getGrant_type()));
 	}
 
 	private void deny(ServerResponse res, String errorCode, String errorDescription) {
@@ -172,30 +147,6 @@ public class OAuthController extends ControllerSupport {
 		result.put("error", errorCode);
 		result.put("error_description", errorDescription);
 		sendBadRequest(res, result);
-	}
-
-	private void grant(ServerResponse res, Identity principal, @Nullable Identity client, @Nullable String scope) {
-		Authorization auth = null;
-		if (client != null) {
-			AuthorizationQuery query = new AuthorizationQuery()
-					.principalEqualTo(principal)
-					.clientEqualTo(client)
-					.scopeEqualTo(scope);
-			auth = Iterables.getOnlyElement(authorizations.find(query, 0, 1), null);
-		}
-		if (auth == null) {
-			auth = new Authorization(principal, client, scope);
-			dispatcher.dispatch(new CreateAuthorizationCommand(principal, auth));
-		}
-		ObjectNode result = Nodes.newObject();
-		result.put("access_token", auth.getId());
-		result.put("client_id", principal.id());
-		if (scope != null) {
-			result.put("scope", scope);
-		} else {
-			result.put("expires_in", Duration.standardDays(31).getStandardSeconds());
-		}
-		sendOk(res, result);
 	}
 
 	public void callback(ServerRequest req, ServerResponse res) {

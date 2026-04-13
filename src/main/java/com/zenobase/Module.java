@@ -8,19 +8,18 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import io.helidon.config.Config;
-import software.amazon.awssdk.services.sesv2.SesV2Client;
 
 import com.zenobase.actions.SentryFilter;
+import com.zenobase.auth.TokenValidator;
+import com.zenobase.auth.UserDirectory;
+import com.zenobase.auth.auth0.Auth0ManagementService;
+import com.zenobase.auth.auth0.Auth0TokenAuthorizer;
+import com.zenobase.auth.auth0.Auth0TokenValidator;
+import com.zenobase.auth.auth0.Auth0UserSynchronizer;
+import com.zenobase.auth.local.LocalTokenService;
+import com.zenobase.auth.local.LocalUserDirectory;
 import com.zenobase.commands.*;
 import com.zenobase.controllers.*;
-import com.zenobase.mail.ConsoleMailer;
-import com.zenobase.mail.EmailValidator;
-import com.zenobase.mail.Mailer;
-import com.zenobase.mail.PasswordResetMailer;
-import com.zenobase.mail.RegexEmailValidator;
-import com.zenobase.mail.SesEmailValidator;
-import com.zenobase.mail.SesMailer;
-import com.zenobase.mail.VerificationMailer;
 import com.zenobase.services.*;
 import com.zenobase.tasks.*;
 import com.zenobase.tasks.demo.*;
@@ -81,17 +80,21 @@ class Module extends AbstractModule {
 			bind(CommandRebuild.class).in(Singleton.class);
 		}
 
-		if (isConfigured("aws.region")) {
-			bind(SesV2Client.class).toInstance(SesV2Client.create());
-			bind(Mailer.class).to(SesMailer.class).in(Singleton.class);
-			bind(EmailValidator.class).to(SesEmailValidator.class).in(Singleton.class);
-		} else {
-			bind(Mailer.class).to(ConsoleMailer.class).in(Singleton.class);
-			bind(EmailValidator.class).to(RegexEmailValidator.class).in(Singleton.class);
+		bind(LocalTokenService.class).in(Singleton.class);
+		var tokenValidators = Multibinder.newSetBinder(binder(), TokenValidator.class);
+		tokenValidators.addBinding().to(LocalTokenService.class);
+		if (isConfigured("auth0.domain")) {
+			bind(Auth0TokenValidator.class).in(Singleton.class);
+			bind(Auth0UserSynchronizer.class).in(Singleton.class);
+			bind(Auth0TokenAuthorizer.class).in(Singleton.class);
+			tokenValidators.addBinding().to(Auth0TokenAuthorizer.class);
 		}
-
-		bind(VerificationMailer.class).in(Singleton.class);
-		bind(PasswordResetMailer.class).in(Singleton.class);
+		if (isConfigured("auth0.m2m.client_id")) {
+			bind(Auth0ManagementService.class).in(Singleton.class);
+			bind(UserDirectory.class).to(Auth0ManagementService.class).in(Singleton.class);
+		} else {
+			bind(UserDirectory.class).to(LocalUserDirectory.class).in(Singleton.class);
+		}
 		bind(AuthorizationContext.class).in(Singleton.class);
 		bind(TaskRepository.class).in(Singleton.class);
 		bind(TaskRefresher.class).in(Singleton.class);
@@ -244,7 +247,6 @@ class Module extends AbstractModule {
 		bind(EventController.class).in(Singleton.class);
 		bind(EventListController.class).in(Singleton.class);
 		bind(TagController.class).in(Singleton.class);
-		bind(PasswordResetController.class).in(Singleton.class);
 		bind(JournalController.class).in(Singleton.class);
 		bind(StatusController.class).in(Singleton.class);
 		bind(UserController.class).in(Singleton.class);
@@ -289,8 +291,13 @@ class Module extends AbstractModule {
 		bindString("opensearch.snapshot_role_arn");
 		bindString("aws.region");
 
-		// Mail
-		bindString("mail.from");
+		// Auth0 / JWT
+		bindString("auth0.domain");
+		bindString("auth0.audience");
+		bindString("auth0.jwks_domain");
+		bindString("auth0.m2m.client_id");
+		bindString("auth0.m2m.client_secret");
+		bindString("jwt.secret");
 
 		// Integration API keys (only when their prefix is configured)
 		for (String prefix : List.of(

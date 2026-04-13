@@ -168,6 +168,18 @@
             <version>1.3.5</version>
         </dependency>
 
+        <!-- Auth0 -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>4.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>auth0</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+
         <!-- AWS SDK -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
@@ -221,11 +233,6 @@
             <artifactId>guava-testlib</artifactId>
             <version>33.5.0-jre</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mindrot</groupId>
-            <artifactId>jbcrypt</artifactId>
-            <version>0.4</version>
         </dependency>
     </dependencies>
 

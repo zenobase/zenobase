@@ -6,7 +6,7 @@
 		<encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
 	</appender>
 
-	<logger name="com.zenobase" level="INFO"/>
+	<logger name="com.zenobase" level="DEBUG"/>
 
 	<appender name="Sentry" class="io.sentry.logback.SentryAppender">
 		<minimumEventLevel>ERROR</minimumEventLevel>

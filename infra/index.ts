@@ -15,7 +15,6 @@ const opensearchVersion = config.get("opensearchVersion") || "OpenSearch_3.3";
 const hostname = config.get("hostname") || "http://localhost:9000";
 const apiHostname = config.get("apiHostname") || "http://localhost:9000";
 const oauthHostname = config.get("oauthHostname") || "https://zenobase.com";
-const sesIdentity = config.get("sesIdentity") || "";
 const sentryDsn = config.get("sentryDsn") || "";
 const bastionEnabled = config.get("bastionEnabled") === "true";
 const fargateCpu = config.get("fargateCpu") || "1024";
@@ -432,19 +431,9 @@ new aws.iam.RolePolicy("zenobase-ecs-execution-secrets", {
 
 new aws.iam.RolePolicy("zenobase-ecs-task-policy", {
     role: ecsTaskRole.id,
-    policy: pulumi.all([accountId, osSnapshotRole.arn, osDomain.arn]).apply(([account, snapshotRoleArn, domainArn]) => JSON.stringify({
+    policy: pulumi.all([osSnapshotRole.arn, osDomain.arn]).apply(([snapshotRoleArn, domainArn]) => JSON.stringify({
         Version: "2012-10-17",
         Statement: [
-            {
-                Effect: "Allow",
-                Action: ["ses:SendEmail", "ses:SendRawEmail"],
-                Resource: [`arn:aws:ses:${region}:${account}:identity/${sesIdentity}`],
-            },
-            {
-                Effect: "Allow",
-                Action: ["ses:GetEmailAddressInsights"],
-                Resource: ["*"],
-            },
             {
                 Effect: "Allow",
                 Action: ["iam:PassRole"],

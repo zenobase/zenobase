@@ -8,9 +8,7 @@ import com.google.inject.Module;
 import io.helidon.webserver.http.HttpRouting;
 import org.junit.jupiter.api.BeforeEach;
 
-import com.zenobase.mail.EmailValidator;
-import com.zenobase.mail.RegexEmailValidator;
-import com.zenobase.mail.VerificationMailer;
+import com.zenobase.auth.UserDirectory;
 import com.zenobase.models.User;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.BucketRepository;
@@ -30,9 +28,8 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 	protected final CredentialsRepository credentials = mock(CredentialsRepository.class);
 	protected final AuthorizationRepository authorizations = mock(AuthorizationRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
-	protected final VerificationMailer mailer = mock(VerificationMailer.class);
+	protected final UserDirectory userDirectory = mock(UserDirectory.class);
 	protected final User user = new User("tester");
-	protected final String password = "secret123";
 
 	@Override
 	protected Module module() {
@@ -47,8 +44,7 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 				bind(CredentialsRepository.class).toInstance(credentials);
 				bind(AuthorizationRepository.class).toInstance(authorizations);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
-				bind(VerificationMailer.class).toInstance(mailer);
-				bind(EmailValidator.class).to(RegexEmailValidator.class);
+				bind(UserDirectory.class).toInstance(userDirectory);
 			}
 		};
 	}
@@ -56,13 +52,11 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 	@Override
 	protected void routing(HttpRouting.Builder builder, Injector injector) {
 		AccountController controller = injector.getInstance(AccountController.class);
-		builder.post("/users/", controller::open);
 		builder.delete("/users/{userId}", controller::close);
 	}
 
 	@BeforeEach
 	public void setUp() {
 		user.setEmail("jdoe@zenobase.com");
-		user.setPassword(password);
 	}
 }

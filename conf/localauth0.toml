@@ -1,0 +1,13 @@
+issuer = "http://localhost:3000/"
+subject = "dev"
+
+[access_token]
+custom_claims = [
+  { name = "https://zenobase.com/username", value = { String = "dev" } },
+  { name = "https://zenobase.com/email", value = { String = "dev@localhost" } },
+  { name = "https://zenobase.com/email_verified", value = { String = "true" } },
+]
+
+[[audience]]
+name = "https://api.zenobase.com"
+permissions = []

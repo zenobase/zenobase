@@ -6,6 +6,17 @@ hostname: "http://localhost:9000"
 oauth:
   hostname: "https://zenobase.com"
 
+auth0:
+  domain: ""
+  audience: ""
+  jwks_domain: ""
+  m2m:
+    client_id: ""
+    client_secret: ""
+
+jwt:
+  secret: "local-dev-secret-change-in-production"
+
 opensearch:
   host: "http://localhost:9200"
   replay: ""
@@ -17,9 +28,6 @@ opensearch:
 
 aws:
   region: ""
-
-mail:
-  from: "info@zenobase.com"
 
 cors:
   allowed:
