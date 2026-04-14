@@ -285,7 +285,7 @@ Use this procedure to restore from an S3 snapshot into a new managed OpenSearch 
 
 ## Troubleshooting
 
-An on-demand bastion instance can be enabled for direct access to the OpenSearch cluster. It uses SSM Session Manager, so no SSH keys or open inbound ports required.
+An on-demand bastion instance can be enabled for direct access to the OpenSearch cluster. It uses SSM Session Manager, so no SSH keys or open inbound ports required. Requests to OpenSearch must be SigV4-signed, use `brew install awscurl`.
 
 1. Enable:
 
@@ -294,18 +294,23 @@ An on-demand bastion instance can be enabled for direct access to the OpenSearch
    pulumi up
    ```
 
-2. Connect:
+2. Start an SSM port-forward to the OpenSearch endpoint:
 
    ```sh
-   aws ssm start-session --target $(pulumi stack output bastionInstanceId)
+   OS_ENDPOINT=$(pulumi stack output opensearchEndpoint)
+   aws ssm start-session \
+     --target $(pulumi stack output bastionInstanceId) \
+     --document-name AWS-StartPortForwardingSessionToRemoteHost \
+     --parameters "host=$OS_ENDPOINT,portNumber=443,localPortNumber=9201"
    ```
 
-3. Example queries from the bastion:
+3. Example queries (from another terminal — SigV4 signs against the real domain, so pass it via `Host`):
 
    ```sh
-   curl -s https://<os-endpoint>/_cat/indices?v
-   curl -s https://<os-endpoint>/_cat/shards?v
-   curl -s https://<os-endpoint>/_cluster/settings?include_defaults
+   OS_ENDPOINT=$(pulumi stack output opensearchEndpoint)
+   awscurl --service es --region us-east-1 -k \
+     -H "Host: $OS_ENDPOINT" \
+     https://localhost:9201/_cat/indices?v
    ```
 
 4. Disable when done:

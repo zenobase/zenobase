@@ -200,7 +200,7 @@ if (bastionEnabled) {
         mostRecent: true,
         owners: ["amazon"],
         filters: [
-            { name: "name", values: ["al2023-ami-*-arm64"] },
+            { name: "name", values: ["al2023-ami-2023.*-arm64"] },
             { name: "architecture", values: ["arm64"] },
             { name: "virtualization-type", values: ["hvm"] },
         ],
