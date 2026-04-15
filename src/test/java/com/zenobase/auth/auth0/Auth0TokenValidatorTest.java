@@ -61,32 +61,14 @@ public class Auth0TokenValidatorTest {
 
 	@Test
 	public void testValidToken() {
-		String token = createToken("user-123", "user@example.com", true);
+		String token = createToken("auth0|user-123", "user@example.com", true);
 
 		Auth0TokenValidator.Auth0Claims claims = validator.validate(token);
 
 		assertThat(claims).isNotNull();
-		assertThat(claims.identity().id()).isEqualTo("user-123");
+		assertThat(claims.externalId()).isEqualTo("auth0|user-123");
 		assertThat(claims.email()).isEqualTo("user@example.com");
 		assertThat(claims.emailVerified()).isTrue();
-		assertThat(claims.externalId()).isEqualTo("auth0|user-123");
-	}
-
-	@Test
-	public void testFallsBackToSubWhenZenobaseIdMissing() {
-		String token = JWT.create()
-				.withKeyId(KID)
-				.withIssuer("http://localhost:" + jwksPort + "/")
-				.withAudience(AUDIENCE)
-				.withSubject("auth0|fallback-user")
-				.withIssuedAt(Instant.now())
-				.withExpiresAt(Instant.now().plusSeconds(3600))
-				.sign(Algorithm.RSA256(publicKey, privateKey));
-
-		Auth0TokenValidator.Auth0Claims claims = validator.validate(token);
-
-		assertThat(claims).isNotNull();
-		assertThat(claims.identity().id()).isEqualTo("auth0|fallback-user");
 	}
 
 	@Test
@@ -96,7 +78,6 @@ public class Auth0TokenValidatorTest {
 				.withIssuer("http://localhost:" + jwksPort + "/")
 				.withAudience(AUDIENCE)
 				.withSubject("auth0|user")
-				.withClaim(Auth0TokenValidator.ZENOBASE_ID_CLAIM, "user-123")
 				.withIssuedAt(Instant.now().minusSeconds(7200))
 				.withExpiresAt(Instant.now().minusSeconds(3600))
 				.sign(Algorithm.RSA256(publicKey, privateKey));
@@ -111,7 +92,6 @@ public class Auth0TokenValidatorTest {
 				.withIssuer("http://localhost:" + jwksPort + "/")
 				.withAudience("https://wrong-audience.com")
 				.withSubject("auth0|user")
-				.withClaim(Auth0TokenValidator.ZENOBASE_ID_CLAIM, "user-123")
 				.withIssuedAt(Instant.now())
 				.withExpiresAt(Instant.now().plusSeconds(3600))
 				.sign(Algorithm.RSA256(publicKey, privateKey));
@@ -126,7 +106,6 @@ public class Auth0TokenValidatorTest {
 				.withIssuer("https://wrong-issuer.com/")
 				.withAudience(AUDIENCE)
 				.withSubject("auth0|user")
-				.withClaim(Auth0TokenValidator.ZENOBASE_ID_CLAIM, "user-123")
 				.withIssuedAt(Instant.now())
 				.withExpiresAt(Instant.now().plusSeconds(3600))
 				.sign(Algorithm.RSA256(publicKey, privateKey));
@@ -135,7 +114,7 @@ public class Auth0TokenValidatorTest {
 	}
 
 	@Test
-	public void testRejectsTokenWithNoSubAndNoZenobaseId() {
+	public void testRejectsTokenWithNoSub() {
 		String token = JWT.create()
 				.withKeyId(KID)
 				.withIssuer("http://localhost:" + jwksPort + "/")
@@ -152,13 +131,12 @@ public class Auth0TokenValidatorTest {
 		assertThat(validator.validate("not.a.jwt")).isNull();
 	}
 
-	private String createToken(String zenobaseId, String email, boolean emailVerified) {
+	private String createToken(String subject, String email, boolean emailVerified) {
 		return JWT.create()
 				.withKeyId(KID)
 				.withIssuer("http://localhost:" + jwksPort + "/")
 				.withAudience(AUDIENCE)
-				.withSubject("auth0|" + zenobaseId)
-				.withClaim(Auth0TokenValidator.ZENOBASE_ID_CLAIM, zenobaseId)
+				.withSubject(subject)
 				.withClaim(Auth0TokenValidator.EMAIL_CLAIM, email)
 				.withClaim(Auth0TokenValidator.EMAIL_VERIFIED_CLAIM, emailVerified)
 				.withIssuedAt(Instant.now())

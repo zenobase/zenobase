@@ -5,6 +5,7 @@ import org.jspecify.annotations.Nullable;
 
 import com.zenobase.auth.TokenValidator;
 import com.zenobase.auth.auth0.Auth0TokenValidator.Auth0Claims;
+import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 
 public class Auth0TokenAuthorizer implements TokenValidator {
@@ -29,7 +30,10 @@ public class Auth0TokenAuthorizer implements TokenValidator {
 		if (claims == null) {
 			return null;
 		}
-		synchronizer.sync(claims);
-		return new Authorization(claims.identity());
+		Identity identity = synchronizer.sync(claims);
+		if (identity == null) {
+			return null;
+		}
+		return new Authorization(identity);
 	}
 }

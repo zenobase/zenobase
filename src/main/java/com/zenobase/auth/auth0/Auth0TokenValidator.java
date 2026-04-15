@@ -18,23 +18,19 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.zenobase.models.Identity;
-
 public class Auth0TokenValidator {
 
 	private static final Logger logger = LoggerFactory.getLogger(Auth0TokenValidator.class);
 
-	static final String ZENOBASE_ID_CLAIM = "https://zenobase.com/zenobase_id";
 	static final String USERNAME_CLAIM = "https://zenobase.com/username";
 	static final String EMAIL_CLAIM = "https://zenobase.com/email";
 	static final String EMAIL_VERIFIED_CLAIM = "https://zenobase.com/email_verified";
 
 	public record Auth0Claims(
-			Identity identity,
+			String externalId,
 			@Nullable String username,
 			@Nullable String email,
-			boolean emailVerified,
-			@Nullable String externalId) {}
+			boolean emailVerified) {}
 
 	private final String issuer;
 	private final JWTVerifier verifier;
@@ -87,19 +83,15 @@ public class Auth0TokenValidator {
 	public @Nullable Auth0Claims validate(String token) {
 		try {
 			DecodedJWT jwt = verifier.verify(token);
-			String zenobaseId = jwt.getClaim(ZENOBASE_ID_CLAIM).asString();
-			if (zenobaseId == null) {
-				// Fall back to sub claim (e.g. for localauth0 in dev)
-				zenobaseId = jwt.getSubject();
-			}
-			if (zenobaseId == null) {
-				logger.warn("Auth0 JWT missing both {} and sub claims", ZENOBASE_ID_CLAIM);
+			String subject = jwt.getSubject();
+			if (subject == null) {
+				logger.warn("Auth0 JWT missing subject claim");
 				return null;
 			}
 			String username = jwt.getClaim(USERNAME_CLAIM).asString();
 			String email = jwt.getClaim(EMAIL_CLAIM).asString();
 			boolean emailVerified = parseBoolean(jwt.getClaim(EMAIL_VERIFIED_CLAIM));
-			return new Auth0Claims(new Identity(zenobaseId), username, email, emailVerified, jwt.getSubject());
+			return new Auth0Claims(subject, username, email, emailVerified);
 		} catch (Exception e) {
 			logger.debug("Auth0 JWT validation failed: {}", e.getMessage());
 			return null;
