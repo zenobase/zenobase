@@ -3,7 +3,6 @@ package com.zenobase.commands;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.ObjectField;
@@ -53,16 +52,5 @@ public class DeleteAuthorizationCommand extends Command {
 				default -> null;
 			};
 		}
-	}
-
-	public static class Handler extends CommandHandler<DeleteAuthorizationCommand> {
-
-		@Inject
-		public Handler() {
-			super(DeleteAuthorizationCommand.class);
-		}
-
-		@Override
-		public void executeTyped(DeleteAuthorizationCommand command) {}
 	}
 }

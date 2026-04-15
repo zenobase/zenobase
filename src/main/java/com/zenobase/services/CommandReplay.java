@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
+import com.zenobase.commands.CreateAuthorizationCommand;
+import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.commands.NonExistentUserException;
 import com.zenobase.common.StringBloomFilter;
 import com.zenobase.common.StringFilter;
@@ -58,10 +60,10 @@ public class CommandReplay {
 			if (failures.get() >= MAX_FAILURES) {
 				throw new IllegalStateException("Aborting replay after " + failures.get() + " failures");
 			}
-			if (identities.mightContain(command.getPrincipal().id())) {
-				dispatchWithRetry(command);
-			} else {
+			if (shouldDiscard(command, identities)) {
 				dispatcher.discard(command);
+			} else {
+				dispatchWithRetry(command);
 			}
 			count.incrementAndGet();
 		});
@@ -75,6 +77,12 @@ public class CommandReplay {
 		if (failures.get() > 0) {
 			throw new IllegalStateException("Replay completed with one or more failures");
 		}
+	}
+
+	private static boolean shouldDiscard(Command command, StringFilter identities) {
+		return command instanceof CreateAuthorizationCommand
+				|| command instanceof DeleteAuthorizationCommand
+				|| !identities.mightContain(command.getPrincipal().id());
 	}
 
 	private static StringFilter buildIdentitiesFilter(IndexManager indexManager) {
