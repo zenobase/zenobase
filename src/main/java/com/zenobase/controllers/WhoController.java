@@ -21,15 +21,15 @@ public class WhoController extends ControllerSupport {
 
 	public void who(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
-		if (auth != null) {
-			User user = users.find(auth.getPrincipal());
-			sendOk(
-					res,
-					user != null
-							? new UserProfile(user).toJson()
-							: auth.getPrincipal().toJson());
+		if (auth == null) {
+			sendNoContent(res);
 			return;
 		}
-		sendNoContent(res);
+		User user = users.find(auth.getPrincipal());
+		if (user == null) {
+			sendUnauthorized(res);
+			return;
+		}
+		sendOk(res, new UserProfile(user).toJson());
 	}
 }

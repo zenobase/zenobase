@@ -38,7 +38,10 @@ public class QuotaManager {
 
 	private int getQuotaLimit(Identity principal) {
 		User user = users.find(principal);
-		return user != null && user.getQuota() != null ? user.getQuota() : DEFAULT_QUOTA;
+		if (user == null) {
+			throw new IllegalStateException("No user for principal " + principal);
+		}
+		return user.getQuota() != null ? user.getQuota() : DEFAULT_QUOTA;
 	}
 
 	private int getQuotaUsed(Identity principal) {

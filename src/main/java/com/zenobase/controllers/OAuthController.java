@@ -14,7 +14,6 @@ import io.helidon.http.Status;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
-import org.joda.time.Duration;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import com.zenobase.auth.local.LocalTokenService;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
-import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.UserRepository;
@@ -39,8 +37,6 @@ public class OAuthController extends ControllerSupport {
 	static final String INVALID_SCOPE = "invalid_scope";
 
 	static final String UNSUPPORTED_GRANT_TYPE = "unsupported_grant_type";
-
-	static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
 
 	private final LocalTokenService localTokenService;
 	private final UserRepository users;
@@ -128,20 +124,7 @@ public class OAuthController extends ControllerSupport {
 	}
 
 	private void token(ServerResponse res, TokenForm form) {
-		if (GRANT_TYPE_CLIENT_CREDENTIALS.equals(form.getGrant_type())) {
-			String token = localTokenService.createGuestToken();
-			Identity guest = new Identity(com.auth0.jwt.JWT.decode(token).getSubject());
-			ObjectNode result = Nodes.newObject();
-			result.put("access_token", token);
-			result.put("client_id", guest.id());
-			result.put("expires_in", Duration.standardDays(31).getStandardSeconds());
-			sendOk(res, result);
-			return;
-		}
-		deny(
-				res,
-				UNSUPPORTED_GRANT_TYPE,
-				String.format("grant_type must be '%s', got %s", GRANT_TYPE_CLIENT_CREDENTIALS, form.getGrant_type()));
+		deny(res, UNSUPPORTED_GRANT_TYPE, String.format("unsupported grant_type: %s", form.getGrant_type()));
 	}
 
 	private void deny(ServerResponse res, String errorCode, String errorDescription) {

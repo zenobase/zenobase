@@ -17,15 +17,8 @@ public class QuotaManagerTest {
 	private final QuotaManager quotas = new QuotaManager(users, commands);
 
 	@Test
-	public void testGuestQuota() {
-		Quota quota = quotas.getQuota(user.asIdentity());
-		assertThat(quota.getLimit()).isEqualTo(QuotaManager.DEFAULT_QUOTA);
-		assertThat(quota.getRemaining()).isEqualTo(QuotaManager.DEFAULT_QUOTA);
-	}
-
-	@Test
 	public void testDefaultQuota() {
-		when(users.find(user.getId())).thenReturn(user);
+		when(users.find(user.asIdentity())).thenReturn(user);
 		Quota quota = quotas.getQuota(user.asIdentity());
 		assertThat(quota.getLimit()).isEqualTo(QuotaManager.DEFAULT_QUOTA);
 		assertThat(quota.getRemaining()).isEqualTo(QuotaManager.DEFAULT_QUOTA);
@@ -44,7 +37,7 @@ public class QuotaManagerTest {
 	@Test
 	public void testPartiallyUsedQuota() {
 		int spent = 1000;
-		when(users.find(user.getId())).thenReturn(user);
+		when(users.find(user.asIdentity())).thenReturn(user);
 		when(commands.getTotalCost(eq(user.asIdentity()), any(DateTime.class))).thenReturn(1000);
 		Quota quota = quotas.getQuota(user.asIdentity());
 		assertThat(quota.getLimit()).isEqualTo(QuotaManager.DEFAULT_QUOTA);
@@ -53,11 +46,13 @@ public class QuotaManagerTest {
 
 	@Test
 	public void testSpend() {
+		when(users.find(user.asIdentity())).thenReturn(user);
 		quotas.spend(user.asIdentity(), 1000);
 	}
 
 	@Test
 	public void testOverspend() {
+		when(users.find(user.asIdentity())).thenReturn(user);
 		assertThatThrownBy(() -> quotas.spend(user.asIdentity(), 4000000)).isInstanceOf(QuotaException.class);
 	}
 }

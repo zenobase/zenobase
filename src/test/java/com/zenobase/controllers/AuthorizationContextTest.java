@@ -59,19 +59,6 @@ public class AuthorizationContextTest {
 	}
 
 	@Test
-	public void testLocalGuestToken() {
-		String token = tokenService.createGuestToken();
-		ServerRequest request = mockRequest("Bearer " + token);
-
-		Authorization auth = context(true).current(request);
-
-		assertThat(auth).isNotNull();
-		assertThat(auth.getPrincipal()).isNotNull();
-		assertThat(auth.getScope()).isNull();
-		verify(tokenValidator, never()).validate(any());
-	}
-
-	@Test
 	public void testLocalScopedToken() {
 		Identity principal = new Identity("user1");
 		Identity client = new Identity("client1");

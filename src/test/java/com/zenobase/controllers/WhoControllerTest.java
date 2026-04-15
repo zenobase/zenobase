@@ -50,11 +50,11 @@ public class WhoControllerTest extends ControllerTestSupport {
 	}
 
 	@Test
-	public void testGuest() {
+	public void testUnknownPrincipal() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.asIdentity())).thenReturn(null);
 		try (Http1ClientResponse result = call()) {
-			assertThat(result).hasStatus(200).hasContent(user.asIdentity().toJson());
+			assertThat(result).hasStatus(401);
 		}
 	}
 

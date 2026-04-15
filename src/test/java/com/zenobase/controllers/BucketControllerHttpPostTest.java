@@ -57,17 +57,6 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	}
 
 	@Test
-	public void testAddRoleAsGuest() {
-		to.addRole(Identity.PUBLIC, Role.VIEWER);
-		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.find(from.getId())).thenReturn(from.copy());
-		try (Http1ClientResponse result = call(from.getId(), to.toJson())) {
-			assertThat(result).hasStatus(403);
-			verifyNoInteractions(dispatcher);
-		}
-	}
-
-	@Test
 	public void testAddRoleAsUnverifiedUser() {
 		to.addRole(Identity.PUBLIC, Role.VIEWER);
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
