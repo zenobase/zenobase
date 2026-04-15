@@ -1,26 +1,17 @@
 package com.zenobase.auth.auth0;
 
-import java.math.BigInteger;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.RSAPublicKeySpec;
-import java.time.Duration;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
+import com.auth0.jwk.JwkException;
+import com.auth0.jwk.JwkProvider;
+import com.auth0.jwk.JwkProviderBuilder;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.RSAKeyProvider;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.jspecify.annotations.Nullable;
@@ -32,7 +23,6 @@ import com.zenobase.models.Identity;
 public class Auth0TokenValidator {
 
 	private static final Logger logger = LoggerFactory.getLogger(Auth0TokenValidator.class);
-	private static final Duration JWKS_TIMEOUT = Duration.ofSeconds(10);
 
 	static final String ZENOBASE_ID_CLAIM = "https://zenobase.com/zenobase_id";
 	static final String USERNAME_CLAIM = "https://zenobase.com/username";
@@ -55,28 +45,23 @@ public class Auth0TokenValidator {
 			@Named("auth0.audience") String audience,
 			@Named("auth0.jwks_domain") String jwksDomain) {
 		String jwksUrl = (jwksDomain.isEmpty() ? domain : jwksDomain) + "/.well-known/jwks.json";
-		HttpClient httpClient =
-				HttpClient.newBuilder().connectTimeout(JWKS_TIMEOUT).build();
-		Map<String, RSAPublicKey> keyCache = new ConcurrentHashMap<>();
+		JwkProvider jwkProvider;
+		try {
+			jwkProvider = new JwkProviderBuilder(URI.create(jwksUrl).toURL())
+					.cached(5, 1, TimeUnit.HOURS)
+					.rateLimited(10, 1, TimeUnit.MINUTES)
+					.build();
+		} catch (Exception e) {
+			throw new RuntimeException("Invalid JWKS URL: " + jwksUrl, e);
+		}
 		RSAKeyProvider keyProvider = new RSAKeyProvider() {
 			@Override
 			public RSAPublicKey getPublicKeyById(String keyId) {
-				RSAPublicKey cached = keyCache.get(keyId);
-				if (cached != null) {
-					return cached;
-				}
-				Map<String, RSAPublicKey> fresh;
 				try {
-					fresh = fetchKeys(httpClient, jwksUrl);
-				} catch (Exception e) {
-					throw new RuntimeException("Failed to fetch JWKS from " + jwksUrl, e);
+					return (RSAPublicKey) jwkProvider.get(keyId).getPublicKey();
+				} catch (JwkException e) {
+					throw new RuntimeException("JWKS lookup failed for key " + keyId, e);
 				}
-				keyCache.putAll(fresh);
-				cached = keyCache.get(keyId);
-				if (cached == null) {
-					throw new RuntimeException("Key " + keyId + " not found in JWKS at " + jwksUrl);
-				}
-				return cached;
 			}
 
 			@Override
@@ -130,41 +115,5 @@ public class Auth0TokenValidator {
 			return b;
 		}
 		return "true".equals(claim.asString());
-	}
-
-	private static Map<String, RSAPublicKey> fetchKeys(HttpClient client, String jwksUrl) throws Exception {
-		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create(jwksUrl))
-				.timeout(JWKS_TIMEOUT)
-				.GET()
-				.build();
-		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-		if (response.statusCode() != 200) {
-			throw new RuntimeException("JWKS fetch returned " + response.statusCode());
-		}
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode root = mapper.readTree(response.body());
-		JsonNode keys = root.get("keys");
-		if (keys == null || !keys.isArray()) {
-			throw new RuntimeException("Invalid JWKS response: no keys array");
-		}
-		Map<String, RSAPublicKey> result = new HashMap<>();
-		for (JsonNode key : keys) {
-			String kid = key.get("kid").asText();
-			String n = key.get("n").asText();
-			String e = key.get("e").asText();
-			result.put(kid, buildRSAPublicKey(n, e));
-		}
-		return result;
-	}
-
-	private static RSAPublicKey buildRSAPublicKey(String modulusBase64, String exponentBase64) throws Exception {
-		byte[] modulusBytes = Base64.getUrlDecoder().decode(modulusBase64);
-		byte[] exponentBytes = Base64.getUrlDecoder().decode(exponentBase64);
-		BigInteger modulus = new BigInteger(1, modulusBytes);
-		BigInteger exponent = new BigInteger(1, exponentBytes);
-		RSAPublicKeySpec spec = new RSAPublicKeySpec(modulus, exponent);
-		KeyFactory factory = KeyFactory.getInstance("RSA");
-		return (RSAPublicKey) factory.generatePublic(spec);
 	}
 }
