@@ -9,8 +9,22 @@ public class OAuthControllerCallbackTest extends OAuthControllerTestSupport {
 
 	@Test
 	public void testRedirect() {
-		try (Http1ClientResponse result = call("zzz", "a=b&c=d")) {
-			assertThat(result).hasStatus(303).hasHeader("Location", "/#/credentials/zzz?a=b&c=d");
+		try (Http1ClientResponse result = call("0123456789", "a=b&c=d")) {
+			assertThat(result).hasStatus(303).hasHeader("Location", "/#/credentials/0123456789?a=b&c=d");
+		}
+	}
+
+	@Test
+	public void testRedirectSentinel() {
+		try (Http1ClientResponse result = call("-", "a=b")) {
+			assertThat(result).hasStatus(303).hasHeader("Location", "/#/credentials/-?a=b");
+		}
+	}
+
+	@Test
+	public void testRejectsInvalidId() {
+		try (Http1ClientResponse result = call("zzz", "a=b")) {
+			assertThat(result).hasStatus(404);
 		}
 	}
 

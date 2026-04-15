@@ -9,6 +9,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.helidon.http.HeaderNames;
+import io.helidon.http.Status;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
@@ -18,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zenobase.auth.local.LocalTokenService;
+import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
@@ -151,8 +154,12 @@ public class OAuthController extends ControllerSupport {
 
 	public void callback(ServerRequest req, ServerResponse res) {
 		String id = req.path().pathParameters().get("id");
-		res.status(io.helidon.http.Status.create(303));
-		res.header(io.helidon.http.HeaderNames.LOCATION, String.format("/#/credentials/%s?%s", id, toQueryString(req)));
+		if (!"-".equals(id) && !Generator.isValidId(id)) {
+			sendNotFound(res);
+			return;
+		}
+		res.status(Status.create(303));
+		res.header(HeaderNames.LOCATION, String.format("/#/credentials/%s?%s", id, toQueryString(req)));
 		res.send();
 	}
 
