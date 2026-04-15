@@ -80,7 +80,11 @@ public class CommandReplay {
 	private static StringFilter buildIdentitiesFilter(IndexManager indexManager) {
 		var users = new UserRepository(indexManager);
 		StringFilter filter = new StringBloomFilter(Ints.checkedCast(users.size()));
-		users.find(user -> filter.put(user.getId()));
+		users.find(user -> {
+			if (user.getEmail() != null) {
+				filter.put(user.getId());
+			}
+		});
 		return filter;
 	}
 
