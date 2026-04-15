@@ -150,15 +150,6 @@ class Routing {
 		routing.post("/oauth/token", oauth::token);
 		routing.get("/oauth/callback/{id}", oauth::callback);
 
-		// Authorizations
-		var authList = injector.getInstance(AuthorizationListController.class);
-		routing.get("/authorizations/", authList::findAll);
-		routing.get("/users/{userId}/authorizations/", authList::findByUser);
-
-		var auth = injector.getInstance(AuthorizationController.class);
-		routing.get("/authorizations/{authId}", auth::get);
-		routing.delete("/authorizations/{authId}", auth::delete);
-
 		// Snapshots
 		var snapshot = injector.getInstance(SnapshotController.class);
 		routing.get("/snapshots/", snapshot::findAll);

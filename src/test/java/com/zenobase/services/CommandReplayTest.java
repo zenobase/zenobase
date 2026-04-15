@@ -33,12 +33,7 @@ public class CommandReplayTest extends OpenSearchTestSupport {
 		CommandDispatcher dispatcher = Mockito.mock(CommandDispatcher.class);
 
 		new UserRepository(getManager()).store(user);
-		new CommandReplay("", parsers, dispatcher)
-				.replay(
-						getManager(),
-						new IdentitiesFilterBuilder(
-										new UserRepository(getManager()), new AuthorizationRepository(getManager()))
-								.deterministic(true));
+		new CommandReplay("", parsers, dispatcher).replay(getManager());
 
 		InOrder dispatchOrder = Mockito.inOrder(dispatcher);
 		for (Command command : commandsToReplay) {

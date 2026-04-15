@@ -11,7 +11,6 @@ import jakarta.inject.Inject;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 
 import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.UpdateBucketCommand;
@@ -20,8 +19,6 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.AuthorizationQuery;
-import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.TaskQuery;
@@ -33,7 +30,6 @@ public class BucketController extends ControllerSupport {
 	private final CommandDispatcher dispatcher;
 	private final BucketRepository buckets;
 	private final UserRepository users;
-	private final AuthorizationRepository authorizations;
 	private final TaskRepository tasks;
 
 	@Inject
@@ -42,14 +38,12 @@ public class BucketController extends ControllerSupport {
 			CommandDispatcher dispatcher,
 			BucketRepository buckets,
 			UserRepository users,
-			AuthorizationRepository authorizations,
 			TaskRepository tasks) {
 
 		super(security);
 		this.dispatcher = dispatcher;
 		this.buckets = buckets;
 		this.users = users;
-		this.authorizations = authorizations;
 		this.tasks = tasks;
 	}
 
@@ -209,9 +203,6 @@ public class BucketController extends ControllerSupport {
 		}
 		CompoundCommand command = new CompoundCommand(
 				auth.getPrincipal(), "deleted bucket and associated data", "restored bucket and associated data");
-		authorizations.find(
-				new AuthorizationQuery().scopeEqualTo(bucket.getId()),
-				authorization -> command.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization)));
 		tasks.find(
 				new TaskQuery().bucketEqualTo(bucketId),
 				task -> command.add(new DeleteTaskCommand(auth.getPrincipal(), task)));

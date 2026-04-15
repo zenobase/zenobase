@@ -10,7 +10,6 @@ import io.helidon.webserver.http.HttpRouting;
 
 import com.zenobase.auth.UserDirectory;
 import com.zenobase.models.User;
-import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.LocalBus;
@@ -20,7 +19,6 @@ public abstract class UserControllerTestSupport extends ControllerTestSupport {
 
 	protected final AuthorizationContext auth = mock(AuthorizationContext.class);
 	protected final UserRepository users = mock(UserRepository.class);
-	protected final AuthorizationRepository authorizations = mock(AuthorizationRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
 	protected final UserDirectory userDirectory = mock(UserDirectory.class);
 	protected final User user = newUser("tester");
@@ -39,7 +37,6 @@ public abstract class UserControllerTestSupport extends ControllerTestSupport {
 				bind(Bus.class).to(LocalBus.class);
 				bind(AuthorizationContext.class).toInstance(auth);
 				bind(UserRepository.class).toInstance(users);
-				bind(AuthorizationRepository.class).toInstance(authorizations);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
 				bind(UserDirectory.class).toInstance(userDirectory);
 				bind(UserController.class).in(Singleton.class);

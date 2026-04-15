@@ -8,7 +8,6 @@ import com.google.inject.Module;
 import io.helidon.webserver.http.HttpRouting;
 
 import com.zenobase.models.User;
-import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
@@ -21,7 +20,6 @@ public abstract class BucketControllerTestSupport extends ControllerTestSupport 
 	protected final AuthorizationContext auth = mock(AuthorizationContext.class);
 	protected final BucketRepository buckets = mock(BucketRepository.class);
 	protected final UserRepository users = mock(UserRepository.class);
-	protected final AuthorizationRepository authorizations = mock(AuthorizationRepository.class);
 	protected final TaskRepository tasks = mock(TaskRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
 	protected final User user = new User("tester");
@@ -36,7 +34,6 @@ public abstract class BucketControllerTestSupport extends ControllerTestSupport 
 				bind(BucketRepository.class).toInstance(buckets);
 				bind(UserRepository.class).toInstance(users);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
-				bind(AuthorizationRepository.class).toInstance(authorizations);
 				bind(TaskRepository.class).toInstance(tasks);
 			}
 		};

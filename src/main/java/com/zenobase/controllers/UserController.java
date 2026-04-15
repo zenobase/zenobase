@@ -12,8 +12,6 @@ import com.zenobase.auth.UserDirectory;
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.Command;
-import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.commands.OptInCommand;
 import com.zenobase.commands.OptOutCommand;
 import com.zenobase.commands.SuspendUserCommand;
@@ -21,8 +19,6 @@ import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.AuthorizationQuery;
-import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
@@ -30,7 +26,6 @@ import com.zenobase.services.UserRepository;
 public class UserController extends ControllerSupport {
 
 	private final UserRepository users;
-	private final AuthorizationRepository authorizations;
 	private final CommandDispatcher dispatcher;
 	private final UserDirectory userDirectory;
 
@@ -38,13 +33,11 @@ public class UserController extends ControllerSupport {
 	public UserController(
 			AuthorizationContext security,
 			UserRepository users,
-			AuthorizationRepository authorizations,
 			CommandDispatcher dispatcher,
 			UserDirectory userDirectory) {
 
 		super(security);
 		this.users = users;
-		this.authorizations = authorizations;
 		this.dispatcher = dispatcher;
 		this.userDirectory = userDirectory;
 	}
@@ -132,18 +125,7 @@ public class UserController extends ControllerSupport {
 		}
 		Command command =
 				new SuspendUserCommand(auth.getPrincipal(), Objects.requireNonNull(user.getName()), suspended);
-		CompoundCommand commands = new CompoundCommand(
-				auth.getPrincipal(),
-				command.toString(),
-				command.reverse(auth.getPrincipal()).toString());
-		commands.add(command);
-		authorizations.find(
-				new AuthorizationQuery().principalEqualTo(user.asIdentity()),
-				authorization -> commands.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization)));
-		authorizations.find(
-				new AuthorizationQuery().clientEqualTo(user.asIdentity()),
-				authorization -> commands.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization)));
-		String commandId = dispatcher.dispatch(commands.unwrap());
+		String commandId = dispatcher.dispatch(command);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}

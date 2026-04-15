@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 
 import com.zenobase.auth.UserDirectory;
 import com.zenobase.models.User;
-import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
@@ -26,7 +25,6 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 	protected final BucketRepository buckets = mock(BucketRepository.class);
 	protected final TaskRepository tasks = mock(TaskRepository.class);
 	protected final CredentialsRepository credentials = mock(CredentialsRepository.class);
-	protected final AuthorizationRepository authorizations = mock(AuthorizationRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
 	protected final UserDirectory userDirectory = mock(UserDirectory.class);
 	protected final User user = new User("tester");
@@ -42,7 +40,6 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 				bind(UserRepository.class).toInstance(users);
 				bind(TaskRepository.class).toInstance(tasks);
 				bind(CredentialsRepository.class).toInstance(credentials);
-				bind(AuthorizationRepository.class).toInstance(authorizations);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
 				bind(UserDirectory.class).toInstance(userDirectory);
 			}

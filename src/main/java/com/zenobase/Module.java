@@ -99,7 +99,6 @@ class Module extends AbstractModule {
 		bind(TaskRepository.class).in(Singleton.class);
 		bind(TaskRefresher.class).in(Singleton.class);
 		bind(CredentialsRepository.class).in(Singleton.class);
-		bind(AuthorizationRepository.class).in(Singleton.class);
 		bind(QuotaManager.class).in(Singleton.class);
 		bind(Scheduler.class).asEagerSingleton();
 
@@ -167,8 +166,6 @@ class Module extends AbstractModule {
 		handlers.addBinding().to(CreateCredentialsCommand.Handler.class);
 		handlers.addBinding().to(UpdateCredentialsCommand.Handler.class);
 		handlers.addBinding().to(DeleteCredentialsCommand.Handler.class);
-		handlers.addBinding().to(CreateAuthorizationCommand.Handler.class);
-		handlers.addBinding().to(DeleteAuthorizationCommand.Handler.class);
 	}
 
 	private void bindCredentialsManagers() {
@@ -232,7 +229,6 @@ class Module extends AbstractModule {
 
 	private void bindJobs() {
 		Multibinder<Job> jobs = Multibinder.newSetBinder(binder(), Job.class);
-		jobs.addBinding().to(AuthorizationExpirationJob.class);
 		jobs.addBinding().to(BucketRefreshJob.class);
 		jobs.addBinding().to(CredentialsCleanupJob.class);
 		jobs.addBinding().to(SnapshotJob.class);
@@ -257,8 +253,6 @@ class Module extends AbstractModule {
 		bind(CredentialsController.class).in(Singleton.class);
 		bind(CredentialsListController.class).in(Singleton.class);
 		bind(OAuthController.class).in(Singleton.class);
-		bind(AuthorizationController.class).in(Singleton.class);
-		bind(AuthorizationListController.class).in(Singleton.class);
 		bind(SnapshotController.class).in(Singleton.class);
 		bind(SchedulerController.class).in(Singleton.class);
 		bind(RedirectController.class).in(Singleton.class);

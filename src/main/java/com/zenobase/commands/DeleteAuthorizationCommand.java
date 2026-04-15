@@ -9,7 +9,6 @@ import org.jspecify.annotations.Nullable;
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.AuthorizationRepository;
 
 public class DeleteAuthorizationCommand extends Command {
 
@@ -58,17 +57,12 @@ public class DeleteAuthorizationCommand extends Command {
 
 	public static class Handler extends CommandHandler<DeleteAuthorizationCommand> {
 
-		private final AuthorizationRepository repository;
-
 		@Inject
-		public Handler(AuthorizationRepository repository) {
+		public Handler() {
 			super(DeleteAuthorizationCommand.class);
-			this.repository = repository;
 		}
 
 		@Override
-		public void executeTyped(DeleteAuthorizationCommand command) {
-			repository.delete(command.getAuthorization().getId());
-		}
+		public void executeTyped(DeleteAuthorizationCommand command) {}
 	}
 }

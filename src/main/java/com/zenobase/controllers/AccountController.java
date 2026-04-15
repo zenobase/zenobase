@@ -7,7 +7,6 @@ import jakarta.inject.Inject;
 import com.zenobase.auth.UserDirectory;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.DeleteCredentialsCommand;
 import com.zenobase.commands.DeleteTaskCommand;
@@ -15,8 +14,6 @@ import com.zenobase.commands.DeleteUserCommand;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.AuthorizationQuery;
-import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.BucketQuery;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
@@ -33,7 +30,6 @@ public class AccountController extends ControllerSupport {
 	private final BucketRepository buckets;
 	private final TaskRepository tasks;
 	private final CredentialsRepository credentials;
-	private final AuthorizationRepository authorizations;
 	private final CommandDispatcher dispatcher;
 	private final UserDirectory userDirectory;
 
@@ -44,7 +40,6 @@ public class AccountController extends ControllerSupport {
 			BucketRepository buckets,
 			TaskRepository tasks,
 			CredentialsRepository credentials,
-			AuthorizationRepository authorizations,
 			CommandDispatcher dispatcher,
 			UserDirectory userDirectory) {
 
@@ -53,7 +48,6 @@ public class AccountController extends ControllerSupport {
 		this.buckets = buckets;
 		this.tasks = tasks;
 		this.credentials = credentials;
-		this.authorizations = authorizations;
 		this.dispatcher = dispatcher;
 		this.userDirectory = userDirectory;
 	}
@@ -96,14 +90,6 @@ public class AccountController extends ControllerSupport {
 		tasks.find(
 				new TaskQuery().principalEqualTo(user.asIdentity()),
 				task -> command.add(new DeleteTaskCommand(principal, task)));
-		authorizations.find(new AuthorizationQuery().principalEqualTo(user.asIdentity()), authorization -> {
-			if (!current.getId().equals(authorization.getId())) {
-				command.add(new DeleteAuthorizationCommand(principal, authorization));
-			}
-		});
-		authorizations.find(
-				new AuthorizationQuery().clientEqualTo(user.asIdentity()),
-				authorization -> command.add(new DeleteAuthorizationCommand(principal, authorization)));
 		credentials.find(
 				new CredentialsQuery().principalEqualTo(user.asIdentity()),
 				credentials -> command.add(new DeleteCredentialsCommand(principal, credentials)));

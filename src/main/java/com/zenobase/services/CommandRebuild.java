@@ -20,7 +20,6 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.commands.CreateCredentialsCommand;
 import com.zenobase.commands.CreateEventsCommand;
@@ -31,7 +30,6 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.models.User;
-import com.zenobase.oauth.Authorization;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.Task;
 
@@ -45,7 +43,6 @@ public class CommandRebuild {
 	private final int parallelism;
 	private final CommandDispatcher dispatcher;
 	private final UserRepository targetUsers;
-	private final AuthorizationRepository targetAuthorizations;
 	private final CredentialsRepository targetCredentials;
 	private final BucketRepository targetBuckets;
 	private final TaskRepository targetTasks;
@@ -56,7 +53,6 @@ public class CommandRebuild {
 			@Named("opensearch.rebuild_parallelism") int parallelism,
 			CommandDispatcher dispatcher,
 			UserRepository targetUsers,
-			AuthorizationRepository targetAuthorizations,
 			CredentialsRepository targetCredentials,
 			BucketRepository targetBuckets,
 			TaskRepository targetTasks) {
@@ -64,7 +60,6 @@ public class CommandRebuild {
 		this.parallelism = parallelism;
 		this.dispatcher = dispatcher;
 		this.targetUsers = targetUsers;
-		this.targetAuthorizations = targetAuthorizations;
 		this.targetCredentials = targetCredentials;
 		this.targetBuckets = targetBuckets;
 		this.targetTasks = targetTasks;
@@ -83,7 +78,6 @@ public class CommandRebuild {
 		logger.info("Rebuilding history from {}...", sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
 		rebuild(indexManager, targetUsers, "users", this::rebuildUsers);
-		rebuild(indexManager, targetAuthorizations, "authorizations", this::rebuildAuthorizations);
 		rebuild(indexManager, targetCredentials, "credentials", this::rebuildCredentials);
 		rebuild(indexManager, targetBuckets, "buckets", this::rebuildBuckets);
 		rebuild(indexManager, targetTasks, "tasks", this::rebuildTasks);
@@ -111,15 +105,6 @@ public class CommandRebuild {
 		new UserRepository(indexManager).findAll(SearchOrder.asc(User.CREATED, User.ID), allUsers::add);
 		allUsers.forEach(user -> dispatcher.dispatch(new CreateUserCommand(user.asIdentity(), user)));
 		return allUsers.size();
-	}
-
-	private int rebuildAuthorizations(IndexManager indexManager) {
-		List<Authorization> allAuthorizations = new ArrayList<>();
-		new AuthorizationRepository(indexManager)
-				.findAll(SearchOrder.asc(Authorization.CREATED, Authorization.ID), allAuthorizations::add);
-		allAuthorizations.forEach(authorization ->
-				dispatcher.dispatch(new CreateAuthorizationCommand(authorization.getPrincipal(), authorization)));
-		return allAuthorizations.size();
 	}
 
 	private int rebuildCredentials(IndexManager indexManager) {

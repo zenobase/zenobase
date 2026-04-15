@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.primitives.Ints;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.opensearch.client.opensearch._types.OpenSearchException;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.commands.NonExistentUserException;
+import com.zenobase.common.StringBloomFilter;
 import com.zenobase.common.StringFilter;
 
 public class CommandReplay {
@@ -48,15 +50,8 @@ public class CommandReplay {
 	}
 
 	void replay(IndexManager indexManager) {
-		replay(
-				indexManager,
-				new IdentitiesFilterBuilder(
-						new UserRepository(indexManager), new AuthorizationRepository(indexManager)));
-	}
-
-	void replay(IndexManager indexManager, IdentitiesFilterBuilder identitiesFilterBuilder) {
 		var repository = new CommandRepository(indexManager, parsers);
-		StringFilter identities = identitiesFilterBuilder.build();
+		StringFilter identities = buildIdentitiesFilter(indexManager);
 		logger.info("Replaying {} commands from {}...", repository.size(), sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
 		repository.find(new CommandQuery(), SearchOrder.asc(Command.TIMESTAMP, Command.ID), command -> {
@@ -80,6 +75,13 @@ public class CommandReplay {
 		if (failures.get() > 0) {
 			throw new IllegalStateException("Replay completed with one or more failures");
 		}
+	}
+
+	private static StringFilter buildIdentitiesFilter(IndexManager indexManager) {
+		var users = new UserRepository(indexManager);
+		StringFilter filter = new StringBloomFilter(Ints.checkedCast(users.size()));
+		users.find(user -> filter.put(user.getId()));
+		return filter;
 	}
 
 	private void dispatchWithRetry(Command command) {

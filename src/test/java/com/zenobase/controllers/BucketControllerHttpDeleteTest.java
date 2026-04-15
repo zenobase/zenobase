@@ -15,7 +15,6 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.AuthorizationQuery;
 import com.zenobase.services.TaskQuery;
 
 public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport {
@@ -37,7 +36,6 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		try (Http1ClientResponse result = call(bucket.getId())) {
 			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, commandId).isEmpty();
-			verify(authorizations).find(eq(new AuthorizationQuery().scopeEqualTo(bucket.getId())), any(Callback.class));
 			verify(tasks).find(eq(new TaskQuery().bucketEqualTo(bucket.getId())), any(Callback.class));
 		}
 	}
@@ -53,7 +51,6 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
 		try (Http1ClientResponse result = call(bucket.getId())) {
 			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, commandId).isEmpty();
-			verify(authorizations).find(eq(new AuthorizationQuery().scopeEqualTo(bucket.getId())), any(Callback.class));
 			verify(tasks).find(eq(new TaskQuery().bucketEqualTo(bucket.getId())), any(Callback.class));
 		}
 	}
