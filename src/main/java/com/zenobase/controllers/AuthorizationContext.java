@@ -67,6 +67,8 @@ public class AuthorizationContext {
 	}
 
 	private static boolean isOAuthHeader(@Nullable String header) {
-		return header != null && header.startsWith(HEADER_PREFIX) && header.length() > HEADER_PREFIX.length();
+		return header != null
+				&& header.regionMatches(true, 0, HEADER_PREFIX, 0, HEADER_PREFIX.length())
+				&& header.length() > HEADER_PREFIX.length();
 	}
 }
