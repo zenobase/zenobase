@@ -15,7 +15,7 @@ auth0:
     client_secret: ""
 
 jwt:
-  secret: "local-dev-secret-change-in-production"
+  secret: ""
 
 opensearch:
   host: "http://localhost:9200"

@@ -7,6 +7,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.jspecify.annotations.Nullable;
@@ -35,6 +36,7 @@ public class LocalTokenService implements TokenValidator {
 
 	@Inject
 	public LocalTokenService(@Named("jwt.secret") String secret) {
+		Preconditions.checkArgument(!secret.isBlank(), "jwt.secret is not configured");
 		this.algorithm = Algorithm.HMAC256(secret);
 		this.verifier = JWT.require(algorithm).withIssuer(ISSUER).build();
 	}
