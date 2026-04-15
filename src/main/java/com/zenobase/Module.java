@@ -124,6 +124,7 @@ class Module extends AbstractModule {
 		parsers.addBinding().to(SuspendUserCommand.Parser.class);
 		parsers.addBinding().to(ChangeUserPasswordCommand.Parser.class);
 		parsers.addBinding().to(ChangeUserVerifiedCommand.Parser.class);
+		parsers.addBinding().to(ChangeExternalIdCommand.Parser.class);
 		parsers.addBinding().to(ChangeQuotaCommand.Parser.class);
 		parsers.addBinding().to(SpendQuotaCommand.Parser.class);
 		parsers.addBinding().to(OptOutCommand.Parser.class);
@@ -156,6 +157,7 @@ class Module extends AbstractModule {
 		handlers.addBinding().to(SuspendUserCommand.Handler.class);
 		handlers.addBinding().to(ChangeUserPasswordCommand.Handler.class);
 		handlers.addBinding().to(ChangeUserVerifiedCommand.Handler.class);
+		handlers.addBinding().to(ChangeExternalIdCommand.Handler.class);
 		handlers.addBinding().to(ChangeQuotaCommand.Handler.class);
 		handlers.addBinding().to(SpendQuotaCommand.Handler.class);
 		handlers.addBinding().to(OptOutCommand.Handler.class);

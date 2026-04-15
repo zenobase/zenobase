@@ -70,6 +70,7 @@ public class Auth0UserSynchronizerTest {
 	@Test
 	public void testDoesNotSyncVerifiedWhenAlreadyVerified() {
 		User user = new User("auth0-123", "testuser");
+		user.setExternalId("auth0|123");
 		user.setEmail("user@example.com");
 		user.setVerified(true);
 		Auth0Claims claims =
@@ -84,6 +85,7 @@ public class Auth0UserSynchronizerTest {
 	@Test
 	public void testDoesNotSyncVerifiedWhenAuth0NotVerified() {
 		User user = new User("auth0-123", "testuser");
+		user.setExternalId("auth0|123");
 		user.setEmail("user@example.com");
 		user.setVerified(false);
 		Auth0Claims claims =
@@ -112,6 +114,7 @@ public class Auth0UserSynchronizerTest {
 	@Test
 	public void testDoesNotSyncEmailWhenUnchanged() {
 		User user = new User("auth0-123", "testuser");
+		user.setExternalId("auth0|123");
 		user.setEmail("user@example.com");
 		user.setVerified(true);
 		Auth0Claims claims =
@@ -126,6 +129,7 @@ public class Auth0UserSynchronizerTest {
 	@Test
 	public void testDoesNotSyncEmailWhenNull() {
 		User user = new User("auth0-123", "testuser");
+		user.setExternalId("auth0|123");
 		user.setEmail("user@example.com");
 		user.setVerified(true);
 		Auth0Claims claims = new Auth0Claims(new Identity("auth0-123"), "testuser", null, true, "auth0|123");

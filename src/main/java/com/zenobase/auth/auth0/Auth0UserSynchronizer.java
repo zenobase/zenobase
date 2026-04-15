@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zenobase.auth.auth0.Auth0TokenValidator.Auth0Claims;
+import com.zenobase.commands.ChangeExternalIdCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.commands.CreateUserCommand;
@@ -46,6 +47,7 @@ public class Auth0UserSynchronizer {
 			if (user == null) {
 				createUser(claims);
 			} else {
+				syncExternalId(user, claims);
 				syncVerified(user, claims);
 				syncEmail(user, claims);
 			}
@@ -69,6 +71,16 @@ public class Auth0UserSynchronizer {
 		user.setSuperuser(users.isEmpty());
 		dispatcher.dispatch(new CreateUserCommand(claims.identity(), user));
 		logger.info("Created user {} from Auth0 (sub={})", id, claims.externalId());
+	}
+
+	private void syncExternalId(User user, Auth0Claims claims) {
+		if (claims.externalId() != null && user.getExternalId() == null) {
+			String name = user.getName();
+			if (name != null) {
+				dispatcher.dispatch(new ChangeExternalIdCommand(claims.identity(), name, claims.externalId()));
+				logger.debug("Set external_id for user {} to {}", name, claims.externalId());
+			}
+		}
 	}
 
 	private void syncVerified(User user, Auth0Claims claims) {
