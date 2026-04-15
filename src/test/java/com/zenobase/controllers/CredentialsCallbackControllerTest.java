@@ -1,11 +1,36 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
+import static org.mockito.Mockito.mock;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.Singleton;
 import io.helidon.webclient.http1.Http1ClientResponse;
+import io.helidon.webserver.http.HttpRouting;
 import org.junit.jupiter.api.Test;
 
-public class OAuthControllerCallbackTest extends OAuthControllerTestSupport {
+public class CredentialsCallbackControllerTest extends ControllerTestSupport {
+
+	protected final AuthorizationContext auth = mock(AuthorizationContext.class);
+
+	@Override
+	protected Module module() {
+		return new AbstractModule() {
+			@Override
+			protected void configure() {
+				bind(AuthorizationContext.class).toInstance(auth);
+				bind(CredentialsCallbackController.class).in(Singleton.class);
+			}
+		};
+	}
+
+	@Override
+	protected void routing(HttpRouting.Builder builder, Injector injector) {
+		CredentialsCallbackController controller = injector.getInstance(CredentialsCallbackController.class);
+		builder.get("/oauth/callback/{id}", controller::callback);
+	}
 
 	@Test
 	public void testRedirect() {

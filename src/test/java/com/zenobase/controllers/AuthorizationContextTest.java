@@ -13,7 +13,6 @@ import io.helidon.webserver.http.ServerRequest;
 import org.junit.jupiter.api.Test;
 
 import com.zenobase.auth.TokenValidator;
-import com.zenobase.auth.local.LocalTokenService;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 
@@ -22,14 +21,13 @@ public class AuthorizationContextTest {
 	private static final String AUTH0_ISSUER = "https://tenant.auth0.com/";
 
 	private final TokenValidator tokenValidator = mock(TokenValidator.class);
-	private final LocalTokenService tokenService = new LocalTokenService("test-secret");
 
 	public AuthorizationContextTest() {
 		when(tokenValidator.issuer()).thenReturn(AUTH0_ISSUER);
 	}
 
-	private AuthorizationContext context(boolean withAuth0) {
-		Set<TokenValidator> validators = withAuth0 ? Set.of(tokenService, tokenValidator) : Set.of(tokenService);
+	private AuthorizationContext context() {
+		Set<TokenValidator> validators = Set.of(tokenValidator);
 		return new AuthorizationContext(validators);
 	}
 
@@ -46,7 +44,7 @@ public class AuthorizationContextTest {
 	public void testNoAuthorizationHeader() {
 		ServerRequest request = mockRequest(null);
 
-		assertThat(context(true).current(request)).isNull();
+		assertThat(context().current(request)).isNull();
 		verify(tokenValidator, never()).validate(any());
 	}
 
@@ -54,23 +52,7 @@ public class AuthorizationContextTest {
 	public void testNonJwtToken() {
 		ServerRequest request = mockRequest("Bearer opaque-token-without-dots");
 
-		assertThat(context(true).current(request)).isNull();
-		verify(tokenValidator, never()).validate(any());
-	}
-
-	@Test
-	public void testLocalScopedToken() {
-		Identity principal = new Identity("user1");
-		Identity client = new Identity("client1");
-		String token = tokenService.createScopedToken(principal, client, "bucket1");
-		ServerRequest request = mockRequest("Bearer " + token);
-
-		Authorization auth = context(true).current(request);
-
-		assertThat(auth).isNotNull();
-		assertThat(auth.getPrincipal()).isEqualTo(principal);
-		assertThat(auth.getClient()).isEqualTo(client);
-		assertThat(auth.getScope()).isEqualTo("bucket1");
+		assertThat(context().current(request)).isNull();
 		verify(tokenValidator, never()).validate(any());
 	}
 
@@ -83,7 +65,7 @@ public class AuthorizationContextTest {
 		String fakeJwt = createFakeJwt(AUTH0_ISSUER);
 		ServerRequest request = mockRequest("Bearer " + fakeJwt);
 
-		Authorization auth = context(true).current(request);
+		Authorization auth = context().current(request);
 
 		assertThat(auth).isSameAs(expected);
 		verify(tokenValidator).validate(fakeJwt);
@@ -96,15 +78,16 @@ public class AuthorizationContextTest {
 		String fakeJwt = createFakeJwt(AUTH0_ISSUER);
 		ServerRequest request = mockRequest("Bearer " + fakeJwt);
 
-		assertThat(context(true).current(request)).isNull();
+		assertThat(context().current(request)).isNull();
 	}
 
 	@Test
-	public void testNoAuth0ValidatorConfigured() {
-		String fakeJwt = createFakeJwt("https://unknown-issuer.com/");
+	public void testUnknownIssuerIsRejected() {
+		String fakeJwt = createFakeJwt("zenobase");
 		ServerRequest request = mockRequest("Bearer " + fakeJwt);
 
-		assertThat(context(false).current(request)).isNull();
+		assertThat(context().current(request)).isNull();
+		verify(tokenValidator, never()).validate(any());
 	}
 
 	private static ServerRequest mockRequest(String authorizationHeader) {

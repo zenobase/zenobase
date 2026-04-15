@@ -16,7 +16,6 @@ import com.zenobase.auth.auth0.Auth0ManagementService;
 import com.zenobase.auth.auth0.Auth0TokenAuthorizer;
 import com.zenobase.auth.auth0.Auth0TokenValidator;
 import com.zenobase.auth.auth0.Auth0UserSynchronizer;
-import com.zenobase.auth.local.LocalTokenService;
 import com.zenobase.auth.local.LocalUserDirectory;
 import com.zenobase.commands.*;
 import com.zenobase.controllers.*;
@@ -80,9 +79,7 @@ class Module extends AbstractModule {
 			bind(CommandRebuild.class).in(Singleton.class);
 		}
 
-		bind(LocalTokenService.class).in(Singleton.class);
 		var tokenValidators = Multibinder.newSetBinder(binder(), TokenValidator.class);
-		tokenValidators.addBinding().to(LocalTokenService.class);
 		if (isConfigured("auth0.domain")) {
 			bind(Auth0TokenValidator.class).in(Singleton.class);
 			bind(Auth0UserSynchronizer.class).in(Singleton.class);
@@ -254,7 +251,7 @@ class Module extends AbstractModule {
 		bind(TaskListController.class).in(Singleton.class);
 		bind(CredentialsController.class).in(Singleton.class);
 		bind(CredentialsListController.class).in(Singleton.class);
-		bind(OAuthController.class).in(Singleton.class);
+		bind(CredentialsCallbackController.class).in(Singleton.class);
 		bind(SnapshotController.class).in(Singleton.class);
 		bind(SchedulerController.class).in(Singleton.class);
 		bind(RedirectController.class).in(Singleton.class);
@@ -293,7 +290,6 @@ class Module extends AbstractModule {
 		bindString("auth0.jwks_domain");
 		bindString("auth0.m2m.client_id");
 		bindString("auth0.m2m.client_secret");
-		bindString("jwt.secret");
 
 		// Integration API keys (only when their prefix is configured)
 		for (String prefix : List.of(

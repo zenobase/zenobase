@@ -144,11 +144,9 @@ class Routing {
 		routing.post("/tasks/{taskId}", task::update);
 		routing.delete("/tasks/{taskId}", task::delete);
 
-		// OAuth
-		var oauth = injector.getInstance(OAuthController.class);
-		routing.post("/oauth/authorize", oauth::authorize);
-		routing.post("/oauth/token", oauth::token);
-		routing.get("/oauth/callback/{id}", oauth::callback);
+		// Credentials callback (third-party OAuth provider redirect target)
+		var credentialsCallback = injector.getInstance(CredentialsCallbackController.class);
+		routing.get("/oauth/callback/{id}", credentialsCallback::callback);
 
 		// Snapshots
 		var snapshot = injector.getInstance(SnapshotController.class);
