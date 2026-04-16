@@ -568,6 +568,19 @@ const waf = new aws.wafv2.WebAcl("zenobase-waf", {
             },
             visibilityConfig: { cloudwatchMetricsEnabled: true, metricName: "aws-known-bad-inputs", sampledRequestsEnabled: true },
         },
+        {
+            name: "rate-limit-general",
+            priority: 3,
+            action: { block: {} },
+            statement: {
+                rateBasedStatement: {
+                    limit: 1000,
+                    aggregateKeyType: "IP",
+                    evaluationWindowSec: 300,
+                },
+            },
+            visibilityConfig: { cloudwatchMetricsEnabled: true, metricName: "rate-limit-general", sampledRequestsEnabled: true },
+        },
         // Uncomment to block a specific user agent (inline, no separate resource needed):
         // {
         //     name: "blocked-useragent",
