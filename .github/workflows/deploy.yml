@@ -25,14 +25,16 @@ jobs:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v6
         with:
-          node-version: 24
-          cache: npm
-          cache-dependency-path: infra/package-lock.json
+          node-version-file: .nvmrc
+          cache: pnpm
+          cache-dependency-path: infra/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
         working-directory: infra
 
       - uses: pulumi/actions@v6
