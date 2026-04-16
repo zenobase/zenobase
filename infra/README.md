@@ -96,5 +96,5 @@ The ECS task retrieves this secret on startup and writes it to `/etc/app/prod.ya
    ```
 3. Create a DNS CNAME record pointing `zenobase.com` to the ALB DNS name (`pulumi stack output albDnsName`).
 4. On the first run the instance will be unhealthy because there are no images in ECR yet.
-5. Push to `master` to trigger the CI workflow (tests, builds, and pushes images to ECR).
+5. Push to `main` to trigger the CI workflow (tests, builds, and pushes images to ECR).
 6. Deploy using the procedure in the root README.

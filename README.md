@@ -55,7 +55,7 @@ To run a specific test method:
 The container runs on ECS Fargate. Deployments use ECS rolling updates — a new
 task starts, passes health checks, then the old task is drained automatically.
 
-1. Push to master. CI runs tests, builds Docker images, and pushes to ECR.
+1. Push to main. CI runs tests, builds Docker images, and pushes to ECR.
 
 2. If there are new secrets, update them:
 
