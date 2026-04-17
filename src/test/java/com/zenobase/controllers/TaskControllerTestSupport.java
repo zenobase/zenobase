@@ -9,12 +9,12 @@ import com.google.inject.Singleton;
 import io.helidon.webserver.http.HttpRouting;
 
 import com.zenobase.models.User;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.repositories.BucketRepository;
+import com.zenobase.repositories.TaskRepository;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.LocalBus;
-import com.zenobase.services.TaskRepository;
-import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
 

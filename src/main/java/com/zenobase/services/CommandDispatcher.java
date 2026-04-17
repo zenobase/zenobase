@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandHandlerRegistry;
 import com.zenobase.commands.CompoundCommand;
+import com.zenobase.repositories.CommandRepository;
 
 public class CommandDispatcher {
 

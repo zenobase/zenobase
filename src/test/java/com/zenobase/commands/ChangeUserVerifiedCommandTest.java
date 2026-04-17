@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.User;
-import com.zenobase.services.UserRepository;
+import com.zenobase.repositories.UserRepository;
 
 public class ChangeUserVerifiedCommandTest {
 

@@ -16,6 +16,9 @@ import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.commands.TestCommand;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
+import com.zenobase.repositories.CommandRepository;
+import com.zenobase.repositories.OpenSearchTestSupport;
+import com.zenobase.repositories.UserRepository;
 
 public class CommandReplayTest extends OpenSearchTestSupport {
 

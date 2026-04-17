@@ -8,7 +8,7 @@ import com.zenobase.commands.Command;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.repositories.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 
 public class TaskRefresher {

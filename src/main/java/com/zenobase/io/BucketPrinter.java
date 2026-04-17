@@ -11,7 +11,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.EventRepository;
+import com.zenobase.repositories.EventRepository;
 
 public class BucketPrinter implements Callback<Bucket> {
 

@@ -10,9 +10,9 @@ import io.helidon.webclient.http1.Http1ClientResponse;
 import io.helidon.webserver.http.HttpRouting;
 import org.junit.jupiter.api.Test;
 
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.LocalBus;
-import com.zenobase.services.UserRepository;
 import com.zenobase.testing.NodeAssert;
 
 public class OpenGraphControllerTest extends ControllerTestSupport {

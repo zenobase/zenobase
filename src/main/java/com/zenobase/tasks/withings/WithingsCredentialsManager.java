@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.oauth.ExpiringToken;
-import com.zenobase.services.CredentialsRepository;
+import com.zenobase.repositories.CredentialsRepository;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthCredentialsManager;

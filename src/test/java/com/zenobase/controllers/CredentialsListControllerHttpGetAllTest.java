@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import com.zenobase.common.DefaultPartialList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.CredentialsQuery;
+import com.zenobase.queries.CredentialsQuery;
 import com.zenobase.tasks.CredentialsList;
 
 public class CredentialsListControllerHttpGetAllTest extends CredentialsListControllerTestSupport {

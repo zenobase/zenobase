@@ -16,7 +16,7 @@ import com.zenobase.common.PartialList;
 import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.CommandQuery;
+import com.zenobase.queries.CommandQuery;
 
 public class JournalControllerFindByUserTest extends JournalControllerTestSupport {
 

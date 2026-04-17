@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.services.EventRepository;
+import com.zenobase.repositories.EventRepository;
 
 public class CreateAndDeleteEventsCommandTest {
 

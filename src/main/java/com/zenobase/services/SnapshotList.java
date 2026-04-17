@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.primitives.Ints;
 
 import com.zenobase.common.PartialList;
+import com.zenobase.jobs.Snapshot;
 import com.zenobase.json.LazyList;
 import com.zenobase.json.Nodes;
 

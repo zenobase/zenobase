@@ -8,11 +8,11 @@ import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
 
+import com.zenobase.jobs.Job;
+import com.zenobase.jobs.Scheduler;
 import com.zenobase.json.Nodes;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.Job;
-import com.zenobase.services.Scheduler;
-import com.zenobase.services.UserRepository;
+import com.zenobase.repositories.UserRepository;
 
 public class SchedulerController extends ControllerSupport {
 

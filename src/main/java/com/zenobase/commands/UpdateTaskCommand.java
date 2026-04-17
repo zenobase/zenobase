@@ -9,7 +9,7 @@ import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.JsonPatch;
 import com.zenobase.models.Identity;
-import com.zenobase.services.TaskRepository;
+import com.zenobase.repositories.TaskRepository;
 import com.zenobase.tasks.Task;
 
 public class UpdateTaskCommand extends UpdateCommandSupport {

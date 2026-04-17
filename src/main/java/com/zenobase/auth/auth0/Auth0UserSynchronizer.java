@@ -17,8 +17,8 @@ import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
-import com.zenobase.services.UserRepository;
 
 public class Auth0UserSynchronizer {
 

@@ -14,15 +14,15 @@ import com.zenobase.commands.DeleteUserCommand;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.BucketQuery;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.queries.BucketQuery;
+import com.zenobase.queries.CredentialsQuery;
+import com.zenobase.queries.TaskQuery;
+import com.zenobase.repositories.BucketRepository;
+import com.zenobase.repositories.CredentialsRepository;
+import com.zenobase.repositories.TaskRepository;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
-import com.zenobase.services.CredentialsQuery;
-import com.zenobase.services.CredentialsRepository;
-import com.zenobase.services.TaskQuery;
-import com.zenobase.services.TaskRepository;
 import com.zenobase.services.UserLookup;
-import com.zenobase.services.UserRepository;
 
 public class AccountController extends ControllerSupport {
 

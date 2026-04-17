@@ -20,7 +20,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.ExpiringToken;
-import com.zenobase.services.CredentialsRepository;
+import com.zenobase.repositories.CredentialsRepository;
 import com.zenobase.testing.Manual;
 
 @Manual

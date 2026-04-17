@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import com.zenobase.json.JsonChunks;
 import com.zenobase.json.JsonStream;
+import com.zenobase.repositories.EventRepository;
 import com.zenobase.search.EventSearchBuilder;
-import com.zenobase.services.EventRepository;
 
 final class EventChunks extends JsonChunks {
 

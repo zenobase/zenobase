@@ -13,7 +13,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.TaskQuery;
+import com.zenobase.queries.TaskQuery;
 import com.zenobase.tasks.TaskList;
 
 public class TaskListControllerFindByBucketTest extends TaskListControllerTestSupport {

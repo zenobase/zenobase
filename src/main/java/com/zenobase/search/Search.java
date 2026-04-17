@@ -17,7 +17,7 @@ import com.zenobase.common.Callback;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.Nodes;
-import com.zenobase.services.Index;
+import com.zenobase.repositories.Index;
 import com.zenobase.services.SearchOrder;
 
 public class Search {

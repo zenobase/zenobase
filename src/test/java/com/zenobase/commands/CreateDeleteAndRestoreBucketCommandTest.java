@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.repositories.BucketRepository;
 
 public class CreateDeleteAndRestoreBucketCommandTest {
 

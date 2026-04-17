@@ -11,9 +11,9 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.repositories.BucketRepository;
+import com.zenobase.repositories.EventRepository;
 import com.zenobase.services.CommandDispatcher;
-import com.zenobase.services.EventRepository;
 
 public class EventController extends ControllerSupport {
 

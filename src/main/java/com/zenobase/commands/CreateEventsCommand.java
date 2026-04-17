@@ -15,7 +15,7 @@ import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.services.EventRepository;
+import com.zenobase.repositories.EventRepository;
 
 public class CreateEventsCommand extends Command {
 

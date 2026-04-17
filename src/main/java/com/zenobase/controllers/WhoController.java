@@ -7,7 +7,7 @@ import jakarta.inject.Inject;
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.UserRepository;
+import com.zenobase.repositories.UserRepository;
 
 public class WhoController extends ControllerSupport {
 

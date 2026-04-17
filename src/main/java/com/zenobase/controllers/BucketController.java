@@ -19,11 +19,11 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.queries.TaskQuery;
+import com.zenobase.repositories.BucketRepository;
+import com.zenobase.repositories.TaskRepository;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
-import com.zenobase.services.TaskQuery;
-import com.zenobase.services.TaskRepository;
-import com.zenobase.services.UserRepository;
 
 public class BucketController extends ControllerSupport {
 

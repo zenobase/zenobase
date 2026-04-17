@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
+import com.zenobase.repositories.CommandRepository;
+import com.zenobase.repositories.UserRepository;
 
 public class QuotaManager {
 

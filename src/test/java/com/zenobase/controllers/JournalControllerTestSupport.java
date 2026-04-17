@@ -9,11 +9,11 @@ import com.google.inject.Singleton;
 import io.helidon.webserver.http.HttpRouting;
 
 import com.zenobase.models.User;
+import com.zenobase.repositories.CommandRepository;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
-import com.zenobase.services.CommandRepository;
 import com.zenobase.services.LocalBus;
-import com.zenobase.services.UserRepository;
 
 public abstract class JournalControllerTestSupport extends ControllerTestSupport {
 

@@ -8,12 +8,12 @@ import com.google.inject.Module;
 import io.helidon.webserver.http.HttpRouting;
 
 import com.zenobase.models.User;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.repositories.BucketRepository;
+import com.zenobase.repositories.EventRepository;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
-import com.zenobase.services.EventRepository;
 import com.zenobase.services.LocalBus;
-import com.zenobase.services.UserRepository;
 
 public abstract class BucketListControllerTestSupport extends ControllerTestSupport {
 

@@ -5,7 +5,7 @@ import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Identity;
-import com.zenobase.services.CredentialsRepository;
+import com.zenobase.repositories.CredentialsRepository;
 import com.zenobase.tasks.Credentials;
 
 public class CreateAndDeleteCredentialsCommandTest {

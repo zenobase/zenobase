@@ -8,7 +8,7 @@ import org.jspecify.annotations.Nullable;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Identity;
-import com.zenobase.services.TaskRepository;
+import com.zenobase.repositories.TaskRepository;
 import com.zenobase.tasks.Task;
 
 public class CreateTaskCommand extends Command {

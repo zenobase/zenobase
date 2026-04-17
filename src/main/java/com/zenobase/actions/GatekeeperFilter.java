@@ -9,8 +9,8 @@ import jakarta.inject.Inject;
 
 import com.zenobase.controllers.AuthorizationContext;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.Bus;
-import com.zenobase.services.UserRepository;
 
 /**
  * Disables all requests other than GET or HEAD for everyone but superusers when in read-only mode.

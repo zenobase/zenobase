@@ -18,6 +18,10 @@ import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.commands.NonExistentUserException;
 import com.zenobase.common.StringBloomFilter;
 import com.zenobase.common.StringFilter;
+import com.zenobase.queries.CommandQuery;
+import com.zenobase.repositories.CommandRepository;
+import com.zenobase.repositories.IndexManager;
+import com.zenobase.repositories.UserRepository;
 
 public class CommandReplay {
 

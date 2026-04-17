@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test;
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.LocalBus;
-import com.zenobase.services.UserRepository;
 
 public class WhoControllerTest extends ControllerTestSupport {
 

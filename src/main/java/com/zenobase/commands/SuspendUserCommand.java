@@ -10,7 +10,7 @@ import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
-import com.zenobase.services.UserRepository;
+import com.zenobase.repositories.UserRepository;
 
 public class SuspendUserCommand extends Command {
 

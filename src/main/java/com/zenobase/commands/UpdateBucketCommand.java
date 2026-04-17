@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.repositories.BucketRepository;
 
 public class UpdateBucketCommand extends Command {
 

@@ -10,6 +10,7 @@ import com.zenobase.commands.CommandHandlerRegistry;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.TestCommand;
 import com.zenobase.models.Identity;
+import com.zenobase.repositories.CommandRepository;
 
 public class CommandDispatcherTest {
 

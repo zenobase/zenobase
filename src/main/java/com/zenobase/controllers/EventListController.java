@@ -32,15 +32,15 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.repositories.BucketRepository;
+import com.zenobase.repositories.EventRepository;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.search.EventSearchBuilder;
 import com.zenobase.search.FacetOptions;
 import com.zenobase.search.ListFacet;
 import com.zenobase.search.Search;
-import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
-import com.zenobase.services.EventRepository;
 import com.zenobase.services.UserLookup;
-import com.zenobase.services.UserRepository;
 
 public class EventListController extends ControllerSupport {
 

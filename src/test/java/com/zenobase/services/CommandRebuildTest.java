@@ -19,6 +19,12 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Role;
 import com.zenobase.models.User;
+import com.zenobase.repositories.BucketRepository;
+import com.zenobase.repositories.CredentialsRepository;
+import com.zenobase.repositories.EventRepository;
+import com.zenobase.repositories.OpenSearchTestSupport;
+import com.zenobase.repositories.TaskRepository;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.Task;
 

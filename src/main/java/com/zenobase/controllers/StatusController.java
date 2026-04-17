@@ -7,8 +7,8 @@ import jakarta.inject.Inject;
 
 import com.zenobase.models.StatusInfo;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.Bus;
-import com.zenobase.services.UserRepository;
 
 public class StatusController extends ControllerSupport {
 

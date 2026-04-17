@@ -23,6 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zenobase.common.Globals;
+import com.zenobase.jobs.Scheduler;
+import com.zenobase.repositories.IndexManager;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.*;
 
 public class Main {

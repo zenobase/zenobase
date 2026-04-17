@@ -12,7 +12,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.BucketQuery;
+import com.zenobase.queries.BucketQuery;
 import com.zenobase.services.SearchOrder;
 
 public class BucketListControllerFindByUserTest extends BucketListControllerTestSupport {

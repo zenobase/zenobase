@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 import com.zenobase.io.UserPrinter;
 import com.zenobase.models.UserList;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.UserQuery;
-import com.zenobase.services.UserRepository;
+import com.zenobase.queries.UserQuery;
+import com.zenobase.repositories.UserRepository;
 
 public class UserListController extends ControllerSupport {
 

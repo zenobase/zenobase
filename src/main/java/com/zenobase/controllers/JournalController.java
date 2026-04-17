@@ -10,11 +10,11 @@ import com.zenobase.commands.Command;
 import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.queries.CommandQuery;
+import com.zenobase.repositories.CommandRepository;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
-import com.zenobase.services.CommandQuery;
-import com.zenobase.services.CommandRepository;
 import com.zenobase.services.UserLookup;
-import com.zenobase.services.UserRepository;
 
 public class JournalController extends ControllerSupport {
 

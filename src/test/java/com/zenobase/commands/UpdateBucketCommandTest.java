@@ -12,7 +12,7 @@ import com.zenobase.json.OptimisticLock;
 import com.zenobase.models.Alias;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.repositories.BucketRepository;
 
 public class UpdateBucketCommandTest {
 

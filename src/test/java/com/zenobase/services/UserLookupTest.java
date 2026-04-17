@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
+import com.zenobase.repositories.UserRepository;
 
 public class UserLookupTest {
 

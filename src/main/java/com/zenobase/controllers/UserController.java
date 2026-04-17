@@ -19,9 +19,9 @@ import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserLookup;
-import com.zenobase.services.UserRepository;
 
 public class UserController extends ControllerSupport {
 

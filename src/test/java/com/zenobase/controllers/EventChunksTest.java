@@ -15,8 +15,8 @@ import com.zenobase.common.Callback;
 import com.zenobase.common.Generator;
 import com.zenobase.json.JsonStream;
 import com.zenobase.json.Nodes;
+import com.zenobase.repositories.EventRepository;
 import com.zenobase.search.Search;
-import com.zenobase.services.EventRepository;
 
 public class EventChunksTest {
 

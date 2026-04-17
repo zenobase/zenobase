@@ -14,6 +14,7 @@ import com.zenobase.commands.UpdateEventCommand;
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.repositories.EventRepository;
 import com.zenobase.search.EventSearchBuilder;
 import com.zenobase.search.ListFacet;
 import com.zenobase.search.OffsetDateTimeRangeConstraintBuilder;

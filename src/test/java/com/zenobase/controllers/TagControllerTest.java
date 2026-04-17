@@ -22,11 +22,11 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.repositories.BucketRepository;
+import com.zenobase.repositories.EventRepository;
+import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.Bus;
-import com.zenobase.services.EventRepository;
 import com.zenobase.services.LocalBus;
-import com.zenobase.services.UserRepository;
 
 public class TagControllerTest extends ControllerTestSupport {
 

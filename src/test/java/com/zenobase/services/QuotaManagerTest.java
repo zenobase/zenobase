@@ -8,6 +8,8 @@ import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.User;
+import com.zenobase.repositories.CommandRepository;
+import com.zenobase.repositories.UserRepository;
 
 public class QuotaManagerTest {
 
