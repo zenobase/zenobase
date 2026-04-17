@@ -1,5 +1,7 @@
 package com.zenobase.json;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,6 +32,14 @@ public class ResourceField extends Field<Resource> {
 		ObjectNode properties = schema.putObject("properties");
 		configureSchema(properties, titleField);
 		configureSchema(properties, urlField);
+	}
+
+	@Override
+	public JsonSchema toJsonSchema() {
+		Map<String, JsonSchema> properties = new LinkedHashMap<>();
+		properties.put("title", JsonSchema.string());
+		properties.put("url", JsonSchema.string("uri"));
+		return JsonSchema.object(properties);
 	}
 
 	@Override

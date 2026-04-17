@@ -161,6 +161,16 @@ public abstract class Field<T> {
 		schema.put("type", schemaType);
 	}
 
+	public JsonSchema toJsonSchema() {
+		return switch (schemaType) {
+			case "keyword", "text" -> JsonSchema.string();
+			case "date" -> JsonSchema.string("date-time");
+			case "byte", "integer", "long" -> JsonSchema.integer();
+			case "float", "double" -> JsonSchema.number();
+			default -> new JsonSchema(schemaType, null, null);
+		};
+	}
+
 	protected static void configureSchema(ObjectNode properties, Field<?> field) {
 		field.configureSchema(properties.putObject(field.getName()));
 	}

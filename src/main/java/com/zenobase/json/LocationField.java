@@ -1,6 +1,8 @@
 package com.zenobase.json;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -28,6 +30,14 @@ public class LocationField extends Field<Location> {
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
+	}
+
+	@Override
+	public JsonSchema toJsonSchema() {
+		Map<String, JsonSchema> properties = new LinkedHashMap<>();
+		properties.put("lat", JsonSchema.number());
+		properties.put("lon", JsonSchema.number());
+		return JsonSchema.object(properties);
 	}
 
 	@Override

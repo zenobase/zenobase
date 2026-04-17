@@ -1,6 +1,8 @@
 package com.zenobase.json;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
@@ -44,6 +46,14 @@ public class DecimalMeasureField<Q extends Quantity> extends Field<DecimalMeasur
 		configureSchema(properties, VALUE);
 		configureSchema(properties, UNIT);
 		configureSchema(properties, VALUE_SI);
+	}
+
+	@Override
+	public JsonSchema toJsonSchema() {
+		Map<String, JsonSchema> properties = new LinkedHashMap<>();
+		properties.put(VALUE.getName(), JsonSchema.number());
+		properties.put(UNIT.getName(), JsonSchema.string());
+		return JsonSchema.object(properties);
 	}
 
 	@Override

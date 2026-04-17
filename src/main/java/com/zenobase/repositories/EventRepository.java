@@ -2,14 +2,19 @@ package com.zenobase.repositories;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.SortOrder;
+import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.StringTermsBucket;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
@@ -19,6 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zenobase.common.Callback;
+import com.zenobase.json.DomainNode;
+import com.zenobase.json.Field;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.search.Search;
@@ -121,6 +128,36 @@ public class EventRepository {
 			terms.add(bucket.key());
 		}
 		return terms;
+	}
+
+	public List<Field<?>> fields(String bucketId) {
+		Map<String, Aggregation> aggregations = new LinkedHashMap<>();
+		Map<String, Field<?>> fieldsByAggName = new LinkedHashMap<>();
+		int i = 0;
+		for (Field<?> field : Event.FIELDS) {
+			if (field == Event.BUCKET || field == DomainNode.VERSION) {
+				continue;
+			}
+			String aggName = "f" + i++;
+			String fieldName = field.getName();
+			aggregations.put(aggName, Aggregation.of(a -> a.filter(q -> q.exists(e -> e.field(fieldName)))));
+			fieldsByAggName.put(aggName, field);
+		}
+		SearchRequest request = SearchRequest.of(
+				s -> s.index(getIndex(bucketId).getIndexName()).size(0).aggregations(aggregations));
+		SearchResponse<ObjectNode> response = getIndex(bucketId).search(request);
+		Map<Field<?>, Long> counts = new LinkedHashMap<>();
+		for (Map.Entry<String, Field<?>> entry : fieldsByAggName.entrySet()) {
+			Aggregate aggregate = response.aggregations().get(entry.getKey());
+			long count = aggregate != null ? aggregate.filter().docCount() : 0L;
+			if (count > 0) {
+				counts.put(entry.getValue(), count);
+			}
+		}
+		return counts.entrySet().stream()
+				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+				.map(Map.Entry::getKey)
+				.collect(Collectors.toUnmodifiableList());
 	}
 
 	public long size() {

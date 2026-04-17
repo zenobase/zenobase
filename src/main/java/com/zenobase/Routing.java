@@ -98,6 +98,10 @@ class Routing {
 		routing.put("/buckets/{bucketId}", bucket::update);
 		routing.delete("/buckets/{bucketId}", bucket::delete);
 
+		// Schema
+		var schema = injector.getInstance(BucketSchemaController.class);
+		routing.get("/buckets/{bucketId}/schema", schema::get);
+
 		// Events
 		var eventList = injector.getInstance(EventListController.class);
 		routing.get("/buckets/{bucketId}/", eventList::find);

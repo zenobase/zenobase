@@ -13,10 +13,13 @@ import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.zenobase.common.Measures;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Location;
+import com.zenobase.models.Resource;
 import com.zenobase.search.EventSearchBuilder;
 import com.zenobase.search.Search;
 import com.zenobase.testing.NodeAssert;
@@ -173,6 +176,52 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		stale.addValue(Event.TAG, "conflict");
 		assertThatThrownBy(() -> repository.update(bucket.getId(), stale, stale))
 				.hasMessageContaining("409 Conflict");
+	}
+
+	@Test
+	public void testFields() {
+
+		Bucket bucket = new Bucket();
+		new BucketRepository(getManager()).store(bucket);
+
+		assertThat(repository.fields(bucket.getId())).as("empty bucket").isEmpty();
+
+		// three events set TAG, two set DISTANCE, one sets LOCATION
+		Event e1 = new Event();
+		e1.setValue(Event.AUTHOR, me);
+		e1.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
+		e1.addValue(Event.TAG, "a");
+		e1.setValue(Event.DISTANCE, Measures.valueOf("5 km"));
+		e1.setValue(
+				Event.LOCATION, new Location(new java.math.BigDecimal("37.77"), new java.math.BigDecimal("-122.42")));
+		e1.setValue(Event.SOURCE, new Resource("Test", "https://example.com/test"));
+
+		Event e2 = new Event();
+		e2.setValue(Event.AUTHOR, me);
+		e2.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
+		e2.addValue(Event.TAG, "b");
+		e2.setValue(Event.DISTANCE, Measures.valueOf("3 km"));
+
+		Event e3 = new Event();
+		e3.setValue(Event.AUTHOR, me);
+		e3.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
+		e3.addValue(Event.TAG, "c");
+
+		repository.add(bucket.getId(), Lists.newArrayList(e1, e2, e3));
+		repository.refresh(bucket.getId());
+
+		// counts: 3 for ID/AUTHOR/TIMESTAMP/TAG, 2 for DISTANCE, 1 for SOURCE/LOCATION;
+		// ties broken by Event.FIELDS declaration order
+		assertThat(repository.fields(bucket.getId()))
+				.as("fields by frequency")
+				.containsExactly(
+						Event.ID,
+						Event.AUTHOR,
+						Event.TIMESTAMP,
+						Event.TAG,
+						Event.DISTANCE,
+						Event.SOURCE,
+						Event.LOCATION);
 	}
 
 	@Test
