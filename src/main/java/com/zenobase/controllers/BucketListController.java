@@ -1,11 +1,16 @@
 package com.zenobase.controllers;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.primitives.Ints;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
 
 import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.common.PartialList;
+import com.zenobase.json.LongField;
+import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
 import com.zenobase.models.Identity;
@@ -20,6 +25,8 @@ import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
 
 public class BucketListController extends ControllerSupport {
+
+	private static final LongField SIZE = new LongField("size");
 
 	private final CommandDispatcher dispatcher;
 	private final BucketRepository buckets;
@@ -62,7 +69,7 @@ public class BucketListController extends ControllerSupport {
 		if (q != null) {
 			query = query.queryString(q);
 		}
-		sendOk(res, BucketList.toJson(buckets.find(query, BucketQuery.DEFAULT_ORDER, offset, limit), events));
+		sendOk(res, toJson(buckets.find(query, BucketQuery.DEFAULT_ORDER, offset, limit)));
 	}
 
 	public void findByUser(ServerRequest req, ServerResponse res) {
@@ -103,7 +110,19 @@ public class BucketListController extends ControllerSupport {
 		var query = new BucketQuery().principalEqualTo(principal).includeArchived(includeArchived);
 		var orderBy = order != null ? SearchOrder.valueOf(order, Bucket.SCHEMA) : BucketQuery.DEFAULT_ORDER;
 		PartialList<Bucket> found = buckets.find(query, orderBy, offset, limit);
-		sendOk(res, labelsOnly ? BucketList.toJsonLabelsOnly(found) : BucketList.toJson(found, events));
+		sendOk(res, labelsOnly ? BucketList.toJson(found) : toJson(found));
+	}
+
+	private ObjectNode toJson(PartialList<Bucket> list) {
+		ObjectNode resultNode = Nodes.newObject();
+		PartialList.TOTAL.setValue(resultNode, Ints.checkedCast(list.getTotal()));
+		ArrayNode bucketsNode = resultNode.putArray("buckets");
+		for (Bucket bucket : list) {
+			ObjectNode bucketNode = bucket.toJson();
+			SIZE.setValue(bucketNode, events.size(bucket.getId()));
+			bucketsNode.add(bucketNode);
+		}
+		return resultNode;
 	}
 
 	public void post(ServerRequest req, ServerResponse res) {

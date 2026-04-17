@@ -26,7 +26,7 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 		when(buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()), ORDER_BY, 0, 10))
 				.thenReturn(list);
 		try (Http1ClientResponse result = call(user.getId(), ORDER_BY, 0, 10)) {
-			assertThat(result).hasStatus(200).hasContent(BucketList.toJson(list, events));
+			assertThat(result).hasStatus(200).hasContent(BucketList.toJson(list));
 		}
 	}
 
@@ -37,7 +37,7 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 		when(buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()), ORDER_BY, 0, 10))
 				.thenReturn(list);
 		try (Http1ClientResponse result = call(user.getId(), ORDER_BY, 0, 10, true, true)) {
-			assertThat(result).hasStatus(200).hasContent(BucketList.toJsonLabelsOnly(list));
+			assertThat(result).hasStatus(200).hasContent(BucketList.toJson(list));
 		}
 	}
 
@@ -49,7 +49,7 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 						new BucketQuery().principalEqualTo(user.asIdentity()).includeArchived(false), ORDER_BY, 0, 10))
 				.thenReturn(list);
 		try (Http1ClientResponse result = call(user.getId(), ORDER_BY, 0, 10, true, false)) {
-			assertThat(result).hasStatus(200).hasContent(BucketList.toJsonLabelsOnly(list));
+			assertThat(result).hasStatus(200).hasContent(BucketList.toJson(list));
 		}
 	}
 
@@ -62,7 +62,7 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 		when(buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()), ORDER_BY, 0, 10))
 				.thenReturn(list);
 		try (Http1ClientResponse result = call(user.getId(), ORDER_BY, 0, 10)) {
-			assertThat(result).hasStatus(200).hasContent(BucketList.toJson(list, events));
+			assertThat(result).hasStatus(200).hasContent(BucketList.toJson(list));
 		}
 	}
 

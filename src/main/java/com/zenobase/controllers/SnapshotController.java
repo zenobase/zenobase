@@ -4,9 +4,9 @@ import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
 
-import com.zenobase.models.SnapshotList;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.IndexManager;
+import com.zenobase.services.SnapshotList;
 import com.zenobase.services.SnapshotManager;
 import com.zenobase.services.UserRepository;
 

@@ -24,7 +24,7 @@ public class BucketListControllerFindAllTest extends BucketListControllerTestSup
 		when(buckets.find(new BucketQuery().queryString("foo"), BucketQuery.DEFAULT_ORDER, 0, 10))
 				.thenReturn(list);
 		try (Http1ClientResponse result = call("foo", 0, 10)) {
-			assertThat(result).hasStatus(200).hasContent(BucketList.toJson(list, events));
+			assertThat(result).hasStatus(200).hasContent(BucketList.toJson(list));
 		}
 	}
 

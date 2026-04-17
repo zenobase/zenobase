@@ -1,4 +1,4 @@
-package com.zenobase.models;
+package com.zenobase.services;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -7,7 +7,6 @@ import com.google.common.primitives.Ints;
 import com.zenobase.common.PartialList;
 import com.zenobase.json.LazyList;
 import com.zenobase.json.Nodes;
-import com.zenobase.services.Snapshot;
 
 public class SnapshotList extends LazyList<Snapshot> {
 
