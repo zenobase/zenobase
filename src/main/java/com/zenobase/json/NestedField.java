@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jspecify.annotations.Nullable;
 
-import com.zenobase.search.ConstraintBuilder;
+import com.zenobase.search.constraints.ConstraintBuilder;
 
 public class NestedField<T> extends Field<T> {
 

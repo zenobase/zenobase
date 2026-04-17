@@ -7,9 +7,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Rating;
-import com.zenobase.search.ExistsConstraintBuilder;
-import com.zenobase.search.PercentConstraintBuilder;
-import com.zenobase.search.PercentRangeConstraintBuilder;
+import com.zenobase.search.constraints.ExistsConstraintBuilder;
+import com.zenobase.search.constraints.PercentConstraintBuilder;
+import com.zenobase.search.constraints.PercentRangeConstraintBuilder;
 
 public class RatingField extends Field<Rating> {
 

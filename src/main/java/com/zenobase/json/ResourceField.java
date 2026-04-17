@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Resource;
-import com.zenobase.search.ExistsConstraintBuilder;
+import com.zenobase.search.constraints.ExistsConstraintBuilder;
 
 public class ResourceField extends Field<Resource> {
 

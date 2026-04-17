@@ -4,6 +4,22 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 
 import com.zenobase.models.Event;
+import com.zenobase.search.constraints.ConstraintBuilder;
+import com.zenobase.search.constraints.FilterParser;
+import com.zenobase.search.facets.CountFacet;
+import com.zenobase.search.facets.FacetBuilder;
+import com.zenobase.search.facets.GanttFacet;
+import com.zenobase.search.facets.GeoBoundsFacet;
+import com.zenobase.search.facets.HeatmapFacet;
+import com.zenobase.search.facets.HistogramFacet;
+import com.zenobase.search.facets.ListFacet;
+import com.zenobase.search.facets.MapFacet;
+import com.zenobase.search.facets.PolarFacet;
+import com.zenobase.search.facets.RatingsFacet;
+import com.zenobase.search.facets.ScatterPlotFacet;
+import com.zenobase.search.facets.ScoreboardFacet;
+import com.zenobase.search.facets.StatsFacet;
+import com.zenobase.search.facets.TimelineFacet;
 
 public class EventSearchBuilder extends SearchBuilderSupport {
 

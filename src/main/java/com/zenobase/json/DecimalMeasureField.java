@@ -13,10 +13,10 @@ import com.google.common.base.Preconditions;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.common.Measures;
-import com.zenobase.search.ExistsConstraintBuilder;
-import com.zenobase.search.MeasureConstraintBuilder;
-import com.zenobase.search.MeasureRangeConstraintBuilder;
-import com.zenobase.search.TermConstraintBuilder;
+import com.zenobase.search.constraints.ExistsConstraintBuilder;
+import com.zenobase.search.constraints.MeasureConstraintBuilder;
+import com.zenobase.search.constraints.MeasureRangeConstraintBuilder;
+import com.zenobase.search.constraints.TermConstraintBuilder;
 
 public class DecimalMeasureField<Q extends Quantity> extends Field<DecimalMeasure<Q>> {
 

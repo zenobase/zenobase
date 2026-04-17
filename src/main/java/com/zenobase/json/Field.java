@@ -14,7 +14,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import org.jspecify.annotations.Nullable;
 
-import com.zenobase.search.ConstraintBuilder;
+import com.zenobase.search.constraints.ConstraintBuilder;
 
 public abstract class Field<T> {
 

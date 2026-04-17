@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Identity;
-import com.zenobase.search.TermConstraintBuilder;
+import com.zenobase.search.constraints.TermConstraintBuilder;
 
 public class IdentityField extends Field<Identity> {
 

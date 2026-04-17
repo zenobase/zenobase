@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 
-import com.zenobase.search.ExistsConstraintBuilder;
+import com.zenobase.search.constraints.ExistsConstraintBuilder;
 
 public class DateTimeField extends Field<DateTime> {
 

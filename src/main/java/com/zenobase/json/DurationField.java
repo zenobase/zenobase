@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import org.joda.time.Duration;
 import org.jspecify.annotations.Nullable;
 
-import com.zenobase.search.DurationConstraintBuilder;
-import com.zenobase.search.DurationRangeConstraintBuilder;
-import com.zenobase.search.ExistsConstraintBuilder;
+import com.zenobase.search.constraints.DurationConstraintBuilder;
+import com.zenobase.search.constraints.DurationRangeConstraintBuilder;
+import com.zenobase.search.constraints.ExistsConstraintBuilder;
 
 public class DurationField extends Field<Duration> {
 

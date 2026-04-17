@@ -9,6 +9,12 @@ import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zenobase.search.constraints.ConstraintBuilder;
+import com.zenobase.search.constraints.FilterBuilderSupport;
+import com.zenobase.search.facets.Facet;
+import com.zenobase.search.facets.FacetBuilder;
+import com.zenobase.search.facets.FacetOptions;
+
 public class SearchBuilderSupport extends FilterBuilderSupport {
 
 	private static final Logger logger = LoggerFactory.getLogger(SearchBuilderSupport.class);

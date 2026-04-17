@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import org.jspecify.annotations.Nullable;
 
-import com.zenobase.search.ConstraintBuilder;
+import com.zenobase.search.constraints.ConstraintBuilder;
 
 public class Schema {
 

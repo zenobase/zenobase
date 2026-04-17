@@ -9,9 +9,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jspecify.annotations.Nullable;
 
 import com.zenobase.models.Location;
-import com.zenobase.search.BoundingBoxConstraintBuilder;
-import com.zenobase.search.DistanceConstraintBuilder;
-import com.zenobase.search.ExistsConstraintBuilder;
+import com.zenobase.search.constraints.BoundingBoxConstraintBuilder;
+import com.zenobase.search.constraints.DistanceConstraintBuilder;
+import com.zenobase.search.constraints.ExistsConstraintBuilder;
 
 public class LocationField extends Field<Location> {
 

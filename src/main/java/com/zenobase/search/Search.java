@@ -18,6 +18,7 @@ import com.zenobase.json.DomainNode;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.Nodes;
 import com.zenobase.repositories.Index;
+import com.zenobase.search.facets.Facet;
 import com.zenobase.services.SearchOrder;
 
 public class Search {

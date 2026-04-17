@@ -8,11 +8,11 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.jspecify.annotations.Nullable;
 
-import com.zenobase.search.DecimalRangeConstraintBuilder;
-import com.zenobase.search.ExistsConstraintBuilder;
-import com.zenobase.search.LocalDateTimeConstraintBuilder;
-import com.zenobase.search.LocalDateTimeRangeConstraintBuilder;
-import com.zenobase.search.TermConstraintBuilder;
+import com.zenobase.search.constraints.DecimalRangeConstraintBuilder;
+import com.zenobase.search.constraints.ExistsConstraintBuilder;
+import com.zenobase.search.constraints.LocalDateTimeConstraintBuilder;
+import com.zenobase.search.constraints.LocalDateTimeRangeConstraintBuilder;
+import com.zenobase.search.constraints.TermConstraintBuilder;
 
 public class LocalDateTimeField extends Field<LocalDateTime> {
 

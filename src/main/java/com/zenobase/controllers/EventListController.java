@@ -36,9 +36,9 @@ import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.EventRepository;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.search.EventSearchBuilder;
-import com.zenobase.search.FacetOptions;
-import com.zenobase.search.ListFacet;
 import com.zenobase.search.Search;
+import com.zenobase.search.facets.FacetOptions;
+import com.zenobase.search.facets.ListFacet;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserLookup;
 

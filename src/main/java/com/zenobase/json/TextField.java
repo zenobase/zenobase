@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.jspecify.annotations.Nullable;
 
-import com.zenobase.search.PhraseConstraintBuilder;
-import com.zenobase.search.TermConstraintBuilder;
-import com.zenobase.search.WildcardConstraintBuilder;
+import com.zenobase.search.constraints.PhraseConstraintBuilder;
+import com.zenobase.search.constraints.TermConstraintBuilder;
+import com.zenobase.search.constraints.WildcardConstraintBuilder;
 
 public class TextField extends Field<String> {
 

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import org.jspecify.annotations.Nullable;
 
-import com.zenobase.search.TermConstraintBuilder;
+import com.zenobase.search.constraints.TermConstraintBuilder;
 
 public class BooleanField extends Field<Boolean> {
 

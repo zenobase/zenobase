@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.jspecify.annotations.Nullable;
 
-import com.zenobase.search.TermConstraintBuilder;
+import com.zenobase.search.constraints.TermConstraintBuilder;
 
 public class EnumField<E extends Enum<E>> extends Field<E> {
 

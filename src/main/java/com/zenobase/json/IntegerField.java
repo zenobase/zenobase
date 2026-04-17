@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jspecify.annotations.Nullable;
 
-import com.zenobase.search.DecimalRangeConstraintBuilder;
-import com.zenobase.search.ExistsConstraintBuilder;
-import com.zenobase.search.TermConstraintBuilder;
+import com.zenobase.search.constraints.DecimalRangeConstraintBuilder;
+import com.zenobase.search.constraints.ExistsConstraintBuilder;
+import com.zenobase.search.constraints.TermConstraintBuilder;
 
 public class IntegerField extends Field<Integer> {
 
