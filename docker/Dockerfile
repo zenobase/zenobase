@@ -1,4 +1,4 @@
-FROM eclipse-temurin:25-jre-alpine-3.23
+FROM eclipse-temurin:25.0.2_10-jre-alpine-3.23
 
 RUN addgroup -S app && adduser -S app -G app
 
@@ -17,4 +17,3 @@ USER app
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 EXPOSE 9000
-
