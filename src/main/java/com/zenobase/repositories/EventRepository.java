@@ -9,13 +9,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.search.Search;
 import com.zenobase.services.SearchOrder;
 import jakarta.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.FieldValue;
@@ -100,10 +94,6 @@ public class EventRepository {
 			node -> callback.call(new Event(node)),
 			1000
 		);
-	}
-
-	public boolean exists(String bucketId) {
-		return getIndex(bucketId).exists();
 	}
 
 	public List<String> terms(String bucketId, String field) {

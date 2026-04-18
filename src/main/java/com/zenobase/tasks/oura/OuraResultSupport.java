@@ -4,18 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.models.Percentage;
-import com.zenobase.models.Rating;
-import com.zenobase.models.Resource;
+import com.zenobase.models.*;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Frequency;
-import javax.measure.quantity.Length;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -62,10 +57,6 @@ abstract class OuraResultSupport {
 
 	protected @Nullable Integer intValue(JsonNode node) {
 		return !isZero(node) ? node.intValue() : null;
-	}
-
-	protected @Nullable DecimalMeasure<Length> distanceValue(JsonNode node) {
-		return !isZero(node) ? Measures.valueOf(node.decimalValue(), Units.MI) : null;
 	}
 
 	protected @Nullable DecimalMeasure<Energy> energyValue(JsonNode node) {

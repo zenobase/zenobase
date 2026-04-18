@@ -11,10 +11,6 @@ import org.jspecify.annotations.Nullable;
 public class UpdateUserForm extends DomainNode {
 
 	private static final TokenField EMAIL = new TokenField("email");
-	private static final BooleanField VERIFIED = new BooleanField("verified");
-	private static final TokenField PASSWORD = new TokenField("password");
-	private static final TokenField KEY = new TokenField("key");
-	private static final TokenField EXPIRES = new TokenField("expires");
 	private static final IntegerField QUOTA = new IntegerField("quota");
 	private static final BooleanField SUSPENDED = new BooleanField("suspended");
 	private static final BooleanField OPTEDOUT = new BooleanField("optedout");
@@ -27,17 +23,6 @@ public class UpdateUserForm extends DomainNode {
 
 	UpdateUserForm(String email) {
 		setValue(EMAIL, email);
-	}
-
-	UpdateUserForm(Boolean verified, String key) {
-		setValue(VERIFIED, verified);
-		setValue(KEY, key);
-	}
-
-	UpdateUserForm(String password, String key, String expires) {
-		setValue(PASSWORD, password);
-		setValue(KEY, key);
-		setValue(EXPIRES, expires);
 	}
 
 	UpdateUserForm(boolean suspended) {
@@ -56,22 +41,6 @@ public class UpdateUserForm extends DomainNode {
 
 	public @Nullable String getEmail() {
 		return getValue(EMAIL);
-	}
-
-	public boolean isVerified() {
-		return Boolean.TRUE.equals(getValue(VERIFIED));
-	}
-
-	public @Nullable String getPassword() {
-		return getValue(PASSWORD);
-	}
-
-	public @Nullable String getKey() {
-		return getValue(KEY);
-	}
-
-	public @Nullable String getExpires() {
-		return getValue(EXPIRES);
 	}
 
 	public boolean hasQuota() {

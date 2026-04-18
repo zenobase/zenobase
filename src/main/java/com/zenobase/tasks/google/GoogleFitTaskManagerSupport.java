@@ -1,17 +1,8 @@
 package com.zenobase.tasks.google;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Ordering;
-import com.google.common.collect.Range;
+import com.google.common.collect.*;
 import com.google.common.net.UrlEscapers;
-import com.zenobase.commands.Command;
-import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventsCommand;
-import com.zenobase.commands.UpdateCredentialsCommand;
-import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.commands.*;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
@@ -67,40 +58,6 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 		var request = new OAuthRequest(Verb.GET, "https://www.googleapis.com/fitness/v1/users/me/dataSources");
 		Response response = send(request, credentials);
 		return Maps.uniqueIndex(new DataSourcesResult(parseObject(response)).get(), DataStream::id);
-	}
-
-	protected List<DataPoint> getDataPoints(
-		GoogleFitTaskSupport task,
-		OAuthCredentials credentials,
-		DataStream stream
-	) {
-		return getDataPoints(
-			Objects.requireNonNull(task.getFrom()),
-			DateTime.now(),
-			task.getTimezone(),
-			credentials,
-			stream
-		);
-	}
-
-	protected List<DataPoint> getDataPoints(
-		DateTime begin,
-		DateTime end,
-		DateTimeZone zone,
-		OAuthCredentials credentials,
-		DataStream stream
-	) {
-		var request = new OAuthRequest(
-			Verb.GET,
-			String.format(
-				"https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%d-%d",
-				UrlEscapers.urlPathSegmentEscaper().escape(stream.id()),
-				begin.getMillis() * 1000000,
-				end.getMillis() * 1000000
-			)
-		);
-		Response response = send(request, credentials);
-		return new DatasetResult(parseObject(response), zone).getDataPoints();
 	}
 
 	protected void getDataPoints(

@@ -1,12 +1,7 @@
 package com.zenobase.controllers;
 
 import com.zenobase.auth.UserDirectory;
-import com.zenobase.commands.Command;
-import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.DeleteBucketCommand;
-import com.zenobase.commands.DeleteCredentialsCommand;
-import com.zenobase.commands.DeleteTaskCommand;
-import com.zenobase.commands.DeleteUserCommand;
+import com.zenobase.commands.*;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
@@ -67,14 +62,14 @@ public class AccountController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		Command command = buildCloseAccountCommand(auth.getPrincipal(), user, auth);
+		Command command = buildCloseAccountCommand(auth.getPrincipal(), user);
 		String commandId = dispatcher.dispatch(command);
 		userDirectory.deleteUser(user);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}
 
-	public Command buildCloseAccountCommand(Identity principal, User user, Authorization current) {
+	public Command buildCloseAccountCommand(Identity principal, User user) {
 		var command = new CompoundCommand(
 			principal,
 			String.format("closed account %s", user.getName()),
