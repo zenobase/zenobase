@@ -313,6 +313,7 @@
                             -Xep:MutablePublicArray:ERROR
                             -Xep:PatternMatchingInstanceof:ERROR
                             -Xep:ReferenceEquality:ERROR
+                            -Xep:RethrowReflectiveOperationExceptionAsLinkageError:ERROR
                             -Xep:ReturnValueIgnored:ERROR
                             -Xep:StringCaseLocaleUsage:ERROR
                             -Xep:UnnecessaryLambda:OFF

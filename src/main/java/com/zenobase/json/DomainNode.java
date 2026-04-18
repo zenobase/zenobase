@@ -143,7 +143,7 @@ public class DomainNode {
 			| InvocationTargetException
 			| IllegalAccessException e
 		) {
-			throw new AssertionError(e);
+			throw new LinkageError("Could not instantiate a " + type, e);
 		}
 	}
 }
