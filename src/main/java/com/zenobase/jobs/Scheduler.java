@@ -21,12 +21,17 @@ public class Scheduler {
 
 	private final Bus bus;
 	private final ImmutableList<Job> jobs;
-	private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+	private final ScheduledExecutorService executor;
 
 	@Inject
 	public Scheduler(Bus bus, Set<Job> jobs) {
+		this(bus, jobs, Executors.newScheduledThreadPool(1));
+	}
+
+	Scheduler(Bus bus, Set<Job> jobs, ScheduledExecutorService executor) {
 		this.bus = bus;
 		this.jobs = ImmutableList.copyOf(jobs);
+		this.executor = executor;
 	}
 
 	public void start() {
@@ -58,7 +63,7 @@ public class Scheduler {
 		);
 	}
 
-	static Duration nextExecution(DateTime now, LocalTime begin, Period repeat) {
+	private static Duration nextExecution(DateTime now, LocalTime begin, Period repeat) {
 		DateTime next = begin.toDateTime(now);
 		while (next.isBefore(now)) {
 			next = next.plus(repeat);
