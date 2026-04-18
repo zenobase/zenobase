@@ -299,6 +299,7 @@
                             -Xep:CanonicalDuration:ERROR
                             -Xep:DefaultCharset:ERROR
                             -Xep:EffectivelyPrivate:OFF
+                            -Xep:EnumOrdinal:ERROR
                             -Xep:EqualsIncompatibleType:ERROR
                             -Xep:ExpensiveLenientFormatString:ERROR
                             -Xep:FormatStringShouldUsePlaceholders:ERROR
