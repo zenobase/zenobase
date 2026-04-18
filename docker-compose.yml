@@ -1,4 +1,4 @@
-name: zenobase-api
+name: zenobase-backend
 services:
     opensearch:
         container_name: opensearch
@@ -20,8 +20,11 @@ services:
             timeout: 10s
             start_period: 60s
             retries: 3
-        mem_limit: 2g
         stop_grace_period: 30s
+        deploy:
+            resources:
+                limits:
+                    memory: 2g
         ulimits:
             nofile:
                 soft: 64000
@@ -37,10 +40,14 @@ services:
             - "3000:3000"
         volumes:
             - ./conf/localauth0.toml:/localauth0.toml:ro
+        deploy:
+            resources:
+                limits:
+                    memory: 1g
 
-    helidon:
-        container_name: helidon
-        image: zenobase:latest
+    zenobase:
+        container_name: zenobase-helidon
+        image: zenobase-helidon:latest
         pull_policy: never
         build:
             context: .
@@ -50,7 +57,10 @@ services:
         volumes:
             - ./docker/config/logback.xml:/etc/app/logback.xml:ro
             - ./conf/application-local.yaml:/etc/app/prod.yaml:ro
-        mem_limit: 1g
+        deploy:
+            resources:
+                limits:
+                    memory: 1g
         environment:
             - OPENSEARCH_HOST=http://opensearch:9200
             - OPENSEARCH_SNAPSHOT_BUCKET=
