@@ -3,16 +3,14 @@ package com.zenobase.tasks.google;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
+import com.zenobase.tasks.ResultTestSupport;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.jupiter.api.Test;
-
-import com.zenobase.tasks.ResultTestSupport;
 
 public class DatasetResultTest extends ResultTestSupport {
 

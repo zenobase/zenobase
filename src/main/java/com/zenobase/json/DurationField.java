@@ -3,12 +3,11 @@ package com.zenobase.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.NullNode;
-import org.joda.time.Duration;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.search.constraints.DurationConstraintBuilder;
 import com.zenobase.search.constraints.DurationRangeConstraintBuilder;
 import com.zenobase.search.constraints.ExistsConstraintBuilder;
+import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 public class DurationField extends Field<Duration> {
 

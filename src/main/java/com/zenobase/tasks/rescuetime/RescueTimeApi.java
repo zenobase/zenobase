@@ -1,9 +1,8 @@
 package com.zenobase.tasks.rescuetime;
 
-import org.scribe.model.OAuthConfig;
-
 import com.zenobase.common.UriBuilder;
 import com.zenobase.tasks.CustomApi20;
+import org.scribe.model.OAuthConfig;
 
 public class RescueTimeApi extends CustomApi20 {
 

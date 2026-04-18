@@ -1,8 +1,7 @@
 package com.zenobase.json;
 
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.commands.Command;
+import org.junit.jupiter.api.Test;
 
 public class CommandTypeTest extends FieldTestSupport<Command.Type> {
 

@@ -2,9 +2,6 @@ package com.zenobase.tasks;
 
 import static org.mockito.Mockito.*;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-
 import com.zenobase.commands.Command;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
@@ -12,6 +9,8 @@ import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 
 public class TaskRefresherTest {
 

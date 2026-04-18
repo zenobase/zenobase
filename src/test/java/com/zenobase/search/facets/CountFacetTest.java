@@ -3,12 +3,11 @@ package com.zenobase.search.facets;
 import static com.zenobase.testing.NodeAssert.assertThat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Event;
 import com.zenobase.search.Search;
 import com.zenobase.testing.NodeAssert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CountFacetTest extends FacetTestSupport {
 

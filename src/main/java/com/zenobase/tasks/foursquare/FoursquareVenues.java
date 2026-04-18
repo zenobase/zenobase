@@ -1,22 +1,20 @@
 package com.zenobase.tasks.foursquare;
 
-import java.util.concurrent.TimeUnit;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.RateLimiter;
+import com.zenobase.json.Nodes;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.concurrent.TimeUnit;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.apache.hc.core5.util.Timeout;
-
-import com.zenobase.json.Nodes;
 
 public class FoursquareVenues {
 

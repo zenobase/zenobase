@@ -1,5 +1,15 @@
 package com.zenobase.tasks.fitbit;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Preconditions;
+import com.zenobase.common.DateTimeZones;
+import com.zenobase.common.Measures;
+import com.zenobase.common.Pace;
+import com.zenobase.common.Units;
+import com.zenobase.models.Identity;
+import com.zenobase.models.Percentage;
+import com.zenobase.models.Rating;
+import com.zenobase.models.Resource;
 import java.math.BigDecimal;
 import java.util.Objects;
 import javax.measure.DecimalMeasure;
@@ -9,23 +19,11 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.Unit;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.common.DateTimeZones;
-import com.zenobase.common.Measures;
-import com.zenobase.common.Pace;
-import com.zenobase.common.Units;
-import com.zenobase.models.Identity;
-import com.zenobase.models.Percentage;
-import com.zenobase.models.Rating;
-import com.zenobase.models.Resource;
 
 abstract class FitbitResultSupport {
 

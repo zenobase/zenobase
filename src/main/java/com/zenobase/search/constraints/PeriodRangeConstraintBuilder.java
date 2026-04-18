@@ -1,10 +1,9 @@
 package com.zenobase.search.constraints;
 
 import com.google.common.collect.Range;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.common.PeriodRangeParser;
 import com.zenobase.common.StandardPeriod;
+import org.jspecify.annotations.Nullable;
 
 public class PeriodRangeConstraintBuilder extends RangeConstraintBuilderSupport<StandardPeriod> {
 

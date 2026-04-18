@@ -1,13 +1,12 @@
 package com.zenobase.search;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.joda.time.DateTime;
-import org.junit.jupiter.api.BeforeEach;
-
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.repositories.Index;
 import com.zenobase.repositories.OpenSearchTestSupport;
+import org.joda.time.DateTime;
+import org.junit.jupiter.api.BeforeEach;
 
 public class SearchTestSupport extends OpenSearchTestSupport {
 

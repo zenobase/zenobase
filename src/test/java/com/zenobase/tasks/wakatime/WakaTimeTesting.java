@@ -1,9 +1,8 @@
 package com.zenobase.tasks.wakatime;
 
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.TaskTestingSupport;
+import org.junit.jupiter.api.Test;
 
 public class WakaTimeTesting extends TaskTestingSupport {
 

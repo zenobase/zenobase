@@ -3,12 +3,11 @@ package com.zenobase.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.DecimalNode;
 import com.fasterxml.jackson.databind.node.NullNode;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.models.Percentage;
 import com.zenobase.search.constraints.ExistsConstraintBuilder;
 import com.zenobase.search.constraints.PercentConstraintBuilder;
 import com.zenobase.search.constraints.PercentRangeConstraintBuilder;
+import org.jspecify.annotations.Nullable;
 
 public class PercentageField extends Field<Percentage> {
 

@@ -4,12 +4,11 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Event;
 import com.zenobase.models.Rating;
 import com.zenobase.search.Search;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DecimalRangeConstraintBuilderTest extends ConstraintBuilderTestSupport {
 

@@ -1,14 +1,12 @@
 package com.zenobase.json;
 
-import javax.measure.quantity.Quantity;
-import javax.measure.unit.Unit;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.common.Units;
+import javax.measure.quantity.Quantity;
+import javax.measure.unit.Unit;
+import org.jspecify.annotations.Nullable;
 
 public class UnitField<Q extends Quantity> extends Field<Unit<Q>> {
 

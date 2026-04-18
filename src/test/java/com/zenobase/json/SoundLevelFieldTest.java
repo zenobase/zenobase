@@ -2,7 +2,6 @@ package com.zenobase.json;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Dimensionless;
-
 import org.junit.jupiter.api.Test;
 
 public class SoundLevelFieldTest extends DecimalMeasureFieldTestSupport<Dimensionless> {

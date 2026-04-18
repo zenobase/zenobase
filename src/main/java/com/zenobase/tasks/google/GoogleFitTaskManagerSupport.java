@@ -1,10 +1,5 @@
 package com.zenobase.tasks.google;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Consumer;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
@@ -12,14 +7,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
 import com.google.common.net.UrlEscapers;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.jspecify.annotations.Nullable;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventsCommand;
@@ -30,6 +17,17 @@ import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Consumer;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
 
 abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> extends OAuthTaskManager {
 

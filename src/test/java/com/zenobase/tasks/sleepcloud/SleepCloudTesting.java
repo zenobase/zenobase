@@ -1,10 +1,9 @@
 package com.zenobase.tasks.sleepcloud;
 
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.TaskTestingSupport;
 import com.zenobase.tasks.google.GoogleCredentialsManager;
+import org.junit.jupiter.api.Test;
 
 public class SleepCloudTesting extends TaskTestingSupport {
 

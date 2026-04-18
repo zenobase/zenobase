@@ -2,12 +2,11 @@ package com.zenobase.tasks;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.joda.time.DateTime;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task.Status;
+import org.joda.time.DateTime;
+import org.junit.jupiter.api.Test;
 
 public class TaskTest {
 

@@ -3,9 +3,8 @@ package com.zenobase.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.NullNode;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.search.constraints.TermConstraintBuilder;
+import org.jspecify.annotations.Nullable;
 
 public class BooleanField extends Field<Boolean> {
 

@@ -2,10 +2,9 @@ package com.zenobase.tasks.google;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import org.joda.time.DateTimeZone;
-
 import com.zenobase.json.BooleanField;
 import com.zenobase.models.Identity;
+import org.joda.time.DateTimeZone;
 
 public class GoogleFitActivitiesTask extends GoogleFitTaskSupport {
 

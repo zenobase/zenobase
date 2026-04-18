@@ -1,10 +1,9 @@
 package com.zenobase.tasks.withings;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.TaskTestingSupport;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class WithingsTesting extends TaskTestingSupport {
 

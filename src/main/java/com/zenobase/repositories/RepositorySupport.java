@@ -1,10 +1,9 @@
 package com.zenobase.repositories;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.opensearch.client.opensearch._types.query_dsl.Query;
-
 import com.zenobase.common.Callback;
 import com.zenobase.services.SearchOrder;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 public abstract class RepositorySupport<T> {
 

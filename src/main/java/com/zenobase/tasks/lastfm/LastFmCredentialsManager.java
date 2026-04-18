@@ -1,18 +1,7 @@
 package com.zenobase.tasks.lastfm;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import org.jspecify.annotations.Nullable;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.json.Nodes;
@@ -20,6 +9,15 @@ import com.zenobase.repositories.CredentialsRepository;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthCredentialsManager;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LastFmCredentialsManager extends OAuthCredentialsManager {
 

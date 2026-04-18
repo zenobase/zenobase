@@ -2,9 +2,8 @@ package com.zenobase.tasks.hexoskin;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.tasks.ResultTestSupport;
+import org.junit.jupiter.api.Test;
 
 public class HexoskinProfileResultTest extends ResultTestSupport {
 

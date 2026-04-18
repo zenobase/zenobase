@@ -3,13 +3,12 @@ package com.zenobase.search.constraints;
 import static com.zenobase.testing.NodeAssert.assertThat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.json.ResourceField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Resource;
 import com.zenobase.search.Search;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ResourceConstraintBuilderTest extends ConstraintBuilderTestSupport {
 

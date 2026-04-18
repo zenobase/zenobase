@@ -3,15 +3,14 @@ package com.zenobase.search.facets;
 import static com.zenobase.testing.NodeAssert.assertThat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.search.Search;
 import com.zenobase.testing.NodeAssert;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ListFacetTest extends FacetTestSupport {
 

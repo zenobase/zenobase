@@ -1,5 +1,14 @@
 package com.zenobase.json;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
+import com.zenobase.common.Measures;
+import com.zenobase.search.constraints.ExistsConstraintBuilder;
+import com.zenobase.search.constraints.MeasureConstraintBuilder;
+import com.zenobase.search.constraints.MeasureRangeConstraintBuilder;
+import com.zenobase.search.constraints.TermConstraintBuilder;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -7,18 +16,7 @@ import java.util.Objects;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Preconditions;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.common.Measures;
-import com.zenobase.search.constraints.ExistsConstraintBuilder;
-import com.zenobase.search.constraints.MeasureConstraintBuilder;
-import com.zenobase.search.constraints.MeasureRangeConstraintBuilder;
-import com.zenobase.search.constraints.TermConstraintBuilder;
 
 public class DecimalMeasureField<Q extends Quantity> extends Field<DecimalMeasure<Q>> {
 

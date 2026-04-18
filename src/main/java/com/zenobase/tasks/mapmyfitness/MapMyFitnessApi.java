@@ -1,11 +1,10 @@
 package com.zenobase.tasks.mapmyfitness;
 
+import com.zenobase.common.UriBuilder;
+import com.zenobase.tasks.CustomApi20;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
-
-import com.zenobase.common.UriBuilder;
-import com.zenobase.tasks.CustomApi20;
 
 public class MapMyFitnessApi extends CustomApi20 {
 

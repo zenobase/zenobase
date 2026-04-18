@@ -1,12 +1,10 @@
 package com.zenobase.testing;
 
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
+import com.zenobase.common.PartialList;
+import java.util.List;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
-
-import com.zenobase.common.PartialList;
 
 public class PartialListAssert extends AbstractAssert<PartialListAssert, PartialList<?>> {
 

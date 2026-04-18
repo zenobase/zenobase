@@ -4,12 +4,11 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Joiner;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 import com.zenobase.search.Search;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class BoundingBoxConstraintBuilderTest extends ConstraintBuilderTestSupport {
 

@@ -4,10 +4,6 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.OptInCommand;
@@ -17,6 +13,9 @@ import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import io.helidon.webclient.http1.Http1ClientResponse;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 
 public class UserControllerHttpPostTest extends UserControllerTestSupport {
 

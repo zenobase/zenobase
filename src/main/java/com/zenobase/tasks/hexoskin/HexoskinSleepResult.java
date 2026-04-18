@@ -1,10 +1,9 @@
 package com.zenobase.tasks.hexoskin;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.zenobase.models.Identity;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.models.Identity;
 
 class HexoskinSleepResult extends HexoskinResultSupport {
 

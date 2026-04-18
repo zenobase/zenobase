@@ -1,10 +1,9 @@
 package com.zenobase.commands;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.models.Identity;
 import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.models.Identity;
 
 public class SpendQuotaCommand extends Command {
 

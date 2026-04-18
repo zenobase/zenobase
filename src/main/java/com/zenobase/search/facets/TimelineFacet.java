@@ -1,15 +1,13 @@
 package com.zenobase.search.facets;
 
-import java.util.Objects;
-import javax.measure.unit.Unit;
-
-import org.joda.time.DateTimeZone;
-import org.jspecify.annotations.Nullable;
-import org.opensearch.client.opensearch._types.query_dsl.Query;
-
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.search.constraints.FilterParser;
+import java.util.Objects;
+import javax.measure.unit.Unit;
+import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 public class TimelineFacet {
 

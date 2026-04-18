@@ -1,9 +1,5 @@
 package com.zenobase.json;
 
-import java.lang.reflect.Type;
-import java.util.Map;
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -12,9 +8,11 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.search.constraints.ConstraintBuilder;
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 public abstract class Field<T> {
 

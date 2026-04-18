@@ -1,6 +1,7 @@
 package com.zenobase.tasks.google;
 
 import com.google.common.base.Joiner;
+import com.zenobase.oauth.OAuth2TokenExtractor;
 import org.scribe.builder.api.DefaultApi20;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConfig;
@@ -13,8 +14,6 @@ import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuth20ServiceImpl;
 import org.scribe.oauth.OAuthService;
 import org.scribe.utils.OAuthEncoder;
-
-import com.zenobase.oauth.OAuth2TokenExtractor;
 
 /**
  * Google OAuth2.0

@@ -5,20 +5,18 @@ import static com.zenobase.testing.PartialListAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
-import org.joda.time.DateTime;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.common.Callback;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 import com.zenobase.queries.TaskQuery;
 import com.zenobase.tasks.Task;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import org.joda.time.DateTime;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TaskRepositoryTest extends OpenSearchTestSupport {
 

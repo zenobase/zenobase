@@ -3,10 +3,9 @@ package com.zenobase.tasks.lastfm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.zenobase.models.Resource;
 import org.joda.time.Duration;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.models.Resource;
 
 class TrackInfoResult {
 

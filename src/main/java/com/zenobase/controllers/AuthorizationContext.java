@@ -1,20 +1,18 @@
 package com.zenobase.controllers;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.zenobase.auth.TokenValidator;
+import com.zenobase.oauth.Authorization;
 import io.helidon.http.HeaderNames;
 import io.helidon.webserver.http.ServerRequest;
 import jakarta.inject.Inject;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.zenobase.auth.TokenValidator;
-import com.zenobase.oauth.Authorization;
 
 public class AuthorizationContext {
 

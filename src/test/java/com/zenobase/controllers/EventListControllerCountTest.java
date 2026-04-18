@@ -4,12 +4,11 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import com.zenobase.models.Role;
+import com.zenobase.oauth.Authorization;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.zenobase.models.Role;
-import com.zenobase.oauth.Authorization;
 
 public class EventListControllerCountTest extends EventListControllerTestSupport {
 

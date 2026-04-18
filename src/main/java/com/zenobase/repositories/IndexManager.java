@@ -1,25 +1,9 @@
 package com.zenobase.repositories;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.Uninterruptibles;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.json.Json;
-import jakarta.json.JsonObjectBuilder;
-import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.opensearch.client.opensearch.generic.Requests;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zenobase.jobs.SnapshotManager;
 import com.zenobase.models.Alias;
 import com.zenobase.models.Event;
@@ -27,6 +11,20 @@ import com.zenobase.search.EventSearchBuilder;
 import com.zenobase.search.SearchBuilderSupport;
 import com.zenobase.services.ClientFactory;
 import com.zenobase.services.Cluster;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.generic.Requests;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IndexManager implements Closeable {
 

@@ -2,13 +2,12 @@ package com.zenobase.oauth;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
+import com.zenobase.json.Nodes;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConstants;
-
-import com.zenobase.json.Nodes;
 
 public class OAuth2TokenExtractor implements AccessTokenExtractor {
 

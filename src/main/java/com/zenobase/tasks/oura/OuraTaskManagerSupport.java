@@ -1,14 +1,6 @@
 package com.zenobase.tasks.oura;
 
-import java.util.List;
-import java.util.Objects;
-
 import com.google.common.collect.Ordering;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.jspecify.annotations.Nullable;
-import org.scribe.model.Token;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventsCommand;
@@ -19,6 +11,12 @@ import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
+import java.util.List;
+import java.util.Objects;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
+import org.scribe.model.Token;
 
 abstract class OuraTaskManagerSupport extends OAuthTaskManager {
 

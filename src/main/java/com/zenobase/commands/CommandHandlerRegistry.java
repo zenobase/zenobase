@@ -1,12 +1,11 @@
 package com.zenobase.commands;
 
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import jakarta.inject.Inject;
+import java.util.Map;
+import java.util.Set;
 
 public class CommandHandlerRegistry {
 

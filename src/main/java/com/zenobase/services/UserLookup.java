@@ -1,10 +1,9 @@
 package com.zenobase.services;
 
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.repositories.UserRepository;
+import org.jspecify.annotations.Nullable;
 
 public class UserLookup {
 

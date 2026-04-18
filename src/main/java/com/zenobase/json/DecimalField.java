@@ -1,15 +1,13 @@
 package com.zenobase.json;
 
-import java.math.BigDecimal;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.DecimalNode;
 import com.fasterxml.jackson.databind.node.NullNode;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.search.constraints.DecimalRangeConstraintBuilder;
 import com.zenobase.search.constraints.ExistsConstraintBuilder;
 import com.zenobase.search.constraints.TermConstraintBuilder;
+import java.math.BigDecimal;
+import org.jspecify.annotations.Nullable;
 
 public class DecimalField extends Field<BigDecimal> {
 

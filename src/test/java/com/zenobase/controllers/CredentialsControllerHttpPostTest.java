@@ -4,12 +4,6 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.opensearch.client.opensearch._types.ErrorResponse;
-import org.opensearch.client.opensearch._types.OpenSearchException;
-
 import com.zenobase.commands.Command;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
@@ -17,6 +11,11 @@ import com.zenobase.oauth.Authorization;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.CredentialsManager;
 import com.zenobase.tasks.OAuthCredentials;
+import io.helidon.webclient.http1.Http1ClientResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.opensearch.client.opensearch._types.ErrorResponse;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 
 public class CredentialsControllerHttpPostTest extends CredentialsControllerTestSupport {
 

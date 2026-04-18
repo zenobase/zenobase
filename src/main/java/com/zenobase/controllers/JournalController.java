@@ -1,11 +1,5 @@
 package com.zenobase.controllers;
 
-import java.util.Objects;
-
-import io.helidon.webserver.http.ServerRequest;
-import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
-
 import com.zenobase.commands.Command;
 import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
@@ -15,6 +9,10 @@ import com.zenobase.repositories.CommandRepository;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserLookup;
+import io.helidon.webserver.http.ServerRequest;
+import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
+import java.util.Objects;
 
 public class JournalController extends ControllerSupport {
 

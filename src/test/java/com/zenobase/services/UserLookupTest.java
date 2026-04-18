@@ -2,12 +2,11 @@ package com.zenobase.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.repositories.UserRepository;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class UserLookupTest {
 

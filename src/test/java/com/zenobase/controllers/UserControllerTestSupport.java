@@ -6,14 +6,13 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
-import io.helidon.webserver.http.HttpRouting;
-
 import com.zenobase.auth.UserDirectory;
 import com.zenobase.models.User;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.LocalBus;
+import io.helidon.webserver.http.HttpRouting;
 
 public abstract class UserControllerTestSupport extends ControllerTestSupport {
 

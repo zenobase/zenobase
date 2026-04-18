@@ -2,15 +2,13 @@ package com.zenobase.tasks.mapmyfitness;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.math.BigDecimal;
-import java.util.List;
-import javax.measure.DecimalMeasure;
-
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Event;
 import com.zenobase.models.Percentage;
 import com.zenobase.tasks.ResultTestSupport;
+import java.math.BigDecimal;
+import java.util.List;
+import javax.measure.DecimalMeasure;
+import org.junit.jupiter.api.Test;
 
 public class WeightResultTest extends ResultTestSupport {
 

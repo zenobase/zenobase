@@ -1,11 +1,9 @@
 package com.zenobase.json;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.common.PartialList;
 import java.util.AbstractList;
 import java.util.Objects;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import com.zenobase.common.PartialList;
 
 public abstract class LazyList<T extends DomainNode> extends AbstractList<T> implements PartialList<T> {
 

@@ -1,14 +1,15 @@
 package com.zenobase;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.zenobase.common.Globals;
+import com.zenobase.jobs.Scheduler;
+import com.zenobase.repositories.IndexManager;
+import com.zenobase.repositories.UserRepository;
+import com.zenobase.services.Bus;
+import com.zenobase.services.CommandRebuild;
+import com.zenobase.services.CommandReplay;
 import io.helidon.config.Config;
 import io.helidon.config.ConfigSources;
 import io.helidon.health.HealthCheckResponse;
@@ -18,17 +19,14 @@ import io.helidon.webserver.cors.CorsFeature;
 import io.helidon.webserver.cors.CorsPathConfig;
 import io.helidon.webserver.observe.ObserveFeature;
 import io.helidon.webserver.observe.health.HealthObserver;
+import java.time.Duration;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 import org.opensearch.client.opensearch._types.HealthStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.zenobase.common.Globals;
-import com.zenobase.jobs.Scheduler;
-import com.zenobase.repositories.IndexManager;
-import com.zenobase.repositories.UserRepository;
-import com.zenobase.services.Bus;
-import com.zenobase.services.CommandRebuild;
-import com.zenobase.services.CommandReplay;
 
 public class Main {
 

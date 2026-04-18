@@ -1,13 +1,6 @@
 package com.zenobase.controllers;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.helidon.webserver.http.ServerRequest;
-import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.auth.UserDirectory;
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
@@ -22,6 +15,11 @@ import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserLookup;
+import io.helidon.webserver.http.ServerRequest;
+import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 public class UserController extends ControllerSupport {
 

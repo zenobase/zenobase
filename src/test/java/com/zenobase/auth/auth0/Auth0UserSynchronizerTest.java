@@ -3,9 +3,6 @@ package com.zenobase.auth.auth0;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-
 import com.zenobase.auth.auth0.Auth0TokenValidator.Auth0Claims;
 import com.zenobase.commands.ChangeExternalIdCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
@@ -15,6 +12,8 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 public class Auth0UserSynchronizerTest {
 

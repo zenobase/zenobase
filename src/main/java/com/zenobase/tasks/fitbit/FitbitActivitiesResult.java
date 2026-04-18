@@ -1,20 +1,18 @@
 package com.zenobase.tasks.fitbit;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Strings;
+import com.zenobase.common.Units;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
 import java.util.ArrayList;
 import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.common.Units;
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
 
 class FitbitActivitiesResult extends FitbitResultSupport {
 

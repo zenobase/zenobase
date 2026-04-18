@@ -2,13 +2,7 @@ package com.zenobase.services;
 
 import static org.mockito.ArgumentMatchers.isA;
 
-import java.util.concurrent.TimeUnit;
-
 import com.google.common.util.concurrent.Uninterruptibles;
-import org.junit.jupiter.api.Test;
-import org.mockito.InOrder;
-import org.mockito.Mockito;
-
 import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.commands.CreateCredentialsCommand;
 import com.zenobase.commands.CreateEventsCommand;
@@ -27,6 +21,10 @@ import com.zenobase.repositories.TaskRepository;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.Task;
+import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 
 public class CommandRebuildTest extends OpenSearchTestSupport {
 

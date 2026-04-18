@@ -1,19 +1,17 @@
 package com.zenobase.search;
 
-import java.util.Set;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Sets;
-import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zenobase.search.constraints.ConstraintBuilder;
 import com.zenobase.search.constraints.FilterBuilderSupport;
 import com.zenobase.search.facets.Facet;
 import com.zenobase.search.facets.FacetBuilder;
 import com.zenobase.search.facets.FacetOptions;
+import java.util.Set;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SearchBuilderSupport extends FilterBuilderSupport {
 

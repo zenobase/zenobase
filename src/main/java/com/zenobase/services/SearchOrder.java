@@ -1,14 +1,12 @@
 package com.zenobase.services;
 
-import java.util.Objects;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import org.opensearch.client.opensearch._types.SortOrder;
-import org.opensearch.client.opensearch.core.SearchRequest;
-
 import com.zenobase.json.Field;
 import com.zenobase.json.Schema;
+import java.util.Objects;
+import org.opensearch.client.opensearch._types.SortOrder;
+import org.opensearch.client.opensearch.core.SearchRequest;
 
 public class SearchOrder {
 

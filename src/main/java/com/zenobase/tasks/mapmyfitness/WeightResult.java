@@ -1,5 +1,13 @@
 package com.zenobase.tasks.mapmyfitness;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Preconditions;
+import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.models.Percentage;
+import com.zenobase.models.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,19 +15,9 @@ import java.util.Objects;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.common.Measures;
-import com.zenobase.common.Units;
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.models.Percentage;
-import com.zenobase.models.Resource;
 
 class WeightResult {
 

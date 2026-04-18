@@ -1,17 +1,7 @@
 package com.zenobase.jobs;
 
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
-import jakarta.inject.Inject;
-import org.joda.time.LocalTime;
-import org.joda.time.Period;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.queries.BucketQuery;
@@ -22,6 +12,14 @@ import com.zenobase.repositories.UserRepository;
 import com.zenobase.tasks.CredentialsException;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskRefresher;
+import jakarta.inject.Inject;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.joda.time.LocalTime;
+import org.joda.time.Period;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BucketRefreshJob extends Job {
 

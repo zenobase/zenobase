@@ -1,25 +1,9 @@
 package com.zenobase.controllers;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
-import io.helidon.webserver.http.ServerRequest;
-import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.opensearch.client.opensearch._types.OpenSearchException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.common.Generator;
@@ -41,6 +25,20 @@ import com.zenobase.search.facets.FacetOptions;
 import com.zenobase.search.facets.ListFacet;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserLookup;
+import io.helidon.webserver.http.ServerRequest;
+import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.opensearch.client.opensearch._types.OpenSearchException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EventListController extends ControllerSupport {
 

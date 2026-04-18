@@ -1,10 +1,9 @@
 package com.zenobase.common;
 
-import java.util.Objects;
-import java.util.Random;
-
 import com.google.common.collect.LinkedHashMultiset;
 import com.google.common.collect.Multiset;
+import java.util.Objects;
+import java.util.Random;
 
 public class RandomElement<T> {
 

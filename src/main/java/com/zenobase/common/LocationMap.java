@@ -1,7 +1,5 @@
 package com.zenobase.common;
 
-import java.util.Objects;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -9,11 +7,11 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
-import org.joda.time.DateTime;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
+import java.util.Objects;
+import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 
 public class LocationMap {
 

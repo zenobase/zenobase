@@ -1,13 +1,12 @@
 package com.zenobase.controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.TokenField;
 import com.zenobase.services.QuotaManager;
+import org.jspecify.annotations.Nullable;
 
 public class UpdateUserForm extends DomainNode {
 

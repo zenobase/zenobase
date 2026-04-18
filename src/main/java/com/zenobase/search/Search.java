@@ -1,18 +1,9 @@
 package com.zenobase.search;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
-import org.jspecify.annotations.Nullable;
-import org.opensearch.client.opensearch._types.ErrorCause;
-import org.opensearch.client.opensearch._types.OpenSearchException;
-import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.opensearch.client.opensearch.core.SearchRequest;
-import org.opensearch.client.opensearch.core.SearchResponse;
-
 import com.zenobase.common.Callback;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.IntegerField;
@@ -20,6 +11,13 @@ import com.zenobase.json.Nodes;
 import com.zenobase.repositories.Index;
 import com.zenobase.search.facets.Facet;
 import com.zenobase.services.SearchOrder;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
+import org.opensearch.client.opensearch._types.ErrorCause;
+import org.opensearch.client.opensearch._types.OpenSearchException;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 
 public class Search {
 

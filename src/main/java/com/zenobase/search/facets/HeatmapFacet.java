@@ -1,14 +1,20 @@
 package com.zenobase.search.facets;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import javax.measure.unit.Unit;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
+import com.zenobase.json.DecimalMeasureField;
+import com.zenobase.json.Field;
+import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
+import com.zenobase.search.constraints.FilterParser;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import javax.measure.unit.Unit;
 import org.jspecify.annotations.Nullable;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.io.GeohashUtils;
@@ -19,14 +25,6 @@ import org.opensearch.client.opensearch._types.aggregations.GeoHashGridBucket;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
-
-import com.zenobase.common.Measures;
-import com.zenobase.common.Units;
-import com.zenobase.json.DecimalMeasureField;
-import com.zenobase.json.Field;
-import com.zenobase.json.Nodes;
-import com.zenobase.models.Event;
-import com.zenobase.search.constraints.FilterParser;
 
 public class HeatmapFacet extends FilteredFacet {
 

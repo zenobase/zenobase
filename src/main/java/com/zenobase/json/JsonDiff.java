@@ -1,12 +1,11 @@
 package com.zenobase.json;
 
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
+import java.util.Map;
 
 public class JsonDiff {
 

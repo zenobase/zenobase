@@ -1,8 +1,7 @@
 package com.zenobase.services;
 
-import java.io.IOException;
-
 import jakarta.json.Json;
+import java.io.IOException;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.HealthStatus;
 import org.opensearch.client.opensearch.cluster.HealthResponse;

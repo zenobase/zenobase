@@ -1,17 +1,15 @@
 package com.zenobase.commands;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.repositories.UserRepository;
+import jakarta.inject.Inject;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 public class ChangeQuotaCommand extends Command {
 

@@ -1,23 +1,21 @@
 package com.zenobase.tasks.google;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import jakarta.inject.Inject;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
+import jakarta.inject.Inject;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 public class GoogleFitCardioTaskManager extends GoogleFitTaskManagerSupport<GoogleFitCardioTask> {
 

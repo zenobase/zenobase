@@ -2,18 +2,16 @@ package com.zenobase.search.facets;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
-import java.math.BigDecimal;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 import com.zenobase.search.Search;
 import com.zenobase.testing.NodeAssert;
+import java.math.BigDecimal;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GeoBoundsFacetTest extends FacetTestSupport {
 

@@ -1,9 +1,12 @@
 package com.zenobase.tasks;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import com.zenobase.commands.Command;
+import com.zenobase.commands.UpdateCredentialsCommand;
+import com.zenobase.models.Identity;
+import com.zenobase.repositories.CredentialsRepository;
+import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.Api;
@@ -14,11 +17,6 @@ import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.zenobase.commands.Command;
-import com.zenobase.commands.UpdateCredentialsCommand;
-import com.zenobase.models.Identity;
-import com.zenobase.repositories.CredentialsRepository;
 
 public abstract class OAuthCredentialsManager extends CredentialsManager {
 

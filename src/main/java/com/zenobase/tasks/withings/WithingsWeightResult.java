@@ -1,5 +1,12 @@
 package com.zenobase.tasks.withings;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Strings;
+import com.zenobase.common.Units;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.models.Percentage;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
@@ -8,18 +15,9 @@ import java.util.Objects;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.common.Units;
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.models.Percentage;
 
 class WithingsWeightResult extends WithingsResult {
 

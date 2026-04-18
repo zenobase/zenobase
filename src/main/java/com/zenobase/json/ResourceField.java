@@ -1,16 +1,14 @@
 package com.zenobase.json;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.models.Resource;
 import com.zenobase.search.constraints.ExistsConstraintBuilder;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 public class ResourceField extends Field<Resource> {
 

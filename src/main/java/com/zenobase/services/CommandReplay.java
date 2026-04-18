@@ -1,16 +1,7 @@
 package com.zenobase.services;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.google.common.base.Stopwatch;
 import com.google.common.primitives.Ints;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import org.opensearch.client.opensearch._types.OpenSearchException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.commands.CreateAuthorizationCommand;
@@ -22,6 +13,13 @@ import com.zenobase.queries.CommandQuery;
 import com.zenobase.repositories.CommandRepository;
 import com.zenobase.repositories.IndexManager;
 import com.zenobase.repositories.UserRepository;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.opensearch.client.opensearch._types.OpenSearchException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CommandReplay {
 

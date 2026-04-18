@@ -1,9 +1,8 @@
 package com.zenobase.commands;
 
 import com.google.common.testing.EqualsTester;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Identity;
+import org.junit.jupiter.api.Test;
 
 public class CommandTest {
 

@@ -1,19 +1,17 @@
 package com.zenobase.tasks;
 
-import java.io.IOException;
-import java.io.InputStream;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.io.ByteStreams;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
-import org.w3c.dom.Document;
-
 import com.zenobase.common.Units;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+import org.w3c.dom.Document;
 
 public class ResultTestSupport {
 

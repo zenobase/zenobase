@@ -1,11 +1,14 @@
 package com.zenobase.search.facets;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
+import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
+import com.zenobase.models.Rating;
+import com.zenobase.search.constraints.FilterParser;
+import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
@@ -14,11 +17,6 @@ import org.opensearch.client.opensearch._types.aggregations.RangeBucket;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
-
-import com.zenobase.json.Nodes;
-import com.zenobase.models.Event;
-import com.zenobase.models.Rating;
-import com.zenobase.search.constraints.FilterParser;
 
 public class RatingsFacet extends FilteredFacet {
 

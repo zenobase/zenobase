@@ -1,8 +1,7 @@
 package com.zenobase.auth;
 
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.oauth.Authorization;
+import org.jspecify.annotations.Nullable;
 
 public interface TokenValidator {
 	String issuer();

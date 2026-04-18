@@ -1,11 +1,10 @@
 package com.zenobase.tasks.withings;
 
+import com.zenobase.common.UriBuilder;
+import com.zenobase.tasks.CustomApi20;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.OAuthRequest;
-
-import com.zenobase.common.UriBuilder;
-import com.zenobase.tasks.CustomApi20;
 
 /**
  * OAuth API for Withings (formerly Nokia Health, formerly Withings).

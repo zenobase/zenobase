@@ -1,22 +1,20 @@
 package com.zenobase.search.facets;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.jspecify.annotations.Nullable;
-import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.opensearch.client.opensearch.core.SearchRequest;
-import org.opensearch.client.opensearch.core.SearchResponse;
-import org.opensearch.client.opensearch.core.search.Hit;
-
 import com.zenobase.json.Nodes;
 import com.zenobase.json.OptimisticLock;
 import com.zenobase.json.Schema;
 import com.zenobase.models.Event;
 import com.zenobase.search.constraints.FilterParser;
 import com.zenobase.services.SearchOrder;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
+import org.opensearch.client.opensearch.core.search.Hit;
 
 public class ListFacet extends Facet {
 

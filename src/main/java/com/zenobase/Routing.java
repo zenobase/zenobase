@@ -1,6 +1,12 @@
 package com.zenobase;
 
 import com.google.inject.Injector;
+import com.zenobase.actions.GatekeeperFilter;
+import com.zenobase.actions.LogContextFilter;
+import com.zenobase.actions.QuotaExceptionFilter;
+import com.zenobase.actions.SecurityHeadersFilter;
+import com.zenobase.actions.SentryFilter;
+import com.zenobase.controllers.*;
 import io.helidon.http.HeaderNames;
 import io.helidon.http.HttpException;
 import io.helidon.webserver.http.HttpRouting;
@@ -8,13 +14,6 @@ import io.sentry.Sentry;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.zenobase.actions.GatekeeperFilter;
-import com.zenobase.actions.LogContextFilter;
-import com.zenobase.actions.QuotaExceptionFilter;
-import com.zenobase.actions.SecurityHeadersFilter;
-import com.zenobase.actions.SentryFilter;
-import com.zenobase.controllers.*;
 
 class Routing {
 

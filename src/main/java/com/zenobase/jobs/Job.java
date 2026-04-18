@@ -1,10 +1,9 @@
 package com.zenobase.jobs;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.zenobase.json.Nodes;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
-
-import com.zenobase.json.Nodes;
 
 public abstract class Job {
 

@@ -2,13 +2,11 @@ package com.zenobase.testing;
 
 import static org.mockito.Mockito.doAnswer;
 
+import com.zenobase.common.Callback;
 import java.util.List;
-
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.Stubber;
-
-import com.zenobase.common.Callback;
 
 public class CallbackAnswer<T> implements Answer<Callback<T>> {
 

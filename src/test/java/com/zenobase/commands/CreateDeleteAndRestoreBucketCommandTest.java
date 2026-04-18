@@ -2,11 +2,10 @@ package com.zenobase.commands;
 
 import static org.mockito.Mockito.*;
 
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.repositories.BucketRepository;
+import org.junit.jupiter.api.Test;
 
 public class CreateDeleteAndRestoreBucketCommandTest {
 

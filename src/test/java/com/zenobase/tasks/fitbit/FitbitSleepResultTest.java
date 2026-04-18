@@ -2,16 +2,14 @@ package com.zenobase.tasks.fitbit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 import com.zenobase.models.Rating;
 import com.zenobase.tasks.ResultTestSupport;
+import java.util.List;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
+import org.junit.jupiter.api.Test;
 
 public class FitbitSleepResultTest extends ResultTestSupport {
 

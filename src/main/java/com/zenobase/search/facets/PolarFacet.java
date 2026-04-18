@@ -1,5 +1,18 @@
 package com.zenobase.search.facets;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
+import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
+import com.zenobase.json.DecimalMeasureField;
+import com.zenobase.json.Field;
+import com.zenobase.json.LocalDateTimeField;
+import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
+import com.zenobase.search.constraints.FilterParser;
 import java.text.DateFormatSymbols;
 import java.util.Collections;
 import java.util.List;
@@ -7,12 +20,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import javax.measure.unit.Unit;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
@@ -22,15 +29,6 @@ import org.opensearch.client.opensearch._types.aggregations.StatsAggregate;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
-
-import com.zenobase.common.Measures;
-import com.zenobase.common.Units;
-import com.zenobase.json.DecimalMeasureField;
-import com.zenobase.json.Field;
-import com.zenobase.json.LocalDateTimeField;
-import com.zenobase.json.Nodes;
-import com.zenobase.models.Event;
-import com.zenobase.search.constraints.FilterParser;
 
 public class PolarFacet extends FilteredFacet {
 

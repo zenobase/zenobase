@@ -1,17 +1,9 @@
 package com.zenobase.tasks.withings;
 
-import java.util.Objects;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.RateLimiter;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventsCommand;
@@ -23,6 +15,12 @@ import com.zenobase.tasks.InvalidTokenException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
+import java.util.Objects;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
 
 abstract class WithingsTaskManagerSupport<T extends Task> extends OAuthTaskManager {
 

@@ -1,18 +1,16 @@
 package com.zenobase.commands;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
-import org.jspecify.annotations.Nullable;
-import org.opensearch.client.opensearch._types.OpenSearchException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.repositories.BucketRepository;
+import jakarta.inject.Inject;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
+import org.opensearch.client.opensearch._types.OpenSearchException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UpdateBucketCommand extends Command {
 

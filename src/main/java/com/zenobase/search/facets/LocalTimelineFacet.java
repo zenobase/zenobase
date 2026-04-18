@@ -1,16 +1,18 @@
 package com.zenobase.search.facets;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import javax.measure.unit.Unit;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import com.zenobase.common.LocalInterval;
+import com.zenobase.common.LocalIntervals;
+import com.zenobase.json.Nodes;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import javax.measure.unit.Unit;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.jspecify.annotations.Nullable;
@@ -22,10 +24,6 @@ import org.opensearch.client.opensearch._types.aggregations.StatsAggregate;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
-
-import com.zenobase.common.LocalInterval;
-import com.zenobase.common.LocalIntervals;
-import com.zenobase.json.Nodes;
 
 public class LocalTimelineFacet extends TimelineFacetSupport {
 

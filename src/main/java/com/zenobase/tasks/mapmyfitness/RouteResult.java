@@ -1,12 +1,10 @@
 package com.zenobase.tasks.mapmyfitness;
 
-import java.math.BigDecimal;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.models.Location;
+import java.math.BigDecimal;
+import org.jspecify.annotations.Nullable;
 
 class RouteResult {
 

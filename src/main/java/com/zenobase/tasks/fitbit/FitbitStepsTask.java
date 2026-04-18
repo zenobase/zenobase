@@ -1,18 +1,16 @@
 package com.zenobase.tasks.fitbit;
 
-import java.util.Objects;
-import javax.measure.quantity.Energy;
-import javax.measure.unit.Unit;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-
 import com.zenobase.common.Units;
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
 import com.zenobase.json.UnitField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
+import java.util.Objects;
+import javax.measure.quantity.Energy;
+import javax.measure.unit.Unit;
 
 public class FitbitStepsTask extends Task {
 

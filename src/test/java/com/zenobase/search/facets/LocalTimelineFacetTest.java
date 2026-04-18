@@ -2,16 +2,14 @@ package com.zenobase.search.facets;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
-import javax.measure.DecimalMeasure;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.joda.time.DateTime;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Event;
 import com.zenobase.search.Search;
 import com.zenobase.testing.NodeAssert;
+import javax.measure.DecimalMeasure;
+import org.joda.time.DateTime;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LocalTimelineFacetTest extends FacetTestSupport {
 

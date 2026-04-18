@@ -1,19 +1,17 @@
 package com.zenobase.search.facets;
 
-import javax.measure.unit.Unit;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.primitives.Doubles;
-import org.jspecify.annotations.Nullable;
-import org.opensearch.client.opensearch._types.query_dsl.Query;
-
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
 import com.zenobase.json.DecimalMeasureField;
 import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
+import javax.measure.unit.Unit;
+import org.jspecify.annotations.Nullable;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 abstract class TimelineFacetSupport extends FilteredFacet {
 

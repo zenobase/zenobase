@@ -1,14 +1,7 @@
 package com.zenobase.auth.auth0;
 
-import java.time.Duration;
-
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import jakarta.inject.Inject;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zenobase.auth.auth0.Auth0TokenValidator.Auth0Claims;
 import com.zenobase.commands.ChangeExternalIdCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
@@ -19,6 +12,11 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
+import jakarta.inject.Inject;
+import java.time.Duration;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Auth0UserSynchronizer {
 

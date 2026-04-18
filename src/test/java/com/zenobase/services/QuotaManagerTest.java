@@ -4,12 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-import org.joda.time.DateTime;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.User;
 import com.zenobase.repositories.CommandRepository;
 import com.zenobase.repositories.UserRepository;
+import org.joda.time.DateTime;
+import org.junit.jupiter.api.Test;
 
 public class QuotaManagerTest {
 

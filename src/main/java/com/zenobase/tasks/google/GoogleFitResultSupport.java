@@ -6,13 +6,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableMap;
+import com.zenobase.models.Resource;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.zenobase.models.Resource;
 
 abstract class GoogleFitResultSupport {
 

@@ -1,9 +1,8 @@
 package com.zenobase.tasks.rescuetime;
 
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.TaskTestingSupport;
+import org.junit.jupiter.api.Test;
 
 public class RescueTimeTesting extends TaskTestingSupport {
 

@@ -2,12 +2,10 @@ package com.zenobase.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.zenobase.models.Event;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.jupiter.api.Test;
-
-import com.zenobase.models.Event;
 
 public class JsonSchemaTest {
 

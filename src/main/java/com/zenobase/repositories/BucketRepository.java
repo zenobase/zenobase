@@ -1,19 +1,7 @@
 package com.zenobase.repositories;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import org.jspecify.annotations.Nullable;
-import org.opensearch.client.opensearch._types.FieldValue;
-import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.opensearch.client.opensearch.core.SearchRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
 import com.zenobase.models.Alias;
@@ -21,6 +9,16 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
 import com.zenobase.queries.BucketQuery;
 import com.zenobase.services.SearchOrder;
+import jakarta.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
+import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BucketRepository extends RepositorySupport<Bucket> {
 

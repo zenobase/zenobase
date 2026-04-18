@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.search.constraints.TermConstraintBuilder;
 import com.zenobase.search.constraints.WildcardConstraintBuilder;
+import org.jspecify.annotations.Nullable;
 
 public class TokenField extends Field<String> {
 

@@ -6,8 +6,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
-import io.helidon.webserver.http.HttpRouting;
-
 import com.zenobase.models.User;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.TaskRepository;
@@ -17,6 +15,7 @@ import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.LocalBus;
 import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
+import io.helidon.webserver.http.HttpRouting;
 
 public abstract class TaskControllerTestSupport extends ControllerTestSupport {
 

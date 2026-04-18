@@ -1,5 +1,12 @@
 package com.zenobase.tasks.fitbit;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,10 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.measure.DecimalMeasure;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.ListMultimap;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -18,11 +21,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.common.Measures;
-import com.zenobase.common.Units;
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
 
 class FitbitBurnIntradayResult extends FitbitResultSupport {
 

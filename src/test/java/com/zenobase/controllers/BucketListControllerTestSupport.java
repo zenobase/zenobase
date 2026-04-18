@@ -5,8 +5,6 @@ import static org.mockito.Mockito.mock;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import io.helidon.webserver.http.HttpRouting;
-
 import com.zenobase.models.User;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.EventRepository;
@@ -14,6 +12,7 @@ import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.LocalBus;
+import io.helidon.webserver.http.HttpRouting;
 
 public abstract class BucketListControllerTestSupport extends ControllerTestSupport {
 

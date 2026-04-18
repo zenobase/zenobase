@@ -1,7 +1,6 @@
 package com.zenobase.tasks.google;
 
 import java.util.Arrays;
-
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.jspecify.annotations.Nullable;

@@ -1,13 +1,12 @@
 package com.zenobase.controllers;
 
-import io.helidon.webserver.http.ServerRequest;
-import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
-
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.UserRepository;
+import io.helidon.webserver.http.ServerRequest;
+import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 public class WhoController extends ControllerSupport {
 

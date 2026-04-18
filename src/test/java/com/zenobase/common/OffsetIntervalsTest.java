@@ -3,7 +3,6 @@ package com.zenobase.common;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.junit.jupiter.api.Test;

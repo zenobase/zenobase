@@ -1,11 +1,11 @@
 package com.zenobase.controllers;
 
-import java.io.IOException;
-import java.net.URI;
-
+import com.zenobase.io.OpenGraph;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
+import java.io.IOException;
+import java.net.URI;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
@@ -13,8 +13,6 @@ import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.zenobase.io.OpenGraph;
 
 public class OpenGraphController extends ControllerSupport {
 

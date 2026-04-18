@@ -1,11 +1,9 @@
 package com.zenobase.controllers;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import com.zenobase.json.DomainNode;
 import com.zenobase.tasks.Credentials;
+import java.util.Objects;
 
 public class CreateCredentialsForm extends DomainNode {
 

@@ -1,10 +1,9 @@
 package com.zenobase.tasks.foursquare;
 
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.Verb;
-
 import com.zenobase.common.UriBuilder;
 import com.zenobase.tasks.CustomApi20;
+import org.scribe.model.OAuthConfig;
+import org.scribe.model.Verb;
 
 public class FoursquareApi extends CustomApi20 {
 

@@ -2,18 +2,16 @@ package com.zenobase.tasks.fitbit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-import javax.measure.DecimalMeasure;
-
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.common.Units;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 import com.zenobase.models.Percentage;
 import com.zenobase.tasks.ResultTestSupport;
+import java.util.List;
+import javax.measure.DecimalMeasure;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+import org.junit.jupiter.api.Test;
 
 public class FitbitWeightResultTest extends ResultTestSupport {
 

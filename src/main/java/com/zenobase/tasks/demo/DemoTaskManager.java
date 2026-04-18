@@ -1,13 +1,8 @@
 package com.zenobase.tasks.demo;
 
-import java.util.concurrent.TimeUnit;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.util.concurrent.Uninterruptibles;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
@@ -17,6 +12,9 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskManager;
+import java.util.concurrent.TimeUnit;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 public class DemoTaskManager extends TaskManager {
 

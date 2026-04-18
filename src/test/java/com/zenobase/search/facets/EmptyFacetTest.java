@@ -3,12 +3,11 @@ package com.zenobase.search.facets;
 import static com.zenobase.testing.NodeAssert.assertThat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.commands.RandomEvent;
 import com.zenobase.models.Identity;
 import com.zenobase.search.Search;
 import com.zenobase.search.SearchTestSupport;
+import org.junit.jupiter.api.Test;
 
 public class EmptyFacetTest extends SearchTestSupport {
 

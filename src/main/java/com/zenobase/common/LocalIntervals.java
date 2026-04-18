@@ -1,11 +1,10 @@
 package com.zenobase.common;
 
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
-import com.google.common.base.Preconditions;
 import org.joda.time.DurationFieldType;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Period;

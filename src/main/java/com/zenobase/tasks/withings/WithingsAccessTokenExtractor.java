@@ -1,7 +1,6 @@
 package com.zenobase.tasks.withings;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import com.zenobase.json.Nodes;
 import com.zenobase.oauth.ExpiringToken;
 import com.zenobase.oauth.OAuth2TokenExtractor;

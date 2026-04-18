@@ -1,11 +1,9 @@
 package com.zenobase.tasks.google;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.zenobase.models.Resource;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import com.zenobase.models.Resource;
 
 public class DataSourcesResult extends GoogleFitResultSupport {
 

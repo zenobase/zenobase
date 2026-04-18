@@ -2,13 +2,12 @@ package com.zenobase.auth.auth0;
 
 import com.auth0.client.mgmt.ManagementApi;
 import com.auth0.client.mgmt.types.UpdateUserRequestContent;
+import com.zenobase.auth.UserDirectory;
+import com.zenobase.models.User;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.zenobase.auth.UserDirectory;
-import com.zenobase.models.User;
 
 public class Auth0ManagementService implements UserDirectory {
 

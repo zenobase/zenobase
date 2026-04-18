@@ -1,8 +1,7 @@
 package com.zenobase.search.facets;
 
-import java.util.Map;
-
 import com.google.common.collect.Maps;
+import java.util.Map;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
 

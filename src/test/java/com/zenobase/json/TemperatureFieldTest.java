@@ -2,7 +2,6 @@ package com.zenobase.json;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Temperature;
-
 import org.junit.jupiter.api.Test;
 
 public class TemperatureFieldTest extends DecimalMeasureFieldTestSupport<Temperature> {

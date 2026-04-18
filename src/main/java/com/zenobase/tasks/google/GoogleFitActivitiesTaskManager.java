@@ -1,5 +1,21 @@
 package com.zenobase.tasks.google;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeMap;
+import com.google.common.collect.TreeRangeMap;
+import com.google.common.math.Stats;
+import com.zenobase.common.Measures;
+import com.zenobase.common.Pace;
+import com.zenobase.common.Units;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.tasks.OAuthCredentials;
+import com.zenobase.tasks.Task;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -9,16 +25,6 @@ import java.util.Objects;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.Unit;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Range;
-import com.google.common.collect.RangeMap;
-import com.google.common.collect.TreeRangeMap;
-import com.google.common.math.Stats;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
@@ -27,14 +33,6 @@ import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.zenobase.common.Measures;
-import com.zenobase.common.Pace;
-import com.zenobase.common.Units;
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.Task;
 
 public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<GoogleFitActivitiesTask> {
 

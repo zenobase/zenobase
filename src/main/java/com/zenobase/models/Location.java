@@ -1,9 +1,8 @@
 package com.zenobase.models;
 
+import com.google.common.base.Preconditions;
 import java.math.BigDecimal;
 import java.util.Objects;
-
-import com.google.common.base.Preconditions;
 
 public record Location(BigDecimal latitude, BigDecimal longitude) {
 	public Location {

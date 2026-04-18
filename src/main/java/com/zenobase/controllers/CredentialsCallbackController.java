@@ -1,17 +1,15 @@
 package com.zenobase.controllers;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
+import com.zenobase.common.Generator;
 import io.helidon.http.HeaderNames;
 import io.helidon.http.Status;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
-
-import com.zenobase.common.Generator;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class CredentialsCallbackController extends ControllerSupport {
 

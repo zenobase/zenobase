@@ -3,7 +3,6 @@ package com.zenobase.models;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.primitives.Ints;
-
 import com.zenobase.common.PartialList;
 import com.zenobase.json.LazyList;
 import com.zenobase.json.Nodes;

@@ -2,14 +2,12 @@ package com.zenobase.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
-import java.io.StringWriter;
-
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.json.Nodes;
+import java.io.IOException;
+import java.io.StringWriter;
+import org.junit.jupiter.api.Test;
 
 public class SpreadsheetPrinterTest {
 

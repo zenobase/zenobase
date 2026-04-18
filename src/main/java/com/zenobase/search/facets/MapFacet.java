@@ -1,12 +1,17 @@
 package com.zenobase.search.facets;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
+import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
+import com.zenobase.search.constraints.FilterParser;
+import com.zenobase.search.geo.GeoBoundingBox;
+import com.zenobase.search.geo.GeoCluster;
+import com.zenobase.search.geo.GeoClusterBuilder;
+import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.io.GeohashUtils;
@@ -15,13 +20,6 @@ import org.opensearch.client.opensearch._types.aggregations.GeoHashGridBucket;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
-
-import com.zenobase.json.Nodes;
-import com.zenobase.models.Event;
-import com.zenobase.search.constraints.FilterParser;
-import com.zenobase.search.geo.GeoBoundingBox;
-import com.zenobase.search.geo.GeoCluster;
-import com.zenobase.search.geo.GeoClusterBuilder;
 
 public class MapFacet extends FilteredFacet {
 

@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.search.constraints.DecimalRangeConstraintBuilder;
 import com.zenobase.search.constraints.TermConstraintBuilder;
+import org.jspecify.annotations.Nullable;
 
 public class LongField extends Field<Long> {
 

@@ -1,9 +1,5 @@
 package com.zenobase.controllers;
 
-import io.helidon.webserver.http.ServerRequest;
-import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
-
 import com.zenobase.auth.UserDirectory;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -23,6 +19,9 @@ import com.zenobase.repositories.TaskRepository;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserLookup;
+import io.helidon.webserver.http.ServerRequest;
+import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 public class AccountController extends ControllerSupport {
 

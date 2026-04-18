@@ -2,7 +2,6 @@ package com.zenobase.json;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Illuminance;
-
 import org.junit.jupiter.api.Test;
 
 public class LightFieldTest extends DecimalMeasureFieldTestSupport<Illuminance> {

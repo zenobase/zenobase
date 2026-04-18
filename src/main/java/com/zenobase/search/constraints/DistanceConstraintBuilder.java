@@ -1,19 +1,17 @@
 package com.zenobase.search.constraints;
 
+import com.google.common.base.MoreObjects;
+import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
+import com.zenobase.models.Location;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
-
-import com.google.common.base.MoreObjects;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.GeoLocation;
 import org.opensearch.client.opensearch._types.LatLonGeoLocation;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
-
-import com.zenobase.common.Measures;
-import com.zenobase.common.Units;
-import com.zenobase.models.Location;
 
 public class DistanceConstraintBuilder extends ConstraintBuilder {
 

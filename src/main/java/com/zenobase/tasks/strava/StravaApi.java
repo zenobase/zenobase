@@ -1,9 +1,8 @@
 package com.zenobase.tasks.strava;
 
-import org.scribe.model.OAuthConfig;
-
 import com.zenobase.common.UriBuilder;
 import com.zenobase.tasks.CustomApi20;
+import org.scribe.model.OAuthConfig;
 
 public class StravaApi extends CustomApi20 {
 

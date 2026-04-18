@@ -3,17 +3,10 @@ package com.zenobase.controllers;
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
-import java.util.List;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
-import io.helidon.webclient.http1.Http1ClientResponse;
-import io.helidon.webserver.http.HttpRouting;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
@@ -27,6 +20,11 @@ import com.zenobase.repositories.EventRepository;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.LocalBus;
+import io.helidon.webclient.http1.Http1ClientResponse;
+import io.helidon.webserver.http.HttpRouting;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class BucketSchemaControllerTest extends ControllerTestSupport {
 

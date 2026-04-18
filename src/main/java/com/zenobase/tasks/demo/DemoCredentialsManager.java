@@ -1,10 +1,9 @@
 package com.zenobase.tasks.demo;
 
-import jakarta.inject.Inject;
-
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.CredentialsManager;
+import jakarta.inject.Inject;
 
 public class DemoCredentialsManager extends CredentialsManager {
 

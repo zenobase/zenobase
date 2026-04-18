@@ -2,19 +2,17 @@ package com.zenobase.tasks.netatmo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-import java.util.Set;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 import com.zenobase.models.Rating;
 import com.zenobase.tasks.ResultTestSupport;
+import java.util.List;
+import java.util.Set;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
+import org.junit.jupiter.api.Test;
 
 public class MeasurementsResultTest extends ResultTestSupport {
 

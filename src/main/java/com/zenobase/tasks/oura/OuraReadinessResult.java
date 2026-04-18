@@ -1,14 +1,12 @@
 package com.zenobase.tasks.oura;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
 
 class OuraReadinessResult extends OuraResultSupport {
 

@@ -1,19 +1,17 @@
 package com.zenobase.commands;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
-import org.jspecify.annotations.Nullable;
-import org.opensearch.client.opensearch._types.OpenSearchException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.repositories.EventRepository;
+import jakarta.inject.Inject;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
+import org.opensearch.client.opensearch._types.OpenSearchException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UpdateEventCommand extends Command {
 

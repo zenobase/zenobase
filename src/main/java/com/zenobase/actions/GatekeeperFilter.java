@@ -1,16 +1,15 @@
 package com.zenobase.actions;
 
+import com.zenobase.controllers.AuthorizationContext;
+import com.zenobase.oauth.Authorization;
+import com.zenobase.repositories.UserRepository;
+import com.zenobase.services.Bus;
 import io.helidon.http.Status;
 import io.helidon.webserver.http.Filter;
 import io.helidon.webserver.http.FilterChain;
 import io.helidon.webserver.http.RoutingRequest;
 import io.helidon.webserver.http.RoutingResponse;
 import jakarta.inject.Inject;
-
-import com.zenobase.controllers.AuthorizationContext;
-import com.zenobase.oauth.Authorization;
-import com.zenobase.repositories.UserRepository;
-import com.zenobase.services.Bus;
 
 /**
  * Disables all requests other than GET or HEAD for everyone but superusers when in read-only mode.

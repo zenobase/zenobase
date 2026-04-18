@@ -2,11 +2,10 @@ package com.zenobase.tasks.fitbit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.joda.time.LocalDate;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.ResultTestSupport;
+import org.joda.time.LocalDate;
+import org.junit.jupiter.api.Test;
 
 public class FitbitDevicesResultTest extends ResultTestSupport {
 

@@ -1,12 +1,10 @@
 package com.zenobase.tasks.demo;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
+import java.util.Objects;
 
 public class DemoTask extends Task {
 

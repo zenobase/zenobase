@@ -1,18 +1,6 @@
 package com.zenobase.tasks.foursquare;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.jspecify.annotations.Nullable;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Verb;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventsCommand;
@@ -22,6 +10,16 @@ import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
+import jakarta.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Verb;
 
 public class FoursquareTaskManager extends OAuthTaskManager {
 

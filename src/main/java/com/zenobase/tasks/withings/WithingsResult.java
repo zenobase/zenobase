@@ -1,13 +1,11 @@
 package com.zenobase.tasks.withings;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
+import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 public abstract class WithingsResult {
 

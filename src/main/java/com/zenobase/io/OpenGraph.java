@@ -1,17 +1,15 @@
 package com.zenobase.io;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.json.Nodes;
+import com.zenobase.json.TextField;
+import com.zenobase.json.TokenField;
 import java.io.IOException;
 import java.io.InputStream;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.json.Nodes;
-import com.zenobase.json.TextField;
-import com.zenobase.json.TokenField;
 
 public class OpenGraph {
 

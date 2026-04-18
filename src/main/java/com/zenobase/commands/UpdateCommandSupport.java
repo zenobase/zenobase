@@ -1,15 +1,13 @@
 package com.zenobase.commands;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 public abstract class UpdateCommandSupport extends Command {
 

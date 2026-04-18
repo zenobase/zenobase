@@ -1,13 +1,14 @@
 package com.zenobase.tasks.fitbit;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.MoreObjects;
+import com.google.common.collect.Maps;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.MoreObjects;
-import com.google.common.collect.Maps;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -15,9 +16,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
 
 class FitbitIntradayStepsResult extends FitbitResultSupport {
 

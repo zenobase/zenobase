@@ -1,11 +1,16 @@
 package com.zenobase.tasks.fitbit;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
+import com.zenobase.commands.Command;
+import com.zenobase.common.Units;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.tasks.InvalidStatusException;
+import com.zenobase.tasks.OAuthCredentials;
 import jakarta.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import org.joda.time.LocalDate;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
@@ -14,13 +19,6 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.zenobase.commands.Command;
-import com.zenobase.common.Units;
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.tasks.InvalidStatusException;
-import com.zenobase.tasks.OAuthCredentials;
 
 public class FitbitStepsTaskManager extends FitbitTaskManagerSupport<FitbitStepsTask> {
 

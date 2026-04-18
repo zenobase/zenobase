@@ -1,7 +1,6 @@
 package com.zenobase.scripts;
 
 import java.io.IOException;
-
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;

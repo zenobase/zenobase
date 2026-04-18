@@ -3,10 +3,9 @@ package com.zenobase.controllers;
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
+import com.zenobase.models.StatusInfo;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import org.junit.jupiter.api.Test;
-
-import com.zenobase.models.StatusInfo;
 
 public class StatusControllerHttpGetTest extends StatusControllerTestSupport {
 

@@ -1,18 +1,17 @@
 package com.zenobase.repositories;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
-import org.jspecify.annotations.Nullable;
-import org.opensearch.client.opensearch.core.SearchRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
 import com.zenobase.queries.TaskQuery;
 import com.zenobase.services.SearchOrder;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskList;
+import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskRepository extends RepositorySupport<Task> {
 

@@ -1,8 +1,7 @@
 package com.zenobase.json;
 
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Identity;
+import org.junit.jupiter.api.Test;
 
 public class IdentityFieldTest extends FieldTestSupport<Identity> {
 

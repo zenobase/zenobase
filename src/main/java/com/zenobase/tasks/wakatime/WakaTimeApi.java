@@ -1,9 +1,8 @@
 package com.zenobase.tasks.wakatime;
 
-import org.scribe.model.OAuthConfig;
-
 import com.zenobase.common.UriBuilder;
 import com.zenobase.tasks.CustomApi20;
+import org.scribe.model.OAuthConfig;
 
 public class WakaTimeApi extends CustomApi20 {
 

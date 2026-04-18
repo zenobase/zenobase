@@ -2,19 +2,17 @@ package com.zenobase.tasks.strava;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-import javax.measure.quantity.Energy;
-import javax.measure.quantity.Frequency;
-
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 import com.zenobase.models.Resource;
 import com.zenobase.tasks.ResultTestSupport;
+import java.util.List;
+import javax.measure.quantity.Energy;
+import javax.measure.quantity.Frequency;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.junit.jupiter.api.Test;
 
 public class StravaActivitiesResultTest extends ResultTestSupport {
 

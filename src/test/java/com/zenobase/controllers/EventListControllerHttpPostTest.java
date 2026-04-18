@@ -7,13 +7,6 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.helidon.webclient.http1.Http1ClientResponse;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.common.Generator;
@@ -23,6 +16,12 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
+import io.helidon.webclient.http1.Http1ClientResponse;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 public class EventListControllerHttpPostTest extends EventListControllerTestSupport {
 

@@ -2,12 +2,10 @@ package com.zenobase.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
 
 public class RolesFieldTest extends FieldTestSupport<Map.Entry<Identity, Role>> {
 

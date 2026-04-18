@@ -2,12 +2,6 @@ package com.zenobase.repositories;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
-import jakarta.inject.Inject;
-import org.jspecify.annotations.Nullable;
-import org.opensearch.client.opensearch.core.SearchRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
 import com.zenobase.models.Identity;
@@ -15,6 +9,11 @@ import com.zenobase.queries.CredentialsQuery;
 import com.zenobase.services.SearchOrder;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.CredentialsList;
+import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CredentialsRepository extends RepositorySupport<Credentials> {
 

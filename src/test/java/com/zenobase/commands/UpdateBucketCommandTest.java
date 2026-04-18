@@ -3,16 +3,15 @@ package com.zenobase.commands;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.opensearch.client.opensearch._types.ErrorResponse;
-import org.opensearch.client.opensearch._types.OpenSearchException;
-
 import com.zenobase.json.OptimisticLock;
 import com.zenobase.models.Alias;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.repositories.BucketRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.opensearch.client.opensearch._types.ErrorResponse;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 
 public class UpdateBucketCommandTest {
 

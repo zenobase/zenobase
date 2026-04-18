@@ -1,12 +1,8 @@
 package com.zenobase.models;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.common.Generator;
 import com.zenobase.json.BitsField;
 import com.zenobase.json.ConcentrationField;
@@ -37,6 +33,8 @@ import com.zenobase.json.TokenField;
 import com.zenobase.json.VelocityField;
 import com.zenobase.json.VolumeField;
 import com.zenobase.json.WeightField;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 public class Event extends DomainNode {
 

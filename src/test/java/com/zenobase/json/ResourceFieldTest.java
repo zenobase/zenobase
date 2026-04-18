@@ -1,8 +1,7 @@
 package com.zenobase.json;
 
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Resource;
+import org.junit.jupiter.api.Test;
 
 public class ResourceFieldTest extends FieldTestSupport<Resource> {
 

@@ -1,11 +1,9 @@
 package com.zenobase.tasks.foursquare;
 
+import com.zenobase.models.Resource;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.models.Resource;
 
 public class FoursquareVenue {
 

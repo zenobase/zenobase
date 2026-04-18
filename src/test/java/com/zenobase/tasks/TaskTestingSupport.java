@@ -1,19 +1,7 @@
 package com.zenobase.tasks;
 
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.hc.core5.http.NameValuePair;
-import org.apache.hc.core5.net.URLEncodedUtils;
-import org.joda.time.DateTime;
-import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.BeforeEach;
-import org.mockito.Mockito;
-import org.scribe.model.Token;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.common.Generator;
@@ -22,6 +10,16 @@ import com.zenobase.models.Identity;
 import com.zenobase.oauth.ExpiringToken;
 import com.zenobase.repositories.CredentialsRepository;
 import com.zenobase.testing.Manual;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.net.URLEncodedUtils;
+import org.joda.time.DateTime;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.Mockito;
+import org.scribe.model.Token;
 
 @Manual
 public abstract class TaskTestingSupport {

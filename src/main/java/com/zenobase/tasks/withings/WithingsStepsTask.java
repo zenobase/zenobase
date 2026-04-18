@@ -1,18 +1,16 @@
 package com.zenobase.tasks.withings;
 
-import javax.measure.quantity.Energy;
-import javax.measure.quantity.Length;
-import javax.measure.unit.Unit;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.common.Units;
 import com.zenobase.json.TokenField;
 import com.zenobase.json.UnitField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
+import javax.measure.quantity.Energy;
+import javax.measure.quantity.Length;
+import javax.measure.unit.Unit;
+import org.jspecify.annotations.Nullable;
 
 public class WithingsStepsTask extends Task {
 

@@ -1,13 +1,11 @@
 package com.zenobase.tasks.fitbit;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.zenobase.common.Units;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
-
-import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTimeZone;
-
-import com.zenobase.common.Units;
 
 class FitbitProfileResult {
 

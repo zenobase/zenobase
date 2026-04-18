@@ -4,17 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import java.util.Base64;
-import java.util.Optional;
-import java.util.Set;
-
-import io.helidon.http.HeaderNames;
-import io.helidon.webserver.http.ServerRequest;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.auth.TokenValidator;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import io.helidon.http.HeaderNames;
+import io.helidon.webserver.http.ServerRequest;
+import java.util.Base64;
+import java.util.Optional;
+import java.util.Set;
+import org.junit.jupiter.api.Test;
 
 public class AuthorizationContextTest {
 

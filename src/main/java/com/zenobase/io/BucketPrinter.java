@@ -1,17 +1,15 @@
 package com.zenobase.io;
 
-import java.io.IOException;
-import java.io.Writer;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
-
 import com.zenobase.common.Callback;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.EventRepository;
+import java.io.IOException;
+import java.io.Writer;
 
 public class BucketPrinter implements Callback<Bucket> {
 

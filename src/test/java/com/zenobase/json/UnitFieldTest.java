@@ -1,11 +1,9 @@
 package com.zenobase.json;
 
+import com.zenobase.common.Units;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
-
 import org.junit.jupiter.api.Test;
-
-import com.zenobase.common.Units;
 
 public class UnitFieldTest extends FieldTestSupport<Unit<Length>> {
 

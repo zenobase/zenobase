@@ -2,10 +2,9 @@ package com.zenobase.tasks.trakt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.zenobase.tasks.ResultTestSupport;
 import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.Test;
-
-import com.zenobase.tasks.ResultTestSupport;
 
 public class TraktSettingsResultTest extends ResultTestSupport {
 

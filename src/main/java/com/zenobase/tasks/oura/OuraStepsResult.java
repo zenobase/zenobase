@@ -1,13 +1,11 @@
 package com.zenobase.tasks.oura;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import java.util.List;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 class OuraStepsResult extends OuraResultSupport {
 

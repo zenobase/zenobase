@@ -3,10 +3,9 @@ package com.zenobase.common;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.Range;
+import com.zenobase.models.Location;
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
-
-import com.zenobase.models.Location;
 
 public class LocationMapTest {
 

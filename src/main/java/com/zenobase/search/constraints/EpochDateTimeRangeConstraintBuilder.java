@@ -1,10 +1,9 @@
 package com.zenobase.search.constraints;
 
 import com.google.common.collect.Range;
+import com.zenobase.common.EpochDateTimeRangeParser;
 import org.joda.time.ReadableInstant;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.common.EpochDateTimeRangeParser;
 
 public class EpochDateTimeRangeConstraintBuilder extends RangeConstraintBuilderSupport<ReadableInstant> {
 

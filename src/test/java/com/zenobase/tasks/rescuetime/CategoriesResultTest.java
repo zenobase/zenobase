@@ -2,14 +2,12 @@ package com.zenobase.tasks.rescuetime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.zenobase.models.Event;
+import com.zenobase.tasks.ResultTestSupport;
 import java.util.List;
-
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.junit.jupiter.api.Test;
-
-import com.zenobase.models.Event;
-import com.zenobase.tasks.ResultTestSupport;
 
 public class CategoriesResultTest extends ResultTestSupport {
 

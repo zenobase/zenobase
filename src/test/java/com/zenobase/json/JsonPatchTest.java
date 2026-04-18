@@ -4,9 +4,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.testing.NodeAssert;
+import org.junit.jupiter.api.Test;
 
 public class JsonPatchTest {
 

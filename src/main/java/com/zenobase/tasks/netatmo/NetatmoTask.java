@@ -2,11 +2,10 @@ package com.zenobase.tasks.netatmo;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.json.BooleanField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
+import org.jspecify.annotations.Nullable;
 
 public class NetatmoTask extends Task {
 

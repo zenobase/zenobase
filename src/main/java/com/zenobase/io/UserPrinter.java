@@ -1,12 +1,10 @@
 package com.zenobase.io;
 
-import java.io.IOException;
-import java.io.Writer;
-
 import com.google.common.base.Joiner;
-
 import com.zenobase.common.Callback;
 import com.zenobase.models.User;
+import java.io.IOException;
+import java.io.Writer;
 
 public class UserPrinter implements Callback<User> {
 

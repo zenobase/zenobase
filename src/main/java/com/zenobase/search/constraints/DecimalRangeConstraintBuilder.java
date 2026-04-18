@@ -1,11 +1,9 @@
 package com.zenobase.search.constraints;
 
-import java.math.BigDecimal;
-
 import com.google.common.collect.Range;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.common.DecimalRangeParser;
+import java.math.BigDecimal;
+import org.jspecify.annotations.Nullable;
 
 public class DecimalRangeConstraintBuilder extends RangeConstraintBuilderSupport<BigDecimal> {
 

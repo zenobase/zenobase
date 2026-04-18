@@ -1,14 +1,12 @@
 package com.zenobase.json;
 
-import java.util.Locale;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.search.constraints.TermConstraintBuilder;
+import java.util.Locale;
+import org.jspecify.annotations.Nullable;
 
 public class EnumField<E extends Enum<E>> extends Field<E> {
 

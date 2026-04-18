@@ -1,17 +1,15 @@
 package com.zenobase.tasks.withings;
 
-import java.util.Objects;
-import javax.measure.quantity.Mass;
-import javax.measure.unit.Unit;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.joda.time.DateTimeZone;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.json.TokenField;
 import com.zenobase.json.UnitField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
+import java.util.Objects;
+import javax.measure.quantity.Mass;
+import javax.measure.unit.Unit;
+import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 public class WithingsWeightTask extends Task {
 

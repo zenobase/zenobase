@@ -1,19 +1,17 @@
 package com.zenobase.json;
 
-import java.math.BigDecimal;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.models.Location;
 import com.zenobase.search.constraints.BoundingBoxConstraintBuilder;
 import com.zenobase.search.constraints.DistanceConstraintBuilder;
 import com.zenobase.search.constraints.ExistsConstraintBuilder;
+import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 public class LocationField extends Field<Location> {
 

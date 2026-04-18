@@ -4,15 +4,7 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.collect.Lists;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.common.Measures;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
@@ -23,6 +15,12 @@ import com.zenobase.models.Resource;
 import com.zenobase.search.EventSearchBuilder;
 import com.zenobase.search.Search;
 import com.zenobase.testing.NodeAssert;
+import java.util.ArrayList;
+import java.util.List;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EventRepositoryTest extends OpenSearchTestSupport {
 

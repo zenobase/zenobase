@@ -256,9 +256,6 @@
                             </config>
                         </prettier>
                         <removeUnusedImports/>
-                        <importOrder>
-                            <order>java|javax,,com.zenobase</order>
-                        </importOrder>
                     </java>
                     <formats>
                         <format>

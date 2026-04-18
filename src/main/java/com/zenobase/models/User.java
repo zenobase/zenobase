@@ -1,13 +1,7 @@
 package com.zenobase.models;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.common.Generator;
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DateTimeField;
@@ -16,6 +10,10 @@ import com.zenobase.json.IntegerField;
 import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;
 import com.zenobase.json.TokenField;
+import java.util.Objects;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 public class User extends DomainNode {
 

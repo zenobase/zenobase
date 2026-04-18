@@ -1,9 +1,8 @@
 package com.zenobase.json;
 
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.common.Generator;
 import com.zenobase.models.Alias;
+import org.junit.jupiter.api.Test;
 
 public class AliasFieldTest extends FieldTestSupport<Alias> {
 

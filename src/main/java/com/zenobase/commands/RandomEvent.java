@@ -1,5 +1,14 @@
 package com.zenobase.commands;
 
+import com.google.common.io.Files;
+import com.google.common.io.LineProcessor;
+import com.zenobase.common.RandomElement;
+import com.zenobase.common.Units;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.models.Location;
+import com.zenobase.models.Rating;
+import com.zenobase.models.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -8,20 +17,9 @@ import java.util.Objects;
 import java.util.Random;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
-
-import com.google.common.io.Files;
-import com.google.common.io.LineProcessor;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.common.RandomElement;
-import com.zenobase.common.Units;
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.models.Location;
-import com.zenobase.models.Rating;
-import com.zenobase.models.Resource;
 
 public class RandomEvent {
 

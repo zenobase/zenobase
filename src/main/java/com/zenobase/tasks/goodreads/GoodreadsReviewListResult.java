@@ -1,10 +1,14 @@
 package com.zenobase.tasks.goodreads;
 
+import com.google.common.base.MoreObjects;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.models.Rating;
+import com.zenobase.models.Resource;
+import com.zenobase.tasks.XmlResultSupport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import com.google.common.base.MoreObjects;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormatter;
@@ -13,12 +17,6 @@ import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.models.Rating;
-import com.zenobase.models.Resource;
-import com.zenobase.tasks.XmlResultSupport;
 
 class GoodreadsReviewListResult extends XmlResultSupport {
 

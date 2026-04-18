@@ -1,11 +1,10 @@
 package com.zenobase.tasks.hexoskin;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.models.Identity;
 import jakarta.inject.Inject;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.Response;
-
-import com.zenobase.models.Identity;
 
 public class HexoskinActivitiesTaskManager extends HexoskinTaskManagerSupport<HexoskinActivitiesTask> {
 

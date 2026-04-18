@@ -2,12 +2,11 @@ package com.zenobase.commands;
 
 import static org.mockito.Mockito.*;
 
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 import com.zenobase.repositories.TaskRepository;
 import com.zenobase.tasks.Task;
+import org.junit.jupiter.api.Test;
 
 public class CreateAndDeleteTaskCommandTest {
 

@@ -1,11 +1,10 @@
 package com.zenobase.common;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import java.util.AbstractList;
 import java.util.Collections;
 import java.util.Objects;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 
 public class DefaultPartialList<T> extends AbstractList<T> implements PartialList<T> {
 

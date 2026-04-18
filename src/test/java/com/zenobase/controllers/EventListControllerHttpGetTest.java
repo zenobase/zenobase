@@ -5,11 +5,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
@@ -17,6 +12,10 @@ import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.search.EventSearchBuilder;
 import com.zenobase.search.Search;
+import io.helidon.webclient.http1.Http1ClientResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 
 public class EventListControllerHttpGetTest extends EventListControllerTestSupport {
 

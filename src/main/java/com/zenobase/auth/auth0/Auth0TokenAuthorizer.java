@@ -1,12 +1,11 @@
 package com.zenobase.auth.auth0;
 
-import jakarta.inject.Inject;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.auth.TokenValidator;
 import com.zenobase.auth.auth0.Auth0TokenValidator.Auth0Claims;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 public class Auth0TokenAuthorizer implements TokenValidator {
 

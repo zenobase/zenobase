@@ -1,10 +1,11 @@
 package com.zenobase.jobs;
 
+import com.google.common.collect.Lists;
+import com.zenobase.common.DefaultPartialList;
+import com.zenobase.common.PartialList;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.OpenSearchException;
@@ -12,9 +13,6 @@ import org.opensearch.client.opensearch.snapshot.GetSnapshotResponse;
 import org.opensearch.client.opensearch.snapshot.SnapshotInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.zenobase.common.DefaultPartialList;
-import com.zenobase.common.PartialList;
 
 public class SnapshotManager {
 

@@ -1,9 +1,8 @@
 package com.zenobase.common;
 
-import java.util.List;
-
 import com.google.common.collect.Lists;
 import com.google.common.testing.EqualsTester;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class PartialListTest {

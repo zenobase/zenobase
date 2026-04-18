@@ -2,10 +2,9 @@ package com.zenobase.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.common.collect.Range;
 import java.math.BigDecimal;
 import javax.measure.Measurable;
-
-import com.google.common.collect.Range;
 import org.junit.jupiter.api.Test;
 
 public class MeasureRangeParserTest {

@@ -1,10 +1,9 @@
 package com.zenobase.search.constraints;
 
 import com.google.common.collect.Range;
+import com.zenobase.common.DurationRangeParser;
 import org.joda.time.ReadableDuration;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.common.DurationRangeParser;
 
 public class DurationRangeConstraintBuilder extends RangeConstraintBuilderSupport<ReadableDuration> {
 

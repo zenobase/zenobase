@@ -1,14 +1,8 @@
 package com.zenobase.commands;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.common.Generator;
 import com.zenobase.json.CommandTypeField;
 import com.zenobase.json.DateTimeField;
@@ -23,6 +17,10 @@ import com.zenobase.json.SchemaBuilder;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import java.util.Objects;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 public class Command extends DomainNode {
 

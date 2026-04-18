@@ -1,12 +1,13 @@
 package com.zenobase.search.facets;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.json.Nodes;
+import com.zenobase.search.constraints.FilterParser;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
@@ -15,9 +16,6 @@ import org.opensearch.client.opensearch._types.aggregations.StringTermsBucket;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
-
-import com.zenobase.json.Nodes;
-import com.zenobase.search.constraints.FilterParser;
 
 public class CountFacet extends FilteredFacet {
 

@@ -1,9 +1,5 @@
 package com.zenobase.auth.auth0;
 
-import java.net.URI;
-import java.security.interfaces.RSAPublicKey;
-import java.util.concurrent.TimeUnit;
-
 import com.auth0.jwk.JwkException;
 import com.auth0.jwk.JwkProvider;
 import com.auth0.jwk.JwkProviderBuilder;
@@ -14,6 +10,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.RSAKeyProvider;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.net.URI;
+import java.security.interfaces.RSAPublicKey;
+import java.util.concurrent.TimeUnit;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

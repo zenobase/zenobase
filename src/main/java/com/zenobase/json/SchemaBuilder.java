@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
-
 import com.zenobase.search.constraints.ConstraintBuilder;
 
 public class SchemaBuilder {

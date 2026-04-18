@@ -1,11 +1,10 @@
 package com.zenobase.testing;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.zenobase.json.DecimalMeasureField;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Offset;
-
-import com.zenobase.json.DecimalMeasureField;
 
 public class NodeAssert extends AbstractAssert<NodeAssert, JsonNode> {
 

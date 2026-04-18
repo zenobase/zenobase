@@ -1,9 +1,8 @@
 package com.zenobase.tasks.google;
 
 import com.google.common.base.Preconditions;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.models.Resource;
+import org.jspecify.annotations.Nullable;
 
 public record DataStream(String id, String dataType, @Nullable Resource source) {
 	public DataStream(String id, String dataType, @Nullable Resource source) {

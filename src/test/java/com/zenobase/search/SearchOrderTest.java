@@ -3,13 +3,12 @@ package com.zenobase.search;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.common.testing.EqualsTester;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;
 import com.zenobase.json.TokenField;
 import com.zenobase.services.SearchOrder;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class SearchOrderTest {
 

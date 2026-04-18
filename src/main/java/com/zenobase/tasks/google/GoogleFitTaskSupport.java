@@ -1,14 +1,13 @@
 package com.zenobase.tasks.google;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.json.TokenField;
+import com.zenobase.models.Identity;
+import com.zenobase.tasks.Task;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.json.TokenField;
-import com.zenobase.models.Identity;
-import com.zenobase.tasks.Task;
 
 abstract class GoogleFitTaskSupport extends Task {
 

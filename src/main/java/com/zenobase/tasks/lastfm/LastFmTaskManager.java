@@ -1,23 +1,9 @@
 package com.zenobase.tasks.lastfm;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.RateLimiter;
-import jakarta.inject.Inject;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
-import org.jspecify.annotations.Nullable;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventsCommand;
@@ -30,6 +16,18 @@ import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
+import jakarta.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
+import org.jspecify.annotations.Nullable;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LastFmTaskManager extends OAuthTaskManager {
 

@@ -3,9 +3,8 @@ package com.zenobase.models;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.math.BigDecimal;
-
 import com.google.common.testing.EqualsTester;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 
 public class PercentageTest {

@@ -3,10 +3,9 @@ package com.zenobase.tasks.netatmo;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
+import com.zenobase.models.Location;
 import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.models.Location;
 
 public class Device {
 

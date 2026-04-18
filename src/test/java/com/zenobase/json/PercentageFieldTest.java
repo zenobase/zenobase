@@ -1,10 +1,8 @@
 package com.zenobase.json;
 
-import java.math.BigDecimal;
-
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Percentage;
+import java.math.BigDecimal;
+import org.junit.jupiter.api.Test;
 
 public class PercentageFieldTest extends FieldTestSupport<Percentage> {
 

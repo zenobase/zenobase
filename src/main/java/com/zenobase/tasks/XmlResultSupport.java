@@ -1,5 +1,6 @@
 package com.zenobase.tasks;
 
+import com.google.common.base.Strings;
 import java.io.StringWriter;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -10,8 +11,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import com.google.common.base.Strings;
 import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

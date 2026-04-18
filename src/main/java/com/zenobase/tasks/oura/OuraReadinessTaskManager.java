@@ -1,24 +1,22 @@
 package com.zenobase.tasks.oura;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.MoreObjects;
+import com.zenobase.commands.Command;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.tasks.OAuthCredentials;
+import com.zenobase.tasks.Task;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.MoreObjects;
-import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
-
-import com.zenobase.commands.Command;
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.Task;
 
 public class OuraReadinessTaskManager extends OuraTaskManagerSupport {
 

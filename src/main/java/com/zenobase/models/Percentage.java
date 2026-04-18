@@ -1,9 +1,8 @@
 package com.zenobase.models;
 
-import java.math.BigDecimal;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Range;
+import java.math.BigDecimal;
 
 public record Percentage(BigDecimal value) implements Comparable<Percentage> {
 	private static final Range<BigDecimal> RANGE = Range.closed(BigDecimal.ZERO, BigDecimal.valueOf(100L));

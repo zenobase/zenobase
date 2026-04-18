@@ -1,10 +1,9 @@
 package com.zenobase.tasks.goodreads;
 
+import com.zenobase.common.UriBuilder;
 import org.scribe.builder.api.DefaultApi10a;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
-
-import com.zenobase.common.UriBuilder;
 
 public class GoodreadsApi extends DefaultApi10a {
 

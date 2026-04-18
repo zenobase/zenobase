@@ -1,5 +1,7 @@
 package com.zenobase.common;
 
+import com.google.common.base.Preconditions;
+import com.google.common.primitives.Doubles;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -7,9 +9,6 @@ import java.util.Objects;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
-
-import com.google.common.base.Preconditions;
-import com.google.common.primitives.Doubles;
 import org.jspecify.annotations.Nullable;
 
 public class Measures {

@@ -1,13 +1,11 @@
 package com.zenobase.commands;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
+import jakarta.inject.Inject;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 public class ChangeUserPasswordCommand extends Command {
 

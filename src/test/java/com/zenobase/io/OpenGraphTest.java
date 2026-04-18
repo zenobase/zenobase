@@ -2,10 +2,9 @@ package com.zenobase.io;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 
 public class OpenGraphTest {

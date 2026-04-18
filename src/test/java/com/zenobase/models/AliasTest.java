@@ -1,9 +1,8 @@
 package com.zenobase.models;
 
 import com.google.common.testing.EqualsTester;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.common.Generator;
+import org.junit.jupiter.api.Test;
 
 public class AliasTest {
 

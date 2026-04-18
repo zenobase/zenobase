@@ -5,10 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.User;
 import com.zenobase.repositories.UserRepository;
+import org.junit.jupiter.api.Test;
 
 public class ChangeQuotaCommandTest {
 

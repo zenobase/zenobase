@@ -2,7 +2,6 @@ package com.zenobase.search;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
-
 import com.zenobase.models.Event;
 import com.zenobase.search.constraints.ConstraintBuilder;
 import com.zenobase.search.constraints.FilterParser;

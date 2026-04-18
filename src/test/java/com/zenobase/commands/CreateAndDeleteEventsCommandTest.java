@@ -3,14 +3,13 @@ package com.zenobase.commands;
 import static org.mockito.Mockito.*;
 
 import com.google.common.collect.Lists;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.repositories.EventRepository;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.junit.jupiter.api.Test;
 
 public class CreateAndDeleteEventsCommandTest {
 

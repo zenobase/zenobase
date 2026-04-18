@@ -2,12 +2,10 @@ package com.zenobase.commands;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.zenobase.models.Identity;
 import java.util.Set;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.zenobase.models.Identity;
 
 public class CompoundCommandTest {
 

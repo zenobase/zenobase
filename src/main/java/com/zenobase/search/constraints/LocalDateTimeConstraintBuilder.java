@@ -1,14 +1,13 @@
 package com.zenobase.search.constraints;
 
+import com.zenobase.common.LocalInterval;
+import com.zenobase.common.LocalIntervals;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
-
-import com.zenobase.common.LocalInterval;
-import com.zenobase.common.LocalIntervals;
 
 public class LocalDateTimeConstraintBuilder extends ConstraintBuilder {
 

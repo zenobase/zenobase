@@ -1,25 +1,23 @@
 package com.zenobase.tasks.netatmo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Quantity;
-import javax.measure.unit.Unit;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.Preconditions;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Rating;
 import com.zenobase.models.Resource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.measure.DecimalMeasure;
+import javax.measure.quantity.Quantity;
+import javax.measure.unit.Unit;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 class MeasurementsResult {
 

@@ -1,18 +1,16 @@
 package com.zenobase.tasks.trakt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.models.Resource;
+import java.util.ArrayList;
+import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.jspecify.annotations.Nullable;
-
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.models.Resource;
 
 class TraktHistoryResult {
 

@@ -1,17 +1,15 @@
 package com.zenobase.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 public class CompoundCommand extends Command {
 

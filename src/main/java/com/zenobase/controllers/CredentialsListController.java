@@ -1,9 +1,5 @@
 package com.zenobase.controllers;
 
-import io.helidon.webserver.http.ServerRequest;
-import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
-
 import com.zenobase.commands.CreateCredentialsCommand;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
@@ -16,6 +12,9 @@ import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.CredentialsList;
 import com.zenobase.tasks.CredentialsManager;
 import com.zenobase.tasks.CredentialsManagerRegistry;
+import io.helidon.webserver.http.ServerRequest;
+import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 public class CredentialsListController extends ControllerSupport {
 

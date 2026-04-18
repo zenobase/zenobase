@@ -1,8 +1,7 @@
 package com.zenobase.json;
 
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Location;
+import org.junit.jupiter.api.Test;
 
 public class LocationFieldTest extends FieldTestSupport<Location> {
 

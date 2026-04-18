@@ -1,17 +1,24 @@
 package com.zenobase.search.facets;
 
-import java.math.BigDecimal;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import javax.measure.unit.Unit;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
+import com.zenobase.json.DecimalMeasureField;
+import com.zenobase.json.Field;
+import com.zenobase.json.LocalDateTimeField;
+import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
+import com.zenobase.search.constraints.FilterParser;
+import java.math.BigDecimal;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import javax.measure.unit.Unit;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.DurationFieldType;
@@ -24,15 +31,6 @@ import org.opensearch.client.opensearch._types.aggregations.DateHistogramBucket;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
-
-import com.zenobase.common.Measures;
-import com.zenobase.common.Units;
-import com.zenobase.json.DecimalMeasureField;
-import com.zenobase.json.Field;
-import com.zenobase.json.LocalDateTimeField;
-import com.zenobase.json.Nodes;
-import com.zenobase.models.Event;
-import com.zenobase.search.constraints.FilterParser;
 
 public class ScatterPlotFacet extends Facet {
 

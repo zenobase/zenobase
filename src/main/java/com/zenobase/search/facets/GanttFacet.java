@@ -1,11 +1,16 @@
 package com.zenobase.search.facets;
 
-import java.util.Collections;
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.json.DateTimeField;
+import com.zenobase.json.LongField;
+import com.zenobase.json.Nodes;
+import com.zenobase.json.TokenField;
+import com.zenobase.models.Event;
+import com.zenobase.search.constraints.FilterParser;
+import java.util.Collections;
+import java.util.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
@@ -17,13 +22,6 @@ import org.opensearch.client.opensearch._types.aggregations.StringTermsBucket;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
-
-import com.zenobase.json.DateTimeField;
-import com.zenobase.json.LongField;
-import com.zenobase.json.Nodes;
-import com.zenobase.json.TokenField;
-import com.zenobase.models.Event;
-import com.zenobase.search.constraints.FilterParser;
 
 public class GanttFacet extends FilteredFacet {
 

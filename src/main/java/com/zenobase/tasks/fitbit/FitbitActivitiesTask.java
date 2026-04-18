@@ -2,7 +2,6 @@ package com.zenobase.tasks.fitbit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-
 import com.zenobase.json.BooleanField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;

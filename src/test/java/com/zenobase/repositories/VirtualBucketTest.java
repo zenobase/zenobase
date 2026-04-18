@@ -2,15 +2,14 @@ package com.zenobase.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Alias;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.testing.NodeAssert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class VirtualBucketTest extends OpenSearchTestSupport {
 

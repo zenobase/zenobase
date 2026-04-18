@@ -1,20 +1,11 @@
 package com.zenobase.models;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.common.Generator;
 import com.zenobase.json.AliasField;
 import com.zenobase.json.BooleanField;
@@ -27,6 +18,13 @@ import com.zenobase.json.SchemaBuilder;
 import com.zenobase.json.TextField;
 import com.zenobase.json.TokenField;
 import com.zenobase.oauth.Authorization;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 public class Bucket extends DomainNode {
 

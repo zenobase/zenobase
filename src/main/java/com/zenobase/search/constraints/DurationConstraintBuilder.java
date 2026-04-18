@@ -1,10 +1,9 @@
 package com.zenobase.search.constraints;
 
+import com.zenobase.common.DurationFormat;
 import org.joda.time.Duration;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
-
-import com.zenobase.common.DurationFormat;
 
 public class DurationConstraintBuilder extends ConstraintBuilder {
 

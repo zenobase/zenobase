@@ -1,23 +1,21 @@
 package com.zenobase.tasks;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.zip.GZIPInputStream;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.io.CharStreams;
-import org.jspecify.annotations.Nullable;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.zip.GZIPInputStream;
+import org.jspecify.annotations.Nullable;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
 
 public abstract class OAuthTaskManager extends TaskManager {
 

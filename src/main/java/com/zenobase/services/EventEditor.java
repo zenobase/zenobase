@@ -1,14 +1,8 @@
 package com.zenobase.services;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
-import org.joda.time.DateTime;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateEventCommand;
 import com.zenobase.json.ObjectField;
@@ -18,6 +12,10 @@ import com.zenobase.repositories.EventRepository;
 import com.zenobase.search.EventSearchBuilder;
 import com.zenobase.search.constraints.OffsetDateTimeRangeConstraintBuilder;
 import com.zenobase.search.facets.ListFacet;
+import java.util.ArrayList;
+import java.util.List;
+import org.joda.time.DateTime;
+import org.jspecify.annotations.Nullable;
 
 public abstract class EventEditor {
 

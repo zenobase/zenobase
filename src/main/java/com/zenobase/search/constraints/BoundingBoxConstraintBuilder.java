@@ -1,13 +1,12 @@
 package com.zenobase.search.constraints;
 
+import com.zenobase.models.Location;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.GeoBounds;
 import org.opensearch.client.opensearch._types.GeoLocation;
 import org.opensearch.client.opensearch._types.LatLonGeoLocation;
 import org.opensearch.client.opensearch._types.TopLeftBottomRightGeoBounds;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
-
-import com.zenobase.models.Location;
 
 public class BoundingBoxConstraintBuilder extends ConstraintBuilder {
 

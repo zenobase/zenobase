@@ -1,14 +1,13 @@
 package com.zenobase.queries;
 
-import org.opensearch.client.opensearch._types.FieldValue;
-import org.opensearch.client.opensearch._types.query_dsl.ChildScoreMode;
-import org.opensearch.client.opensearch._types.query_dsl.Query;
-
 import com.zenobase.json.RolesField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.repositories.QuerySupport;
 import com.zenobase.services.SearchOrder;
+import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.query_dsl.ChildScoreMode;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 public class BucketQuery extends QuerySupport {
 

@@ -1,7 +1,6 @@
 package com.zenobase.common;
 
 import java.net.URISyntaxException;
-
 import org.apache.hc.core5.net.URIBuilder;
 
 public class UriBuilder {

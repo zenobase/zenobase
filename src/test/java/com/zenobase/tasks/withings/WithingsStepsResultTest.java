@@ -2,15 +2,13 @@ package com.zenobase.tasks.withings;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-
-import org.joda.time.Duration;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.ResultTestSupport;
+import java.util.List;
+import org.joda.time.Duration;
+import org.junit.jupiter.api.Test;
 
 public class WithingsStepsResultTest extends ResultTestSupport {
 

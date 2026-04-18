@@ -2,7 +2,6 @@ package com.zenobase.json;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
-
 import org.junit.jupiter.api.Test;
 
 public class LengthFieldTest extends DecimalMeasureFieldTestSupport<Length> {

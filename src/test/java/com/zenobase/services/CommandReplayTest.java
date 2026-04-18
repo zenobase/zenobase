@@ -2,15 +2,8 @@ package com.zenobase.services;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
-import org.junit.jupiter.api.Test;
-import org.mockito.InOrder;
-import org.mockito.Mockito;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.commands.TestCommand;
@@ -19,6 +12,11 @@ import com.zenobase.models.User;
 import com.zenobase.repositories.CommandRepository;
 import com.zenobase.repositories.OpenSearchTestSupport;
 import com.zenobase.repositories.UserRepository;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 
 public class CommandReplayTest extends OpenSearchTestSupport {
 

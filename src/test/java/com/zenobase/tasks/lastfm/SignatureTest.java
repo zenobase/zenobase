@@ -2,9 +2,8 @@ package com.zenobase.tasks.lastfm;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Map;
-
 import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 public class SignatureTest {

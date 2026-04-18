@@ -1,14 +1,20 @@
 package com.zenobase.repositories;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
+import com.zenobase.common.Callback;
+import com.zenobase.json.DomainNode;
+import com.zenobase.json.NodeList;
+import com.zenobase.json.OptimisticLock;
+import com.zenobase.json.Schema;
+import com.zenobase.services.Cluster;
+import com.zenobase.services.SearchOrder;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.FieldValue;
@@ -24,14 +30,6 @@ import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.bulk.BulkOperation;
 import org.opensearch.client.opensearch.core.bulk.BulkResponseItem;
 import org.opensearch.client.opensearch.core.search.Hit;
-
-import com.zenobase.common.Callback;
-import com.zenobase.json.DomainNode;
-import com.zenobase.json.NodeList;
-import com.zenobase.json.OptimisticLock;
-import com.zenobase.json.Schema;
-import com.zenobase.services.Cluster;
-import com.zenobase.services.SearchOrder;
 
 public class Index {
 

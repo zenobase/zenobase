@@ -1,9 +1,8 @@
 package com.zenobase.tasks.hexoskin;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.joda.time.DateTimeZone;
-
 import com.zenobase.models.Identity;
+import org.joda.time.DateTimeZone;
 
 public class HexoskinSleepTask extends HexoskinTaskSupport {
 

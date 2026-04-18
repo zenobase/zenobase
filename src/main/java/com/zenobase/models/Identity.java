@@ -1,7 +1,6 @@
 package com.zenobase.models;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 

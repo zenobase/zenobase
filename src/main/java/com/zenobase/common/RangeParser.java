@@ -1,9 +1,8 @@
 package com.zenobase.common;
 
-import java.util.Objects;
-
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
+import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
 public abstract class RangeParser<T extends Comparable<T>> {

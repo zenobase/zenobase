@@ -1,9 +1,8 @@
 package com.zenobase.tasks.netatmo;
 
-import org.scribe.model.OAuthConfig;
-
 import com.zenobase.common.UriBuilder;
 import com.zenobase.tasks.CustomApi20;
+import org.scribe.model.OAuthConfig;
 
 public class NetatmoApi extends CustomApi20 {
 

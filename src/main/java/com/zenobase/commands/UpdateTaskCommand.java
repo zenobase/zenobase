@@ -1,16 +1,14 @@
 package com.zenobase.commands;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import jakarta.inject.Inject;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.json.JsonPatch;
 import com.zenobase.models.Identity;
 import com.zenobase.repositories.TaskRepository;
 import com.zenobase.tasks.Task;
+import jakarta.inject.Inject;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 public class UpdateTaskCommand extends UpdateCommandSupport {
 

@@ -1,6 +1,14 @@
 package com.zenobase.repositories;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.commands.Command;
+import com.zenobase.commands.CommandParserRegistry;
+import com.zenobase.common.Callback;
+import com.zenobase.common.PartialList;
+import com.zenobase.models.CommandList;
+import com.zenobase.models.Identity;
+import com.zenobase.queries.CommandQuery;
+import com.zenobase.services.SearchOrder;
 import jakarta.inject.Inject;
 import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
@@ -12,15 +20,6 @@ import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.zenobase.commands.Command;
-import com.zenobase.commands.CommandParserRegistry;
-import com.zenobase.common.Callback;
-import com.zenobase.common.PartialList;
-import com.zenobase.models.CommandList;
-import com.zenobase.models.Identity;
-import com.zenobase.queries.CommandQuery;
-import com.zenobase.services.SearchOrder;
 
 public class CommandRepository extends RepositorySupport<Command> {
 

@@ -2,15 +2,13 @@ package com.zenobase.tasks.netatmo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collection;
-
 import com.google.common.collect.Iterables;
+import com.zenobase.models.Location;
+import com.zenobase.tasks.ResultTestSupport;
+import java.util.Collection;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.Test;
-
-import com.zenobase.models.Location;
-import com.zenobase.tasks.ResultTestSupport;
 
 public class StationsResultTest extends ResultTestSupport {
 

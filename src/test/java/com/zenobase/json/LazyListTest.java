@@ -2,15 +2,13 @@ package com.zenobase.json;
 
 import static com.zenobase.testing.PartialListAssert.assertThat;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.common.DefaultPartialList;
 import com.zenobase.common.PartialList;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 
 public class LazyListTest {
 

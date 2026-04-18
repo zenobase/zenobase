@@ -1,13 +1,12 @@
 package com.zenobase.scripts;
 
+import com.google.common.base.Preconditions;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
-
-import com.google.common.base.Preconditions;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 import software.amazon.awssdk.services.sesv2.SesV2Client;

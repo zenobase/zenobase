@@ -1,16 +1,14 @@
 package com.zenobase.tasks.withings;
 
-import javax.measure.quantity.Temperature;
-import javax.measure.unit.Unit;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.joda.time.DateTimeZone;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.json.TokenField;
 import com.zenobase.json.UnitField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
+import javax.measure.quantity.Temperature;
+import javax.measure.unit.Unit;
+import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 
 public class WithingsTemperatureTask extends Task {
 

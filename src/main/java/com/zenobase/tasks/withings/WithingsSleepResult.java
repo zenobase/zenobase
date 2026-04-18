@@ -1,25 +1,23 @@
 package com.zenobase.tasks.withings;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
+import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.models.Percentage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.zenobase.json.Nodes;
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.models.Percentage;
 
 class WithingsSleepResult extends WithingsResult {
 

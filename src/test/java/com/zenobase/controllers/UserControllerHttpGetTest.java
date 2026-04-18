@@ -3,14 +3,13 @@ package com.zenobase.controllers;
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
-import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
+import io.helidon.webclient.http1.Http1ClientResponse;
+import org.junit.jupiter.api.Test;
 
 public class UserControllerHttpGetTest extends UserControllerTestSupport {
 

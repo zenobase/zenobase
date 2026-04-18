@@ -5,10 +5,6 @@ import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
-import org.junit.jupiter.api.Test;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.UpdateTaskCommand;
@@ -18,6 +14,9 @@ import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.Task.Status;
+import org.junit.jupiter.api.Test;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
 
 public class FoursquareTaskManagerTest {
 

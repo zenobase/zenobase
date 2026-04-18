@@ -2,11 +2,10 @@ package com.zenobase.tasks.foursquare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.zenobase.testing.Manual;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.zenobase.testing.Manual;
 
 @Manual
 public class FoursquareVenuesTesting {

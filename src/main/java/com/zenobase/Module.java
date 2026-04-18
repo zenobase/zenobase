@@ -1,14 +1,10 @@
 package com.zenobase;
 
-import java.util.List;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
-import io.helidon.config.Config;
-
 import com.zenobase.actions.SentryFilter;
 import com.zenobase.auth.TokenValidator;
 import com.zenobase.auth.UserDirectory;
@@ -54,6 +50,8 @@ import com.zenobase.tasks.strava.*;
 import com.zenobase.tasks.trakt.*;
 import com.zenobase.tasks.wakatime.*;
 import com.zenobase.tasks.withings.*;
+import io.helidon.config.Config;
+import java.util.List;
 
 class Module extends AbstractModule {
 

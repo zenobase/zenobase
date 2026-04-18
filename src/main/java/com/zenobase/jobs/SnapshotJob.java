@@ -1,10 +1,9 @@
 package com.zenobase.jobs;
 
+import com.zenobase.repositories.IndexManager;
 import jakarta.inject.Inject;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
-
-import com.zenobase.repositories.IndexManager;
 
 public class SnapshotJob extends Job {
 

@@ -1,14 +1,12 @@
 package com.zenobase.tasks.lastfm;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
-import org.joda.time.Duration;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.models.Event;
 import com.zenobase.models.Resource;
+import java.util.ArrayList;
+import java.util.List;
+import org.joda.time.Duration;
+import org.jspecify.annotations.Nullable;
 
 class TrackInfo {
 

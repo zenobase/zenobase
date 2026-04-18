@@ -1,10 +1,9 @@
 package com.zenobase.tasks.mapmyfitness;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.jspecify.annotations.Nullable;
-
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
+import org.jspecify.annotations.Nullable;
 
 public class MapMyFitnessTask extends Task {
 

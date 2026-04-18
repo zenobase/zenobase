@@ -2,7 +2,6 @@ package com.zenobase.json;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Volume;
-
 import org.junit.jupiter.api.Test;
 
 public class VolumeFieldTest extends DecimalMeasureFieldTestSupport<Volume> {

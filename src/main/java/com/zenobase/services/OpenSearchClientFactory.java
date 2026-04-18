@@ -1,11 +1,10 @@
 package com.zenobase.services;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import java.net.URI;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
-
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.core5.http.HttpHost;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;

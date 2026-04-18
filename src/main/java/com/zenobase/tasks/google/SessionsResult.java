@@ -1,15 +1,13 @@
 package com.zenobase.tasks.google;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
-
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
 
 public class SessionsResult extends GoogleFitResultSupport {
 

@@ -2,15 +2,14 @@ package com.zenobase.services;
 
 import static org.mockito.Mockito.*;
 
-import org.joda.time.DateTime;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandHandlerRegistry;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.TestCommand;
 import com.zenobase.models.Identity;
 import com.zenobase.repositories.CommandRepository;
+import org.joda.time.DateTime;
+import org.junit.jupiter.api.Test;
 
 public class CommandDispatcherTest {
 

@@ -1,9 +1,5 @@
 package com.zenobase.controllers;
 
-import io.helidon.webserver.http.ServerRequest;
-import io.helidon.webserver.http.ServerResponse;
-import jakarta.inject.Inject;
-
 import com.zenobase.json.JsonSchema;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
@@ -11,6 +7,9 @@ import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.EventRepository;
+import io.helidon.webserver.http.ServerRequest;
+import io.helidon.webserver.http.ServerResponse;
+import jakarta.inject.Inject;
 
 public class BucketSchemaController extends ControllerSupport {
 

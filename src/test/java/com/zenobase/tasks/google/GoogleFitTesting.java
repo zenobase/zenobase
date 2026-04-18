@@ -1,12 +1,11 @@
 package com.zenobase.tasks.google;
 
-import org.joda.time.DateTime;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.TaskTestingSupport;
+import org.joda.time.DateTime;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class GoogleFitTesting extends TaskTestingSupport {
 

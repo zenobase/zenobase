@@ -1,13 +1,11 @@
 package com.zenobase.search.constraints;
 
-import java.math.BigDecimal;
-
-import org.opensearch.client.opensearch._types.FieldValue;
-import org.opensearch.client.opensearch._types.query_dsl.Query;
-
 import com.zenobase.common.Measures;
 import com.zenobase.json.DecimalMeasureField;
 import com.zenobase.json.Field;
+import java.math.BigDecimal;
+import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 public class MeasureConstraintBuilder extends ConstraintBuilder {
 
