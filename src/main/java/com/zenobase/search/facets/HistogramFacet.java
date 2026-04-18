@@ -63,7 +63,7 @@ public class HistogramFacet extends FilteredFacet {
 			return 273.15 % interval;
 		}
 		if (Units.F.equals(unit)) {
-			double zeroF_K = ((-32.0) * 5.0) / 9.0 + 273.15;
+			double zeroF_K = (-32.0 * 5.0) / 9.0 + 273.15;
 			return zeroF_K % getStandardInterval();
 		}
 		return 0.0;

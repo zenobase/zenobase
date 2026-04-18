@@ -316,6 +316,7 @@
                             -Xep:ReturnValueIgnored:ERROR
                             -Xep:StringCaseLocaleUsage:ERROR
                             -Xep:UnnecessaryLambda:OFF
+                            -Xep:UnnecessaryParentheses:ERROR
                             -Xep:UnusedVariable:ERROR
                         </arg>
                     </compilerArgs>
