@@ -1,91 +1,91 @@
 {
-    "status": 0,
-    "body": {
-        "updatetime": 1387899568,
-        "deleted": 1,
-        "measuregrps": [
-            {
-                "grpid": 167870888,
-                "attrib": 0,
-                "date": 1387781981,
-                "category": 1,
-                "measures": [
-                    {
-                        "value": 59,
-                        "type": 11,
-                        "unit": 0
-                    },
-                    {
-                        "value": 97,
-                        "type": 54,
-                        "unit": 0
-                    }
-                ]
-            },
-            {
-                "grpid": 166778493,
-                "attrib": 0,
-                "date": 1387296190,
-                "category": 1,
-                "measures": [
-                    {
-                        "value": 70350,
-                        "type": 1,
-                        "unit": -3
-                    },
-                    {
-                        "value": 62064,
-                        "type": 5,
-                        "unit": -3
-                    },
-                    {
-                        "value": 11779,
-                        "type": 6,
-                        "unit": -3
-                    },
-                    {
-                        "value": 8286,
-                        "type": 8,
-                        "unit": -3
-                    }
-                ]
-            },
-            {
-                "grpid": 166782243,
-                "attrib": 0,
-                "date": 1387293867,
-                "category": 1,
-                "measures": [
-                    {
-                        "value": 65,
-                        "type": 11,
-                        "unit": 0
-                    }
-                ]
-            },
-            {
-                "grpid": 191079335,
-                "attrib": 2,
-                "date": 1387293867,
-                "category": 1,
-                "measures": [
-                    {
-                        "value": 70,
-                        "type": 9,
-                        "unit": 0
-                    },
-                    {
-                        "value": 110,
-                        "type": 10,
-                        "unit": 0
-                    },
-                    {
-                        "value": 80,
-                        "type": 11,
-                        "unit": 0
-                    }
-                ]
-            }
-        ]
-    }
+	"status": 0,
+	"body": {
+		"updatetime": 1387899568,
+		"deleted": 1,
+		"measuregrps": [
+			{
+				"grpid": 167870888,
+				"attrib": 0,
+				"date": 1387781981,
+				"category": 1,
+				"measures": [
+					{
+						"value": 59,
+						"type": 11,
+						"unit": 0
+					},
+					{
+						"value": 97,
+						"type": 54,
+						"unit": 0
+					}
+				]
+			},
+			{
+				"grpid": 166778493,
+				"attrib": 0,
+				"date": 1387296190,
+				"category": 1,
+				"measures": [
+					{
+						"value": 70350,
+						"type": 1,
+						"unit": -3
+					},
+					{
+						"value": 62064,
+						"type": 5,
+						"unit": -3
+					},
+					{
+						"value": 11779,
+						"type": 6,
+						"unit": -3
+					},
+					{
+						"value": 8286,
+						"type": 8,
+						"unit": -3
+					}
+				]
+			},
+			{
+				"grpid": 166782243,
+				"attrib": 0,
+				"date": 1387293867,
+				"category": 1,
+				"measures": [
+					{
+						"value": 65,
+						"type": 11,
+						"unit": 0
+					}
+				]
+			},
+			{
+				"grpid": 191079335,
+				"attrib": 2,
+				"date": 1387293867,
+				"category": 1,
+				"measures": [
+					{
+						"value": 70,
+						"type": 9,
+						"unit": 0
+					},
+					{
+						"value": 110,
+						"type": 10,
+						"unit": 0
+					},
+					{
+						"value": 80,
+						"type": 11,
+						"unit": 0
+					}
+				]
+			}
+		]
+	}
 }

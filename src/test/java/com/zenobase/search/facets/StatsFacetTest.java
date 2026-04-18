@@ -35,7 +35,6 @@ public class StatsFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testWithNumericField() {
-
 		addEvent(first);
 		addEvent(last);
 		addFacet("id:%s,type:%s,field:%s", FACET_ID, StatsFacet.TYPE, "count");
@@ -53,7 +52,6 @@ public class StatsFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testWithNumericFieldFiltered() {
-
 		addEvent(first);
 		addEvent(last);
 		addFacet("id:%s,type:%s,field:%s,filter:%s", FACET_ID, StatsFacet.TYPE, "count", "count:(*..3000)");
@@ -71,7 +69,6 @@ public class StatsFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testWithMeasureField() {
-
 		addEvent(first);
 		addEvent(last);
 		addFacet("id:%s,type:%s,field:%s,unit:%s", FACET_ID, StatsFacet.TYPE, "distance", "m");
@@ -89,7 +86,6 @@ public class StatsFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testEmpty() {
-
 		addFacet("id:%s,type:%s,field:%s", FACET_ID, StatsFacet.TYPE, "count");
 
 		ObjectNode result = execute();

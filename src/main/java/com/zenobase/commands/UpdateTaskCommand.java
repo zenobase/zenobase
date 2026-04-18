@@ -32,7 +32,8 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 
 	public Task apply(Task task) {
 		return new Task(
-				new JsonPatch(Objects.requireNonNull(getFrom()), Objects.requireNonNull(getTo())).apply(task.toJson()));
+			new JsonPatch(Objects.requireNonNull(getFrom()), Objects.requireNonNull(getTo())).apply(task.toJson())
+		);
 	}
 
 	@Override

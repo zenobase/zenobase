@@ -46,7 +46,8 @@ class RecentTracksResult {
 
 	private void addEvent(JsonNode node, List<Event> events) {
 		DateTime time = dateTimeValue(node.path("date").path("uts"));
-		if (time != null) { // i.e. not "nowplaying" : "true"
+		if (time != null) {
+			// i.e. not "nowplaying" : "true"
 			Event event = new Event();
 			event.setValue(Event.TIMESTAMP, time);
 			event.setValue(Event.RESOURCE, resourceValue(node));
@@ -64,7 +65,10 @@ class RecentTracksResult {
 
 	private static Resource resourceValue(JsonNode node) {
 		String artist = Preconditions.checkNotNull(
-				textValue(node.path("artist").path("#text")), "missing artist name: %s", node);
+			textValue(node.path("artist").path("#text")),
+			"missing artist name: %s",
+			node
+		);
 		String name = Preconditions.checkNotNull(textValue(node.path("name")), "missing recording name: %s", node);
 		String mbid = Strings.emptyToNull(node.path("mbid").textValue());
 		String url = mbid != null ? MUSICBRAINZ_URL + mbid : node.path("url").textValue();

@@ -23,10 +23,11 @@ public class EventController extends ControllerSupport {
 
 	@Inject
 	public EventController(
-			AuthorizationContext security,
-			BucketRepository buckets,
-			EventRepository events,
-			CommandDispatcher dispatcher) {
+		AuthorizationContext security,
+		BucketRepository buckets,
+		EventRepository events,
+		CommandDispatcher dispatcher
+	) {
 		super(security);
 		this.buckets = buckets;
 		this.events = events;
@@ -83,8 +84,9 @@ public class EventController extends ControllerSupport {
 		Event updated = new Event(body(req));
 		updated.setValue(Event.AUTHOR, auth.getPrincipal());
 		try {
-			String commandId =
-					dispatcher.dispatch(new UpdateEventCommand(auth.getPrincipal(), bucketId, event, updated));
+			String commandId = dispatcher.dispatch(
+				new UpdateEventCommand(auth.getPrincipal(), bucketId, event, updated)
+			);
 			setHeader(res, COMMAND_ID, commandId);
 			sendNoContent(res);
 		} catch (OpenSearchException e) {

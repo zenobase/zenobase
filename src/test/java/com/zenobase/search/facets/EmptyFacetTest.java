@@ -14,7 +14,6 @@ public class EmptyFacetTest extends SearchTestSupport {
 
 	@Test
 	public void test() {
-
 		RandomEvent rand = new RandomEvent(new Identity());
 		int size = 100;
 		for (int i = 0; i < size; ++i) {

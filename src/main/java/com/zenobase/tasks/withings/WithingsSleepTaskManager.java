@@ -31,7 +31,8 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 	public WithingsSleepTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "steps");
 		DateTimeZone timezone = DateTimeZone.forID(
-				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+			MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC")
+		);
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
 		var task = new WithingsSleepTask(bucketId, principal, marker);
 		task.setTag(tag);
@@ -41,20 +42,24 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 
 	private static @Nullable String parseMarker(@Nullable String marker, DateTimeZone timezone) {
 		return marker != null
-				? LocalDateTime.parse(marker.replace("Z", ""))
-						.toDateTime(timezone)
-						.withHourOfDay(12)
-						.toString()
-				: null;
+			? LocalDateTime.parse(marker.replace("Z", "")).toDateTime(timezone).withHourOfDay(12).toString()
+			: null;
 	}
 
 	@Override
 	Command safeExecute(WithingsSleepTask task, OAuthCredentials credentials, Token token) {
 		var result = new WithingsSleepResult(
-				List.of(), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
-		for (DateTime from = Objects.requireNonNull(task.getFrom());
-				from.isBefore(DateTime.now());
-				from = from.plusWeeks(1)) {
+			List.of(),
+			task.getPrincipal(),
+			task.getTag(),
+			task.useRanges(),
+			task.getTimezone()
+		);
+		for (
+			DateTime from = Objects.requireNonNull(task.getFrom());
+			from.isBefore(DateTime.now());
+			from = from.plusWeeks(1)
+		) {
 			result.add(execute(task, credentials, from));
 		}
 		return createCommand(task, credentials, token, result.merge());
@@ -64,7 +69,12 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 		OAuthRequest request = createRequest(from);
 		Response response = send(request, credentials);
 		var result = new WithingsSleepResult(
-				parseObject(response), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
+			parseObject(response),
+			task.getPrincipal(),
+			task.getTag(),
+			task.useRanges(),
+			task.getTimezone()
+		);
 		checkStatus(result, request, credentials);
 		return result.getEvents();
 	}

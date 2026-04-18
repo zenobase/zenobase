@@ -35,13 +35,14 @@ public class ScoreboardFacet extends FilteredFacet {
 	private final int limit;
 
 	private ScoreboardFacet(
-			String id,
-			String termField,
-			String valueField,
-			Unit<?> unit,
-			String order,
-			int limit,
-			@Nullable Query filter) {
+		String id,
+		String termField,
+		String valueField,
+		Unit<?> unit,
+		String order,
+		int limit,
+		@Nullable Query filter
+	) {
 		super(id, filter);
 		this.termField = termField;
 		this.valueField = valueField;
@@ -53,7 +54,9 @@ public class ScoreboardFacet extends FilteredFacet {
 	@Override
 	public void configure(SearchRequest.Builder builder) {
 		String vf = getValueField();
-		Aggregation terms = Aggregation.of(a -> a.terms(t -> {
+		Aggregation terms = Aggregation.of(a ->
+			a
+				.terms(t -> {
 					t.field(termField).size(limit);
 					boolean asc = !order.startsWith("-");
 					String orderField = asc ? order : order.substring(1);
@@ -65,14 +68,15 @@ public class ScoreboardFacet extends FilteredFacet {
 					}
 					return t;
 				})
-				.aggregations(getId(), Aggregation.of(sa -> sa.extendedStats(e -> e.field(vf)))));
+				.aggregations(getId(), Aggregation.of(sa -> sa.extendedStats(e -> e.field(vf))))
+		);
 		addAggregation(getId(), terms, builder);
 	}
 
 	private String getValueField() {
 		return Units.isDimensionless(unit)
-				? valueField
-				: Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
+			? valueField
+			: Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
 	}
 
 	@Override
@@ -118,13 +122,14 @@ public class ScoreboardFacet extends FilteredFacet {
 		return options -> {
 			String unit = options.get("unit");
 			return new ScoreboardFacet(
-					Objects.requireNonNull(options.get("id")),
-					Objects.requireNonNull(options.get("key_field")),
-					Objects.requireNonNull(options.get("value_field")),
-					unit != null ? Units.valueOf(unit) : Unit.ONE,
-					Objects.requireNonNull(options.get("order", String.class, "-count")),
-					Objects.requireNonNull(options.get("limit", Integer.class, 10)),
-					filterParser.parse(options.get("filter")));
+				Objects.requireNonNull(options.get("id")),
+				Objects.requireNonNull(options.get("key_field")),
+				Objects.requireNonNull(options.get("value_field")),
+				unit != null ? Units.valueOf(unit) : Unit.ONE,
+				Objects.requireNonNull(options.get("order", String.class, "-count")),
+				Objects.requireNonNull(options.get("limit", Integer.class, 10)),
+				filterParser.parse(options.get("filter"))
+			);
 		};
 	}
 }

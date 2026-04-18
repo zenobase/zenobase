@@ -15,7 +15,7 @@ public class EpochDateTimeConstraintBuilder extends ConstraintBuilder {
 	@Override
 	public @Nullable Query build(String value) {
 		return Characters.isDigits(value) && value.length() > 4
-				? Query.of(q -> q.match(m -> m.field(getPath()).query(FieldValue.of(Long.parseLong(value)))))
-				: null;
+			? Query.of(q -> q.match(m -> m.field(getPath()).query(FieldValue.of(Long.parseLong(value)))))
+			: null;
 	}
 }

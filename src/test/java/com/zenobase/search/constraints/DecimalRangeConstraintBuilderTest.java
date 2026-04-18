@@ -58,9 +58,8 @@ public class DecimalRangeConstraintBuilderTest extends ConstraintBuilderTestSupp
 	@Test
 	public void testInvalidRange() {
 		assertThatThrownBy(() -> {
-					addConstraint("%s:%s", Event.RATING, "[100..0]");
-					execute();
-				})
-				.isInstanceOf(IllegalArgumentException.class);
+			addConstraint("%s:%s", Event.RATING, "[100..0]");
+			execute();
+		}).isInstanceOf(IllegalArgumentException.class);
 	}
 }

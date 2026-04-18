@@ -134,18 +134,18 @@ public class User extends DomainNode {
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-				.add(VERSION)
-				.add(ID)
-				.add(EXTERNAL_ID)
-				.add(NAME)
-				.add(CREATED)
-				.add(EMAIL)
-				.add(VERIFIED)
-				.add(SUSPENDED)
-				.add(SUPERUSER)
-				.add(OPTEDOUT)
-				.add(QUOTA)
-				.build();
+			.add(VERSION)
+			.add(ID)
+			.add(EXTERNAL_ID)
+			.add(NAME)
+			.add(CREATED)
+			.add(EMAIL)
+			.add(VERIFIED)
+			.add(SUSPENDED)
+			.add(SUPERUSER)
+			.add(OPTEDOUT)
+			.add(QUOTA)
+			.build();
 	}
 
 	public User copy() {

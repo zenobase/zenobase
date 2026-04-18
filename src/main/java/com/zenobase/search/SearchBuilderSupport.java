@@ -23,8 +23,9 @@ public class SearchBuilderSupport extends FilterBuilderSupport {
 	private final Set<Facet> facets = Sets.newLinkedHashSet();
 
 	public SearchBuilderSupport(
-			ImmutableMultimap<String, ConstraintBuilder> constraintBuilders,
-			ImmutableMap<String, FacetBuilder> facetBuilders) {
+		ImmutableMultimap<String, ConstraintBuilder> constraintBuilders,
+		ImmutableMap<String, FacetBuilder> facetBuilders
+	) {
 		super(constraintBuilders);
 		this.facetBuilders = facetBuilders;
 	}

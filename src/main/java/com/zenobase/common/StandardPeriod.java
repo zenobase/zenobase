@@ -16,16 +16,18 @@ public class StandardPeriod implements Comparable<StandardPeriod> {
 
 	private static final Pattern PATTERN = Pattern.compile("([+-])(\\d+)([yMwdhms])");
 
-	private static final ImmutableMap<Character, DurationFieldType> FIELDS =
-			ImmutableMap.<Character, DurationFieldType>builder()
-					.put('y', DurationFieldType.years())
-					.put('M', DurationFieldType.months())
-					.put('w', DurationFieldType.weeks())
-					.put('d', DurationFieldType.days())
-					.put('h', DurationFieldType.hours())
-					.put('m', DurationFieldType.minutes())
-					.put('s', DurationFieldType.seconds())
-					.build();
+	private static final ImmutableMap<Character, DurationFieldType> FIELDS = ImmutableMap.<
+			Character,
+			DurationFieldType
+		>builder()
+		.put('y', DurationFieldType.years())
+		.put('M', DurationFieldType.months())
+		.put('w', DurationFieldType.weeks())
+		.put('d', DurationFieldType.days())
+		.put('h', DurationFieldType.hours())
+		.put('m', DurationFieldType.minutes())
+		.put('s', DurationFieldType.seconds())
+		.build();
 
 	private final Period period;
 

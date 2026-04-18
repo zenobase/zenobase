@@ -16,14 +16,12 @@ public class NodesTest {
 
 	@Test
 	public void testNewObject() {
-
 		ObjectNode node = Nodes.newObject("name", "Foo");
 		assertThat(node).path("name").isEqualTo("Foo");
 	}
 
 	@Test
 	public void testRoundTripObjectToBytes() {
-
 		ObjectNode node = Nodes.newObject();
 		node.put("name", "Foo");
 
@@ -33,7 +31,6 @@ public class NodesTest {
 
 	@Test
 	public void testRoundTripArrayToBytes() {
-
 		List<String> values = Lists.newArrayList("foo", "bar");
 		ArrayNode node = Nodes.newArray(values);
 
@@ -43,13 +40,11 @@ public class NodesTest {
 
 	@Test
 	public void testReadInvalidJson() {
-
 		assertThatThrownBy(() -> Nodes.readObject("{".getBytes())).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
 	public void testRoundTripBigDecimal() {
-
 		ObjectNode node = Nodes.newObject();
 		node.put("value", new BigDecimal("1.00"));
 
@@ -59,7 +54,6 @@ public class NodesTest {
 
 	@Test
 	public void testParseEmptyString() {
-
 		assertThat(Nodes.read("")).isEqualTo(MissingNode.getInstance());
 		assertThat(Nodes.read((String) null)).isEqualTo(MissingNode.getInstance());
 	}

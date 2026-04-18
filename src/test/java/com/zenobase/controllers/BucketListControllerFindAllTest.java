@@ -21,8 +21,7 @@ public class BucketListControllerFindAllTest extends BucketListControllerTestSup
 		PartialList<Bucket> list = DefaultPartialList.of();
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		when(buckets.find(new BucketQuery().queryString("foo"), BucketQuery.DEFAULT_ORDER, 0, 10))
-				.thenReturn(list);
+		when(buckets.find(new BucketQuery().queryString("foo"), BucketQuery.DEFAULT_ORDER, 0, 10)).thenReturn(list);
 		try (Http1ClientResponse result = call("foo", 0, 10)) {
 			assertThat(result).hasStatus(200).hasContent(BucketList.toJson(list));
 		}
@@ -52,9 +51,10 @@ public class BucketListControllerFindAllTest extends BucketListControllerTestSup
 	}
 
 	private Http1ClientResponse call(String q, int offset, int limit) {
-		var request = client.get("/buckets/")
-				.queryParam("offset", String.valueOf(offset))
-				.queryParam("limit", String.valueOf(limit));
+		var request = client
+			.get("/buckets/")
+			.queryParam("offset", String.valueOf(offset))
+			.queryParam("limit", String.valueOf(limit));
 		if (q != null) {
 			request = request.queryParam("q", q);
 		}

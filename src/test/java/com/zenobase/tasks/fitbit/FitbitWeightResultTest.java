@@ -24,7 +24,13 @@ public class FitbitWeightResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 		FitbitWeightResult result = new FitbitWeightResult(
-				readObject("FitbitWeightResultTest.json"), TAG, TESTER, DATE, TIMEZONE, Units.KG);
+			readObject("FitbitWeightResultTest.json"),
+			TAG,
+			TESTER,
+			DATE,
+			TIMEZONE,
+			Units.KG
+		);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());

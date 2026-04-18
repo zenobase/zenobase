@@ -174,8 +174,7 @@ public class Units {
 	}
 
 	public static <Q extends Quantity> boolean isMetric(Unit<Q> unit) {
-		return unit.isStandardUnit()
-				|| Math.log10(unit.getConverterTo(unit.getStandardUnit()).convert(1)) % 1 == 0;
+		return unit.isStandardUnit() || Math.log10(unit.getConverterTo(unit.getStandardUnit()).convert(1)) % 1 == 0;
 	}
 
 	public static boolean isStandard(Unit<?> unit) {

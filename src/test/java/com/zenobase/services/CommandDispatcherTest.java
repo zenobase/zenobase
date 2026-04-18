@@ -18,7 +18,6 @@ public class CommandDispatcherTest {
 
 	@Test
 	public void test() {
-
 		CommandHandlerRegistry handlers = mock(CommandHandlerRegistry.class);
 		CommandRepository repository = mock(CommandRepository.class);
 		QuotaManager quotas = mock(QuotaManager.class);
@@ -27,8 +26,7 @@ public class CommandDispatcherTest {
 
 		Command c1 = new TestCommand(TESTER, "do a bit");
 		Command c2 = new TestCommand(TESTER, "do more");
-		Command c3 =
-				new TestCommand(TESTER, "do most").setTimestamp(DateTime.now().minusMonths(1));
+		Command c3 = new TestCommand(TESTER, "do most").setTimestamp(DateTime.now().minusMonths(1));
 
 		dispatcher.dispatch(c1);
 		dispatcher.dispatch(c2);
@@ -47,7 +45,6 @@ public class CommandDispatcherTest {
 
 	@Test
 	public void testCompoundCommand() {
-
 		CommandHandlerRegistry handlers = mock(CommandHandlerRegistry.class);
 		CommandRepository repository = mock(CommandRepository.class);
 		QuotaManager quotas = mock(QuotaManager.class);
@@ -95,9 +92,7 @@ public class CommandDispatcherTest {
 		try {
 			dispatcher.dispatch(cc);
 			throw new AssertionError("expected an exception");
-		} catch (RuntimeException e) {
-
-		}
+		} catch (RuntimeException e) {}
 		verifyNoInteractions(repository);
 
 		verify(handlers, times(5)).execute(any(TestCommand.class));

@@ -16,8 +16,12 @@ public class CategoriesResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 		DateTimeZone timezone = DateTimeZone.forOffsetHours(-7);
-		ProductivityResult result =
-				new ProductivityResult(readObject("CategoriesResultTest.json"), TESTER, null, timezone);
+		ProductivityResult result = new ProductivityResult(
+			readObject("CategoriesResultTest.json"),
+			TESTER,
+			null,
+			timezone
+		);
 		assertThat(result.isSuccess()).isTrue();
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(3);

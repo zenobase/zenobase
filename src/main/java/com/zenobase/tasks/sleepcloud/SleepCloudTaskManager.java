@@ -68,10 +68,11 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 			}
 			Response response = send(request, credentials);
 			var result = new SleepCloudResult(
-					Objects.requireNonNull(task.getTag()),
-					task.getPrincipal(),
-					task.useRanges(),
-					parseObject(response));
+				Objects.requireNonNull(task.getTag()),
+				task.getPrincipal(),
+				task.useRanges(),
+				parseObject(response)
+			);
 			if (!events.addAll(result.getEvents())) {
 				break;
 			}
@@ -82,17 +83,21 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 
 	private Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
 		var command = new CompoundCommand(task.getPrincipal(), "ran sleepcloud task", "reverted sleepcloud task");
-		command.add(UpdateTaskCommand.builder(task)
+		command.add(
+			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
-				.build());
+				.build()
+		);
 		if (!Objects.equals(credentials.getToken(), expiredToken)) {
-			command.add(UpdateCredentialsCommand.builder(credentials)
+			command.add(
+				UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
-					.build());
+					.build()
+			);
 		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));

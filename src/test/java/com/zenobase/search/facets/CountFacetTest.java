@@ -34,7 +34,6 @@ public class CountFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testDefault() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -51,7 +50,6 @@ public class CountFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testOrderByTermDescending() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -68,7 +66,6 @@ public class CountFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testOrderByCount() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -85,7 +82,6 @@ public class CountFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testLimit() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -102,7 +98,6 @@ public class CountFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testOffset() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -117,7 +112,6 @@ public class CountFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testEmpty() {
-
 		addFacet("id:%s,type:%s,field:%s", FACET_ID, CountFacet.TYPE, Event.TAG);
 
 		ObjectNode result = execute();

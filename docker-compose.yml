@@ -1,59 +1,59 @@
 name: zenobase-api
 services:
-  opensearch:
-    container_name: opensearch
-    image: opensearchproject/opensearch:3.5.0
-    ports:
-      - "9200:9200"
-    volumes:
-      - ./data/opensearch:/usr/share/opensearch/data
-      - ./data/snapshots:/usr/share/opensearch/data/snapshots
-    environment:
-      - discovery.type=single-node
-      - path.repo=/usr/share/opensearch/data/snapshots
-      - OPENSEARCH_JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=50.0
-      - plugins.security.disabled=true
-      - DISABLE_INSTALL_DEMO_CONFIG=true
-    healthcheck:
-      test: curl -f http://localhost:9200/_cluster/health || exit 1
-      interval: 30s
-      timeout: 10s
-      start_period: 60s
-      retries: 3
-    mem_limit: 2g
-    stop_grace_period: 30s
-    ulimits:
-      nofile:
-        soft: 64000
-        hard: 64000
-      memlock:
-        soft: -1
-        hard: -1
+    opensearch:
+        container_name: opensearch
+        image: opensearchproject/opensearch:3.5.0
+        ports:
+            - "9200:9200"
+        volumes:
+            - ./data/opensearch:/usr/share/opensearch/data
+            - ./data/snapshots:/usr/share/opensearch/data/snapshots
+        environment:
+            - discovery.type=single-node
+            - path.repo=/usr/share/opensearch/data/snapshots
+            - OPENSEARCH_JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=50.0
+            - plugins.security.disabled=true
+            - DISABLE_INSTALL_DEMO_CONFIG=true
+        healthcheck:
+            test: curl -f http://localhost:9200/_cluster/health || exit 1
+            interval: 30s
+            timeout: 10s
+            start_period: 60s
+            retries: 3
+        mem_limit: 2g
+        stop_grace_period: 30s
+        ulimits:
+            nofile:
+                soft: 64000
+                hard: 64000
+            memlock:
+                soft: -1
+                hard: -1
 
-  localauth0:
-    container_name: localauth0
-    image: public.ecr.aws/primaassicurazioni/localauth0:0.8.3
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./conf/localauth0.toml:/localauth0.toml:ro
+    localauth0:
+        container_name: localauth0
+        image: public.ecr.aws/primaassicurazioni/localauth0:0.8.3
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./conf/localauth0.toml:/localauth0.toml:ro
 
-  helidon:
-    container_name: helidon
-    image: zenobase:latest
-    pull_policy: never
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-    ports:
-      - "9000:9000"
-    volumes:
-      - ./docker/config/logback.xml:/etc/app/logback.xml:ro
-      - ./conf/application-local.yaml:/etc/app/prod.yaml:ro
-    mem_limit: 1g
-    environment:
-      - OPENSEARCH_HOST=http://opensearch:9200
-      - OPENSEARCH_SNAPSHOT_BUCKET=
-    depends_on:
-      opensearch:
-        condition: service_healthy
+    helidon:
+        container_name: helidon
+        image: zenobase:latest
+        pull_policy: never
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+        ports:
+            - "9000:9000"
+        volumes:
+            - ./docker/config/logback.xml:/etc/app/logback.xml:ro
+            - ./conf/application-local.yaml:/etc/app/prod.yaml:ro
+        mem_limit: 1g
+        environment:
+            - OPENSEARCH_HOST=http://opensearch:9200
+            - OPENSEARCH_SNAPSHOT_BUCKET=
+        depends_on:
+            opensearch:
+                condition: service_healthy

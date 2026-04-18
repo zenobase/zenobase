@@ -53,13 +53,17 @@ class WithingsWeightResult extends WithingsResult {
 		int count = 0;
 		for (JsonNode measure : node.path("measures")) {
 			switch (measure.path("type").intValue()) {
-				case 1 -> { // weight
+				case 1 -> {
+					// weight
 					event.setValue(Event.WEIGHT, getDecimalMeasure(measure, unit));
 					++count;
 				}
-				case 6 -> { // fat %
+				case 6 -> {
+					// fat %
 					event.setValue(
-							Event.PERCENTAGE, Percentage.valueOf(Objects.requireNonNull(getBigDecimal(measure))));
+						Event.PERCENTAGE,
+						Percentage.valueOf(Objects.requireNonNull(getBigDecimal(measure)))
+					);
 					++count;
 				}
 			}

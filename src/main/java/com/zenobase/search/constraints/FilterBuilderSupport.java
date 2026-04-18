@@ -81,10 +81,12 @@ public class FilterBuilderSupport {
 		if (must.isEmpty() && mustNot.isEmpty()) {
 			return Query.of(q -> q.matchAll(m -> m));
 		}
-		return Query.of(q -> q.bool(b -> {
-			if (!must.isEmpty()) b.must(must);
-			if (!mustNot.isEmpty()) b.mustNot(mustNot);
-			return b;
-		}));
+		return Query.of(q ->
+			q.bool(b -> {
+				if (!must.isEmpty()) b.must(must);
+				if (!mustNot.isEmpty()) b.mustNot(mustNot);
+				return b;
+			})
+		);
 	}
 }

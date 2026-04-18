@@ -13,46 +13,44 @@ public class GoogleFitTesting extends TaskTestingSupport {
 	@Test
 	public void testActivities() {
 		runInApplication(
-				new GoogleFitActivitiesTaskManager(newCredentialsManager()),
-				Nodes.newObject()
-						.put("marker", "2016-01-27")
-						.put("timezone", "America/Los_Angeles")
-						.put("metric", true)
-						.put("derived", false));
+			new GoogleFitActivitiesTaskManager(newCredentialsManager()),
+			Nodes.newObject()
+				.put("marker", "2016-01-27")
+				.put("timezone", "America/Los_Angeles")
+				.put("metric", true)
+				.put("derived", false)
+		);
 	}
 
 	@Test
 	@Disabled
 	public void testWeight() {
 		runInApplication(
-				new GoogleFitWeightTaskManager(newCredentialsManager()),
-				Nodes.newObject()
-						.put("marker", "2014-10-31")
-						.put("timezone", "America/Los_Angeles")
-						.put("metric", true)
-						.put("tag", "foo"));
+			new GoogleFitWeightTaskManager(newCredentialsManager()),
+			Nodes.newObject()
+				.put("marker", "2014-10-31")
+				.put("timezone", "America/Los_Angeles")
+				.put("metric", true)
+				.put("tag", "foo")
+		);
 	}
 
 	@Test
 	@Disabled
 	public void testCardio() {
 		runInApplication(
-				new GoogleFitCardioTaskManager(newCredentialsManager()),
-				Nodes.newObject()
-						.put("marker", "2015-01-17")
-						.put("timezone", "America/Los_Angeles")
-						.put("tag", "bar"));
+			new GoogleFitCardioTaskManager(newCredentialsManager()),
+			Nodes.newObject().put("marker", "2015-01-17").put("timezone", "America/Los_Angeles").put("tag", "bar")
+		);
 	}
 
 	@Test
 	@Disabled
 	public void testFood() {
 		runInApplication(
-				new GoogleFitFoodTaskManager(newCredentialsManager()),
-				Nodes.newObject()
-						.put("marker", "2016-06-01")
-						.put("timezone", "America/Los_Angeles")
-						.put("tag", "bar"));
+			new GoogleFitFoodTaskManager(newCredentialsManager()),
+			Nodes.newObject().put("marker", "2016-06-01").put("timezone", "America/Los_Angeles").put("tag", "bar")
+		);
 	}
 
 	@Override

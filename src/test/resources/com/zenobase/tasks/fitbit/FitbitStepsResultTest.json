@@ -1,53 +1,53 @@
 {
-    "activities": [],
-    "goals": {
-        "activeScore": 1000,
-        "caloriesOut": 0,
-        "distance": 5,
-        "floors": 10,
-        "steps": 5000
-    },
-    "summary": {
-        "activeScore": 690,
-        "activityCalories": 1071,
-        "caloriesOut": 2535,
-        "distances": [
-            {
-                "activity": "total",
-                "distance": 4.47
-            },
-            {
-                "activity": "tracker",
-                "distance": 4.47
-            },
-            {
-                "activity": "loggedActivities",
-                "distance": 0
-            },
-            {
-                "activity": "veryActive",
-                "distance": 1.97
-            },
-            {
-                "activity": "moderatelyActive",
-                "distance": 1.82
-            },
-            {
-                "activity": "lightlyActive",
-                "distance": 0.68
-            },
-            {
-                "activity": "sedentaryActive",
-                "distance": 0
-            }
-        ],
-        "elevation": 540,
-        "fairlyActiveMinutes": 54,
-        "floors": 54,
-        "lightlyActiveMinutes": 118,
-        "marginalCalories": 753,
-        "sedentaryMinutes": 756,
-        "steps": 9366,
-        "veryActiveMinutes": 42
-    }
+	"activities": [],
+	"goals": {
+		"activeScore": 1000,
+		"caloriesOut": 0,
+		"distance": 5,
+		"floors": 10,
+		"steps": 5000
+	},
+	"summary": {
+		"activeScore": 690,
+		"activityCalories": 1071,
+		"caloriesOut": 2535,
+		"distances": [
+			{
+				"activity": "total",
+				"distance": 4.47
+			},
+			{
+				"activity": "tracker",
+				"distance": 4.47
+			},
+			{
+				"activity": "loggedActivities",
+				"distance": 0
+			},
+			{
+				"activity": "veryActive",
+				"distance": 1.97
+			},
+			{
+				"activity": "moderatelyActive",
+				"distance": 1.82
+			},
+			{
+				"activity": "lightlyActive",
+				"distance": 0.68
+			},
+			{
+				"activity": "sedentaryActive",
+				"distance": 0
+			}
+		],
+		"elevation": 540,
+		"fairlyActiveMinutes": 54,
+		"floors": 54,
+		"lightlyActiveMinutes": 118,
+		"marginalCalories": 753,
+		"sedentaryMinutes": 756,
+		"steps": 9366,
+		"veryActiveMinutes": 42
+	}
 }

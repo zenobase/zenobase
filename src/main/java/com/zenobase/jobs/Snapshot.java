@@ -22,9 +22,7 @@ public class Snapshot extends DomainNode {
 
 	public Snapshot(SnapshotInfo info) {
 		setValue(ID, info.snapshot());
-		setValue(
-				STATE,
-				info.state() != null ? info.state().toLowerCase(Locale.ROOT).replace('_', ' ') : "unknown");
+		setValue(STATE, info.state() != null ? info.state().toLowerCase(Locale.ROOT).replace('_', ' ') : "unknown");
 		long startTime = info.startTimeInMillis() != null ? info.startTimeInMillis() : 0;
 		setValue(CREATED, new DateTime(startTime, DateTimeZone.UTC));
 		long endTime = info.endTimeInMillis() != null ? info.endTimeInMillis() : 0;

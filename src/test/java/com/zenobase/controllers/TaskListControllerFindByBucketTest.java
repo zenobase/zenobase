@@ -26,8 +26,9 @@ public class TaskListControllerFindByBucketTest extends TaskListControllerTestSu
 		TaskList list = new TaskList(DefaultPartialList.of());
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
-		when(tasks.find(new TaskQuery().bucketEqualTo(bucket.getId()), TaskQuery.orderByCreated(true), 0, 10))
-				.thenReturn(list);
+		when(
+			tasks.find(new TaskQuery().bucketEqualTo(bucket.getId()), TaskQuery.orderByCreated(true), 0, 10)
+		).thenReturn(list);
 		try (Http1ClientResponse result = call(bucket.getId(), 0, 10)) {
 			assertThat(result).hasStatus(200).hasContent(TaskList.toJson(list));
 		}
@@ -92,17 +93,19 @@ public class TaskListControllerFindByBucketTest extends TaskListControllerTestSu
 		when(auth.current(any())).thenReturn(new Authorization(superuser));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(tasks.find(new TaskQuery().bucketEqualTo(bucket.getId()), TaskQuery.orderByCreated(true), 0, 10))
-				.thenReturn(list);
+		when(
+			tasks.find(new TaskQuery().bucketEqualTo(bucket.getId()), TaskQuery.orderByCreated(true), 0, 10)
+		).thenReturn(list);
 		try (Http1ClientResponse result = call(bucket.getId(), 0, 10)) {
 			assertThat(result).hasStatus(200).hasContent(TaskList.toJson(list));
 		}
 	}
 
 	private Http1ClientResponse call(String bucketId, int offset, int limit) {
-		return client.get("/buckets/" + bucketId + "/tasks/")
-				.queryParam("offset", String.valueOf(offset))
-				.queryParam("limit", String.valueOf(limit))
-				.request();
+		return client
+			.get("/buckets/" + bucketId + "/tasks/")
+			.queryParam("offset", String.valueOf(offset))
+			.queryParam("limit", String.valueOf(limit))
+			.request();
 	}
 }

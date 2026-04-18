@@ -101,8 +101,8 @@ class FoursquareResult {
 			BigDecimal lat = node.path("lat").decimalValue();
 			BigDecimal lon = node.path("lng").decimalValue();
 			return BigDecimal.ZERO.compareTo(lat) != 0 && BigDecimal.ZERO.compareTo(lon) != 0
-					? new Location(lat, lon)
-					: null;
+				? new Location(lat, lon)
+				: null;
 		}
 
 		public List<String> getTags() {

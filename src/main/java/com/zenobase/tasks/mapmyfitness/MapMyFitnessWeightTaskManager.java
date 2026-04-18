@@ -55,8 +55,12 @@ public class MapMyFitnessWeightTaskManager extends MapMyFitnessTaskManagerSuppor
 				request.addQuerystringParameter("target_start_datetime", from);
 			}
 			Response response = send(request, credentials);
-			WeightResult result =
-					new WeightResult(parseObject(response), task.getPrincipal(), task.getTag(), user.isImperial());
+			WeightResult result = new WeightResult(
+				parseObject(response),
+				task.getPrincipal(),
+				task.getTag(),
+				user.isImperial()
+			);
 			events.addAll(result.getEvents());
 			path = result.getNext();
 		}

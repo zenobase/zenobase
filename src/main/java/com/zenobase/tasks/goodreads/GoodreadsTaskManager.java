@@ -77,7 +77,11 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 	}
 
 	private GoodreadsReviewListResult getReviewList(
-			OAuthCredentials credentials, GoodreadsTask task, String userId, int page) {
+		OAuthCredentials credentials,
+		GoodreadsTask task,
+		String userId,
+		int page
+	) {
 		var request = new OAuthRequest(Verb.GET, HOST + "/review/list.xml");
 		request.addQuerystringParameter("v", "2");
 		request.addQuerystringParameter("id", userId);
@@ -100,9 +104,10 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 	private static Document parseDocument(Response response) {
 		Preconditions.checkState(response.getCode() == 200, "Expected 200 but got <%s>", response.getCode());
 		Preconditions.checkState(
-				response.getHeader("Content-Type").startsWith("application/xml"),
-				"Expected application/xml but got <%s>",
-				response.getHeader("Content-Type"));
+			response.getHeader("Content-Type").startsWith("application/xml"),
+			"Expected application/xml but got <%s>",
+			response.getHeader("Content-Type")
+		);
 		try {
 			InputSource source = new InputSource(new StringReader(getBody(response)));
 			return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(source);
@@ -128,13 +133,18 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 
 	private Command createCommand(Task task, List<Event> events) {
 		var command = new CompoundCommand(
-				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
-		command.add(UpdateTaskCommand.builder(task)
+			task.getPrincipal(),
+			"ran " + getType() + " task",
+			"reverted " + getType() + " task"
+		);
+		command.add(
+			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
-				.build());
+				.build()
+		);
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}

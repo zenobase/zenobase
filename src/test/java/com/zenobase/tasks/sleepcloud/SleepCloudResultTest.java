@@ -16,7 +16,6 @@ public class SleepCloudResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-
 		SleepCloudResult result = new SleepCloudResult("sleep", TESTER, true, readObject("SleepCloudResultTest.json"));
 		assertThat(result.getCursor()).as("cursor").isEqualTo("xyz");
 		List<Event> events = result.getEvents();

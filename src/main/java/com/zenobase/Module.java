@@ -284,7 +284,12 @@ class Module extends AbstractModule {
 
 	private boolean isConfigured(String key) {
 		var node = config.get(key);
-		return node.isLeaf() ? node.asString().filter(s -> !s.isEmpty()).isPresent() : node.exists();
+		return node.isLeaf()
+			? node
+					.asString()
+					.filter(s -> !s.isEmpty())
+					.isPresent()
+			: node.exists();
 	}
 
 	private void bindConfiguration() {
@@ -310,20 +315,21 @@ class Module extends AbstractModule {
 
 		// Integration API keys (only when their prefix is configured)
 		for (String prefix : List.of(
-				"fitbit",
-				"foursquare",
-				"goodreads",
-				"google",
-				"hexoskin",
-				"lastfm",
-				"mapmyfitness",
-				"netatmo",
-				"oura",
-				"rescuetime",
-				"strava",
-				"trakt",
-				"wakatime",
-				"withings")) {
+			"fitbit",
+			"foursquare",
+			"goodreads",
+			"google",
+			"hexoskin",
+			"lastfm",
+			"mapmyfitness",
+			"netatmo",
+			"oura",
+			"rescuetime",
+			"strava",
+			"trakt",
+			"wakatime",
+			"withings"
+		)) {
 			if (isConfigured(prefix)) {
 				bindAllLeaves(config.get(prefix));
 			}
@@ -331,21 +337,23 @@ class Module extends AbstractModule {
 	}
 
 	private void bindString(String key) {
-		config.get(key)
-				.asString()
-				.ifPresent(
-						value -> bindConstant().annotatedWith(Names.named(key)).to(value));
+		config
+			.get(key)
+			.asString()
+			.ifPresent(value -> bindConstant().annotatedWith(Names.named(key)).to(value));
 	}
 
 	private void bindAllLeaves(Config node) {
 		if (node.isLeaf()) {
 			bindString(node.key().toString());
 		} else {
-			node.asNodeList().ifPresent(children -> {
-				for (Config child : children) {
-					bindAllLeaves(child);
-				}
-			});
+			node
+				.asNodeList()
+				.ifPresent(children -> {
+					for (Config child : children) {
+						bindAllLeaves(child);
+					}
+				});
 		}
 	}
 }

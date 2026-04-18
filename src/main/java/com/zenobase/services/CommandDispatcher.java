@@ -33,7 +33,8 @@ public class CommandDispatcher {
 	public String dispatch(Command command) {
 		DateTime t = command.getTimestamp();
 		logger.info("{} [{}] {} {}", command.getId(), t, command.getPrincipal(), command);
-		if (command.getCost() > 0 && t.isAfter(now)) { // don't spend while replaying commands
+		if (command.getCost() > 0 && t.isAfter(now)) {
+			// don't spend while replaying commands
 			quotas.spend(command.getPrincipal(), command.getCost());
 		}
 		if (command instanceof CompoundCommand c) {
@@ -63,11 +64,12 @@ public class CommandDispatcher {
 					}
 				} catch (RuntimeException e2) {
 					logger.error(
-							"Couldn't revert {} {} ({}/{})...",
-							command.getPrincipal(),
-							command,
-							count + 1,
-							dispatched.size());
+						"Couldn't revert {} {} ({}/{})...",
+						command.getPrincipal(),
+						command,
+						count + 1,
+						dispatched.size()
+					);
 					throw e;
 				}
 			}

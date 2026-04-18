@@ -74,13 +74,13 @@ public class Auth0TokenValidatorTest {
 	@Test
 	public void testRejectsExpiredToken() {
 		String token = JWT.create()
-				.withKeyId(KID)
-				.withIssuer("http://localhost:" + jwksPort + "/")
-				.withAudience(AUDIENCE)
-				.withSubject("auth0|user")
-				.withIssuedAt(Instant.now().minusSeconds(7200))
-				.withExpiresAt(Instant.now().minusSeconds(3600))
-				.sign(Algorithm.RSA256(publicKey, privateKey));
+			.withKeyId(KID)
+			.withIssuer("http://localhost:" + jwksPort + "/")
+			.withAudience(AUDIENCE)
+			.withSubject("auth0|user")
+			.withIssuedAt(Instant.now().minusSeconds(7200))
+			.withExpiresAt(Instant.now().minusSeconds(3600))
+			.sign(Algorithm.RSA256(publicKey, privateKey));
 
 		assertThat(validator.validate(token)).isNull();
 	}
@@ -88,13 +88,13 @@ public class Auth0TokenValidatorTest {
 	@Test
 	public void testRejectsWrongAudience() {
 		String token = JWT.create()
-				.withKeyId(KID)
-				.withIssuer("http://localhost:" + jwksPort + "/")
-				.withAudience("https://wrong-audience.com")
-				.withSubject("auth0|user")
-				.withIssuedAt(Instant.now())
-				.withExpiresAt(Instant.now().plusSeconds(3600))
-				.sign(Algorithm.RSA256(publicKey, privateKey));
+			.withKeyId(KID)
+			.withIssuer("http://localhost:" + jwksPort + "/")
+			.withAudience("https://wrong-audience.com")
+			.withSubject("auth0|user")
+			.withIssuedAt(Instant.now())
+			.withExpiresAt(Instant.now().plusSeconds(3600))
+			.sign(Algorithm.RSA256(publicKey, privateKey));
 
 		assertThat(validator.validate(token)).isNull();
 	}
@@ -102,13 +102,13 @@ public class Auth0TokenValidatorTest {
 	@Test
 	public void testRejectsWrongIssuer() {
 		String token = JWT.create()
-				.withKeyId(KID)
-				.withIssuer("https://wrong-issuer.com/")
-				.withAudience(AUDIENCE)
-				.withSubject("auth0|user")
-				.withIssuedAt(Instant.now())
-				.withExpiresAt(Instant.now().plusSeconds(3600))
-				.sign(Algorithm.RSA256(publicKey, privateKey));
+			.withKeyId(KID)
+			.withIssuer("https://wrong-issuer.com/")
+			.withAudience(AUDIENCE)
+			.withSubject("auth0|user")
+			.withIssuedAt(Instant.now())
+			.withExpiresAt(Instant.now().plusSeconds(3600))
+			.sign(Algorithm.RSA256(publicKey, privateKey));
 
 		assertThat(validator.validate(token)).isNull();
 	}
@@ -116,12 +116,12 @@ public class Auth0TokenValidatorTest {
 	@Test
 	public void testRejectsTokenWithNoSub() {
 		String token = JWT.create()
-				.withKeyId(KID)
-				.withIssuer("http://localhost:" + jwksPort + "/")
-				.withAudience(AUDIENCE)
-				.withIssuedAt(Instant.now())
-				.withExpiresAt(Instant.now().plusSeconds(3600))
-				.sign(Algorithm.RSA256(publicKey, privateKey));
+			.withKeyId(KID)
+			.withIssuer("http://localhost:" + jwksPort + "/")
+			.withAudience(AUDIENCE)
+			.withIssuedAt(Instant.now())
+			.withExpiresAt(Instant.now().plusSeconds(3600))
+			.sign(Algorithm.RSA256(publicKey, privateKey));
 
 		assertThat(validator.validate(token)).isNull();
 	}
@@ -133,22 +133,29 @@ public class Auth0TokenValidatorTest {
 
 	private String createToken(String subject, String email, boolean emailVerified) {
 		return JWT.create()
-				.withKeyId(KID)
-				.withIssuer("http://localhost:" + jwksPort + "/")
-				.withAudience(AUDIENCE)
-				.withSubject(subject)
-				.withClaim(Auth0TokenValidator.EMAIL_CLAIM, email)
-				.withClaim(Auth0TokenValidator.EMAIL_VERIFIED_CLAIM, emailVerified)
-				.withIssuedAt(Instant.now())
-				.withExpiresAt(Instant.now().plusSeconds(3600))
-				.sign(Algorithm.RSA256(publicKey, privateKey));
+			.withKeyId(KID)
+			.withIssuer("http://localhost:" + jwksPort + "/")
+			.withAudience(AUDIENCE)
+			.withSubject(subject)
+			.withClaim(Auth0TokenValidator.EMAIL_CLAIM, email)
+			.withClaim(Auth0TokenValidator.EMAIL_VERIFIED_CLAIM, emailVerified)
+			.withIssuedAt(Instant.now())
+			.withExpiresAt(Instant.now().plusSeconds(3600))
+			.sign(Algorithm.RSA256(publicKey, privateKey));
 	}
 
 	private static String buildJwksJson(RSAPublicKey key, String kid) {
 		String n = Base64.getUrlEncoder().withoutPadding().encodeToString(toUnsignedBytes(key.getModulus()));
 		String e = Base64.getUrlEncoder().withoutPadding().encodeToString(toUnsignedBytes(key.getPublicExponent()));
-		return "{\"keys\":[{\"kty\":\"RSA\",\"kid\":\"" + kid + "\",\"use\":\"sig\",\"alg\":\"RS256\",\"n\":\"" + n
-				+ "\",\"e\":\"" + e + "\"}]}";
+		return (
+			"{\"keys\":[{\"kty\":\"RSA\",\"kid\":\"" +
+			kid +
+			"\",\"use\":\"sig\",\"alg\":\"RS256\",\"n\":\"" +
+			n +
+			"\",\"e\":\"" +
+			e +
+			"\"}]}"
+		);
 	}
 
 	private static byte[] toUnsignedBytes(BigInteger value) {

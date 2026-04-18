@@ -24,14 +24,24 @@ public class HexoskinActivitiesTaskManager extends HexoskinTaskManagerSupport<He
 
 	@Override
 	String getPath(HexoskinTaskSupport task) {
-		return "/api/v1/range/?limit=100&order_by=start&rank=0&include_metrics=44,71,2003,2038&start__gt="
-				+ task.getStart();
+		return (
+			"/api/v1/range/?limit=100&order_by=start&rank=0&include_metrics=44,71,2003,2038&start__gt=" +
+			task.getStart()
+		);
 	}
 
 	@Override
 	protected HexoskinResultSupport parse(
-			Response response, HexoskinProfileResult profile, HexoskinActivitiesTask task) {
+		Response response,
+		HexoskinProfileResult profile,
+		HexoskinActivitiesTask task
+	) {
 		return new HexoskinActivitiesResult(
-				parseObject(response), task.getPrincipal(), task.getTag(), task.getZone(), profile.isMetric());
+			parseObject(response),
+			task.getPrincipal(),
+			task.getTag(),
+			task.getZone(),
+			profile.isMetric()
+		);
 	}
 }

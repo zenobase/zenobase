@@ -49,7 +49,9 @@ class StravaActivitiesResult {
 		var event = new Event();
 		event.addValue(Event.TAG, node.path("type").textValue());
 		event.setValue(
-				Event.TIMESTAMP, dateTimeValue(node.path("start_date"), dateTimeZoneValue(node.path("timezone"))));
+			Event.TIMESTAMP,
+			dateTimeValue(node.path("start_date"), dateTimeZoneValue(node.path("timezone")))
+		);
 		event.setValue(Event.DURATION, durationValue(node.path("elapsed_time")));
 		event.setValue(Event.LOCATION, locationValue(node.path("start_latlng")));
 		event.setValue(Event.DISTANCE, distanceValue(node.path("distance"), metric ? Units.KM : Units.MI, 1));
@@ -91,37 +93,43 @@ class StravaActivitiesResult {
 
 	private @Nullable DecimalMeasure<Length> distanceValue(JsonNode node, Unit<Length> unit, int scale) {
 		return !isZero(node)
-				? Measures.valueOf(
-						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), scale)), unit)
-				: null;
+			? Measures.valueOf(
+					Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), scale)),
+					unit
+				)
+			: null;
 	}
 
 	private @Nullable DecimalMeasure<Velocity> velocityValue(JsonNode node, Unit<Velocity> unit) {
 		return !isZero(node)
-				? Measures.valueOf(
-						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)), unit)
-				: null;
+			? Measures.valueOf(
+					Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)),
+					unit
+				)
+			: null;
 	}
 
 	private @Nullable DecimalMeasure<Pace> paceValue(JsonNode node, Unit<Pace> unit) {
 		return !isZero(node)
-				? Measures.valueOf(
-						Objects.requireNonNull(
-								Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0)),
-						unit)
-				: null;
+			? Measures.valueOf(
+					Objects.requireNonNull(
+						Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0)
+					),
+					unit
+				)
+			: null;
 	}
 
 	private @Nullable DecimalMeasure<Energy> energyValue(JsonNode node) {
 		return !isZero(node)
-				? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue(), 0)), Units.KJ)
-				: null;
+			? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue(), 0)), Units.KJ)
+			: null;
 	}
 
 	private @Nullable DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
 		return !isZero(node)
-				? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue(), 0)), Units.BPM)
-				: null;
+			? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue(), 0)), Units.BPM)
+			: null;
 	}
 
 	private @Nullable Resource resourceValue(JsonNode node) {

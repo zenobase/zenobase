@@ -15,10 +15,11 @@ public class Schema {
 	private final ImmutableMultimap<String, ConstraintBuilder> constraintBuilders;
 
 	public Schema(
-			String typeName,
-			ObjectNode schema,
-			ImmutableMap<String, Field<?>> fields,
-			ImmutableMultimap<String, ConstraintBuilder> constraintBuilders) {
+		String typeName,
+		ObjectNode schema,
+		ImmutableMap<String, Field<?>> fields,
+		ImmutableMultimap<String, ConstraintBuilder> constraintBuilders
+	) {
 		this.typeName = typeName;
 		this.schema = schema;
 		this.fields = fields;

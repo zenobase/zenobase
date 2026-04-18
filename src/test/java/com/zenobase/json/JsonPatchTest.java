@@ -17,13 +17,11 @@ public class JsonPatchTest {
 
 	@Test
 	public void testEmpty() {
-
 		runTest();
 	}
 
 	@Test
 	public void testReplace() {
-
 		original.put("foo", 41);
 		original.put("bar", "xyz");
 
@@ -39,7 +37,6 @@ public class JsonPatchTest {
 
 	@Test
 	public void testAdd() {
-
 		original.put("foo", 41);
 
 		from.set("bar", NullNode.getInstance());
@@ -54,7 +51,6 @@ public class JsonPatchTest {
 
 	@Test
 	public void testRemove() {
-
 		original.put("foo", 41);
 		original.put("bar", "xyz");
 
@@ -69,7 +65,6 @@ public class JsonPatchTest {
 
 	@Test
 	public void testMerge() {
-
 		ObjectNode nestedOriginal = Nodes.newObject();
 		nestedOriginal.put("foo", 41);
 		original.set("nested", nestedOriginal);
@@ -92,7 +87,6 @@ public class JsonPatchTest {
 
 	@Test
 	public void testValueConflict() {
-
 		original.put("foo", 41);
 
 		from.put("foo", 40);
@@ -106,7 +100,6 @@ public class JsonPatchTest {
 
 	@Test
 	public void testObjectConflict() {
-
 		ObjectNode nestedOriginal = Nodes.newObject();
 		nestedOriginal.put("foo", 41);
 		original.set("nested", nestedOriginal);

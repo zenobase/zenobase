@@ -36,7 +36,6 @@ public class PolarFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testHourOfDay() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -64,7 +63,6 @@ public class PolarFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testDayOfWeek() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -97,7 +95,6 @@ public class PolarFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testDayOfMonth() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -130,7 +127,6 @@ public class PolarFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testMonthOfYear() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -158,13 +154,17 @@ public class PolarFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testMonthOfYearWithFilter() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
 		addFacet(
-				"id:%s,type:%s,key_field:%s,interval:%s,filter:%s",
-				FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "month_of_year", "count:(*..5000)");
+			"id:%s,type:%s,key_field:%s,interval:%s,filter:%s",
+			FACET_ID,
+			PolarFacet.TYPE,
+			Event.TIMESTAMP,
+			"month_of_year",
+			"count:(*..5000)"
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -188,13 +188,18 @@ public class PolarFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testMonthOfYearWithMeasureField() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
 		addFacet(
-				"id:%s,type:%s,key_field:%s,value_field:%s,interval:%s,unit:%s",
-				FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, Event.DISTANCE, "month_of_year", "m");
+			"id:%s,type:%s,key_field:%s,value_field:%s,interval:%s,unit:%s",
+			FACET_ID,
+			PolarFacet.TYPE,
+			Event.TIMESTAMP,
+			Event.DISTANCE,
+			"month_of_year",
+			"m"
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -226,13 +231,17 @@ public class PolarFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testMonthOfYearWithNumericField() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
 		addFacet(
-				"id:%s,type:%s,key_field:%s,value_field:%s,interval:%s",
-				FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, Event.COUNT, "month_of_year");
+			"id:%s,type:%s,key_field:%s,value_field:%s,interval:%s",
+			FACET_ID,
+			PolarFacet.TYPE,
+			Event.TIMESTAMP,
+			Event.COUNT,
+			"month_of_year"
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -264,7 +273,6 @@ public class PolarFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testEmpty() {
-
 		addFacet("id:%s,type:%s,key_field:%s,interval:%s", FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "hour_of_day");
 
 		ObjectNode result = execute();

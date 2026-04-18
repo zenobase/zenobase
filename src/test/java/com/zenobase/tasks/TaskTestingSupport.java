@@ -63,8 +63,8 @@ public abstract class TaskTestingSupport {
 
 	private static Token newToken(String token, String secret, String refresh) {
 		return refresh != null
-				? new ExpiringToken(token, secret, DateTime.now().minusMonths(1), refresh)
-				: new Token(token, secret);
+			? new ExpiringToken(token, secret, DateTime.now().minusMonths(1), refresh)
+			: new Token(token, secret);
 	}
 
 	private static OAuthCredentials newCredentials(Token token, String scope) {

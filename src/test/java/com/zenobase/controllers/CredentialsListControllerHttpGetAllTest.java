@@ -20,8 +20,7 @@ public class CredentialsListControllerHttpGetAllTest extends CredentialsListCont
 		CredentialsList list = new CredentialsList(DefaultPartialList.of());
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		when(repository.find(new CredentialsQuery().queryString("type:foo"), 0, 10))
-				.thenReturn(list);
+		when(repository.find(new CredentialsQuery().queryString("type:foo"), 0, 10)).thenReturn(list);
 		try (Http1ClientResponse result = call("type:foo", 0, 10)) {
 			assertThat(result).hasStatus(200).hasContent(CredentialsList.toJson(list));
 		}
@@ -80,9 +79,10 @@ public class CredentialsListControllerHttpGetAllTest extends CredentialsListCont
 	}
 
 	private Http1ClientResponse call(String q, int offset, int limit) {
-		var request = client.get("/credentials/")
-				.queryParam("offset", String.valueOf(offset))
-				.queryParam("limit", String.valueOf(limit));
+		var request = client
+			.get("/credentials/")
+			.queryParam("offset", String.valueOf(offset))
+			.queryParam("limit", String.valueOf(limit));
 		if (q != null) {
 			request = request.queryParam("q", q);
 		}

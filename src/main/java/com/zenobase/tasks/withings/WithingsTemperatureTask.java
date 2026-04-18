@@ -24,12 +24,13 @@ public class WithingsTemperatureTask extends Task {
 	}
 
 	WithingsTemperatureTask(
-			String bucketId,
-			Identity principal,
-			String tag,
-			Unit<Temperature> unit,
-			DateTimeZone timezone,
-			@Nullable String marker) {
+		String bucketId,
+		Identity principal,
+		String tag,
+		Unit<Temperature> unit,
+		DateTimeZone timezone,
+		@Nullable String marker
+	) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);

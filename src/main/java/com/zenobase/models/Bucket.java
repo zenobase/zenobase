@@ -43,17 +43,17 @@ public class Bucket extends DomainNode {
 	public static final BooleanField ARCHIVED = new BooleanField("archived");
 
 	public static final Schema SCHEMA = new SchemaBuilder(TYPE_NAME)
-			.add(VERSION)
-			.add(ID)
-			.add(LABEL)
-			.add(DESCRIPTION)
-			.add(CREATED)
-			.add(ROLES)
-			.add(WIDGETS)
-			.add(ALIASES)
-			.add(REFRESH)
-			.add(ARCHIVED)
-			.build();
+		.add(VERSION)
+		.add(ID)
+		.add(LABEL)
+		.add(DESCRIPTION)
+		.add(CREATED)
+		.add(ROLES)
+		.add(WIDGETS)
+		.add(ALIASES)
+		.add(REFRESH)
+		.add(ARCHIVED)
+		.build();
 
 	public Bucket(ObjectNode node) {
 		super(node);

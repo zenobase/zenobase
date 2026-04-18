@@ -45,7 +45,8 @@ public class LastFmTaskManager extends OAuthTaskManager {
 	@Override
 	public LastFmTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		DateTimeZone timezone = DateTimeZone.forID(
-				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+			MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC")
+		);
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "body");
 		var task = new LastFmTask(bucketId, principal, marker);
@@ -56,11 +57,8 @@ public class LastFmTaskManager extends OAuthTaskManager {
 
 	private static @Nullable String parseMarker(String marker, DateTimeZone timezone) {
 		return marker != null
-				? Long.toString(LocalDateTime.parse(marker.replace("Z", ""))
-								.toDateTime(timezone)
-								.getMillis()
-						/ 1000)
-				: null;
+			? Long.toString(LocalDateTime.parse(marker.replace("Z", "")).toDateTime(timezone).getMillis() / 1000)
+			: null;
 	}
 
 	@Override
@@ -76,7 +74,11 @@ public class LastFmTaskManager extends OAuthTaskManager {
 				LastFmRequest request = createRequest(task, now, credentials, page);
 				Response response = send(request, credentials);
 				RecentTracksResult result = new RecentTracksResult(
-						parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
+					parseObject(response),
+					task.getPrincipal(),
+					task.getTag(),
+					task.getTimezone()
+				);
 				Preconditions.checkState(result.isSuccess(), "Request for %s failed", request.getCompleteUrl());
 				events.addAll(result.getEvents());
 				if (!result.hasNext()) {
@@ -112,9 +114,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 		for (Event event : events) {
 			Resource resource = event.getValue(Event.RESOURCE);
 			if (Objects.requireNonNull(resource).url().startsWith(RecentTracksResult.MUSICBRAINZ_URL)) {
-				String mbid = Objects.requireNonNull(resource)
-						.url()
-						.substring(resource.url().lastIndexOf('/') + 1);
+				String mbid = Objects.requireNonNull(resource).url().substring(resource.url().lastIndexOf('/') + 1);
 				LastFmRequest request = createTrackInfoRequest(mbid);
 				Response response = send(request, credentials);
 				TrackInfoResult result = new TrackInfoResult(parse(response));
@@ -143,12 +143,14 @@ public class LastFmTaskManager extends OAuthTaskManager {
 
 	private static Command createCommand(Task task, List<Event> events, DateTime to) {
 		var command = new CompoundCommand(task.getPrincipal(), "ran lastfm task", "reverted lastfm task");
-		command.add(UpdateTaskCommand.builder(task)
+		command.add(
+			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 				.set(Task.MARKER, task.getMarker(), Long.toString(to.getMillis() / 1000))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
-				.build());
+				.build()
+		);
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}

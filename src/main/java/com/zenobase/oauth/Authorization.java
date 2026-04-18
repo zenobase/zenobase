@@ -73,13 +73,13 @@ public class Authorization extends DomainNode {
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-				.add(VERSION)
-				.add(ID)
-				.add(CREATED)
-				.add(PRINCIPAL)
-				.add(CLIENT)
-				.add(SCOPE)
-				.build();
+			.add(VERSION)
+			.add(ID)
+			.add(CREATED)
+			.add(PRINCIPAL)
+			.add(CLIENT)
+			.add(SCOPE)
+			.build();
 	}
 
 	public Authorization copy() {

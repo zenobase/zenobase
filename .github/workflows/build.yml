@@ -1,96 +1,96 @@
 name: Build
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'docker/**'
-      - 'src/**'
-      - '!src/main/java/com/zenobase/scripts/**'
-      - 'pom.xml'
-  workflow_dispatch:
+    push:
+        branches: [main]
+        paths:
+            - "docker/**"
+            - "src/**"
+            - "!src/main/java/com/zenobase/scripts/**"
+            - "pom.xml"
+    workflow_dispatch:
 
 env:
-  AWS_REGION: us-east-1
+    AWS_REGION: us-east-1
 
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    services:
-      opensearch:
-        image: opensearchproject/opensearch:3.3.0
-        ports:
-          - 9200:9200
-        env:
-          discovery.type: single-node
-          plugins.security.disabled: "true"
-          DISABLE_INSTALL_DEMO_CONFIG: "true"
-        options: >-
-          --health-cmd "curl -f http://localhost:9200/_cluster/health || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
-          --health-start-period 30s
-    steps:
-      - uses: actions/checkout@v6
+    build-and-push:
+        runs-on: ubuntu-latest
+        permissions:
+            id-token: write
+            contents: read
+        services:
+            opensearch:
+                image: opensearchproject/opensearch:3.3.0
+                ports:
+                    - 9200:9200
+                env:
+                    discovery.type: single-node
+                    plugins.security.disabled: "true"
+                    DISABLE_INSTALL_DEMO_CONFIG: "true"
+                options: >-
+                    --health-cmd "curl -f http://localhost:9200/_cluster/health || exit 1"
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 10
+                    --health-start-period 30s
+        steps:
+            - uses: actions/checkout@v6
 
-      - uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 25
-          cache: maven
+            - uses: actions/setup-java@v5
+              with:
+                  distribution: temurin
+                  java-version: 25
+                  cache: maven
 
-      - name: Check formatting
-        run: ./mvnw -B spotless:check
+            - name: Check formatting
+              run: ./mvnw -B spotless:check
 
-      - name: Test
-        run: ./mvnw -B verify
+            - name: Test
+              run: ./mvnw -B verify
 
-      - name: Package
-        run: ./mvnw -B package -DskipTests
+            - name: Package
+              run: ./mvnw -B package -DskipTests
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6
-        with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v6
+              with:
+                  role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+                  aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to ECR
-        id: ecr-login
-        uses: aws-actions/amazon-ecr-login@v2
+            - name: Login to ECR
+              id: ecr-login
+              uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v4
 
-      - name: Build and push image
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          file: docker/Dockerfile
-          platforms: linux/arm64
-          push: true
-          tags: |
-            ${{ steps.ecr-login.outputs.registry }}/zenobase-api:${{ github.sha }}
-            ${{ steps.ecr-login.outputs.registry }}/zenobase-api:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            - name: Build and push image
+              uses: docker/build-push-action@v7
+              with:
+                  context: .
+                  file: docker/Dockerfile
+                  platforms: linux/arm64
+                  push: true
+                  tags: |
+                      ${{ steps.ecr-login.outputs.registry }}/zenobase-api:${{ github.sha }}
+                      ${{ steps.ecr-login.outputs.registry }}/zenobase-api:latest
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
 
-      - name: Create Sentry release
-        run: |
-          npx @sentry/cli releases new "${{ github.sha }}"
-          npx @sentry/cli releases set-commits "${{ github.sha }}" --auto
-          npx @sentry/cli releases finalize "${{ github.sha }}"
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: zenobase
-          SENTRY_PROJECT: zenobase-api
+            - name: Create Sentry release
+              run: |
+                  npx @sentry/cli releases new "${{ github.sha }}"
+                  npx @sentry/cli releases set-commits "${{ github.sha }}" --auto
+                  npx @sentry/cli releases finalize "${{ github.sha }}"
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+                  SENTRY_ORG: zenobase
+                  SENTRY_PROJECT: zenobase-api

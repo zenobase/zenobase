@@ -34,14 +34,15 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 	private final DateTimeZone timezone;
 
 	public OffsetTimelineFacet(
-			String id,
-			String keyField,
-			String valueField,
-			@Nullable String interval,
-			@Nullable String range,
-			DateTimeZone timezone,
-			Unit<?> unit,
-			@Nullable Query filter) {
+		String id,
+		String keyField,
+		String valueField,
+		@Nullable String interval,
+		@Nullable String range,
+		DateTimeZone timezone,
+		Unit<?> unit,
+		@Nullable Query filter
+	) {
 		super(id, keyField, valueField, unit, filter);
 		this.interval = interval;
 		this.range = !Strings.isNullOrEmpty(range) ? OffsetIntervals.valueOf(range) : null;
@@ -53,9 +54,11 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 		CalendarInterval calendarInterval = DateHistograms.parseInterval(Objects.requireNonNull(interval));
 		String tz = timezone.toTimeZone().toZoneId().getId();
 		String f = getField();
-		Aggregation aggregation = Aggregation.of(a -> a.dateHistogram(dh ->
-						dh.field(keyField).calendarInterval(calendarInterval).timeZone(tz))
-				.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(f)))));
+		Aggregation aggregation = Aggregation.of(a ->
+			a
+				.dateHistogram(dh -> dh.field(keyField).calendarInterval(calendarInterval).timeZone(tz))
+				.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(f))))
+		);
 		addAggregation(getId(), aggregation, builder);
 	}
 
@@ -105,7 +108,8 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 		if (range != null) {
 			return range;
 		}
-		long min = Long.MAX_VALUE, max = Long.MIN_VALUE;
+		long min = Long.MAX_VALUE,
+			max = Long.MIN_VALUE;
 		for (DateHistogramBucket bucket : buckets) {
 			if (bucket.docCount() > 0) {
 				long bucketTime = bucket.key();

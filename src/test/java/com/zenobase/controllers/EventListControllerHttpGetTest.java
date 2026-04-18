@@ -29,10 +29,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	public void testSearchEvents() {
 		String constraint = "tag:value";
 		String facet = "id:xyz,type:list";
-		Search expected = new EventSearchBuilder()
-				.addConstraint(constraint)
-				.addFacet(facet)
-				.buildSearch();
+		Search expected = new EventSearchBuilder().addConstraint(constraint).addFacet(facet).buildSearch();
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		ObjectNode fakeResult = Nodes.newObject();
@@ -47,10 +44,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	public void testListEvents() {
 		String constraint = "tag:value";
 		String facet = "id:events,type:list,limit:25";
-		Search expected = new EventSearchBuilder()
-				.addConstraint(constraint)
-				.addFacet(facet)
-				.buildSearch();
+		Search expected = new EventSearchBuilder().addConstraint(constraint).addFacet(facet).buildSearch();
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		ObjectNode fakeResult = Nodes.newObject();
@@ -65,8 +59,9 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	public void testExportEventsToJson() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
-		when(events.find(ArgumentMatchers.eq(bucket.getId()), ArgumentMatchers.any(Search.class)))
-				.thenReturn(Nodes.newObject());
+		when(events.find(ArgumentMatchers.eq(bucket.getId()), ArgumentMatchers.any(Search.class))).thenReturn(
+			Nodes.newObject()
+		);
 		try (Http1ClientResponse result = call(bucket, "")) {
 			assertThat(result).hasStatus(200).hasContentType("application/json");
 		}
@@ -78,8 +73,9 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		ObjectNode csvResult = Nodes.newObject();
 		csvResult.putArray(EventListController.EVENTS.getName());
-		when(events.find(ArgumentMatchers.eq(bucket.getId()), ArgumentMatchers.any(Search.class)))
-				.thenReturn(csvResult);
+		when(events.find(ArgumentMatchers.eq(bucket.getId()), ArgumentMatchers.any(Search.class))).thenReturn(
+			csvResult
+		);
 		try (Http1ClientResponse result = call(bucket, "?accept=text/plain")) {
 			assertThat(result).hasStatus(200).hasContentType("text/plain");
 		}
@@ -89,8 +85,9 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	public void testExportEventsToInvalidFormat() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
-		when(events.find(ArgumentMatchers.eq(bucket.getId()), ArgumentMatchers.any(Search.class)))
-				.thenReturn(Nodes.newObject());
+		when(events.find(ArgumentMatchers.eq(bucket.getId()), ArgumentMatchers.any(Search.class))).thenReturn(
+			Nodes.newObject()
+		);
 		try (Http1ClientResponse result = call(bucket, "?accept=foo/bar")) {
 			assertThat(result).hasStatus(400);
 		}

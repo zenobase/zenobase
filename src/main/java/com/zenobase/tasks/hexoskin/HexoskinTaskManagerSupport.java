@@ -69,20 +69,23 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 	}
 
 	protected LocalDate parseMarker(String marker) {
-		return marker != null
-				? DateTime.parse(marker).toLocalDate()
-				: LocalDate.now().withDayOfMonth(1);
+		return marker != null ? DateTime.parse(marker).toLocalDate() : LocalDate.now().withDayOfMonth(1);
 	}
 
 	protected Command createCommand(Task task, List<Event> events) {
 		var command = new CompoundCommand(
-				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
-		command.add(UpdateTaskCommand.builder(task)
+			task.getPrincipal(),
+			"ran " + getType() + " task",
+			"reverted " + getType() + " task"
+		);
+		command.add(
+			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
-				.build());
+				.build()
+		);
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}

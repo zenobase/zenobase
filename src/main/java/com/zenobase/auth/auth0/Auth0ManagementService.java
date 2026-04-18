@@ -18,13 +18,11 @@ public class Auth0ManagementService implements UserDirectory {
 
 	@Inject
 	public Auth0ManagementService(
-			@Named("auth0.domain") String domain,
-			@Named("auth0.m2m.client_id") String clientId,
-			@Named("auth0.m2m.client_secret") String clientSecret) {
-		this.client = ManagementApi.builder()
-				.domain(domain)
-				.clientCredentials(clientId, clientSecret)
-				.build();
+		@Named("auth0.domain") String domain,
+		@Named("auth0.m2m.client_id") String clientId,
+		@Named("auth0.m2m.client_secret") String clientSecret
+	) {
+		this.client = ManagementApi.builder().domain(domain).clientCredentials(clientId, clientSecret).build();
 	}
 
 	@Override
@@ -34,13 +32,9 @@ public class Auth0ManagementService implements UserDirectory {
 			return;
 		}
 		try {
-			client.users()
-					.update(
-							externalId,
-							UpdateUserRequestContent.builder()
-									.email(newEmail)
-									.emailVerified(false)
-									.build());
+			client
+				.users()
+				.update(externalId, UpdateUserRequestContent.builder().email(newEmail).emailVerified(false).build());
 			logger.info("Updated Auth0 email for user {} to {}", externalId, newEmail);
 		} catch (Exception e) {
 			logger.warn("Failed to update Auth0 email for user {}: {}", externalId, e.getMessage());

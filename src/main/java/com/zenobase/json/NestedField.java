@@ -50,8 +50,7 @@ public class NestedField<T> extends Field<T> {
 
 	// TODO verify that this results in queries with the correct exact path
 	public void addConstraintBuilders(String path, Field<?> target) {
-		for (Map.Entry<String, ConstraintBuilder> entry :
-				field.getConstraintBuilders().entries()) {
+		for (Map.Entry<String, ConstraintBuilder> entry : field.getConstraintBuilders().entries()) {
 			target.addConstraintBuilder(concat(path, entry.getKey()), entry.getValue());
 		}
 	}

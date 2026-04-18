@@ -1,64 +1,64 @@
 {
-    "header": {
-        "id": "1A7133C2-E556-4C4B-AE06-963B4BE85E38",
-        "creation_date_time": "2016-04-07T06:36:07.679-07:00",
-        "schema_id": {
-            "version": "1.0",
-            "name": "complete",
-            "namespace": "omh"
-        }
-    },
-    "body": {
-        "effective_time_frame": {
-            "time_interval": {
-                "start_date_time": "2016-01-15T06:00:00.000-05:00",
-                "end_date_time": "2016-01-15T06:30:00.0000-05:00"
-            }
-        },
-        "blood_glucose": {
-            "unit": "mg/dL",
-            "value": 120
-        },
-        "systolic_blood_pressure": {
-            "value": 160,
-            "unit": "mmHg"
-        },
-        "diastolic_blood_pressure": {
-            "value": 60,
-            "unit": "mmHg"
-        },
-        "body_temperature": {
-            "value": 97,
-            "unit": "F"
-        },
-        "measurement_location": "forehead",
-        "body_fat_percentage": {
-            "value": 16,
-            "unit": "%"
-        },
-        "body_height": {
-            "value": 180,
-            "unit": "cm"
-        },
-        "body_weight": {
-            "value": 50,
-            "unit": "kg"
-        },
-        "kcal_burned": {
-            "value": 160,
-            "unit": "kcal"
-        },
-        "activity_name": "walking",
-        "heart_rate": {
-            "value": 50,
-            "unit": "beats\/min"
-        },
-        "temporal_relationship_to_physical_activity": "at rest",
-        "distance": {
-            "value": 3.1,
-            "unit": "mi"
-        },
-        "step_count": 6000,
-        "user_notes": "just testing"
-    }
+	"header": {
+		"id": "1A7133C2-E556-4C4B-AE06-963B4BE85E38",
+		"creation_date_time": "2016-04-07T06:36:07.679-07:00",
+		"schema_id": {
+			"version": "1.0",
+			"name": "complete",
+			"namespace": "omh"
+		}
+	},
+	"body": {
+		"effective_time_frame": {
+			"time_interval": {
+				"start_date_time": "2016-01-15T06:00:00.000-05:00",
+				"end_date_time": "2016-01-15T06:30:00.0000-05:00"
+			}
+		},
+		"blood_glucose": {
+			"unit": "mg/dL",
+			"value": 120
+		},
+		"systolic_blood_pressure": {
+			"value": 160,
+			"unit": "mmHg"
+		},
+		"diastolic_blood_pressure": {
+			"value": 60,
+			"unit": "mmHg"
+		},
+		"body_temperature": {
+			"value": 97,
+			"unit": "F"
+		},
+		"measurement_location": "forehead",
+		"body_fat_percentage": {
+			"value": 16,
+			"unit": "%"
+		},
+		"body_height": {
+			"value": 180,
+			"unit": "cm"
+		},
+		"body_weight": {
+			"value": 50,
+			"unit": "kg"
+		},
+		"kcal_burned": {
+			"value": 160,
+			"unit": "kcal"
+		},
+		"activity_name": "walking",
+		"heart_rate": {
+			"value": 50,
+			"unit": "beats/min"
+		},
+		"temporal_relationship_to_physical_activity": "at rest",
+		"distance": {
+			"value": 3.1,
+			"unit": "mi"
+		},
+		"step_count": 6000,
+		"user_notes": "just testing"
+	}
 }

@@ -12,11 +12,12 @@ public class CreateAndDeleteUserCommandTest {
 
 	private final UserRepository repository = mock(UserRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-			new CreateUserCommand.Handler(repository), new DeleteUserCommand.Handler(repository));
+		new CreateUserCommand.Handler(repository),
+		new DeleteUserCommand.Handler(repository)
+	);
 
 	@Test
 	public void test() {
-
 		User user = new User("tester");
 
 		Command command = new CreateUserCommand(user.asIdentity(), user);
@@ -38,7 +39,6 @@ public class CreateAndDeleteUserCommandTest {
 
 	@Test
 	public void testDeleteNonExistentUser() {
-
 		User user = new User("tester");
 
 		Command command = new DeleteUserCommand(user.asIdentity(), user);

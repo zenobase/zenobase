@@ -24,23 +24,25 @@ public class RescueTimeProductivityTask extends Task {
 	}
 
 	public RescueTimeProductivityTask(
-			String bucketId,
-			Identity principal,
-			@Nullable String tag,
-			@Nullable String kind,
-			@Nullable String source,
-			DateTimeZone timezone) {
+		String bucketId,
+		Identity principal,
+		@Nullable String tag,
+		@Nullable String kind,
+		@Nullable String source,
+		DateTimeZone timezone
+	) {
 		this(bucketId, principal, tag, kind, source, timezone, null);
 	}
 
 	RescueTimeProductivityTask(
-			String bucketId,
-			Identity principal,
-			@Nullable String tag,
-			@Nullable String kind,
-			@Nullable String source,
-			DateTimeZone timezone,
-			@Nullable String marker) {
+		String bucketId,
+		Identity principal,
+		@Nullable String tag,
+		@Nullable String kind,
+		@Nullable String source,
+		DateTimeZone timezone,
+		@Nullable String marker
+	) {
 		super(TYPE, bucketId, principal);
 		setSetting(TAG, tag);
 		setSetting(KIND, kind);
@@ -68,9 +70,7 @@ public class RescueTimeProductivityTask extends Task {
 
 	public @Nullable DateTime getLast() {
 		String marker = getMarker();
-		return marker != null
-				? DateTime.parse(marker, ISODateTimeFormat.dateTime().withOffsetParsed())
-				: null;
+		return marker != null ? DateTime.parse(marker, ISODateTimeFormat.dateTime().withOffsetParsed()) : null;
 	}
 
 	@Override

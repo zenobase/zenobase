@@ -19,7 +19,13 @@ abstract class HexoskinTaskSupport extends Task {
 	}
 
 	public HexoskinTaskSupport(
-			String type, String bucketId, Identity principal, @Nullable String tag, DateTimeZone zone, String marker) {
+		String type,
+		String bucketId,
+		Identity principal,
+		@Nullable String tag,
+		DateTimeZone zone,
+		String marker
+	) {
 		super(type, bucketId, principal);
 		setSetting(TAG, tag);
 		setSetting(TIMEZONE, zone.toString());
@@ -27,7 +33,7 @@ abstract class HexoskinTaskSupport extends Task {
 	}
 
 	public long getStart() {
-		return DateTime.parse(getMarker()).getMillis() * 256 / 1000;
+		return (DateTime.parse(getMarker()).getMillis() * 256) / 1000;
 	}
 
 	public @Nullable String getTag() {

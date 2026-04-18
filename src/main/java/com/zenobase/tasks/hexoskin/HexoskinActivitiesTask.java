@@ -15,7 +15,12 @@ public class HexoskinActivitiesTask extends HexoskinTaskSupport {
 	}
 
 	public HexoskinActivitiesTask(
-			String bucketId, Identity principal, @Nullable String tag, DateTimeZone zone, String marker) {
+		String bucketId,
+		Identity principal,
+		@Nullable String tag,
+		DateTimeZone zone,
+		String marker
+	) {
 		super(TYPE, bucketId, principal, tag, zone, marker);
 	}
 

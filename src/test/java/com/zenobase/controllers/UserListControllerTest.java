@@ -82,9 +82,10 @@ public class UserListControllerTest extends ControllerTestSupport {
 	}
 
 	private Http1ClientResponse call(String q, int offset, int limit) {
-		var request = client.get("/users/")
-				.queryParam("offset", String.valueOf(offset))
-				.queryParam("limit", String.valueOf(limit));
+		var request = client
+			.get("/users/")
+			.queryParam("offset", String.valueOf(offset))
+			.queryParam("limit", String.valueOf(limit));
 		if (q != null) {
 			request = request.queryParam("q", q);
 		}

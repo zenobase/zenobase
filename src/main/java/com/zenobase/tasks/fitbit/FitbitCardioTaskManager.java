@@ -40,7 +40,6 @@ public class FitbitCardioTaskManager extends FitbitTaskManagerSupport<FitbitCard
 
 	@Override
 	protected @Nullable Command safeExecute(FitbitCardioTask task, OAuthCredentials credentials, Token token) {
-
 		List<Event> events = new ArrayList<>();
 		LocalDate syncDate = getLastDate(DeviceType.TRACKER, credentials);
 		if (syncDate == null) {
@@ -53,18 +52,22 @@ public class FitbitCardioTaskManager extends FitbitTaskManagerSupport<FitbitCard
 			for (LocalDate date = fromDate; date.isBefore(syncDate); date = date.plusDays(1)) {
 				try {
 					OAuthRequest request = new OAuthRequest(
-							Verb.GET,
-							"https://api.fitbit.com/1/user/-/activities/heart/date/" + date + "/1d/15min.json");
+						Verb.GET,
+						"https://api.fitbit.com/1/user/-/activities/heart/date/" + date + "/1d/15min.json"
+					);
 					Response response = send(request, credentials);
-					events.addAll(new FitbitCardioIntradayResult(
-									parseObject(response),
-									task.getTag(),
-									task.getPrincipal(),
-									date,
-									profile.getTimezone())
-							.getEvents());
+					events.addAll(
+						new FitbitCardioIntradayResult(
+							parseObject(response),
+							task.getTag(),
+							task.getPrincipal(),
+							date,
+							profile.getTimezone()
+						).getEvents()
+					);
 				} catch (InvalidStatusException e) {
-					if (e.getStatus() == 429) { // reached rate limit
+					if (e.getStatus() == 429) {
+						// reached rate limit
 						logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());
 						syncDate = date;
 						break;
@@ -76,13 +79,22 @@ public class FitbitCardioTaskManager extends FitbitTaskManagerSupport<FitbitCard
 			LocalDate toDate = syncDate.minusDays(1);
 			if (!fromDate.isAfter(toDate)) {
 				OAuthRequest request = new OAuthRequest(
-						Verb.GET,
-						"https://api.fitbit.com/1/user/-/activities/restingHeartRate/date/" + fromDate + "/" + toDate
-								+ ".json");
+					Verb.GET,
+					"https://api.fitbit.com/1/user/-/activities/restingHeartRate/date/" +
+						fromDate +
+						"/" +
+						toDate +
+						".json"
+				);
 				Response response = send(request, credentials);
-				events.addAll(new FitbitCardioResult(
-								parseObject(response), task.getTag(), task.getPrincipal(), profile.getTimezone())
-						.getEvents());
+				events.addAll(
+					new FitbitCardioResult(
+						parseObject(response),
+						task.getTag(),
+						task.getPrincipal(),
+						profile.getTimezone()
+					).getEvents()
+				);
 			}
 		}
 		return createCommand(task, credentials, events, syncDate, token);

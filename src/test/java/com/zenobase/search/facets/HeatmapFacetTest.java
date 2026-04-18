@@ -45,7 +45,6 @@ public class HeatmapFacetTest extends FacetTestSupport {
 
 	@Test
 	public void test() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -74,7 +73,6 @@ public class HeatmapFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testAggregateCounts() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -98,14 +96,17 @@ public class HeatmapFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testFilteredAggregateCounts() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
 		addFacet(
-				"id:%s,type:%s,value_field:%s,filter:%s",
-				FACET_ID, HeatmapFacet.TYPE, Event.COUNT.getName(), "count:[1500..*)");
+			"id:%s,type:%s,value_field:%s,filter:%s",
+			FACET_ID,
+			HeatmapFacet.TYPE,
+			Event.COUNT.getName(),
+			"count:[1500..*)"
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -124,7 +125,6 @@ public class HeatmapFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testAggregateDistances() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -148,7 +148,6 @@ public class HeatmapFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testEmpty() {
-
 		addFacet("id:%s,type:%s", FACET_ID, HeatmapFacet.TYPE);
 
 		ObjectNode result = execute();

@@ -27,8 +27,13 @@ public class QuerySupport {
 	}
 
 	protected QuerySupport notEqualTo(Field<?> field, Object value) {
-		add(Query.of(q -> q.bool(b ->
-				b.mustNot(Query.of(q2 -> q2.term(t -> t.field(field.getName()).value(toFieldValue(value))))))));
+		add(
+			Query.of(q ->
+				q.bool(b ->
+					b.mustNot(Query.of(q2 -> q2.term(t -> t.field(field.getName()).value(toFieldValue(value)))))
+				)
+			)
+		);
 		return this;
 	}
 
@@ -44,8 +49,9 @@ public class QuerySupport {
 
 	protected QuerySupport lessThan(Field<?> field, Object value) {
 		Object jsonValue = value instanceof org.joda.time.DateTime ? value.toString() : value;
-		add(Query.of(
-				q -> q.range(r -> r.field(field.getName()).lt(org.opensearch.client.json.JsonData.of(jsonValue)))));
+		add(
+			Query.of(q -> q.range(r -> r.field(field.getName()).lt(org.opensearch.client.json.JsonData.of(jsonValue))))
+		);
 		return this;
 	}
 

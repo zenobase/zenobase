@@ -32,10 +32,11 @@ public class HexoskinCredentialsManager extends OAuthCredentialsManager {
 
 	@Inject
 	public HexoskinCredentialsManager(
-			CredentialsRepository repository,
-			@Named("hexoskin.api.key") String apiKey,
-			@Named("hexoskin.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+		CredentialsRepository repository,
+		@Named("hexoskin.api.key") String apiKey,
+		@Named("hexoskin.api.secret") String apiSecret,
+		@Named("oauth.hostname") String callbackUrl
+	) {
 		super(TYPE, repository, new HexoskinApi(), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -53,10 +54,10 @@ public class HexoskinCredentialsManager extends OAuthCredentialsManager {
 		}
 		Token token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-				.build();
+			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+			.with(Credentials.CREDENTIALS)
+			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+			.build();
 	}
 
 	@Override
@@ -81,10 +82,11 @@ public class HexoskinCredentialsManager extends OAuthCredentialsManager {
 			credentials.setToken(new OAuth2TokenExtractor().extract(response.getBody()));
 		} else {
 			logger.warn(
-					"Couldn't refresh credentials {}: {} -> {}",
-					credentials.getId(),
-					response.getHeaders(),
-					response.getBody());
+				"Couldn't refresh credentials {}: {} -> {}",
+				credentials.getId(),
+				response.getHeaders(),
+				response.getBody()
+			);
 		}
 	}
 

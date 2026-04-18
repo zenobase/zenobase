@@ -26,63 +26,66 @@ import com.zenobase.models.Resource;
 public class RandomEvent {
 
 	private static final RandomElement<Builder> builders = new RandomElement<Builder>()
-			.add(
-					new Builder() {
-						final RandomElement<String> meals =
-								new RandomElement<String>().add("lunch", 1).add("dinner", 1);
-						final RandomElement<String> order = new RandomElement<String>()
-								.add("pizza", 1)
-								.add("sushi", 1)
-								.add("mexican", 2)
-								.add("sandwich", 2)
-								.add("greek", 2)
-								.add("chinese", 2);
+		.add(
+			new Builder() {
+				final RandomElement<String> meals = new RandomElement<String>().add("lunch", 1).add("dinner", 1);
+				final RandomElement<String> order = new RandomElement<String>()
+					.add("pizza", 1)
+					.add("sushi", 1)
+					.add("mexican", 2)
+					.add("sandwich", 2)
+					.add("greek", 2)
+					.add("chinese", 2);
 
-						@Override
-						protected void addFields(Event event) {
-							event.addValue(Event.TAG, meals.next());
-							event.addValue(Event.TAG, order.next());
-							event.setValue(Event.LOCATION, nextLocation());
-							event.setValue(Event.RATING, nextRating());
-						}
-					},
-					4)
-			.add(
-					new Builder() {
-						@Override
-						protected void addFields(Event event) {
-							event.addValue(Event.TAG, "sleep");
-						}
-					},
-					2)
-			.add(
-					new Builder() {
-						final RandomElement<Movie> movies = new MovieParser().parse(new File("data/movies.tsv"));
+				@Override
+				protected void addFields(Event event) {
+					event.addValue(Event.TAG, meals.next());
+					event.addValue(Event.TAG, order.next());
+					event.setValue(Event.LOCATION, nextLocation());
+					event.setValue(Event.RATING, nextRating());
+				}
+			},
+			4
+		)
+		.add(
+			new Builder() {
+				@Override
+				protected void addFields(Event event) {
+					event.addValue(Event.TAG, "sleep");
+				}
+			},
+			2
+		)
+		.add(
+			new Builder() {
+				final RandomElement<Movie> movies = new MovieParser().parse(new File("data/movies.tsv"));
 
-						@Override
-						protected void addFields(Event event) {
-							Movie movie = movies.next();
-							event.addValue(Event.TAG, "movie");
-							event.setValue(Event.RESOURCE, movie.getResource());
-							if (movie.getDuration() != null) {
-								event.setValue(Event.DURATION, movie.getDuration());
-							}
-							event.setValue(Event.RATING, nextRating());
-						}
-					},
-					2)
-			.add(
-					new Builder() {
-						@Override
-						protected void addFields(Event event) {
-							event.addValue(Event.TAG, "hike");
-							event.setValue(Event.DURATION, nextDuration(30, 330));
-							event.setValue(Event.LOCATION, nextLocation());
-							event.setValue(Event.DISTANCE, nextLength(500, 10000));
-							event.setValue(Event.HEIGHT, nextLength(0, 5000));
-						}
-					},
-					1);
+				@Override
+				protected void addFields(Event event) {
+					Movie movie = movies.next();
+					event.addValue(Event.TAG, "movie");
+					event.setValue(Event.RESOURCE, movie.getResource());
+					if (movie.getDuration() != null) {
+						event.setValue(Event.DURATION, movie.getDuration());
+					}
+					event.setValue(Event.RATING, nextRating());
+				}
+			},
+			2
+		)
+		.add(
+			new Builder() {
+				@Override
+				protected void addFields(Event event) {
+					event.addValue(Event.TAG, "hike");
+					event.setValue(Event.DURATION, nextDuration(30, 330));
+					event.setValue(Event.LOCATION, nextLocation());
+					event.setValue(Event.DISTANCE, nextLength(500, 10000));
+					event.setValue(Event.HEIGHT, nextLength(0, 5000));
+				}
+			},
+			1
+		);
 
 	private final Identity principal;
 
@@ -99,12 +102,12 @@ public class RandomEvent {
 		private final Random rand = new Random();
 
 		private final RandomElement<Rating> ratings = new RandomElement<Rating>()
-				.add(Rating.valueOf(100), 2)
-				.add(Rating.valueOf(80), 6)
-				.add(Rating.valueOf(60), 4)
-				.add(Rating.valueOf(40), 2)
-				.add(Rating.valueOf(20), 2)
-				.add(Rating.valueOf(0), 1);
+			.add(Rating.valueOf(100), 2)
+			.add(Rating.valueOf(80), 6)
+			.add(Rating.valueOf(60), 4)
+			.add(Rating.valueOf(40), 2)
+			.add(Rating.valueOf(20), 2)
+			.add(Rating.valueOf(0), 1);
 
 		public Event build(Identity principal) {
 			Event event = new Event();
@@ -162,8 +165,9 @@ public class RandomEvent {
 
 		public RandomElement<Movie> parse(File source) {
 			try {
-				return Objects.requireNonNull(Files.asCharSource(source, StandardCharsets.UTF_8)
-						.readLines(new LineProcessor<>() {
+				return Objects.requireNonNull(
+					Files.asCharSource(source, StandardCharsets.UTF_8).readLines(
+						new LineProcessor<>() {
 							private final RandomElement<Movie> resources = new RandomElement<>();
 
 							@Override
@@ -172,8 +176,8 @@ public class RandomEvent {
 								String title = String.format("%s (%d)", tokens[5], Integer.parseInt(tokens[11]));
 								String url = tokens[15];
 								Duration duration = !tokens[10].isEmpty()
-										? Duration.standardMinutes(Integer.parseInt(tokens[10]))
-										: null;
+									? Duration.standardMinutes(Integer.parseInt(tokens[10]))
+									: null;
 								int weight = Integer.parseInt(tokens[13]);
 								resources.add(new Movie(title, url, duration), weight);
 								return true;
@@ -183,7 +187,9 @@ public class RandomEvent {
 							public RandomElement<Movie> getResult() {
 								return resources;
 							}
-						}));
+						}
+					)
+				);
 			} catch (IOException e) {
 				throw new AssertionError(e);
 			}

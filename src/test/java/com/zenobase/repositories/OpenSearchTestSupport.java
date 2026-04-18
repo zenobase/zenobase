@@ -26,20 +26,19 @@ public abstract class OpenSearchTestSupport {
 
 	static {
 		container = new GenericContainer<>("opensearchproject/opensearch:3.3.0")
-				.withEnv("discovery.type", "single-node")
-				.withEnv("plugins.security.disabled", "true")
-				.withEnv("DISABLE_INSTALL_DEMO_CONFIG", "true")
-				.withEnv("OPENSEARCH_JAVA_OPTS", "-Xms512m -Xmx512m")
-				.withEnv("path.repo", "/tmp/snapshots")
-				.withExposedPorts(9200)
-				.waitingFor(
-						Wait.forHttp("/_cluster/health").forStatusCode(200).withStartupTimeout(Duration.ofMinutes(2)));
+			.withEnv("discovery.type", "single-node")
+			.withEnv("plugins.security.disabled", "true")
+			.withEnv("DISABLE_INSTALL_DEMO_CONFIG", "true")
+			.withEnv("OPENSEARCH_JAVA_OPTS", "-Xms512m -Xmx512m")
+			.withEnv("path.repo", "/tmp/snapshots")
+			.withExposedPorts(9200)
+			.waitingFor(Wait.forHttp("/_cluster/health").forStatusCode(200).withStartupTimeout(Duration.ofMinutes(2)));
 		container.start();
 		String host = "http://" + container.getHost() + ":" + container.getMappedPort(9200);
 		HttpHost httpHost = HttpHost.create(java.net.URI.create(host));
-		sharedClient = new OpenSearchClient(ApacheHttpClient5TransportBuilder.builder(httpHost)
-				.setMapper(new JacksonJsonpMapper())
-				.build());
+		sharedClient = new OpenSearchClient(
+			ApacheHttpClient5TransportBuilder.builder(httpHost).setMapper(new JacksonJsonpMapper()).build()
+		);
 	}
 
 	private IndexManager manager;

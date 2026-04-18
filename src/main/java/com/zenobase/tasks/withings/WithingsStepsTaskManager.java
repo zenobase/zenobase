@@ -45,12 +45,13 @@ public class WithingsStepsTaskManager extends WithingsTaskManagerSupport<Withing
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
 		var result = new WithingsStepsResult(
-				parseObject(response),
-				task.getPrincipal(),
-				Objects.requireNonNull(task.getTag()),
-				Objects.requireNonNull(task.getDistanceUnit()),
-				task.getHeightUnit(),
-				task.getEnergyUnit());
+			parseObject(response),
+			task.getPrincipal(),
+			Objects.requireNonNull(task.getTag()),
+			Objects.requireNonNull(task.getDistanceUnit()),
+			task.getHeightUnit(),
+			task.getEnergyUnit()
+		);
 		checkStatus(result, request, credentials);
 		return createCommand(task, credentials, token, result);
 	}
@@ -58,8 +59,7 @@ public class WithingsStepsTaskManager extends WithingsTaskManagerSupport<Withing
 	private OAuthRequest createRequest(WithingsStepsTask task) {
 		var request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/v2/measure");
 		request.addQuerystringParameter("action", "getactivity");
-		request.addQuerystringParameter(
-				"startdateymd", LocalDate.parse(task.getMarker()).toString());
+		request.addQuerystringParameter("startdateymd", LocalDate.parse(task.getMarker()).toString());
 		request.addQuerystringParameter("enddateymd", LocalDate.now().toString());
 		return request;
 	}

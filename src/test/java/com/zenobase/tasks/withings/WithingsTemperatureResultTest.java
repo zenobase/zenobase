@@ -17,11 +17,12 @@ public class WithingsTemperatureResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 		WithingsTemperatureResult result = new WithingsTemperatureResult(
-				readObject("WithingsTemperatureResultTest.json"),
-				TESTER,
-				"body",
-				Units.F,
-				DateTimeZone.forID("America/Los_Angeles"));
+			readObject("WithingsTemperatureResultTest.json"),
+			TESTER,
+			"body",
+			Units.F,
+			DateTimeZone.forID("America/Los_Angeles")
+		);
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		assertThat(result.getMarker()).as("marker").isEqualTo("1353615011");
 		List<Event> events = result.getEvents();

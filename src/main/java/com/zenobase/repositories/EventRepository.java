@@ -96,12 +96,12 @@ public class EventRepository {
 	}
 
 	public void findAll(String bucketId, Callback<Event> callback) {
-		getIndex(bucketId)
-				.find(
-						Query.of(q -> q.matchAll(m -> m)),
-						SearchOrder.asc(Event.ID),
-						node -> callback.call(new Event(node)),
-						1000);
+		getIndex(bucketId).find(
+			Query.of(q -> q.matchAll(m -> m)),
+			SearchOrder.asc(Event.ID),
+			node -> callback.call(new Event(node)),
+			1000
+		);
 	}
 
 	public boolean exists(String bucketId) {
@@ -111,13 +111,19 @@ public class EventRepository {
 	public List<String> terms(String bucketId, String field) {
 		int limit = 100;
 		String id = "terms";
-		SearchRequest request = SearchRequest.of(s -> s.index(getIndex(bucketId).getIndexName())
+		SearchRequest request = SearchRequest.of(s ->
+			s
+				.index(getIndex(bucketId).getIndexName())
 				.size(0)
 				.aggregations(
-						id,
-						Aggregation.of(a -> a.terms(t -> t.field(field)
-								.size(limit)
-								.order(Collections.singletonMap("_count", SortOrder.Desc))))));
+					id,
+					Aggregation.of(a ->
+						a.terms(t ->
+							t.field(field).size(limit).order(Collections.singletonMap("_count", SortOrder.Desc))
+						)
+					)
+				)
+		);
 		SearchResponse<ObjectNode> response = getIndex(bucketId).search(request);
 		List<String> terms = new ArrayList<>();
 		var aggregation = response.aggregations().get(id);
@@ -143,8 +149,9 @@ public class EventRepository {
 			aggregations.put(aggName, Aggregation.of(a -> a.filter(q -> q.exists(e -> e.field(fieldName)))));
 			fieldsByAggName.put(aggName, field);
 		}
-		SearchRequest request = SearchRequest.of(
-				s -> s.index(getIndex(bucketId).getIndexName()).size(0).aggregations(aggregations));
+		SearchRequest request = SearchRequest.of(s ->
+			s.index(getIndex(bucketId).getIndexName()).size(0).aggregations(aggregations)
+		);
 		SearchResponse<ObjectNode> response = getIndex(bucketId).search(request);
 		Map<Field<?>, Long> counts = new LinkedHashMap<>();
 		for (Map.Entry<String, Field<?>> entry : fieldsByAggName.entrySet()) {
@@ -154,10 +161,12 @@ public class EventRepository {
 				counts.put(entry.getValue(), count);
 			}
 		}
-		return counts.entrySet().stream()
-				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-				.map(Map.Entry::getKey)
-				.collect(Collectors.toUnmodifiableList());
+		return counts
+			.entrySet()
+			.stream()
+			.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+			.map(Map.Entry::getKey)
+			.collect(Collectors.toUnmodifiableList());
 	}
 
 	public long size() {
@@ -165,8 +174,9 @@ public class EventRepository {
 	}
 
 	public long size(Identity author) {
-		return index.count(Query.of(
-				q -> q.term(t -> t.field(Event.AUTHOR.getName()).value(FieldValue.of(author.id())))));
+		return index.count(
+			Query.of(q -> q.term(t -> t.field(Event.AUTHOR.getName()).value(FieldValue.of(author.id()))))
+		);
 	}
 
 	public long size(String bucketId) {

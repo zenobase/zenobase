@@ -26,9 +26,10 @@ public class FoursquareVenues {
 	private final String apiSecret;
 
 	private final LoadingCache<String, FoursquareVenue> cache = CacheBuilder.newBuilder()
-			.maximumSize(1000L)
-			.expireAfterAccess(5, TimeUnit.MINUTES)
-			.build(new CacheLoader<>() {
+		.maximumSize(1000L)
+		.expireAfterAccess(5, TimeUnit.MINUTES)
+		.build(
+			new CacheLoader<>() {
 				@Override
 				public FoursquareVenue load(String venueId) {
 					try (var response = request(venueId)) {
@@ -45,11 +46,16 @@ public class FoursquareVenues {
 						throw new RuntimeException(e);
 					}
 				}
-			});
+			}
+		);
 
 	private static FoursquareVenue readVenue(String venueId, ClassicHttpResponse response) throws Exception {
 		Preconditions.checkState(
-				response.getCode() == 200, "Couldn't find venue <%s>: %s", venueId, response.getCode());
+			response.getCode() == 200,
+			"Couldn't find venue <%s>: %s",
+			venueId,
+			response.getCode()
+		);
 		var body = EntityUtils.toString(response.getEntity());
 		var json = Nodes.read(body);
 		return parse(json.path("response").path("venue"));
@@ -57,7 +63,9 @@ public class FoursquareVenues {
 
 	@Inject
 	public FoursquareVenues(
-			@Named("foursquare.api.key") String apiKey, @Named("foursquare.api.secret") String apiSecret) {
+		@Named("foursquare.api.key") String apiKey,
+		@Named("foursquare.api.secret") String apiSecret
+	) {
 		this.apiKey = apiKey;
 		this.apiSecret = apiSecret;
 	}
@@ -70,16 +78,16 @@ public class FoursquareVenues {
 		RATE_LIMITER.acquire();
 		try {
 			String url = new URIBuilder("https://api.foursquare.com/v2/venues/" + venueId)
-					.addParameter("v", "20140206")
-					.addParameter("client_id", apiKey)
-					.addParameter("client_secret", apiSecret)
-					.build()
-					.toString();
+				.addParameter("v", "20140206")
+				.addParameter("client_id", apiKey)
+				.addParameter("client_secret", apiSecret)
+				.build()
+				.toString();
 			return (ClassicHttpResponse) Request.get(url)
-					.connectTimeout(Timeout.ofSeconds(5))
-					.responseTimeout(Timeout.ofSeconds(5))
-					.execute()
-					.returnResponse();
+				.connectTimeout(Timeout.ofSeconds(5))
+				.responseTimeout(Timeout.ofSeconds(5))
+				.execute()
+				.returnResponse();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

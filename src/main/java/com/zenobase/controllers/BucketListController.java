@@ -35,12 +35,12 @@ public class BucketListController extends ControllerSupport {
 
 	@Inject
 	public BucketListController(
-			AuthorizationContext auth,
-			CommandDispatcher dispatcher,
-			BucketRepository buckets,
-			EventRepository events,
-			UserRepository users) {
-
+		AuthorizationContext auth,
+		CommandDispatcher dispatcher,
+		BucketRepository buckets,
+		EventRepository events,
+		UserRepository users
+	) {
 		super(auth);
 		this.dispatcher = dispatcher;
 		this.buckets = buckets;
@@ -77,10 +77,8 @@ public class BucketListController extends ControllerSupport {
 		String order = req.query().first("order").orElse(null);
 		int offset = Integer.parseInt(req.query().first("offset").orElse("0"));
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
-		boolean labelsOnly =
-				Boolean.parseBoolean(req.query().first("labels_only").orElse("false"));
-		boolean includeArchived =
-				Boolean.parseBoolean(req.query().first("include_archived").orElse("false"));
+		boolean labelsOnly = Boolean.parseBoolean(req.query().first("labels_only").orElse("false"));
+		boolean includeArchived = Boolean.parseBoolean(req.query().first("include_archived").orElse("false"));
 		if (offset < 0 || offset > 1000) {
 			sendBadRequest(res, "expected offset in [0..1000]");
 			return;

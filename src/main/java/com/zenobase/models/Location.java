@@ -6,12 +6,15 @@ import java.util.Objects;
 import com.google.common.base.Preconditions;
 
 public record Location(BigDecimal latitude, BigDecimal longitude) {
-
 	public Location {
 		Objects.requireNonNull(latitude);
 		Objects.requireNonNull(longitude);
 		Preconditions.checkArgument(
-				isValid(latitude, longitude), "Coordinate out of range: %s,%s", latitude, longitude);
+			isValid(latitude, longitude),
+			"Coordinate out of range: %s,%s",
+			latitude,
+			longitude
+		);
 	}
 
 	public Location(String latitude, String longitude) {

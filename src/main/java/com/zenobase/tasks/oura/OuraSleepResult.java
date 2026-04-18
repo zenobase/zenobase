@@ -22,8 +22,9 @@ class OuraSleepResult extends OuraResultSupport {
 		var event = new Event();
 		event.addValue(Event.TAG, tag);
 		event.setValues(
-				Event.TIMESTAMP,
-				List.of(dateTimeValue(node.path("bedtime_start")), dateTimeValue(node.path("bedtime_end"))));
+			Event.TIMESTAMP,
+			List.of(dateTimeValue(node.path("bedtime_start")), dateTimeValue(node.path("bedtime_end")))
+		);
 		event.setValue(Event.DURATION, durationValue(node.path("total_sleep_duration")));
 		event.setValue(Event.FREQUENCY, frequencyValue(node.path("average_heart_rate")));
 		event.setValue(Event.PERCENTAGE, percentageValue(node.path("efficiency")));

@@ -27,10 +27,11 @@ public class RescueTimeCredentialsManager extends OAuthCredentialsManager {
 
 	@Inject
 	public RescueTimeCredentialsManager(
-			CredentialsRepository integrations,
-			@Named("rescuetime.api.key") String apiKey,
-			@Named("rescuetime.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+		CredentialsRepository integrations,
+		@Named("rescuetime.api.key") String apiKey,
+		@Named("rescuetime.api.secret") String apiSecret,
+		@Named("oauth.hostname") String callbackUrl
+	) {
 		super(TYPE, integrations, new RescueTimeApi(), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -53,10 +54,10 @@ public class RescueTimeCredentialsManager extends OAuthCredentialsManager {
 		}
 		Token token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-				.build();
+			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+			.with(Credentials.CREDENTIALS)
+			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+			.build();
 	}
 
 	@Override
@@ -66,7 +67,6 @@ public class RescueTimeCredentialsManager extends OAuthCredentialsManager {
 
 	@Override
 	public void sign(OAuthRequest request, OAuthCredentials credentials) {
-		request.addQuerystringParameter(
-				"access_token", Objects.requireNonNull(credentials.getToken()).getToken());
+		request.addQuerystringParameter("access_token", Objects.requireNonNull(credentials.getToken()).getToken());
 	}
 }

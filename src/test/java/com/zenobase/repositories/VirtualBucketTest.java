@@ -26,7 +26,6 @@ public class VirtualBucketTest extends OpenSearchTestSupport {
 
 	@Test
 	public void test() {
-
 		Bucket b1 = newBucket("First Bucket", me);
 		buckets.store(b1);
 		assertThat(buckets.isAliased(b1.getId())).isFalse();

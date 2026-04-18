@@ -1,148 +1,142 @@
 [
-    {
-        "watched_at": "2015-04-15T06:30:00.000Z",
-        "action": "watch",
-        "episode": {
-            "season": 5,
-            "number": 1,
-            "title": "The Wars to Come",
-            "ids": {
-                "trakt": 73680,
-                "tvdb": 5083694,
-                "imdb": "tt3658012",
-                "tmdb": 1043618,
-                "tvrage": 1065590199
-            },
-            "number_abs": null,
-            "overview": "Cersei and Jaime adjust to a world without Tywin; Varys reveals a conspiracy to Tyrion; Daenerys faces a new threat to her rule; Jon is caught between two kings.",
-            "rating": 8.24807,
-            "votes": 3116,
-            "first_aired": "2015-04-13T01:00:00.000Z",
-            "updated_at": "2015-04-17T05:05:14.000Z",
-            "available_translations": []
-        },
-        "show": {
-            "title": "Game of Thrones",
-            "year": 2011,
-            "ids": {
-                "trakt": 1390,
-                "slug": "game-of-thrones",
-                "tvdb": 121361,
-                "imdb": "tt0944947",
-                "tmdb": 1399,
-                "tvrage": 24493
-            },
-            "overview": "Seven noble families fight for control of the mythical land of Westeros. Friction between the houses leads to full-scale war. All while a very ancient evil awakens in the farthest north. Amidst the war, a neglected military order of misfits, the Night's Watch, is all that stands between the realms of men and icy horrors beyond.",
-            "first_aired": "2011-04-18T01:00:00.000Z",
-            "airs": {
-                "day": "Sunday",
-                "time": "21:00",
-                "timezone": "America/New_York"
-            },
-            "runtime": 60,
-            "certification": "TV-MA",
-            "network": "HBO",
-            "country": "us",
-            "trailer": null,
-            "homepage": null,
-            "status": "returning series",
-            "rating": 9.40403,
-            "votes": 36475,
-            "updated_at": "2015-04-16T11:10:14.000Z",
-            "language": "en",
-            "available_translations": [
-                "en",
-                "fr",
-                "it",
-                "de",
-                "es",
-                "ru",
-                "hu",
-                "el",
-                "cs",
-                "pt",
-                "sk",
-                "nl",
-                "bg",
-                "sv",
-                "zh",
-                "pl",
-                "fa",
-                "da",
-                "tr",
-                "he",
-                "ro",
-                "fi",
-                "th",
-                "ko",
-                "uk",
-                "is",
-                "lt"
-            ],
-            "genres": [
-                "drama"
-            ],
-            "aired_episodes": 41
-        }
-    },
-    {
-        "watched_at": "2015-04-15T04:45:00.000Z",
-        "action": "watch",
-        "episode": {
-            "season": 2,
-            "number": 9,
-            "title": "The IRS",
-            "ids": {
-                "trakt": 1769272,
-                "tvdb": 5139728,
-                "imdb": "",
-                "tmdb": 1044572,
-                "tvrage": null
-            },
-            "number_abs": null,
-            "overview": "Nobody likes the IRS. But recent budget and staff cuts have made it increasingly difficult for the department to do its very important job. Don’t take our word for it. Ask Michael Bolton.",
-            "rating": 7.69369,
-            "votes": 222,
-            "first_aired": "2015-04-13T03:00:00.000Z",
-            "updated_at": "2015-04-17T04:53:12.000Z",
-            "available_translations": []
-        },
-        "show": {
-            "title": "Last Week Tonight with John Oliver",
-            "year": 2014,
-            "ids": {
-                "trakt": 60267,
-                "slug": "last-week-tonight-with-john-oliver",
-                "tvdb": 278518,
-                "imdb": "tt3530232",
-                "tmdb": 60694,
-                "tvrage": 40882
-            },
-            "overview": "John Oliver would like you to know that nobody is more surprised than he is that he has landed his own show on HBO. While he may not be a household name just yet, when Last Week Tonight With John Oliver — a satirical weekly news program — premieres on April 27, it will join the cable channel's distinguished Sunday-night ranks, which have included The Sopranos, Sex and the City, Game of Thrones, Girls and Veep.",
-            "first_aired": "2014-04-28T03:00:00.000Z",
-            "airs": {
-                "day": "Sunday",
-                "time": "23:00",
-                "timezone": "America/New_York"
-            },
-            "runtime": 30,
-            "certification": null,
-            "network": "HBO",
-            "country": "us",
-            "trailer": "http://youtube.com/watch?v=e654vHU1MH4",
-            "homepage": null,
-            "status": "returning series",
-            "rating": 9.12453,
-            "votes": 1060,
-            "updated_at": "2015-04-16T10:56:40.000Z",
-            "language": "en",
-            "available_translations": [
-                "en"
-            ],
-            "genres": [
-                "comedy"
-            ],
-            "aired_episodes": 33
-        }
-    }
+	{
+		"watched_at": "2015-04-15T06:30:00.000Z",
+		"action": "watch",
+		"episode": {
+			"season": 5,
+			"number": 1,
+			"title": "The Wars to Come",
+			"ids": {
+				"trakt": 73680,
+				"tvdb": 5083694,
+				"imdb": "tt3658012",
+				"tmdb": 1043618,
+				"tvrage": 1065590199
+			},
+			"number_abs": null,
+			"overview": "Cersei and Jaime adjust to a world without Tywin; Varys reveals a conspiracy to Tyrion; Daenerys faces a new threat to her rule; Jon is caught between two kings.",
+			"rating": 8.24807,
+			"votes": 3116,
+			"first_aired": "2015-04-13T01:00:00.000Z",
+			"updated_at": "2015-04-17T05:05:14.000Z",
+			"available_translations": []
+		},
+		"show": {
+			"title": "Game of Thrones",
+			"year": 2011,
+			"ids": {
+				"trakt": 1390,
+				"slug": "game-of-thrones",
+				"tvdb": 121361,
+				"imdb": "tt0944947",
+				"tmdb": 1399,
+				"tvrage": 24493
+			},
+			"overview": "Seven noble families fight for control of the mythical land of Westeros. Friction between the houses leads to full-scale war. All while a very ancient evil awakens in the farthest north. Amidst the war, a neglected military order of misfits, the Night's Watch, is all that stands between the realms of men and icy horrors beyond.",
+			"first_aired": "2011-04-18T01:00:00.000Z",
+			"airs": {
+				"day": "Sunday",
+				"time": "21:00",
+				"timezone": "America/New_York"
+			},
+			"runtime": 60,
+			"certification": "TV-MA",
+			"network": "HBO",
+			"country": "us",
+			"trailer": null,
+			"homepage": null,
+			"status": "returning series",
+			"rating": 9.40403,
+			"votes": 36475,
+			"updated_at": "2015-04-16T11:10:14.000Z",
+			"language": "en",
+			"available_translations": [
+				"en",
+				"fr",
+				"it",
+				"de",
+				"es",
+				"ru",
+				"hu",
+				"el",
+				"cs",
+				"pt",
+				"sk",
+				"nl",
+				"bg",
+				"sv",
+				"zh",
+				"pl",
+				"fa",
+				"da",
+				"tr",
+				"he",
+				"ro",
+				"fi",
+				"th",
+				"ko",
+				"uk",
+				"is",
+				"lt"
+			],
+			"genres": ["drama"],
+			"aired_episodes": 41
+		}
+	},
+	{
+		"watched_at": "2015-04-15T04:45:00.000Z",
+		"action": "watch",
+		"episode": {
+			"season": 2,
+			"number": 9,
+			"title": "The IRS",
+			"ids": {
+				"trakt": 1769272,
+				"tvdb": 5139728,
+				"imdb": "",
+				"tmdb": 1044572,
+				"tvrage": null
+			},
+			"number_abs": null,
+			"overview": "Nobody likes the IRS. But recent budget and staff cuts have made it increasingly difficult for the department to do its very important job. Don’t take our word for it. Ask Michael Bolton.",
+			"rating": 7.69369,
+			"votes": 222,
+			"first_aired": "2015-04-13T03:00:00.000Z",
+			"updated_at": "2015-04-17T04:53:12.000Z",
+			"available_translations": []
+		},
+		"show": {
+			"title": "Last Week Tonight with John Oliver",
+			"year": 2014,
+			"ids": {
+				"trakt": 60267,
+				"slug": "last-week-tonight-with-john-oliver",
+				"tvdb": 278518,
+				"imdb": "tt3530232",
+				"tmdb": 60694,
+				"tvrage": 40882
+			},
+			"overview": "John Oliver would like you to know that nobody is more surprised than he is that he has landed his own show on HBO. While he may not be a household name just yet, when Last Week Tonight With John Oliver — a satirical weekly news program — premieres on April 27, it will join the cable channel's distinguished Sunday-night ranks, which have included The Sopranos, Sex and the City, Game of Thrones, Girls and Veep.",
+			"first_aired": "2014-04-28T03:00:00.000Z",
+			"airs": {
+				"day": "Sunday",
+				"time": "23:00",
+				"timezone": "America/New_York"
+			},
+			"runtime": 30,
+			"certification": null,
+			"network": "HBO",
+			"country": "us",
+			"trailer": "http://youtube.com/watch?v=e654vHU1MH4",
+			"homepage": null,
+			"status": "returning series",
+			"rating": 9.12453,
+			"votes": 1060,
+			"updated_at": "2015-04-16T10:56:40.000Z",
+			"language": "en",
+			"available_translations": ["en"],
+			"genres": ["comedy"],
+			"aired_episodes": 33
+		}
+	}
 ]

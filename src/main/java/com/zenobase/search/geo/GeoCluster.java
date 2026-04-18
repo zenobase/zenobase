@@ -6,7 +6,6 @@ import org.locationtech.spatial4j.shape.Point;
 import org.locationtech.spatial4j.shape.Rectangle;
 
 public record GeoCluster(long count, String geohash, Point center) {
-
 	public GeoCluster merge(GeoCluster that) {
 		long count = this.count + that.count();
 		Point center = mean(this.center, count - that.count(), that.center(), that.count());

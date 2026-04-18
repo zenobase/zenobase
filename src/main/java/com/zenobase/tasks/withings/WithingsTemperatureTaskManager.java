@@ -31,21 +31,21 @@ public class WithingsTemperatureTaskManager extends WithingsTaskManagerSupport<W
 	@Override
 	public WithingsTemperatureTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "body");
-		Unit<Temperature> unit =
-				MoreObjects.firstNonNull(new UnitField<Temperature>("unit").getValue(settings), Units.C);
+		Unit<Temperature> unit = MoreObjects.firstNonNull(
+			new UnitField<Temperature>("unit").getValue(settings),
+			Units.C
+		);
 		DateTimeZone timezone = DateTimeZone.forID(
-				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+			MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC")
+		);
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
 		return new WithingsTemperatureTask(bucketId, principal, tag, unit, timezone, marker);
 	}
 
 	private static @Nullable String parseMarker(@Nullable String marker, DateTimeZone timezone) {
 		return marker != null
-				? Long.toString(LocalDateTime.parse(marker.replace("Z", ""))
-								.toDateTime(timezone)
-								.getMillis()
-						/ 1000)
-				: null;
+			? Long.toString(LocalDateTime.parse(marker.replace("Z", "")).toDateTime(timezone).getMillis() / 1000)
+			: null;
 	}
 
 	@Override
@@ -53,7 +53,12 @@ public class WithingsTemperatureTaskManager extends WithingsTaskManagerSupport<W
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
 		var result = new WithingsTemperatureResult(
-				parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
+			parseObject(response),
+			task.getPrincipal(),
+			task.getTag(),
+			task.getUnit(),
+			task.getTimezone()
+		);
 		if (result.getStatus() == 401) {
 			throw new InvalidCredentialsException(credentials);
 		}

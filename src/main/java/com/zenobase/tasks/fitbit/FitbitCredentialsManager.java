@@ -32,10 +32,11 @@ public class FitbitCredentialsManager extends OAuthCredentialsManager {
 
 	@Inject
 	public FitbitCredentialsManager(
-			CredentialsRepository repository,
-			@Named("fitbit.api.key") String apiKey,
-			@Named("fitbit.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+		CredentialsRepository repository,
+		@Named("fitbit.api.key") String apiKey,
+		@Named("fitbit.api.secret") String apiSecret,
+		@Named("oauth.hostname") String callbackUrl
+	) {
 		super(TYPE, repository, new FitbitApi(), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -58,10 +59,10 @@ public class FitbitCredentialsManager extends OAuthCredentialsManager {
 		}
 		Token token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-				.build();
+			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+			.with(Credentials.CREDENTIALS)
+			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+			.build();
 	}
 
 	@Override
@@ -86,10 +87,11 @@ public class FitbitCredentialsManager extends OAuthCredentialsManager {
 			credentials.setToken(new OAuth2TokenExtractor().extract(response.getBody()));
 		} else {
 			logger.warn(
-					"Couldn't refresh credentials {}: {} -> {}",
-					credentials.getId(),
-					response.getHeaders(),
-					response.getBody());
+				"Couldn't refresh credentials {}: {} -> {}",
+				credentials.getId(),
+				response.getHeaders(),
+				response.getBody()
+			);
 		}
 	}
 
@@ -100,8 +102,6 @@ public class FitbitCredentialsManager extends OAuthCredentialsManager {
 
 	@Override
 	public void sign(OAuthRequest request, OAuthCredentials credentials) {
-		request.addHeader(
-				"Authorization",
-				"Bearer " + Objects.requireNonNull(credentials.getToken()).getToken());
+		request.addHeader("Authorization", "Bearer " + Objects.requireNonNull(credentials.getToken()).getToken());
 	}
 }

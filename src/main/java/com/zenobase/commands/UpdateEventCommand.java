@@ -96,16 +96,16 @@ public class UpdateEventCommand extends Command {
 				update(command);
 			} catch (OpenSearchException e) {
 				if (e.status() != 409) throw e;
-				Event current =
-						repository.find(command.getBucketId(), command.getTo().getId());
+				Event current = repository.find(command.getBucketId(), command.getTo().getId());
 				if (current == null) {
 					logger.warn("Recovering a missing event...");
 					create(command);
 				} else if (current.getVersion() < command.getTo().getVersion()) {
 					logger.warn(
-							"Recovering from an event version conflict: {} -> {}...",
-							command.getTo().getVersion(),
-							current.getVersion());
+						"Recovering from an event version conflict: {} -> {}...",
+						command.getTo().getVersion(),
+						current.getVersion()
+					);
 					Event correctedFrom = command.getFrom().copy();
 					correctedFrom.setVersion(current.getVersion());
 					correctedFrom.setOptimisticLock(Objects.requireNonNull(current.getOptimisticLock()));
@@ -121,10 +121,7 @@ public class UpdateEventCommand extends Command {
 		}
 
 		private void update(UpdateEventCommand command) {
-			repository.update(
-					command.getBucketId(),
-					command.getFrom(),
-					command.getTo().copy()); // copy to prevent the version number from being incremented
+			repository.update(command.getBucketId(), command.getFrom(), command.getTo().copy()); // copy to prevent the version number from being incremented
 		}
 
 		private void create(UpdateEventCommand command) {

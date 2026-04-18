@@ -11,14 +11,18 @@ public class FacetOptionsTest {
 
 	@Test
 	public void test() {
-		check(new FacetOptions(ImmutableMap.<String, String>builder()
-				.put("a", "foo")
-				.put("b", "42")
-				.put("c", "1.23456789")
-				.put("d", "true")
-				.put("e", "-08:00")
-				.put("l", "l1,l2,l3,l4")
-				.build()));
+		check(
+			new FacetOptions(
+				ImmutableMap.<String, String>builder()
+					.put("a", "foo")
+					.put("b", "42")
+					.put("c", "1.23456789")
+					.put("d", "true")
+					.put("e", "-08:00")
+					.put("l", "l1,l2,l3,l4")
+					.build()
+			)
+		);
 	}
 
 	@Test
@@ -27,7 +31,6 @@ public class FacetOptionsTest {
 	}
 
 	private static void check(FacetOptions options) {
-
 		assertThat(options.get("a")).isEqualTo("foo");
 		assertThat(options.get("z", String.class, "bar")).isEqualTo("bar");
 
@@ -60,7 +63,8 @@ public class FacetOptionsTest {
 
 	@Test
 	public void testBadType() {
-		assertThatThrownBy(() -> FacetOptions.parse("a:1").get("a", FacetOptions.class, null))
-				.isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> FacetOptions.parse("a:1").get("a", FacetOptions.class, null)).isInstanceOf(
+			IllegalArgumentException.class
+		);
 	}
 }

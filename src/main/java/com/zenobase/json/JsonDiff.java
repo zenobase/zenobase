@@ -38,15 +38,18 @@ public class JsonDiff {
 				to.set(entry.getKey(), entry.getValue());
 			} else {
 				Preconditions.checkState(
-						value.equals(entry.getValue()),
-						"Expected <%s> but found <%s> in field <%s>",
-						entry.getValue(),
-						value,
-						entry.getKey());
+					value.equals(entry.getValue()),
+					"Expected <%s> but found <%s> in field <%s>",
+					entry.getValue(),
+					value,
+					entry.getKey()
+				);
 			}
 		}
-		for (String removedField :
-				Sets.difference(Sets.newHashSet(original.fieldNames()), Sets.newHashSet(modified.fieldNames()))) {
+		for (String removedField : Sets.difference(
+			Sets.newHashSet(original.fieldNames()),
+			Sets.newHashSet(modified.fieldNames())
+		)) {
 			from.set(removedField, original.get(removedField));
 			to.set(removedField, NullNode.getInstance());
 		}

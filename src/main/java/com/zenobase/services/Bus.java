@@ -1,7 +1,6 @@
 package com.zenobase.services;
 
 public interface Bus {
-
 	boolean isReadOnly();
 
 	void setReadOnly(boolean readOnly);

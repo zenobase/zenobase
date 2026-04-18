@@ -47,50 +47,54 @@ public class LocalIntervals extends DateTimeFormatSupport {
 		HOUR(DurationFieldType.hours()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder.append(yearElement())
-						.append(monthElement())
-						.append(dayOfMonthElement())
-						.appendLiteral('T')
-						.append(hourElement());
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.append(dayOfMonthElement())
+					.appendLiteral('T')
+					.append(hourElement());
 			}
 		},
 
 		MINUTE(DurationFieldType.minutes()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder.append(yearElement())
-						.append(monthElement())
-						.append(dayOfMonthElement())
-						.appendLiteral('T')
-						.append(hourElement())
-						.append(minuteElement());
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.append(dayOfMonthElement())
+					.appendLiteral('T')
+					.append(hourElement())
+					.append(minuteElement());
 			}
 		},
 
 		SECOND(DurationFieldType.seconds()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder.append(yearElement())
-						.append(monthElement())
-						.append(dayOfMonthElement())
-						.appendLiteral('T')
-						.append(hourElement())
-						.append(minuteElement())
-						.append(secondElement());
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.append(dayOfMonthElement())
+					.appendLiteral('T')
+					.append(hourElement())
+					.append(minuteElement())
+					.append(secondElement());
 			}
 		},
 
 		MILLISECOND(DurationFieldType.millis()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder.append(yearElement())
-						.append(monthElement())
-						.append(dayOfMonthElement())
-						.appendLiteral('T')
-						.append(hourElement())
-						.append(minuteElement())
-						.append(secondElement())
-						.append(millisElement());
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.append(dayOfMonthElement())
+					.appendLiteral('T')
+					.append(hourElement())
+					.append(minuteElement())
+					.append(secondElement())
+					.append(millisElement());
 			}
 		};
 

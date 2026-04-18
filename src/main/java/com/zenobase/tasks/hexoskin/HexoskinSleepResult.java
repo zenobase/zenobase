@@ -9,7 +9,12 @@ import com.zenobase.models.Identity;
 class HexoskinSleepResult extends HexoskinResultSupport {
 
 	public HexoskinSleepResult(
-			JsonNode node, Identity author, @Nullable String tag, DateTimeZone zone, boolean metric) {
+		JsonNode node,
+		Identity author,
+		@Nullable String tag,
+		DateTimeZone zone,
+		boolean metric
+	) {
 		super(node, author, tag, zone, metric);
 	}
 }

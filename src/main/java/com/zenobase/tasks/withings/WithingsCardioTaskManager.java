@@ -25,7 +25,8 @@ public class WithingsCardioTaskManager extends WithingsTaskManagerSupport<Within
 	@Override
 	public WithingsCardioTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		DateTimeZone timezone = DateTimeZone.forID(
-				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+			MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC")
+		);
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "heart rate");
 		var task = new WithingsCardioTask(bucketId, principal, marker);
@@ -36,19 +37,20 @@ public class WithingsCardioTaskManager extends WithingsTaskManagerSupport<Within
 
 	private static @Nullable String parseMarker(@Nullable String marker, DateTimeZone timezone) {
 		return marker != null
-				? Long.toString(LocalDateTime.parse(marker.replace("Z", ""))
-								.toDateTime(timezone)
-								.getMillis()
-						/ 1000)
-				: null;
+			? Long.toString(LocalDateTime.parse(marker.replace("Z", "")).toDateTime(timezone).getMillis() / 1000)
+			: null;
 	}
 
 	@Override
 	Command safeExecute(WithingsCardioTask task, OAuthCredentials credentials, Token token) {
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
-		var result =
-				new WithingsCardioResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
+		var result = new WithingsCardioResult(
+			parseObject(response),
+			task.getPrincipal(),
+			task.getTag(),
+			task.getTimezone()
+		);
 		checkStatus(result, request, credentials);
 		return createCommand(task, credentials, token, result);
 	}

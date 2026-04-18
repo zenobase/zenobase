@@ -17,8 +17,9 @@ import com.zenobase.repositories.EventRepository;
 public class UpdateEventCommandTest {
 
 	private final EventRepository repository = mock(EventRepository.class);
-	private final CommandHandlerRegistry registry =
-			CommandHandlerRegistry.containing(new UpdateEventCommand.Handler(repository));
+	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
+		new UpdateEventCommand.Handler(repository)
+	);
 	private final String bucketId = Generator.id();
 	private final Identity principal = new Identity();
 	private final Event from = new Event();
@@ -34,7 +35,6 @@ public class UpdateEventCommandTest {
 
 	@Test
 	public void test() {
-
 		Command command = new UpdateEventCommand(principal, bucketId, from, to);
 		registry.execute(command);
 		verify(repository).update(eq(bucketId), any(Event.class), any(Event.class));
@@ -53,13 +53,15 @@ public class UpdateEventCommandTest {
 
 	@Test
 	public void testRecoverFromVersionConflict() {
-
 		Event to2 = to.copy();
 		to2.setVersion(1);
 
 		Command command = new UpdateEventCommand(principal, bucketId, from, to);
-		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409)
-				.error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
+		Exception e = new OpenSearchException(
+			ErrorResponse.of(r ->
+				r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))
+			)
+		);
 		doThrow(e).doNothing().when(repository).update(eq(bucketId), any(Event.class), any(Event.class));
 		Event current = from.copy();
 		current.setVersion(1);
@@ -71,10 +73,12 @@ public class UpdateEventCommandTest {
 
 	@Test
 	public void testUnrecoverableVersionConflict() {
-
 		Command command = new UpdateEventCommand(principal, bucketId, from, to);
-		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409)
-				.error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
+		Exception e = new OpenSearchException(
+			ErrorResponse.of(r ->
+				r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))
+			)
+		);
 		doThrow(e).when(repository).update(eq(bucketId), any(Event.class), any(Event.class));
 		Event current = from.copy();
 		current.setVersion(3);
@@ -84,10 +88,12 @@ public class UpdateEventCommandTest {
 
 	@Test
 	public void testRecoverFromMissingEvent() {
-
 		Command command = new UpdateEventCommand(principal, bucketId, from, to);
-		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409)
-				.error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
+		Exception e = new OpenSearchException(
+			ErrorResponse.of(r ->
+				r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))
+			)
+		);
 		doThrow(e).when(repository).update(eq(bucketId), any(Event.class), any(Event.class));
 		when(repository.find(bucketId, to.getId())).thenReturn(null);
 		registry.execute(command);

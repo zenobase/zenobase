@@ -46,11 +46,15 @@ public class LocationMap {
 	public @Nullable Event update(Event event) {
 		ImmutableList<DateTime> times = event.getValues(Event.TIMESTAMP);
 		Preconditions.checkState(!times.isEmpty());
-		Location location = times.size() == 1
+		Location location =
+			times.size() == 1
 				? get(times.getFirst())
-				: getFirst(Range.closedOpen(
-						Objects.requireNonNull(Ordering.natural().min(times)),
-						Objects.requireNonNull(Ordering.natural().max(times))));
+				: getFirst(
+						Range.closedOpen(
+							Objects.requireNonNull(Ordering.natural().min(times)),
+							Objects.requireNonNull(Ordering.natural().max(times))
+						)
+					);
 		if (location == null) {
 			return null;
 		}

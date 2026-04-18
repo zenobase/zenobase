@@ -1,51 +1,51 @@
 {
-    "_links": {
-        "self": [
-            {
-                "href": "/api/0.2/sleep/?target_start_datetime=2015-01-01T00%3A00%3A00.000-08%3A00&limit=40&user=37756949&offset=0"
-            }
-        ],
-        "documentation": [
-            {
-                "href": "https://www.mapmyapi.com/docs/02_Sleep"
-            }
-        ]
-    },
-    "_embedded": {
-        "sleeps": [
-            {
-            	"recorder_type_key": "client_manual_creation",
-            	"reference_key": "4275325a-4e1e-4753-92fe-a5e4146e1cc6",
-            	"updated_datetime": "2015-01-07T14:09:28+00:00",
-            	"created_datetime": "2015-01-07T14:09:28+00:00",
-                "aggregates": {
-                    "sum": 21600,
-                    "details": {
-                        "deep_sleep": {
-                            "sum": 0
-                        },
-                        "awake": {
-                            "sum": 2160
-                        },
-                        "time_to_sleep": {
-                            "sum": 0
-                        },
-                        "times_awakened": {
-                            "sum": 0
-                        },
-                        "light_sleep": {
-                            "sum": 19440
-                        }
-                    }
-                },
-                "time_series": null,
-                "has_time_series": false,
-                "start_datetime_utc": "2015-01-07T07:30:00+00:00",
-                "end_datetime_utc": "2015-01-07T13:30:00+00:00",
-                "start_datetime_timezone": "America/Los_Angeles"                
-            }
-        ]
-    },
-    "total_count": 1,
-    "oldest_date": "2014-04-17"
+	"_links": {
+		"self": [
+			{
+				"href": "/api/0.2/sleep/?target_start_datetime=2015-01-01T00%3A00%3A00.000-08%3A00&limit=40&user=37756949&offset=0"
+			}
+		],
+		"documentation": [
+			{
+				"href": "https://www.mapmyapi.com/docs/02_Sleep"
+			}
+		]
+	},
+	"_embedded": {
+		"sleeps": [
+			{
+				"recorder_type_key": "client_manual_creation",
+				"reference_key": "4275325a-4e1e-4753-92fe-a5e4146e1cc6",
+				"updated_datetime": "2015-01-07T14:09:28+00:00",
+				"created_datetime": "2015-01-07T14:09:28+00:00",
+				"aggregates": {
+					"sum": 21600,
+					"details": {
+						"deep_sleep": {
+							"sum": 0
+						},
+						"awake": {
+							"sum": 2160
+						},
+						"time_to_sleep": {
+							"sum": 0
+						},
+						"times_awakened": {
+							"sum": 0
+						},
+						"light_sleep": {
+							"sum": 19440
+						}
+					}
+				},
+				"time_series": null,
+				"has_time_series": false,
+				"start_datetime_utc": "2015-01-07T07:30:00+00:00",
+				"end_datetime_utc": "2015-01-07T13:30:00+00:00",
+				"start_datetime_timezone": "America/Los_Angeles"
+			}
+		]
+	},
+	"total_count": 1,
+	"oldest_date": "2014-04-17"
 }

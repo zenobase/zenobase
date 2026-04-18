@@ -53,24 +53,22 @@ public class CommandRepository extends RepositorySupport<Command> {
 
 	public void find(CommandQuery query, SearchOrder order, Callback<Command> callback) {
 		index.find(
-				() -> {
-					var builder = new SearchRequest.Builder()
-							.index(index.getIndexName())
-							.query(query.build())
-							.size(100);
-					order.apply(builder);
-					return builder;
-				},
-				node -> callback.call(toObject(node)));
+			() -> {
+				var builder = new SearchRequest.Builder().index(index.getIndexName()).query(query.build()).size(100);
+				order.apply(builder);
+				return builder;
+			},
+			node -> callback.call(toObject(node))
+		);
 	}
 
 	public PartialList<Command> find(CommandQuery query, SearchOrder order, int offset, int limit) {
 		SearchRequest.Builder builder = new SearchRequest.Builder()
-				.index(index.getIndexName())
-				.query(query.build())
-				.from(offset)
-				.size(limit)
-				.trackTotalHits(t -> t.enabled(true));
+			.index(index.getIndexName())
+			.query(query.build())
+			.from(offset)
+			.size(limit)
+			.trackTotalHits(t -> t.enabled(true));
 		order.apply(builder);
 		return new CommandList(index.find(builder.build()), parsers);
 	}
@@ -87,13 +85,19 @@ public class CommandRepository extends RepositorySupport<Command> {
 	public int getTotalCost(Identity principal, DateTime since) {
 		String id = "cost";
 		Query filter = createFilter(principal, since);
-		SearchRequest request = SearchRequest.of(s -> s.index(index.getIndexName())
+		SearchRequest request = SearchRequest.of(s ->
+			s
+				.index(index.getIndexName())
 				.size(1)
 				.aggregations(
-						id,
-						Aggregation.of(a -> a.filter(filter)
-								.aggregations(
-										id, Aggregation.of(sa -> sa.sum(sum -> sum.field(Command.COST.getName())))))));
+					id,
+					Aggregation.of(a ->
+						a
+							.filter(filter)
+							.aggregations(id, Aggregation.of(sa -> sa.sum(sum -> sum.field(Command.COST.getName()))))
+					)
+				)
+		);
 		SearchResponse<ObjectNode> response = index.search(request);
 		var aggregations = response.aggregations();
 		if (aggregations == null) {
@@ -112,10 +116,21 @@ public class CommandRepository extends RepositorySupport<Command> {
 	}
 
 	private static Query createFilter(Identity principal, DateTime since) {
-		return Query.of(q -> q.bool(b -> b.must(Query.of(
-						q2 -> q2.term(t -> t.field(Command.PRINCIPAL.getName()).value(FieldValue.of(principal.id())))))
-				.must(Query.of(q3 ->
-						q3.range(r -> r.field(Command.TIMESTAMP.getName()).gte(JsonData.of(since.getMillis())))))));
+		return Query.of(q ->
+			q.bool(b ->
+				b
+					.must(
+						Query.of(q2 ->
+							q2.term(t -> t.field(Command.PRINCIPAL.getName()).value(FieldValue.of(principal.id())))
+						)
+					)
+					.must(
+						Query.of(q3 ->
+							q3.range(r -> r.field(Command.TIMESTAMP.getName()).gte(JsonData.of(since.getMillis())))
+						)
+					)
+			)
+		);
 	}
 
 	@Override

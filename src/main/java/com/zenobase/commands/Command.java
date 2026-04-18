@@ -124,13 +124,13 @@ public class Command extends DomainNode {
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-				.add(ID)
-				.add(TYPE)
-				.add(PRINCIPAL)
-				.add(TIMESTAMP)
-				.add(PARAMETERS)
-				.add(COST)
-				.build();
+			.add(ID)
+			.add(TYPE)
+			.add(PRINCIPAL)
+			.add(TIMESTAMP)
+			.add(PARAMETERS)
+			.add(COST)
+			.build();
 	}
 
 	public record Type(String name, int version) {

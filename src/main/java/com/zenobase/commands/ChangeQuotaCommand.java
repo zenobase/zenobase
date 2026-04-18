@@ -26,7 +26,11 @@ public class ChangeQuotaCommand extends Command {
 	}
 
 	public ChangeQuotaCommand(
-			Identity principal, @Nullable String username, @Nullable Integer from, @Nullable Integer to) {
+		Identity principal,
+		@Nullable String username,
+		@Nullable Integer from,
+		@Nullable Integer to
+	) {
 		super(TYPE, principal);
 		setParameter(USERNAME, username);
 		setParameter(FROM, from);
@@ -86,15 +90,17 @@ public class ChangeQuotaCommand extends Command {
 			User user = repository.find(Objects.requireNonNull(command.getUsername()));
 			if (user != null) {
 				Preconditions.checkState(
-						Objects.equals(command.getFrom(), user.getQuota()),
-						"Conflict: Expected <%s> but got <%s>",
-						command.getFrom(),
-						user.getQuota());
+					Objects.equals(command.getFrom(), user.getQuota()),
+					"Conflict: Expected <%s> but got <%s>",
+					command.getFrom(),
+					user.getQuota()
+				);
 				user.setQuota(command.getTo());
 				repository.update(user);
 			} else {
 				throw new NonExistentUserException(
-						"Tried to change the quota of a nonexistent user: " + command.getUsername());
+					"Tried to change the quota of a nonexistent user: " + command.getUsername()
+				);
 			}
 		}
 	}

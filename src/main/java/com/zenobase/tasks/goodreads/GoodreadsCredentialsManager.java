@@ -26,10 +26,11 @@ public class GoodreadsCredentialsManager extends OAuthCredentialsManager {
 
 	@Inject
 	public GoodreadsCredentialsManager(
-			CredentialsRepository integrations,
-			@Named("goodreads.api.key") String apiKey,
-			@Named("goodreads.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+		CredentialsRepository integrations,
+		@Named("goodreads.api.key") String apiKey,
+		@Named("goodreads.api.secret") String apiSecret,
+		@Named("oauth.hostname") String callbackUrl
+	) {
 		super(TYPE, integrations, new GoodreadsApi(callbackUrl + "/oauth/callback/-"), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -48,10 +49,10 @@ public class GoodreadsCredentialsManager extends OAuthCredentialsManager {
 		}
 		Token token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-				.build();
+			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+			.with(Credentials.CREDENTIALS)
+			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+			.build();
 	}
 
 	@Override

@@ -38,7 +38,6 @@ public class HistogramFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testOnCount() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -58,14 +57,18 @@ public class HistogramFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testOnCountWithFilter() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
 		addFacet(
-				"id:%s,type:%s,field:%s,interval:%s,filter:%s",
-				FACET_ID, HistogramFacet.TYPE, Event.COUNT, 1000, "tag:hike|count:(5000..*)");
+			"id:%s,type:%s,field:%s,interval:%s,filter:%s",
+			FACET_ID,
+			HistogramFacet.TYPE,
+			Event.COUNT,
+			1000,
+			"tag:hike|count:(5000..*)"
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -77,14 +80,18 @@ public class HistogramFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testOnDistance() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
 		addFacet(
-				"id:%s,type:%s,field:%s,interval:%s,unit:%s",
-				FACET_ID, HistogramFacet.TYPE, Event.DISTANCE, 5, Units.KM);
+			"id:%s,type:%s,field:%s,interval:%s,unit:%s",
+			FACET_ID,
+			HistogramFacet.TYPE,
+			Event.DISTANCE,
+			5,
+			Units.KM
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -103,14 +110,18 @@ public class HistogramFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testOnDistanceInMiles() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
 		addFacet(
-				"id:%s,type:%s,field:%s,interval:%s,unit:%s",
-				FACET_ID, HistogramFacet.TYPE, Event.DISTANCE, 5, Units.MI);
+			"id:%s,type:%s,field:%s,interval:%s,unit:%s",
+			FACET_ID,
+			HistogramFacet.TYPE,
+			Event.DISTANCE,
+			5,
+			Units.MI
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -129,14 +140,18 @@ public class HistogramFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testOnTemperatureInCelsius() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
 		addFacet(
-				"id:%s,type:%s,field:%s,interval:%s,unit:%s",
-				FACET_ID, HistogramFacet.TYPE, Event.TEMPERATURE, "1.0", Units.C);
+			"id:%s,type:%s,field:%s,interval:%s,unit:%s",
+			FACET_ID,
+			HistogramFacet.TYPE,
+			Event.TEMPERATURE,
+			"1.0",
+			Units.C
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -155,14 +170,18 @@ public class HistogramFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testOnTemperatureInFractionalCelsius() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
 		addFacet(
-				"id:%s,type:%s,field:%s,interval:%s,unit:%s",
-				FACET_ID, HistogramFacet.TYPE, Event.TEMPERATURE, "0.5", Units.C);
+			"id:%s,type:%s,field:%s,interval:%s,unit:%s",
+			FACET_ID,
+			HistogramFacet.TYPE,
+			Event.TEMPERATURE,
+			"0.5",
+			Units.C
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -186,14 +205,18 @@ public class HistogramFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testOnTemperatureInFarenheit() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
 		addFacet(
-				"id:%s,type:%s,field:%s,interval:%s,unit:%s",
-				FACET_ID, HistogramFacet.TYPE, Event.TEMPERATURE, "1.0", Units.F);
+			"id:%s,type:%s,field:%s,interval:%s,unit:%s",
+			FACET_ID,
+			HistogramFacet.TYPE,
+			Event.TEMPERATURE,
+			"1.0",
+			Units.F
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -217,7 +240,6 @@ public class HistogramFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testOnEmpty() {
-
 		addFacet("id:%s,type:%s,field:%s", FACET_ID, HistogramFacet.TYPE, Event.RATING);
 
 		ObjectNode result = execute();

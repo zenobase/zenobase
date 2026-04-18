@@ -32,10 +32,11 @@ public class LastFmCredentialsManager extends OAuthCredentialsManager {
 
 	@Inject
 	public LastFmCredentialsManager(
-			CredentialsRepository repository,
-			@Named("lastfm.api.key") String apiKey,
-			@Named("lastfm.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+		CredentialsRepository repository,
+		@Named("lastfm.api.key") String apiKey,
+		@Named("lastfm.api.secret") String apiSecret,
+		@Named("oauth.hostname") String callbackUrl
+	) {
 		super(TYPE, repository, new LastFmApi(), apiKey, apiSecret, callbackUrl);
 		this.apiKey = apiKey;
 		this.signature = new Signature(apiSecret);
@@ -60,11 +61,11 @@ public class LastFmCredentialsManager extends OAuthCredentialsManager {
 		}
 		LastFmToken token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-				.set(OAuthCredentials.SCOPE, credentials.getScope(), token.getScope())
-				.build();
+			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+			.with(Credentials.CREDENTIALS)
+			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+			.set(OAuthCredentials.SCOPE, credentials.getScope(), token.getScope())
+			.build();
 	}
 
 	@Override
@@ -90,8 +91,7 @@ public class LastFmCredentialsManager extends OAuthCredentialsManager {
 	}
 
 	private void sign(LastFmRequest request, OAuthCredentials credentials) {
-		request.addQuerystringParameter(
-				"sk", Objects.requireNonNull(credentials.getToken()).getToken());
+		request.addQuerystringParameter("sk", Objects.requireNonNull(credentials.getToken()).getToken());
 		request.addQuerystringParameter("api_key", apiKey);
 		request.addQuerystringParameter("api_sig", signature.sign(request.getQuerystringParameters()));
 	}

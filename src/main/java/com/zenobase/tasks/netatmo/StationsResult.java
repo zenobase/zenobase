@@ -45,7 +45,9 @@ class StationsResult {
 		String label = node.path("module_name").textValue();
 		DateTime created = getTimestamp(node.path("date_setup"), DateTimeZone.UTC);
 		DateTime updated = getTimestamp(
-				node.path("last_status_store"), getTimezone(node.path("place").path("timezone")));
+			node.path("last_status_store"),
+			getTimezone(node.path("place").path("timezone"))
+		);
 		Location location = getLocation(node.path("place").path("location"));
 		List<String> types = parseTypes(node.path("data_type"));
 		return new Device(id, label, created, updated, location, types);
@@ -56,13 +58,14 @@ class StationsResult {
 		String moduleLabel = node.path("module_name").textValue();
 		List<String> types = parseTypes(node.path("data_type"));
 		return new Device(
-				device.getId(),
-				moduleId,
-				moduleLabel,
-				device.getCreated(),
-				device.getUpdated(),
-				device.getLocation(),
-				types);
+			device.getId(),
+			moduleId,
+			moduleLabel,
+			device.getCreated(),
+			device.getUpdated(),
+			device.getLocation(),
+			types
+		);
 	}
 
 	private static DateTimeZone getTimezone(JsonNode node) {
@@ -77,7 +80,10 @@ class StationsResult {
 
 	private static Location getLocation(JsonNode node) {
 		Preconditions.checkArgument(
-				node.isArray() && node.size() == 2, "Expected an array with two elements but got <%s>", node);
+			node.isArray() && node.size() == 2,
+			"Expected an array with two elements but got <%s>",
+			node
+		);
 		return new Location(node.path(1).decimalValue(), node.path(0).decimalValue());
 	}
 

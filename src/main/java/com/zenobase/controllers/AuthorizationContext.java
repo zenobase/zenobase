@@ -30,8 +30,7 @@ public class AuthorizationContext {
 	}
 
 	public @Nullable Authorization current(ServerRequest request) {
-		String token =
-				extractToken(request.headers().first(HeaderNames.AUTHORIZATION).orElse(null));
+		String token = extractToken(request.headers().first(HeaderNames.AUTHORIZATION).orElse(null));
 		if (token == null) {
 			return null;
 		}
@@ -67,8 +66,10 @@ public class AuthorizationContext {
 	}
 
 	private static boolean isOAuthHeader(@Nullable String header) {
-		return header != null
-				&& header.regionMatches(true, 0, HEADER_PREFIX, 0, HEADER_PREFIX.length())
-				&& header.length() > HEADER_PREFIX.length();
+		return (
+			header != null &&
+			header.regionMatches(true, 0, HEADER_PREFIX, 0, HEADER_PREFIX.length()) &&
+			header.length() > HEADER_PREFIX.length()
+		);
 	}
 }

@@ -45,18 +45,15 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		String kind = Strings.emptyToNull(settings.path("kind").textValue());
 		String source = Strings.emptyToNull(settings.path("source").textValue());
 		DateTimeZone timezone = DateTimeZone.forID(
-				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+			MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC")
+		);
 		Task task = new RescueTimeProductivityTask(bucketId, principal, tag, kind, source, timezone);
 		task.setMarker(parseMarker(settings.path("marker").textValue(), timezone));
 		return task;
 	}
 
 	private static @Nullable String parseMarker(@Nullable String marker, DateTimeZone timezone) {
-		return marker != null
-				? LocalDateTime.parse(marker.replace("Z", ""))
-						.toDateTime(timezone)
-						.toString()
-				: null;
+		return marker != null ? LocalDateTime.parse(marker.replace("Z", "")).toDateTime(timezone).toString() : null;
 	}
 
 	@Override
@@ -88,11 +85,19 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		OAuthRequest request = newRequest(task.getKind(), task.getSource(), date);
 		Response response = send(request, credentials);
 		Preconditions.checkState(
-				response.getCode() == 200, "Couldn't request <%s>: %s", request.getCompleteUrl(), response.getCode());
+			response.getCode() == 200,
+			"Couldn't request <%s>: %s",
+			request.getCompleteUrl(),
+			response.getCode()
+		);
 		ObjectNode node = parseObject(response);
 		var result = new ProductivityResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());
 		Preconditions.checkState(
-				result.isSuccess(), "Request <%s> failed: %s", request.getCompleteUrl(), response.getCode());
+			result.isSuccess(),
+			"Request <%s> failed: %s",
+			request.getCompleteUrl(),
+			response.getCode()
+		);
 		return result.getEvents();
 	}
 
@@ -119,24 +124,27 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 	}
 
 	private void removeNotAfter(List<Event> events, DateTime last) {
-		events.removeIf(event ->
-				!Objects.requireNonNull(event.getValue(Event.TIMESTAMP)).isAfter(last));
+		events.removeIf(event -> !Objects.requireNonNull(event.getValue(Event.TIMESTAMP)).isAfter(last));
 	}
 
 	private Command createCommand(Task task, List<Event> events) {
 		var command = new CompoundCommand(
-				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
-		command.add(UpdateTaskCommand.builder(task)
+			task.getPrincipal(),
+			"ran " + getType() + " task",
+			"reverted " + getType() + " task"
+		);
+		command.add(
+			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 				.set(
-						Task.MARKER,
-						task.getMarker(),
-						events.isEmpty()
-								? task.getMarker()
-								: Objects.requireNonNull(getLast(events)).toString())
+					Task.MARKER,
+					task.getMarker(),
+					events.isEmpty() ? task.getMarker() : Objects.requireNonNull(getLast(events)).toString()
+				)
 				.set(Task.UNDO, task.getUndoId(), command.getId())
-				.build());
+				.build()
+		);
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}

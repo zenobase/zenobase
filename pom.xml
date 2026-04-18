@@ -245,18 +245,45 @@
                 <version>3.4.0</version>
                 <configuration>
                     <java>
-<palantirJavaFormat>
-                            <version>2.90.0</version>
-                        </palantirJavaFormat>
+                        <prettier>
+                            <devDependencies>
+                                <prettier>3.8.3</prettier>
+                                <prettier-plugin-java>2.8.1</prettier-plugin-java>
+                            </devDependencies>
+                            <configFile>${project.basedir}/.prettierrc.json</configFile>
+                            <config>
+                                <parser>java</parser>
+                            </config>
+                        </prettier>
                         <removeUnusedImports/>
                         <importOrder>
                             <order>java|javax,,com.zenobase</order>
                         </importOrder>
-                        <indent>
-                            <tabs>true</tabs>
-                            <spacesPerTab>4</spacesPerTab>
-                        </indent>
                     </java>
+                    <formats>
+                        <format>
+                            <includes>
+                                <include>**/*.json</include>
+                                <include>**/*.yaml</include>
+                                <include>**/*.yml</include>
+                                <include>**/*.md</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/target/**</exclude>
+                                <exclude>**/node_modules/**</exclude>
+                                <exclude>infra/**</exclude>
+                            </excludes>
+                            <prettier>
+                                <devDependencies>
+                                    <prettier>3.8.3</prettier>
+                                    <prettier-plugin-java>2.8.1</prettier-plugin-java>
+                                </devDependencies>
+                                <configFile>${project.basedir}/.prettierrc.json</configFile>
+                            </prettier>
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
+                        </format>
+                    </formats>
                 </configuration>
             </plugin>
             <plugin>

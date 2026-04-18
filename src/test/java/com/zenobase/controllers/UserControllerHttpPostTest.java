@@ -37,8 +37,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.asIdentity())).thenReturn(user);
 		when(dispatcher.dispatch(any(OptOutCommand.class))).thenReturn(commandId);
-		try (Http1ClientResponse result =
-				call(user.getId(), UpdateUserForm.withOptedOut(true).toJson())) {
+		try (Http1ClientResponse result = call(user.getId(), UpdateUserForm.withOptedOut(true).toJson())) {
 			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, commandId).isEmpty();
 		}
 	}
@@ -49,8 +48,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.asIdentity())).thenReturn(user);
 		when(dispatcher.dispatch(any(OptInCommand.class))).thenReturn(commandId);
-		try (Http1ClientResponse result =
-				call(user.getId(), UpdateUserForm.withOptedOut(false).toJson())) {
+		try (Http1ClientResponse result = call(user.getId(), UpdateUserForm.withOptedOut(false).toJson())) {
 			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, commandId).isEmpty();
 		}
 	}
@@ -58,8 +56,9 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 	@Test
 	public void testUpdateUserNotFound() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		try (Http1ClientResponse result =
-				call('@' + user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson())) {
+		try (
+			Http1ClientResponse result = call('@' + user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson())
+		) {
 			assertThat(result).hasStatus(404);
 			verifyNoInteractions(dispatcher);
 		}

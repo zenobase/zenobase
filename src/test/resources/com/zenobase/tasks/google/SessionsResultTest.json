@@ -1,28 +1,27 @@
 {
-    "session": [
-        {
-            "id": "1414524120000",
-            "name": "user entered session",
-            "startTimeMillis": "1414524120000",
-            "endTimeMillis": "1414525620000",
-            "application": {
-                "detailsUrl": "http://example.com/",
-                "name": "Example App",
-                "version": "1.0"
-
-            },
-            "activityType": 7
-        },
-        {
-            "id": "1414612800000",
-            "name": "user entered session",
-            "startTimeMillis": "1414612800000",
-            "endTimeMillis": "1414614960000",
-            "application": {
-                "packageName": "com.strava"
-            },
-            "activityType": -1
-        }
-    ],
-    "nextPageToken": "1414618922396"
+	"session": [
+		{
+			"id": "1414524120000",
+			"name": "user entered session",
+			"startTimeMillis": "1414524120000",
+			"endTimeMillis": "1414525620000",
+			"application": {
+				"detailsUrl": "http://example.com/",
+				"name": "Example App",
+				"version": "1.0"
+			},
+			"activityType": 7
+		},
+		{
+			"id": "1414612800000",
+			"name": "user entered session",
+			"startTimeMillis": "1414612800000",
+			"endTimeMillis": "1414614960000",
+			"application": {
+				"packageName": "com.strava"
+			},
+			"activityType": -1
+		}
+	],
+	"nextPageToken": "1414618922396"
 }

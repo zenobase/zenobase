@@ -9,7 +9,6 @@ public class SchemaBuilderTest {
 
 	@Test
 	public void test() {
-
 		String typeName = "test";
 		TokenField field = new TokenField("who");
 		SchemaBuilder builder = new SchemaBuilder(typeName).add(field);

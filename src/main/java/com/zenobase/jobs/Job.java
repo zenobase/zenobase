@@ -34,8 +34,8 @@ public abstract class Job {
 
 	public JsonNode toJson() {
 		return Nodes.newObject()
-				.put("label", label)
-				.put("begin", begin.toString("HH:mm"))
-				.put("period", period.toString());
+			.put("label", label)
+			.put("begin", begin.toString("HH:mm"))
+			.put("period", period.toString());
 	}
 }

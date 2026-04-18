@@ -28,23 +28,26 @@ public class JsonPatch {
 			JsonNode found = node.path(entry.getKey());
 			if (entry.getValue().isNull()) {
 				Preconditions.checkState(
-						found.isMissingNode(),
-						"Expected value of field <%s> to be empty but found <%s>",
-						entry.getKey(),
-						found);
+					found.isMissingNode(),
+					"Expected value of field <%s> to be empty but found <%s>",
+					entry.getKey(),
+					found
+				);
 			} else if (entry.getValue().isValueNode()) {
 				Preconditions.checkState(
-						entry.getValue().equals(found),
-						"Expected value of field <%s> to be <%s> but found <%s>",
-						entry.getKey(),
-						entry.getValue(),
-						found);
+					entry.getValue().equals(found),
+					"Expected value of field <%s> to be <%s> but found <%s>",
+					entry.getKey(),
+					entry.getValue(),
+					found
+				);
 			} else if (entry.getValue().isObject()) {
 				Preconditions.checkState(
-						found.isObject(),
-						"Expected value of field <%s> to be an object node but found <%s>",
-						entry.getKey(),
-						found);
+					found.isObject(),
+					"Expected value of field <%s> to be an object node but found <%s>",
+					entry.getKey(),
+					found
+				);
 				checkState((ObjectNode) found, (ObjectNode) entry.getValue());
 			} else {
 				throw new AssertionError();

@@ -16,9 +16,11 @@ public class SessionsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-
 		SessionsResult result = new SessionsResult(
-				readObject("SessionsResultTest.json"), TESTER, DateTimeZone.forID("America/Los_Angeles"));
+			readObject("SessionsResultTest.json"),
+			TESTER,
+			DateTimeZone.forID("America/Los_Angeles")
+		);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(2);
 		assertThat(result.getNextPageToken()).isEqualTo("1414618922396");

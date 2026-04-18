@@ -14,25 +14,19 @@ public class DateTimeFormatSupport {
 	}
 
 	protected static DateTimeFormatter monthElement() {
-		return new DateTimeFormatterBuilder()
-				.appendLiteral('-')
-				.appendMonthOfYear(2)
-				.toFormatter();
+		return new DateTimeFormatterBuilder().appendLiteral('-').appendMonthOfYear(2).toFormatter();
 	}
 
 	protected static DateTimeFormatter weekofYearElement() {
 		return new DateTimeFormatterBuilder()
-				.appendLiteral('-')
-				.appendLiteral('W')
-				.appendWeekOfWeekyear(2)
-				.toFormatter();
+			.appendLiteral('-')
+			.appendLiteral('W')
+			.appendWeekOfWeekyear(2)
+			.toFormatter();
 	}
 
 	protected static DateTimeFormatter dayOfMonthElement() {
-		return new DateTimeFormatterBuilder()
-				.appendLiteral('-')
-				.appendDayOfMonth(2)
-				.toFormatter();
+		return new DateTimeFormatterBuilder().appendLiteral('-').appendDayOfMonth(2).toFormatter();
 	}
 
 	protected static DateTimeFormatter tElement() {
@@ -44,29 +38,18 @@ public class DateTimeFormatSupport {
 	}
 
 	protected static DateTimeFormatter minuteElement() {
-		return new DateTimeFormatterBuilder()
-				.appendLiteral(':')
-				.appendMinuteOfHour(2)
-				.toFormatter();
+		return new DateTimeFormatterBuilder().appendLiteral(':').appendMinuteOfHour(2).toFormatter();
 	}
 
 	protected static DateTimeFormatter secondElement() {
-		return new DateTimeFormatterBuilder()
-				.appendLiteral(':')
-				.appendSecondOfMinute(2)
-				.toFormatter();
+		return new DateTimeFormatterBuilder().appendLiteral(':').appendSecondOfMinute(2).toFormatter();
 	}
 
 	protected static DateTimeFormatter millisElement() {
-		return new DateTimeFormatterBuilder()
-				.appendLiteral('.')
-				.appendFractionOfSecond(3, 3)
-				.toFormatter();
+		return new DateTimeFormatterBuilder().appendLiteral('.').appendFractionOfSecond(3, 3).toFormatter();
 	}
 
 	protected static DateTimeFormatter offsetElement() {
-		return new DateTimeFormatterBuilder()
-				.appendTimeZoneOffset("Z", true, 2, 2)
-				.toFormatter();
+		return new DateTimeFormatterBuilder().appendTimeZoneOffset("Z", true, 2, 2).toFormatter();
 	}
 }

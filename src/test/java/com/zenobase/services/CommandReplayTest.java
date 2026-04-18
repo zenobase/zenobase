@@ -28,7 +28,6 @@ public class CommandReplayTest extends OpenSearchTestSupport {
 
 	@Test
 	public void test() {
-
 		user.setEmail("jdoe@example.com");
 
 		List<Command> commandsToReplay = newCommands(55, user.asIdentity());
@@ -56,15 +55,15 @@ public class CommandReplayTest extends OpenSearchTestSupport {
 			Mockito.verify(dispatcher).discard(command);
 		}
 		assertEquals(
-				commandsToReplay.size() + commandsToDiscard.size() + guestCommandsToDiscard.size(),
-				Mockito.mockingDetails(dispatcher).getInvocations().size());
+			commandsToReplay.size() + commandsToDiscard.size() + guestCommandsToDiscard.size(),
+			Mockito.mockingDetails(dispatcher).getInvocations().size()
+		);
 	}
 
 	private List<Command> newCommands(int count, Identity principal) {
 		List<Command> commands = Lists.newArrayList();
 		for (int i = 0; i < count; ++i) {
-			Uninterruptibles.sleepUninterruptibly(
-					5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
+			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
 			commands.add(new TestCommand(principal, String.format("Command #%s", i + 1)));
 		}
 		return commands;

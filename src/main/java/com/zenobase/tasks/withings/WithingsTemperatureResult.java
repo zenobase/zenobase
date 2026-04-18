@@ -26,11 +26,12 @@ class WithingsTemperatureResult extends WithingsResult {
 	private final DateTimeZone timezone;
 
 	public WithingsTemperatureResult(
-			ObjectNode node,
-			Identity author,
-			@Nullable String tag,
-			@Nullable Unit<Temperature> unit,
-			DateTimeZone timezone) {
+		ObjectNode node,
+		Identity author,
+		@Nullable String tag,
+		@Nullable Unit<Temperature> unit,
+		DateTimeZone timezone
+	) {
 		super(node, author, tag);
 		this.unit = unit;
 		this.timezone = timezone;
@@ -53,7 +54,8 @@ class WithingsTemperatureResult extends WithingsResult {
 	private void addEvents(JsonNode node, List<Event> events) {
 		for (JsonNode measure : node.path("measures")) {
 			switch (measure.path("type").intValue()) {
-				case 12, 71, 73 -> { // air/body/skin temperature
+				case 12, 71, 73 -> {
+					// air/body/skin temperature
 					var event = new Event();
 					event.setValue(Event.TAG, tag);
 					event.setValue(Event.TIMESTAMP, getDateTime(node, timezone));
@@ -67,7 +69,9 @@ class WithingsTemperatureResult extends WithingsResult {
 	}
 
 	private static @Nullable DecimalMeasure<Temperature> getDecimalMeasure(
-			JsonNode measure, @Nullable Unit<Temperature> unit) {
+		JsonNode measure,
+		@Nullable Unit<Temperature> unit
+	) {
 		BigDecimal value = getBigDecimal(measure);
 		if (value == null || unit == null) {
 			return null;

@@ -22,14 +22,13 @@ final class EventChunks extends JsonChunks {
 	@Override
 	public void onReady(JsonStream out) throws IOException {
 		out.writeArrayFieldStart(EventListController.EVENTS.getName());
-		events.find(
-				bucketId, new EventSearchBuilder().addConstraints(constraints).buildSearch(), node -> {
-					try {
-						out.write(node);
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-				});
+		events.find(bucketId, new EventSearchBuilder().addConstraints(constraints).buildSearch(), node -> {
+			try {
+				out.write(node);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		});
 		out.writeEndArray();
 	}
 }

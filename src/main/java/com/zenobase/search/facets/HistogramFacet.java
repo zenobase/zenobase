@@ -40,12 +40,13 @@ public class HistogramFacet extends FilteredFacet {
 	@Override
 	public void configure(SearchRequest.Builder builder) {
 		String f = Units.isDimensionless(unit)
-				? this.field
-				: Field.concat(this.field, DecimalMeasureField.VALUE_SI.getName());
+			? this.field
+			: Field.concat(this.field, DecimalMeasureField.VALUE_SI.getName());
 		double stdInterval = getStandardInterval();
 		double stdOffset = getStandardOffset();
-		Aggregation histogram = Aggregation.of(
-				a -> a.histogram(h -> h.field(f).interval(stdInterval).offset(stdOffset)));
+		Aggregation histogram = Aggregation.of(a ->
+			a.histogram(h -> h.field(f).interval(stdInterval).offset(stdOffset))
+		);
 		addAggregation(getId(), histogram, builder);
 	}
 
@@ -64,7 +65,7 @@ public class HistogramFacet extends FilteredFacet {
 			return 273.15 % interval;
 		}
 		if (Units.F.equals(unit)) {
-			double zeroF_K = (-32.0) * 5.0 / 9.0 + 273.15;
+			double zeroF_K = ((-32.0) * 5.0) / 9.0 + 273.15;
 			return zeroF_K % getStandardInterval();
 		}
 		return 0.0;
@@ -77,8 +78,7 @@ public class HistogramFacet extends FilteredFacet {
 		if (aggregate == null) {
 			return result;
 		}
-		for (HistogramBucket bucket :
-				Lists.reverse(aggregate.histogram().buckets().array())) {
+		for (HistogramBucket bucket : Lists.reverse(aggregate.histogram().buckets().array())) {
 			if (bucket.docCount() > 0) {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("count", bucket.docCount());
@@ -104,11 +104,12 @@ public class HistogramFacet extends FilteredFacet {
 		return options -> {
 			String unit = options.get("unit");
 			return new HistogramFacet(
-					Objects.requireNonNull(options.get("id")),
-					Objects.requireNonNull(options.get("field")),
-					Objects.requireNonNull(options.get("interval", Double.class, 10.0)),
-					unit != null ? Units.valueOf(unit) : Unit.ONE,
-					filterParser.parse(options.get("filter")));
+				Objects.requireNonNull(options.get("id")),
+				Objects.requireNonNull(options.get("field")),
+				Objects.requireNonNull(options.get("interval", Double.class, 10.0)),
+				unit != null ? Units.valueOf(unit) : Unit.ONE,
+				filterParser.parse(options.get("filter"))
+			);
 		};
 	}
 }

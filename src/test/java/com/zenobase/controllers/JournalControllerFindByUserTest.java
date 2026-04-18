@@ -23,12 +23,14 @@ public class JournalControllerFindByUserTest extends JournalControllerTestSuppor
 	@Test
 	public void test() {
 		PartialList<Command> history = DefaultPartialList.of(
-				List.of(new TestCommand(user.asIdentity(), "do it"), new TestCommand(user.asIdentity(), "do it again")),
-				10);
+			List.of(new TestCommand(user.asIdentity(), "do it"), new TestCommand(user.asIdentity(), "do it again")),
+			10
+		);
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(commands.size()).thenReturn(history.getTotal());
-		when(commands.find(new CommandQuery().principalEqualTo(user.asIdentity()), CommandQuery.DEFAULT_ORDER, 0, 2))
-				.thenReturn(history);
+		when(
+			commands.find(new CommandQuery().principalEqualTo(user.asIdentity()), CommandQuery.DEFAULT_ORDER, 0, 2)
+		).thenReturn(history);
 		try (Http1ClientResponse result = call(user.getId(), 0, 2)) {
 			assertThat(result).hasStatus(200).hasContent(CommandList.toJson(history));
 		}
@@ -38,13 +40,15 @@ public class JournalControllerFindByUserTest extends JournalControllerTestSuppor
 	public void testSuperuser() {
 		Identity superuser = new Identity();
 		PartialList<Command> history = DefaultPartialList.of(
-				List.of(new TestCommand(user.asIdentity(), "do it"), new TestCommand(user.asIdentity(), "do it again")),
-				10);
+			List.of(new TestCommand(user.asIdentity(), "do it"), new TestCommand(user.asIdentity(), "do it again")),
+			10
+		);
 		when(auth.current(any())).thenReturn(new Authorization(superuser));
 		when(users.isSuperuser(superuser)).thenReturn(true);
 		when(commands.size()).thenReturn(history.getTotal());
-		when(commands.find(new CommandQuery().principalEqualTo(user.asIdentity()), CommandQuery.DEFAULT_ORDER, 0, 2))
-				.thenReturn(history);
+		when(
+			commands.find(new CommandQuery().principalEqualTo(user.asIdentity()), CommandQuery.DEFAULT_ORDER, 0, 2)
+		).thenReturn(history);
 		try (Http1ClientResponse result = call(user.getId(), 0, 2)) {
 			assertThat(result).hasStatus(200).hasContent(CommandList.toJson(history));
 		}
@@ -91,9 +95,10 @@ public class JournalControllerFindByUserTest extends JournalControllerTestSuppor
 	}
 
 	private Http1ClientResponse call(String userId, int offset, int limit) {
-		return client.get("/users/" + userId + "/journal/")
-				.queryParam("offset", String.valueOf(offset))
-				.queryParam("limit", String.valueOf(limit))
-				.request();
+		return client
+			.get("/users/" + userId + "/journal/")
+			.queryParam("offset", String.valueOf(offset))
+			.queryParam("limit", String.valueOf(limit))
+			.request();
 	}
 }

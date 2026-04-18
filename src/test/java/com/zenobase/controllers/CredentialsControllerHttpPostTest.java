@@ -41,10 +41,7 @@ public class CredentialsControllerHttpPostTest extends CredentialsControllerTest
 		when(manager.authorize(from, Credentials.CREDENTIALS.getValue(update))).thenReturn(command);
 		when(dispatcher.dispatch(command)).thenReturn(command.getId());
 		try (Http1ClientResponse result = call(from.getId(), update)) {
-			assertThat(result)
-					.hasStatus(204)
-					.hasHeader(COMMAND_ID, command.getId())
-					.isEmpty();
+			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, command.getId()).isEmpty();
 		}
 	}
 
@@ -143,10 +140,13 @@ public class CredentialsControllerHttpPostTest extends CredentialsControllerTest
 		when(registry.exists(from.getType())).thenReturn(true);
 		when(registry.find(from.getType())).thenReturn(manager);
 		when(manager.authorize(from, Credentials.CREDENTIALS.getValue(update))).thenReturn(command);
-		when(dispatcher.dispatch(command))
-				.thenThrow(new OpenSearchException(ErrorResponse.of(r -> r.status(409)
-						.error(e2 ->
-								e2.type("version_conflict_engine_exception").reason("version conflict")))));
+		when(dispatcher.dispatch(command)).thenThrow(
+			new OpenSearchException(
+				ErrorResponse.of(r ->
+					r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))
+				)
+			)
+		);
 		try (Http1ClientResponse result = call(from.getId(), update)) {
 			assertThat(result).hasStatus(409);
 		}

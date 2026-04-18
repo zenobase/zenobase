@@ -1,29 +1,9 @@
 {
-    "notes": "data is an array of arrays (rows), column names for rows in row_headers",
-    "row_headers": [
-        "Date",
-        "Time Spent (seconds)",
-        "Number of People",
-        "Category"
-    ],
-    "rows": [
-        [
-            "2014-05-01T05:00:00",
-            192,
-            1,
-            "Social Networking"
-        ],
-        [
-            "2014-05-01T05:00:00",
-            159,
-            1,
-            "News & Opinion"
-        ],
-        [
-            "2014-05-01T05:00:00",
-            42,
-            1,
-            "Communication & Scheduling"
-        ]
-    ]
+	"notes": "data is an array of arrays (rows), column names for rows in row_headers",
+	"row_headers": ["Date", "Time Spent (seconds)", "Number of People", "Category"],
+	"rows": [
+		["2014-05-01T05:00:00", 192, 1, "Social Networking"],
+		["2014-05-01T05:00:00", 159, 1, "News & Opinion"],
+		["2014-05-01T05:00:00", 42, 1, "Communication & Scheduling"]
+	]
 }

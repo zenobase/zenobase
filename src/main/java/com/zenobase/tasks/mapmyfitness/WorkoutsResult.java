@@ -47,20 +47,18 @@ class WorkoutsResult {
 	private Workout newWorkout(JsonNode node) {
 		var event = new Event();
 		event.setValue(
-				Event.TIMESTAMP,
-				dateTimeValue(node.path("start_datetime"), dateTimeZoneValue(node.path("start_locale_timezone"))));
+			Event.TIMESTAMP,
+			dateTimeValue(node.path("start_datetime"), dateTimeZoneValue(node.path("start_locale_timezone")))
+		);
 		event.setValue(Event.DURATION, durationValue(node.path("aggregates").path("elapsed_time_total")));
 		event.setValue(Event.COUNT, countValue(node.path("aggregates").path("steps_total")));
 		event.setValue(Event.DISTANCE, distanceValue(node.path("aggregates").path("distance_total")));
 		event.setValue(Event.VELOCITY, velocityValue(node.path("aggregates").path("speed_avg")));
 		event.setValue(Event.PACE, paceValue(node.path("aggregates").path("speed_avg")));
 		event.setValue(Event.FREQUENCY, frequencyValue(node.path("aggregates").path("heartrate_avg")));
-		event.setValue(
-				Event.SOURCE,
-				resourceValue(node.path("_links").path("self").path(0).path("id")));
+		event.setValue(Event.SOURCE, resourceValue(node.path("_links").path("self").path(0).path("id")));
 		event.setValue(Event.AUTHOR, author);
-		String typeId =
-				node.path("_links").path("activity_type").path(0).path("id").textValue();
+		String typeId = node.path("_links").path("activity_type").path(0).path("id").textValue();
 		String routeId = node.path("_links").path("route").path(0).path("id").textValue();
 		return new Workout(event, typeId, routeId);
 	}
@@ -88,27 +86,33 @@ class WorkoutsResult {
 	private @Nullable DecimalMeasure<Length> distanceValue(JsonNode node) {
 		Unit<Length> unit = imperial ? Units.MI : Units.KM;
 		return !isZero(node)
-				? Measures.valueOf(
-						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)), unit)
-				: null;
+			? Measures.valueOf(
+					Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)),
+					unit
+				)
+			: null;
 	}
 
 	private @Nullable DecimalMeasure<Velocity> velocityValue(JsonNode node) {
 		Unit<Velocity> unit = imperial ? Units.MPH : Units.KMH;
 		return !isZero(node)
-				? Measures.valueOf(
-						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)), unit)
-				: null;
+			? Measures.valueOf(
+					Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), unit), 1)),
+					unit
+				)
+			: null;
 	}
 
 	private @Nullable DecimalMeasure<Pace> paceValue(JsonNode node) {
 		Unit<Pace> unit = imperial ? Units.S_PER_MI : Units.S_PER_KM;
 		return !isZero(node)
-				? Measures.valueOf(
-						Objects.requireNonNull(
-								Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0)),
-						unit)
-				: null;
+			? Measures.valueOf(
+					Objects.requireNonNull(
+						Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0)
+					),
+					unit
+				)
+			: null;
 	}
 
 	private @Nullable DecimalMeasure<Frequency> frequencyValue(JsonNode node) {

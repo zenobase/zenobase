@@ -11,13 +11,13 @@ import org.jspecify.annotations.Nullable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record JsonSchema(
-		@Nullable String type,
-		@Nullable String format,
-		@Nullable Map<String, JsonSchema> properties,
-		@Nullable JsonSchema items,
-		@Nullable List<JsonSchema> oneOf,
-		@Nullable Boolean readOnly) {
-
+	@Nullable String type,
+	@Nullable String format,
+	@Nullable Map<String, JsonSchema> properties,
+	@Nullable JsonSchema items,
+	@Nullable List<JsonSchema> oneOf,
+	@Nullable Boolean readOnly
+) {
 	public static JsonSchema string() {
 		return new JsonSchema("string", null, null, null, null, null);
 	}

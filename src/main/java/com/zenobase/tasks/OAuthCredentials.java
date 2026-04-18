@@ -71,14 +71,16 @@ public class OAuthCredentials extends Credentials {
 
 		private Token getToken(ObjectNode node) {
 			return isExpiring(node)
-					? new ExpiringToken(
-							Objects.requireNonNull(VALUE.getValue(node)),
-							Objects.requireNonNull(SECRET.getValue(node)),
-							Objects.requireNonNull(EXPIRES.getValue(node)),
-							Objects.requireNonNull(REFRESH.getValue(node)))
-					: new Token(
-							Objects.requireNonNull(VALUE.getValue(node)),
-							Objects.requireNonNull(SECRET.getValue(node)));
+				? new ExpiringToken(
+						Objects.requireNonNull(VALUE.getValue(node)),
+						Objects.requireNonNull(SECRET.getValue(node)),
+						Objects.requireNonNull(EXPIRES.getValue(node)),
+						Objects.requireNonNull(REFRESH.getValue(node))
+					)
+				: new Token(
+						Objects.requireNonNull(VALUE.getValue(node)),
+						Objects.requireNonNull(SECRET.getValue(node))
+					);
 		}
 
 		private boolean isExpiring(ObjectNode node) {

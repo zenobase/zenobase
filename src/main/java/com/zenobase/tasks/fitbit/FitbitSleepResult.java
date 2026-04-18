@@ -17,7 +17,12 @@ class FitbitSleepResult extends FitbitResultSupport {
 	private final boolean useRanges;
 
 	public FitbitSleepResult(
-			JsonNode node, @Nullable String tag, Identity author, boolean useRanges, DateTimeZone timezone) {
+		JsonNode node,
+		@Nullable String tag,
+		Identity author,
+		boolean useRanges,
+		DateTimeZone timezone
+	) {
 		super(node, tag, author, timezone);
 		this.useRanges = useRanges;
 	}

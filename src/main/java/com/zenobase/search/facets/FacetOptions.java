@@ -55,7 +55,8 @@ public class FacetOptions {
 
 	public static FacetOptions parse(String value) {
 		var options = new FacetOptions();
-		for (String option : value.split("(?<!\\\\),")) { // unescaped commas
+		for (String option : value.split("(?<!\\\\),")) {
+			// unescaped commas
 			String[] tokens = option.replaceAll("\\\\,", ",").split(":", 2);
 			if (tokens.length == 2 && !isEmpty(tokens[0]) && !isEmpty(tokens[1])) {
 				options.set(tokens[0], tokens[1]);

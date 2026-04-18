@@ -15,9 +15,9 @@ public class NetatmoApi extends CustomApi20 {
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
 		return new UriBuilder("https://api.netatmo.com/oauth2/authorize")
-				.addParameter("client_id", config.getApiKey())
-				.addParameter("redirect_uri", config.getCallback())
-				.addParameter("scope", "read_station")
-				.build();
+			.addParameter("client_id", config.getApiKey())
+			.addParameter("redirect_uri", config.getCallback())
+			.addParameter("scope", "read_station")
+			.build();
 	}
 }

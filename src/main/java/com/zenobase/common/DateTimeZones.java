@@ -15,8 +15,8 @@ public class DateTimeZones {
 	public static DateTime toDateTime(LocalDateTime local, @Nullable DateTimeZone timezone) {
 		DateTimeZone zone = timezone != null ? timezone : DateTimeZone.UTC;
 		return new DateTime(
-				DateTimeZone.UTC.getMillisKeepLocal(
-						zone, local.toDateTime(DateTimeZone.UTC).getMillis()),
-				zone);
+			DateTimeZone.UTC.getMillisKeepLocal(zone, local.toDateTime(DateTimeZone.UTC).getMillis()),
+			zone
+		);
 	}
 }

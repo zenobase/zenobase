@@ -28,15 +28,19 @@ class FitbitCardioIntradayResult extends FitbitResultSupport {
 	private final LocalDate date;
 
 	public FitbitCardioIntradayResult(
-			JsonNode node, @Nullable String tag, Identity author, LocalDate date, DateTimeZone timezone) {
+		JsonNode node,
+		@Nullable String tag,
+		Identity author,
+		LocalDate date,
+		DateTimeZone timezone
+	) {
 		super(node, tag, author, timezone);
 		this.date = date;
 	}
 
 	public List<Event> getEvents() {
 		List<Event> events = new ArrayList<>();
-		for (Map.Entry<DateTime, Collection<Integer>> entry :
-				valuesByHour().asMap().entrySet()) {
+		for (Map.Entry<DateTime, Collection<Integer>> entry : valuesByHour().asMap().entrySet()) {
 			events.add(toEvent(entry.getKey(), Objects.requireNonNull(mean(entry.getValue()))));
 		}
 		return events;
@@ -55,8 +59,7 @@ class FitbitCardioIntradayResult extends FitbitResultSupport {
 	private ListMultimap<DateTime, Integer> valuesByHour() {
 		LinkedListMultimap<DateTime, Integer> values = LinkedListMultimap.create();
 		for (JsonNode recordNode : node.path("activities-heart-intraday").path("dataset")) {
-			DateTime hour =
-					toDateTimeFullHour(LocalTime.parse(recordNode.path("time").textValue()));
+			DateTime hour = toDateTimeFullHour(LocalTime.parse(recordNode.path("time").textValue()));
 			if (hour != null) {
 				values.put(hour, recordNode.path("value").intValue());
 			}
@@ -65,10 +68,9 @@ class FitbitCardioIntradayResult extends FitbitResultSupport {
 	}
 
 	private @Nullable DateTime toDateTimeFullHour(LocalTime local) {
-		return toDateTimeFullHour(date.toLocalDateTime(local)
-				.withMinuteOfHour(0)
-				.withSecondOfMinute(0)
-				.withMillisOfSecond(0));
+		return toDateTimeFullHour(
+			date.toLocalDateTime(local).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)
+		);
 	}
 
 	private @Nullable DateTime toDateTimeFullHour(LocalDateTime local) {

@@ -33,8 +33,7 @@ public class AuthorizationContextTest {
 
 	@Test
 	public void testExtractToken() {
-		assertThat(AuthorizationContext.extractToken("Bearer 1234567890abcdefg"))
-				.isEqualTo("1234567890abcdefg");
+		assertThat(AuthorizationContext.extractToken("Bearer 1234567890abcdefg")).isEqualTo("1234567890abcdefg");
 		assertThat(AuthorizationContext.extractToken(null)).isNull();
 		assertThat(AuthorizationContext.extractToken("Basic xyz")).isNull();
 		assertThat(AuthorizationContext.extractToken("Bearer ")).isNull();
@@ -92,18 +91,19 @@ public class AuthorizationContextTest {
 
 	private static ServerRequest mockRequest(String authorizationHeader) {
 		ServerRequest request = mock(ServerRequest.class, RETURNS_DEEP_STUBS);
-		when(request.headers().first(HeaderNames.AUTHORIZATION))
-				.thenReturn(authorizationHeader != null ? Optional.of(authorizationHeader) : Optional.empty());
+		when(request.headers().first(HeaderNames.AUTHORIZATION)).thenReturn(
+			authorizationHeader != null ? Optional.of(authorizationHeader) : Optional.empty()
+		);
 		return request;
 	}
 
 	private static String createFakeJwt(String issuer) {
 		String header = Base64.getUrlEncoder()
-				.withoutPadding()
-				.encodeToString("{\"alg\":\"RS256\",\"typ\":\"JWT\"}".getBytes());
+			.withoutPadding()
+			.encodeToString("{\"alg\":\"RS256\",\"typ\":\"JWT\"}".getBytes());
 		String payload = Base64.getUrlEncoder()
-				.withoutPadding()
-				.encodeToString(("{\"iss\":\"" + issuer + "\",\"sub\":\"user1\"}").getBytes());
+			.withoutPadding()
+			.encodeToString(("{\"iss\":\"" + issuer + "\",\"sub\":\"user1\"}").getBytes());
 		return header + "." + payload + ".fake-signature";
 	}
 }

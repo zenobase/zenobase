@@ -17,8 +17,9 @@ public class LazyListTest {
 	@Test
 	public void test() {
 		PartialList<Thneed> expected = DefaultPartialList.of(List.of(new Thneed("alpha"), new Thneed("beta")), 42L);
-		LazyList<Thneed> actual =
-				new TestableList(new NodeList(Iterables.transform(expected, TO_JSON), expected.getTotal()));
+		LazyList<Thneed> actual = new TestableList(
+			new NodeList(Iterables.transform(expected, TO_JSON), expected.getTotal())
+		);
 		assertThat(actual).hasTotal(expected.getTotal()).isEqualTo((List<?>) expected);
 	}
 

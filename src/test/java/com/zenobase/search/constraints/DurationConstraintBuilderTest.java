@@ -54,9 +54,8 @@ public class DurationConstraintBuilderTest extends ConstraintBuilderTestSupport 
 	@Test
 	public void testIllegalConstraint() {
 		assertThatThrownBy(() -> {
-					addConstraint("%s:%s", Event.DURATION, "foo");
-					execute();
-				})
-				.isInstanceOf(IllegalArgumentException.class);
+			addConstraint("%s:%s", Event.DURATION, "foo");
+			execute();
+		}).isInstanceOf(IllegalArgumentException.class);
 	}
 }

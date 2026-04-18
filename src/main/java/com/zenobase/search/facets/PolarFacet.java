@@ -42,7 +42,13 @@ public class PolarFacet extends FilteredFacet {
 	private final Unit<?> unit;
 
 	private PolarFacet(
-			String id, String keyField, String valueField, Interval interval, Unit<?> unit, @Nullable Query filter) {
+		String id,
+		String keyField,
+		String valueField,
+		Interval interval,
+		Unit<?> unit,
+		@Nullable Query filter
+	) {
 		super(id, filter);
 		this.keyField = Preconditions.checkNotNull(keyField);
 		this.valueField = Preconditions.checkNotNull(valueField);
@@ -53,12 +59,15 @@ public class PolarFacet extends FilteredFacet {
 	@Override
 	public void configure(SearchRequest.Builder builder) {
 		String vf = Units.isDimensionless(unit)
-				? valueField
-				: Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
-		Aggregation terms = Aggregation.of(a -> a.terms(t -> t.field(interval.getField(keyField))
-						.order(Collections.singletonMap("_key", SortOrder.Asc))
-						.size(31))
-				.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(vf)))));
+			? valueField
+			: Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
+		Aggregation terms = Aggregation.of(a ->
+			a
+				.terms(t ->
+					t.field(interval.getField(keyField)).order(Collections.singletonMap("_key", SortOrder.Asc)).size(31)
+				)
+				.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(vf))))
+		);
 		addAggregation(getId(), terms, builder);
 	}
 
@@ -182,13 +191,13 @@ public class PolarFacet extends FilteredFacet {
 		return options -> {
 			String unit = options.get("unit");
 			return new PolarFacet(
-					Objects.requireNonNull(options.get("id")),
-					Objects.requireNonNull(options.get("key_field", String.class, Event.TIMESTAMP.getName())),
-					Objects.requireNonNull(options.get("value_field", String.class, Event.TIMESTAMP.getName())),
-					Interval.valueOf(
-							Objects.requireNonNull(options.get("interval")).toUpperCase(Locale.ROOT)),
-					unit != null ? Units.valueOf(unit) : Unit.ONE,
-					filterParser.parse(options.get("filter")));
+				Objects.requireNonNull(options.get("id")),
+				Objects.requireNonNull(options.get("key_field", String.class, Event.TIMESTAMP.getName())),
+				Objects.requireNonNull(options.get("value_field", String.class, Event.TIMESTAMP.getName())),
+				Interval.valueOf(Objects.requireNonNull(options.get("interval")).toUpperCase(Locale.ROOT)),
+				unit != null ? Units.valueOf(unit) : Unit.ONE,
+				filterParser.parse(options.get("filter"))
+			);
 		};
 	}
 }

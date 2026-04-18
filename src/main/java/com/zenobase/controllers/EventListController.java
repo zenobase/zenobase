@@ -57,11 +57,12 @@ public class EventListController extends ControllerSupport {
 
 	@Inject
 	public EventListController(
-			AuthorizationContext security,
-			BucketRepository buckets,
-			EventRepository events,
-			UserRepository users,
-			CommandDispatcher dispatcher) {
+		AuthorizationContext security,
+		BucketRepository buckets,
+		EventRepository events,
+		UserRepository users,
+		CommandDispatcher dispatcher
+	) {
 		super(security);
 		this.buckets = buckets;
 		this.events = events;
@@ -135,12 +136,13 @@ public class EventListController extends ControllerSupport {
 	}
 
 	private void getWithFacets(
-			ServerResponse res, String bucketId, List<String> constraints, List<FacetOptions> facets) {
+		ServerResponse res,
+		String bucketId,
+		List<String> constraints,
+		List<FacetOptions> facets
+	) {
 		try {
-			Search search = new EventSearchBuilder()
-					.addConstraints(constraints)
-					.addFacets(facets)
-					.buildSearch();
+			Search search = new EventSearchBuilder().addConstraints(constraints).addFacets(facets).buildSearch();
 			sendOk(res, events.find(bucketId, search));
 		} catch (IllegalArgumentException e) {
 			sendBadRequest(res, "Invalid parameters");
@@ -173,16 +175,13 @@ public class EventListController extends ControllerSupport {
 		try (var out = res.outputStream()) {
 			JsonStream stream = new JsonStream(out);
 			stream.writeArrayFieldStart(EVENTS.getName());
-			events.find(
-					bucketId,
-					new EventSearchBuilder().addConstraints(constraints).buildSearch(),
-					node -> {
-						try {
-							stream.write(node);
-						} catch (IOException e) {
-							throw new RuntimeException(e);
-						}
-					});
+			events.find(bucketId, new EventSearchBuilder().addConstraints(constraints).buildSearch(), node -> {
+				try {
+					stream.write(node);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			});
 			stream.writeEndArray();
 			stream.close();
 		} catch (IOException e) {
@@ -202,12 +201,15 @@ public class EventListController extends ControllerSupport {
 	}
 
 	private static Search createExportSearch(Iterable<String> constraints, int offset) {
-		var facet =
-				new ListFacet(EVENTS.getName(), offset, EXPORT_LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA);
-		return new EventSearchBuilder()
-				.addConstraints(constraints)
-				.addFacet(facet)
-				.buildSearch();
+		var facet = new ListFacet(
+			EVENTS.getName(),
+			offset,
+			EXPORT_LIMIT,
+			Event.TIMESTAMP.getName(),
+			null,
+			Event.SCHEMA
+		);
+		return new EventSearchBuilder().addConstraints(constraints).addFacet(facet).buildSearch();
 	}
 
 	public void post(ServerRequest req, ServerResponse res) {
@@ -236,17 +238,17 @@ public class EventListController extends ControllerSupport {
 		} else {
 			CreateEventCommand command = newCreateEventCommand(auth.getPrincipal(), bucketId, body);
 			String commandId = dispatcher.dispatch(command);
-			setHeader(
-					res,
-					LOCATION,
-					"/buckets/" + bucketId + "/" + command.getEvent().getId());
+			setHeader(res, LOCATION, "/buckets/" + bucketId + "/" + command.getEvent().getId());
 			setHeader(res, COMMAND_ID, commandId);
 			sendCreated(res, command.getEvent().toJson());
 		}
 	}
 
 	private static CreateEventsCommand newCreateEventsCommand(
-			Identity principal, String bucketId, List<ObjectNode> nodes) {
+		Identity principal,
+		String bucketId,
+		List<ObjectNode> nodes
+	) {
 		return new CreateEventsCommand(principal, bucketId, toEvents(principal, nodes));
 	}
 

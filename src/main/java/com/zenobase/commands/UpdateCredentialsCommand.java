@@ -31,8 +31,11 @@ public class UpdateCredentialsCommand extends UpdateCommandSupport {
 	}
 
 	public Credentials apply(Credentials credentials) {
-		return new Credentials(new JsonPatch(Objects.requireNonNull(getFrom()), Objects.requireNonNull(getTo()))
-				.apply(credentials.toJson()));
+		return new Credentials(
+			new JsonPatch(Objects.requireNonNull(getFrom()), Objects.requireNonNull(getTo())).apply(
+				credentials.toJson()
+			)
+		);
 	}
 
 	@Override
@@ -45,7 +48,11 @@ public class UpdateCredentialsCommand extends UpdateCommandSupport {
 			@Override
 			public UpdateCredentialsCommand build() {
 				return new UpdateCredentialsCommand(
-						credentials.getPrincipal(), credentials.getId(), getFrom(), getTo());
+					credentials.getPrincipal(),
+					credentials.getId(),
+					getFrom(),
+					getTo()
+				);
 			}
 		};
 	}

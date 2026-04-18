@@ -23,13 +23,15 @@ public class JournalControllerFindAllTest extends JournalControllerTestSupport {
 	@Test
 	public void test() {
 		PartialList<Command> history = DefaultPartialList.of(
-				List.of(new TestCommand(user.asIdentity(), "do it"), new TestCommand(user.asIdentity(), "do it again")),
-				10);
+			List.of(new TestCommand(user.asIdentity(), "do it"), new TestCommand(user.asIdentity(), "do it again")),
+			10
+		);
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(commands.size()).thenReturn(history.getTotal());
-		when(commands.find(new CommandQuery().queryString("foo"), CommandQuery.DEFAULT_ORDER, 0, 2))
-				.thenReturn(history);
+		when(commands.find(new CommandQuery().queryString("foo"), CommandQuery.DEFAULT_ORDER, 0, 2)).thenReturn(
+			history
+		);
 		try (Http1ClientResponse result = call("foo", 0, 2)) {
 			assertThat(result).hasStatus(200).hasContent(CommandList.toJson(history));
 		}
@@ -59,9 +61,10 @@ public class JournalControllerFindAllTest extends JournalControllerTestSupport {
 	}
 
 	private Http1ClientResponse call(String q, int offset, int limit) {
-		var request = client.get("/journal/")
-				.queryParam("offset", String.valueOf(offset))
-				.queryParam("limit", String.valueOf(limit));
+		var request = client
+			.get("/journal/")
+			.queryParam("offset", String.valueOf(offset))
+			.queryParam("limit", String.valueOf(limit));
 		if (q != null) {
 			request = request.queryParam("q", q);
 		}

@@ -34,15 +34,15 @@ public class TaskController extends ControllerSupport {
 
 	@Inject
 	public TaskController(
-			AuthorizationContext security,
-			CommandDispatcher dispatcher,
-			TaskManagerRegistry registry,
-			TaskRepository tasks,
-			BucketRepository buckets,
-			UserRepository users,
-			TaskRefresher refresher,
-			Bus bus) {
-
+		AuthorizationContext security,
+		CommandDispatcher dispatcher,
+		TaskManagerRegistry registry,
+		TaskRepository tasks,
+		BucketRepository buckets,
+		UserRepository users,
+		TaskRefresher refresher,
+		Bus bus
+	) {
 		super(security);
 		this.dispatcher = dispatcher;
 		this.registry = registry;
@@ -109,9 +109,7 @@ public class TaskController extends ControllerSupport {
 		Command command = null;
 		ObjectNode settings = Task.SETTINGS.getValue(body);
 		if (settings != null) {
-			command = UpdateTaskCommand.builder(task)
-					.set(Task.SETTINGS, task.getSettings(), settings)
-					.build();
+			command = UpdateTaskCommand.builder(task).set(Task.SETTINGS, task.getSettings(), settings).build();
 		}
 		if (command == null) {
 			sendBadRequest(res, "nothing to do");

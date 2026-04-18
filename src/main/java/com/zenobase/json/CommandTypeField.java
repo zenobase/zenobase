@@ -29,8 +29,9 @@ public class CommandTypeField extends Field<Command.Type> {
 	@Override
 	protected Command.Type getValue(JsonNode node) {
 		return new Command.Type(
-				Objects.requireNonNull(NAME.getValue((ObjectNode) node)),
-				Objects.requireNonNull(VERSION.getValue((ObjectNode) node)));
+			Objects.requireNonNull(NAME.getValue((ObjectNode) node)),
+			Objects.requireNonNull(VERSION.getValue((ObjectNode) node))
+		);
 	}
 
 	@Override

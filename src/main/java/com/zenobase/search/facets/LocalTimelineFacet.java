@@ -33,13 +33,14 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 	private final @Nullable LocalInterval range;
 
 	public LocalTimelineFacet(
-			String id,
-			String keyField,
-			String valueField,
-			@Nullable String interval,
-			@Nullable String range,
-			Unit<?> unit,
-			@Nullable Query filter) {
+		String id,
+		String keyField,
+		String valueField,
+		@Nullable String interval,
+		@Nullable String range,
+		Unit<?> unit,
+		@Nullable Query filter
+	) {
 		super(id, keyField, valueField, unit, filter);
 		this.interval = interval;
 		this.range = !Strings.isNullOrEmpty(range) ? LocalIntervals.valueOf(range) : null;
@@ -49,9 +50,11 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 	public void configure(SearchRequest.Builder builder) {
 		CalendarInterval calendarInterval = DateHistograms.parseInterval(Objects.requireNonNull(interval));
 		String f = getField();
-		Aggregation aggregation =
-				Aggregation.of(a -> a.dateHistogram(dh -> dh.field(keyField).calendarInterval(calendarInterval))
-						.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(f)))));
+		Aggregation aggregation = Aggregation.of(a ->
+			a
+				.dateHistogram(dh -> dh.field(keyField).calendarInterval(calendarInterval))
+				.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(f))))
+		);
 		addAggregation(getId(), aggregation, builder);
 	}
 
@@ -97,7 +100,8 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 		if (range != null) {
 			return range;
 		}
-		long min = Long.MAX_VALUE, max = Long.MIN_VALUE;
+		long min = Long.MAX_VALUE,
+			max = Long.MIN_VALUE;
 		for (DateHistogramBucket bucket : buckets) {
 			if (bucket.docCount() > 0) {
 				long bucketTime = bucket.key();
@@ -115,8 +119,11 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 	private Map<String, ObjectNode> getMap(@Nullable LocalInterval interval) {
 		Map<String, ObjectNode> counts = Maps.newTreeMap();
 		if (interval != null) {
-			for (LocalDateTime time :
-					LocalIntervals.expand(interval.start(), interval.end(), Objects.requireNonNull(this.interval))) {
+			for (LocalDateTime time : LocalIntervals.expand(
+				interval.start(),
+				interval.end(),
+				Objects.requireNonNull(this.interval)
+			)) {
 				String label = getLabel(time);
 				ObjectNode node = Nodes.newObject();
 				node.put("label", label);

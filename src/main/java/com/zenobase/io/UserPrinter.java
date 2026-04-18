@@ -26,15 +26,15 @@ public class UserPrinter implements Callback<User> {
 	}
 
 	private String toString(User user) {
-		return Joiner.on('\t')
-				.join(
-						user.getId(),
-						user.getName(),
-						user.getEmail(),
-						user.isOptedOut() ? "opted out" : "",
-						user.isVerified() ? "verified" : "",
-						user.getCreated(),
-						user.isSuspended() ? "suspended" : "",
-						"\n");
+		return Joiner.on('\t').join(
+			user.getId(),
+			user.getName(),
+			user.getEmail(),
+			user.isOptedOut() ? "opted out" : "",
+			user.isVerified() ? "verified" : "",
+			user.getCreated(),
+			user.isSuspended() ? "suspended" : "",
+			"\n"
+		);
 	}
 }

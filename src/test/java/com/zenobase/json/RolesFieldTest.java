@@ -11,9 +11,7 @@ import com.zenobase.models.Role;
 
 public class RolesFieldTest extends FieldTestSupport<Map.Entry<Identity, Role>> {
 
-	private final Map<Identity, Role> map = Map.of(
-			new Identity(), Role.OWNER,
-			new Identity(), Role.CONTRIBUTOR);
+	private final Map<Identity, Role> map = Map.of(new Identity(), Role.OWNER, new Identity(), Role.CONTRIBUTOR);
 
 	@Override
 	protected Field<Map.Entry<Identity, Role>> newField(String name) {

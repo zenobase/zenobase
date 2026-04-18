@@ -22,7 +22,12 @@ public abstract class UpdateCommandSupport extends Command {
 	}
 
 	protected UpdateCommandSupport(
-			Command.Type type, Identity principal, String objectId, ObjectNode from, ObjectNode to) {
+		Command.Type type,
+		Identity principal,
+		String objectId,
+		ObjectNode from,
+		ObjectNode to
+	) {
 		super(type, principal);
 		setParameter(OBJECT_ID, objectId);
 		setParameter(FROM, from);
@@ -46,10 +51,11 @@ public abstract class UpdateCommandSupport extends Command {
 	@Override
 	public Command reverse(Identity principal) {
 		return newInstance(
-				principal,
-				Objects.requireNonNull(getObjectId()),
-				Objects.requireNonNull(getTo()),
-				Objects.requireNonNull(getFrom()));
+			principal,
+			Objects.requireNonNull(getObjectId()),
+			Objects.requireNonNull(getTo()),
+			Objects.requireNonNull(getFrom())
+		);
 	}
 
 	public abstract static class Builder {

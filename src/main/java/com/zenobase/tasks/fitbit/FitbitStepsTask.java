@@ -27,7 +27,13 @@ public class FitbitStepsTask extends Task {
 	}
 
 	FitbitStepsTask(
-			String bucketId, Identity principal, String marker, String tag, boolean hourly, Unit<Energy> energyUnit) {
+		String bucketId,
+		Identity principal,
+		String marker,
+		String tag,
+		boolean hourly,
+		Unit<Energy> energyUnit
+	) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);

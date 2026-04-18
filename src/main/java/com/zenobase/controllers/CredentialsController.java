@@ -25,12 +25,12 @@ public class CredentialsController extends ControllerSupport {
 
 	@Inject
 	public CredentialsController(
-			AuthorizationContext security,
-			CommandDispatcher dispatcher,
-			CredentialsManagerRegistry registry,
-			CredentialsRepository credentials,
-			UserRepository users) {
-
+		AuthorizationContext security,
+		CommandDispatcher dispatcher,
+		CredentialsManagerRegistry registry,
+		CredentialsRepository credentials,
+		UserRepository users
+	) {
 		super(security);
 		this.dispatcher = dispatcher;
 		this.registry = registry;

@@ -27,7 +27,13 @@ public class ChangeUserEmailCommand extends Command {
 	}
 
 	public ChangeUserEmailCommand(
-			Identity principal, String username, String from, String to, boolean fromVerified, boolean toVerified) {
+		Identity principal,
+		String username,
+		String from,
+		String to,
+		boolean fromVerified,
+		boolean toVerified
+	) {
 		super(TYPE, principal);
 		setParameter(USERNAME, username);
 		setParameter(FROM, from);
@@ -59,7 +65,13 @@ public class ChangeUserEmailCommand extends Command {
 	@Override
 	public Command reverse(Identity principal) {
 		return new ChangeUserEmailCommand(
-				principal, getUsername(), getTo(), getFrom(), getToVerified(), getFromVerified());
+			principal,
+			getUsername(),
+			getTo(),
+			getFrom(),
+			getToVerified(),
+			getFromVerified()
+		);
 	}
 
 	@Override
@@ -102,7 +114,8 @@ public class ChangeUserEmailCommand extends Command {
 				repository.update(user);
 			} else {
 				throw new NonExistentUserException(
-						"Tried to change the email of a nonexistent user: " + command.getUsername());
+					"Tried to change the email of a nonexistent user: " + command.getUsername()
+				);
 			}
 		}
 	}

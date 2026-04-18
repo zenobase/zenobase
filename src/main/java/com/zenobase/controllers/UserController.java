@@ -31,11 +31,11 @@ public class UserController extends ControllerSupport {
 
 	@Inject
 	public UserController(
-			AuthorizationContext security,
-			UserRepository users,
-			CommandDispatcher dispatcher,
-			UserDirectory userDirectory) {
-
+		AuthorizationContext security,
+		UserRepository users,
+		CommandDispatcher dispatcher,
+		UserDirectory userDirectory
+	) {
 		super(security);
 		this.users = users;
 		this.dispatcher = dispatcher;
@@ -54,11 +54,12 @@ public class UserController extends ControllerSupport {
 	}
 
 	private ObjectNode toJson(User user, @Nullable Authorization auth) {
-		return auth != null
-						&& (auth.getScope() == null && user.is(auth.getPrincipal())
-								|| users.isSuperuser(auth.getPrincipal()))
-				? new UserProfile(user).toJson()
-				: new UserInfo(user).toJson();
+		return (
+				auth != null &&
+				((auth.getScope() == null && user.is(auth.getPrincipal())) || users.isSuperuser(auth.getPrincipal()))
+			)
+			? new UserProfile(user).toJson()
+			: new UserInfo(user).toJson();
 	}
 
 	public void update(ServerRequest req, ServerResponse res) {
@@ -95,7 +96,7 @@ public class UserController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
-		if (auth.getScope() != null || !user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
+		if (auth.getScope() != null || (!user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal()))) {
 			sendForbidden(res);
 			return;
 		}
@@ -106,8 +107,16 @@ public class UserController extends ControllerSupport {
 		}
 		String userName = Objects.requireNonNull(user.getName());
 		String userEmail = Objects.requireNonNull(user.getEmail());
-		String commandId = dispatcher.dispatch(new ChangeUserEmailCommand(
-				auth.getPrincipal(), userName, userEmail, Objects.requireNonNull(email), user.isVerified(), false));
+		String commandId = dispatcher.dispatch(
+			new ChangeUserEmailCommand(
+				auth.getPrincipal(),
+				userName,
+				userEmail,
+				Objects.requireNonNull(email),
+				user.isVerified(),
+				false
+			)
+		);
 		userDirectory.updateEmail(user, email);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
@@ -123,8 +132,11 @@ public class UserController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		Command command =
-				new SuspendUserCommand(auth.getPrincipal(), Objects.requireNonNull(user.getName()), suspended);
+		Command command = new SuspendUserCommand(
+			auth.getPrincipal(),
+			Objects.requireNonNull(user.getName()),
+			suspended
+		);
 		String commandId = dispatcher.dispatch(command);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
@@ -141,7 +153,8 @@ public class UserController extends ControllerSupport {
 			return;
 		}
 		String commandId = dispatcher.dispatch(
-				new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), form.getQuota()));
+			new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), form.getQuota())
+		);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}
@@ -152,13 +165,13 @@ public class UserController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
-		if (auth.getScope() != null || !user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
+		if (auth.getScope() != null || (!user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal()))) {
 			sendForbidden(res);
 			return;
 		}
 		Command c = Objects.requireNonNull(form.isOptedOut())
-				? new OptOutCommand(auth.getPrincipal(), Objects.requireNonNull(user.getName()))
-				: new OptInCommand(auth.getPrincipal(), Objects.requireNonNull(user.getName()));
+			? new OptOutCommand(auth.getPrincipal(), Objects.requireNonNull(user.getName()))
+			: new OptInCommand(auth.getPrincipal(), Objects.requireNonNull(user.getName()));
 		String commandId = dispatcher.dispatch(c);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);

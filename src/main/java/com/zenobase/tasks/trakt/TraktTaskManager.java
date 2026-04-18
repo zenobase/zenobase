@@ -47,7 +47,6 @@ public class TraktTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(TraktTask task, OAuthCredentials credentials) {
-
 		Token token = credentials.getToken();
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
@@ -68,12 +67,13 @@ public class TraktTaskManager extends OAuthTaskManager {
 	}
 
 	private void addEvents(
-			String type,
-			OAuthCredentials credentials,
-			TraktTask task,
-			TraktSettingsResult settings,
-			@Nullable DateTime after,
-			List<Event> events) {
+		String type,
+		OAuthCredentials credentials,
+		TraktTask task,
+		TraktSettingsResult settings,
+		@Nullable DateTime after,
+		List<Event> events
+	) {
 		int limit = 10;
 		for (int page = 1; page < 100; ++page) {
 			var request = new OAuthRequest(Verb.GET, host + "/users/me/history/" + type);
@@ -81,8 +81,12 @@ public class TraktTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("page", Integer.toString(page));
 			request.addQuerystringParameter("extended", "full");
 			Response response = send(request, credentials);
-			TraktHistoryResult result =
-					new TraktHistoryResult(parseArray(response), task.getPrincipal(), after, settings.getTimeZone());
+			TraktHistoryResult result = new TraktHistoryResult(
+				parseArray(response),
+				task.getPrincipal(),
+				after,
+				settings.getTimeZone()
+			);
 			List<Event> add = result.getEvents();
 			events.addAll(add);
 			if (add.size() < limit) {
@@ -111,20 +115,31 @@ public class TraktTaskManager extends OAuthTaskManager {
 	}
 
 	private Command createCommand(
-			TraktTask task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
+		TraktTask task,
+		OAuthCredentials credentials,
+		List<Event> events,
+		Token expiredToken
+	) {
 		var command = new CompoundCommand(
-				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
-		command.add(UpdateTaskCommand.builder(task)
+			task.getPrincipal(),
+			"ran " + getType() + " task",
+			"reverted " + getType() + " task"
+		);
+		command.add(
+			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
-				.build());
+				.build()
+		);
 		if (!Objects.equals(credentials.getToken(), expiredToken)) {
-			command.add(UpdateCredentialsCommand.builder(credentials)
+			command.add(
+				UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
-					.build());
+					.build()
+			);
 		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));

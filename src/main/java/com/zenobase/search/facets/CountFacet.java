@@ -39,17 +39,19 @@ public class CountFacet extends FilteredFacet {
 
 	@Override
 	public void configure(SearchRequest.Builder builder) {
-		Aggregation terms = Aggregation.of(a -> a.terms(t -> {
-			t.field(field).size(offset + limit);
-			boolean asc = !order.startsWith("-");
-			String orderField = asc ? order : order.substring(1);
-			SortOrder sortOrder = asc ? SortOrder.Asc : SortOrder.Desc;
-			switch (orderField) {
-				case "count" -> t.order(Collections.singletonMap("_count", sortOrder));
-				case "term" -> t.order(Collections.singletonMap("_key", sortOrder));
-			}
-			return t;
-		}));
+		Aggregation terms = Aggregation.of(a ->
+			a.terms(t -> {
+				t.field(field).size(offset + limit);
+				boolean asc = !order.startsWith("-");
+				String orderField = asc ? order : order.substring(1);
+				SortOrder sortOrder = asc ? SortOrder.Asc : SortOrder.Desc;
+				switch (orderField) {
+					case "count" -> t.order(Collections.singletonMap("_count", sortOrder));
+					case "term" -> t.order(Collections.singletonMap("_key", sortOrder));
+				}
+				return t;
+			})
+		);
 		addAggregation(getId(), terms, builder);
 	}
 
@@ -78,12 +80,14 @@ public class CountFacet extends FilteredFacet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-		return options -> new CountFacet(
+		return options ->
+			new CountFacet(
 				Objects.requireNonNull(options.get("id")),
 				Objects.requireNonNull(options.get("field")),
 				Objects.requireNonNull(options.get("order", String.class, "-count")),
 				Objects.requireNonNull(options.get("offset", Integer.class, 0)),
 				Objects.requireNonNull(options.get("limit", Integer.class, 10)),
-				filterParser.parse(options.get("filter")));
+				filterParser.parse(options.get("filter"))
+			);
 	}
 }

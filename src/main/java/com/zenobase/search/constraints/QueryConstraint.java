@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 public record QueryConstraint(String field, String value) {
-
 	public QueryConstraint {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(field));
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(value));

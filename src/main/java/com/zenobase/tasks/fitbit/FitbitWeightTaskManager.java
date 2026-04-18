@@ -48,21 +48,26 @@ public class FitbitWeightTaskManager extends FitbitTaskManagerSupport<FitbitWeig
 		}
 		LocalDate fromDate = getFromDate(task);
 		for (LocalDate date = fromDate; date.isBefore(syncDate); date = date.plusDays(1)) {
-			OAuthRequest request =
-					new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/body/date/" + date + ".json");
+			OAuthRequest request = new OAuthRequest(
+				Verb.GET,
+				"https://api.fitbit.com/1/user/-/body/date/" + date + ".json"
+			);
 			request.addHeader("Accept-Language", profile.getWeightLocale());
 			try {
 				Response response = send(request, credentials);
-				events.addAll(new FitbitWeightResult(
-								parseObject(response),
-								task.getTag(),
-								task.getPrincipal(),
-								date,
-								profile.getTimezone(),
-								profile.getWeightUnit())
-						.getEvents());
+				events.addAll(
+					new FitbitWeightResult(
+						parseObject(response),
+						task.getTag(),
+						task.getPrincipal(),
+						date,
+						profile.getTimezone(),
+						profile.getWeightUnit()
+					).getEvents()
+				);
 			} catch (InvalidStatusException e) {
-				if (e.getStatus() == 429) { // reached rate limit
+				if (e.getStatus() == 429) {
+					// reached rate limit
 					logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());
 					syncDate = date;
 					break;

@@ -14,11 +14,11 @@ public class FitbitDevicesResultTest extends ResultTestSupport {
 	public void test() {
 		FitbitDevicesResult result = new FitbitDevicesResult(readArray("FitbitDevicesResultTest.json"));
 		assertThat(result.getLastDate(DeviceType.TRACKER))
-				.as("last tracker sync time")
-				.isEqualTo(LocalDate.parse("2012-11-30"));
+			.as("last tracker sync time")
+			.isEqualTo(LocalDate.parse("2012-11-30"));
 		assertThat(result.getLastDate(DeviceType.SCALE))
-				.as("last scale sync time")
-				.isEqualTo(LocalDate.parse("2014-09-30"));
+			.as("last scale sync time")
+			.isEqualTo(LocalDate.parse("2014-09-30"));
 	}
 
 	@Test

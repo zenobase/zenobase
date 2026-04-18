@@ -1,40 +1,37 @@
 {
-    "sleeps": [
-        {
-            "tags" : [
-              "home",
-              "drink"
-            ],
-            "cycles": 8,
-            "noiseLevel": 0.99,
-            "rating": 0,
-            "lengthMinutes": 483,
-            "fromTime": 1394420966000,
-            "deepSleep": 0.4337349534034729,
-            "toTime": 1394450810000,
-            "timezone": "GMT--5:00",
-            "comment": "just testing..."
-        },
-        {
-            "cycles": 6,
-            "noiseLevel": 0.16176150739192963,
-            "rating": 4.0,
-            "lengthMinutes": 489,
-            "fromTime": 1394335572000,
-            "deepSleep": 0.21176470816135406,
-            "toTime": 1394365848000,
-            "timezone": "GMT-5:00"
-        },
-        {
-            "cycles": 12,
-            "noiseLevel": 0.06193187087774277,
-            "rating": 5.0,
-            "lengthMinutes": 356,
-            "fromTime": 1394248378000,
-            "deepSleep": 0.4891277226924896,
-            "toTime": 1394269762000,
-            "timezone": "GMT-05:00"
-        }
-    ],
-    "cursor": "xyz"
+	"sleeps": [
+		{
+			"tags": ["home", "drink"],
+			"cycles": 8,
+			"noiseLevel": 0.99,
+			"rating": 0,
+			"lengthMinutes": 483,
+			"fromTime": 1394420966000,
+			"deepSleep": 0.4337349534034729,
+			"toTime": 1394450810000,
+			"timezone": "GMT--5:00",
+			"comment": "just testing..."
+		},
+		{
+			"cycles": 6,
+			"noiseLevel": 0.16176150739192963,
+			"rating": 4.0,
+			"lengthMinutes": 489,
+			"fromTime": 1394335572000,
+			"deepSleep": 0.21176470816135406,
+			"toTime": 1394365848000,
+			"timezone": "GMT-5:00"
+		},
+		{
+			"cycles": 12,
+			"noiseLevel": 0.06193187087774277,
+			"rating": 5.0,
+			"lengthMinutes": 356,
+			"fromTime": 1394248378000,
+			"deepSleep": 0.4891277226924896,
+			"toTime": 1394269762000,
+			"timezone": "GMT-05:00"
+		}
+	],
+	"cursor": "xyz"
 }

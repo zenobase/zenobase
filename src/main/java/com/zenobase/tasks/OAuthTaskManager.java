@@ -101,8 +101,12 @@ public abstract class OAuthTaskManager extends TaskManager {
 
 	protected static String getBody(Response response) {
 		if (isEncoded(response, "gzip")) {
-			try (InputStreamReader in =
-					new InputStreamReader(new GZIPInputStream(response.getStream()), StandardCharsets.UTF_8)) {
+			try (
+				InputStreamReader in = new InputStreamReader(
+					new GZIPInputStream(response.getStream()),
+					StandardCharsets.UTF_8
+				)
+			) {
 				return CharStreams.toString(in);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
@@ -112,19 +116,22 @@ public abstract class OAuthTaskManager extends TaskManager {
 	}
 
 	private static boolean isEncoded(Response response, String encoding) {
-		return encoding.equals(response.getHeader("Content-Encoding"))
-				|| encoding.equals(response.getHeader("content-encoding"));
+		return (
+			encoding.equals(response.getHeader("Content-Encoding")) ||
+			encoding.equals(response.getHeader("content-encoding"))
+		);
 	}
 
 	protected Command createCommand(InvalidTokenException e) {
 		Token requestToken = credentialsManager.getRequestToken(e.getCredentials());
 		return UpdateCredentialsCommand.builder(e.getCredentials())
-				.set(
-						Credentials.AUTHORIZATION_URL,
-						e.getCredentials().getAuthorizationUrl(),
-						credentialsManager.getService(e.getCredentials()).getAuthorizationUrl(requestToken))
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, e.getCredentials().getToken(), requestToken)
-				.build();
+			.set(
+				Credentials.AUTHORIZATION_URL,
+				e.getCredentials().getAuthorizationUrl(),
+				credentialsManager.getService(e.getCredentials()).getAuthorizationUrl(requestToken)
+			)
+			.with(Credentials.CREDENTIALS)
+			.set(OAuthCredentials.TOKEN, e.getCredentials().getToken(), requestToken)
+			.build();
 	}
 }

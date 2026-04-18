@@ -19,18 +19,25 @@ public class Device {
 	private final ImmutableSet<String> types;
 
 	public Device(
-			String id, String label, DateTime created, DateTime updated, Location location, Iterable<String> types) {
+		String id,
+		String label,
+		DateTime created,
+		DateTime updated,
+		Location location,
+		Iterable<String> types
+	) {
 		this(id, null, label, created, updated, location, types);
 	}
 
 	public Device(
-			String id,
-			@Nullable String moduleId,
-			String label,
-			DateTime created,
-			DateTime updated,
-			Location location,
-			Iterable<String> types) {
+		String id,
+		@Nullable String moduleId,
+		String label,
+		DateTime created,
+		DateTime updated,
+		Location location,
+		Iterable<String> types
+	) {
 		this.id = Preconditions.checkNotNull(id);
 		this.moduleId = moduleId;
 		this.label = Preconditions.checkNotNull(label);
@@ -71,10 +78,10 @@ public class Device {
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
-				.add("id", id)
-				.add("label", label)
-				.add("timestamp", updated)
-				.add("location", location)
-				.toString();
+			.add("id", id)
+			.add("label", label)
+			.add("timestamp", updated)
+			.add("location", location)
+			.toString();
 	}
 }

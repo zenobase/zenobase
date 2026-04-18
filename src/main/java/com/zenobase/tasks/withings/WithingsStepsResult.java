@@ -29,12 +29,13 @@ class WithingsStepsResult extends WithingsResult {
 	private final Unit<Energy> energyUnit;
 
 	public WithingsStepsResult(
-			ObjectNode node,
-			Identity author,
-			String tag,
-			Unit<Length> distanceUnit,
-			Unit<Length> heightUnit,
-			Unit<Energy> energyUnit) {
+		ObjectNode node,
+		Identity author,
+		String tag,
+		Unit<Length> distanceUnit,
+		Unit<Length> heightUnit,
+		Unit<Energy> energyUnit
+	) {
 		super(node, author, tag);
 		this.distanceUnit = distanceUnit;
 		this.heightUnit = heightUnit;
@@ -54,8 +55,11 @@ class WithingsStepsResult extends WithingsResult {
 		if (events.size() < 2) {
 			return Collections.emptyList();
 		}
-		events.sort((left, right) -> Objects.requireNonNull(right.getValue(Event.TIMESTAMP))
-				.compareTo(Objects.requireNonNull(left.getValue(Event.TIMESTAMP))));
+		events.sort((left, right) ->
+			Objects.requireNonNull(right.getValue(Event.TIMESTAMP)).compareTo(
+				Objects.requireNonNull(left.getValue(Event.TIMESTAMP))
+			)
+		);
 		return events.subList(1, events.size());
 	}
 
@@ -79,12 +83,11 @@ class WithingsStepsResult extends WithingsResult {
 	public @Nullable String getMarker() {
 		List<Event> events = getEvents();
 		return !events.isEmpty()
-				? Objects.requireNonNull(Objects.requireNonNull(Iterables.getLast(events))
-								.getValue(Event.TIMESTAMP))
-						.toLocalDate()
-						.plusDays(1)
-						.toString()
-				: null;
+			? Objects.requireNonNull(Objects.requireNonNull(Iterables.getLast(events)).getValue(Event.TIMESTAMP))
+					.toLocalDate()
+					.plusDays(1)
+					.toString()
+			: null;
 	}
 
 	private static DateTime dateTimeValue(JsonNode node, DateTimeZone timezone) {
@@ -98,7 +101,7 @@ class WithingsStepsResult extends WithingsResult {
 
 	private static @Nullable <Q extends Quantity> DecimalMeasure<Q> convertMeasureValue(JsonNode node, Unit<Q> unit) {
 		return node.isNumber()
-				? Measures.valueOf(Objects.requireNonNull(Measures.convert(node.doubleValue(), unit)), unit)
-				: null;
+			? Measures.valueOf(Objects.requireNonNull(Measures.convert(node.doubleValue(), unit)), unit)
+			: null;
 	}
 }

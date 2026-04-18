@@ -48,19 +48,24 @@ public class FitbitSleepTaskManager extends FitbitTaskManagerSupport<FitbitSleep
 		LocalDate fromDate = getFromDate(task);
 		FitbitProfileResult profile = getProfile(credentials);
 		for (LocalDate date = fromDate; date.isBefore(syncDate); date = date.plusDays(1)) {
-			OAuthRequest request =
-					new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/sleep/date/" + date + ".json");
+			OAuthRequest request = new OAuthRequest(
+				Verb.GET,
+				"https://api.fitbit.com/1/user/-/sleep/date/" + date + ".json"
+			);
 			try {
 				Response response = send(request, credentials);
-				events.addAll(new FitbitSleepResult(
-								parseObject(response),
-								task.getTag(),
-								task.getPrincipal(),
-								task.useRanges(),
-								profile.getTimezone())
-						.getEvents());
+				events.addAll(
+					new FitbitSleepResult(
+						parseObject(response),
+						task.getTag(),
+						task.getPrincipal(),
+						task.useRanges(),
+						profile.getTimezone()
+					).getEvents()
+				);
 			} catch (InvalidStatusException e) {
-				if (e.getStatus() == 429) { // reached rate limit
+				if (e.getStatus() == 429) {
+					// reached rate limit
 					logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());
 					syncDate = date;
 					break;

@@ -35,7 +35,12 @@ abstract class HexoskinResultSupport {
 	private final Unit<Length> distanceUnit;
 
 	public HexoskinResultSupport(
-			JsonNode node, Identity author, @Nullable String tag, DateTimeZone zone, boolean metric) {
+		JsonNode node,
+		Identity author,
+		@Nullable String tag,
+		DateTimeZone zone,
+		boolean metric
+	) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;
@@ -99,7 +104,7 @@ abstract class HexoskinResultSupport {
 		if (node.isTextual()) {
 			return DateTime.parse(node.textValue()).withZone(zone);
 		} else if (node.isLong()) {
-			return new DateTime(1000 * node.longValue() / 256, zone);
+			return new DateTime((1000 * node.longValue()) / 256, zone);
 		} else {
 			throw new IllegalArgumentException("Can't parse time: " + node);
 		}
@@ -107,14 +112,15 @@ abstract class HexoskinResultSupport {
 
 	private Resource resourceValue(JsonNode node) {
 		return new Resource(
-				node.path("name").textValue(),
-				"https://my.hexoskin.com/en/activities/" + node.path("id").longValue());
+			node.path("name").textValue(),
+			"https://my.hexoskin.com/en/activities/" + node.path("id").longValue()
+		);
 	}
 
 	private @Nullable DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
 		return !isZero(node)
-				? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue(), 0)), Units.BPM)
-				: null;
+			? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue(), 0)), Units.BPM)
+			: null;
 	}
 
 	private @Nullable Integer intValue(JsonNode node) {
@@ -127,16 +133,17 @@ abstract class HexoskinResultSupport {
 
 	private @Nullable DecimalMeasure<Length> distanceValue(JsonNode node) {
 		return !isZero(node) && isPositive(node)
-				? Measures.valueOf(
-						Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), distanceUnit), 2)),
-						distanceUnit)
-				: null;
+			? Measures.valueOf(
+					Objects.requireNonNull(Measures.round(Measures.convert(node.doubleValue(), distanceUnit), 2)),
+					distanceUnit
+				)
+			: null;
 	}
 
 	private @Nullable DecimalMeasure<Energy> energyValue(JsonNode node) {
 		return !isZero(node)
-				? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue(), 0)), Units.KCAL)
-				: null;
+			? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue(), 0)), Units.KCAL)
+			: null;
 	}
 
 	private @Nullable String textValue(JsonNode node) {

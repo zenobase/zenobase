@@ -37,7 +37,6 @@ public class MapFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testClusterMin() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -57,7 +56,6 @@ public class MapFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testClusterSome() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -77,7 +75,6 @@ public class MapFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testClusterMax() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -98,7 +95,6 @@ public class MapFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testEmpty() {
-
 		addFacet("id:%s,type:%s", FACET_ID, MapFacet.TYPE);
 
 		ObjectNode result = execute();

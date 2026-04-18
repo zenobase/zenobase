@@ -27,10 +27,11 @@ public class FoursquareCredentialsManager extends OAuthCredentialsManager {
 
 	@Inject
 	public FoursquareCredentialsManager(
-			CredentialsRepository integrations,
-			@Named("foursquare.api.key") String apiKey,
-			@Named("foursquare.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+		CredentialsRepository integrations,
+		@Named("foursquare.api.key") String apiKey,
+		@Named("foursquare.api.secret") String apiSecret,
+		@Named("oauth.hostname") String callbackUrl
+	) {
 		super(TYPE, integrations, new FoursquareApi(), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -53,15 +54,14 @@ public class FoursquareCredentialsManager extends OAuthCredentialsManager {
 		}
 		Token token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-				.build();
+			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+			.with(Credentials.CREDENTIALS)
+			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+			.build();
 	}
 
 	@Override
 	public void sign(OAuthRequest request, OAuthCredentials credentials) {
-		request.addQuerystringParameter(
-				"oauth_token", Objects.requireNonNull(credentials.getToken()).getToken());
+		request.addQuerystringParameter("oauth_token", Objects.requireNonNull(credentials.getToken()).getToken());
 	}
 }

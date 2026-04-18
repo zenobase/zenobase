@@ -15,9 +15,7 @@ public class FilterParser {
 
 	public @Nullable Query parse(@Nullable String value) {
 		return !Strings.isNullOrEmpty(value)
-				? new FilterBuilderSupport(constraintBuilders)
-						.addConstraints(value)
-						.buildFilter()
-				: null;
+			? new FilterBuilderSupport(constraintBuilders).addConstraints(value).buildFilter()
+			: null;
 	}
 }

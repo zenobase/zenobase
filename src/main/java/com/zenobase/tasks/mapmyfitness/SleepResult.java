@@ -50,10 +50,12 @@ class SleepResult {
 		event.addValue(Event.TIMESTAMP, end);
 		event.setValue(Event.DURATION, new Duration(begin, end));
 		event.setValue(
-				Event.PERCENTAGE,
-				percentageValue(
-						node.path("aggregates").path("sum"),
-						node.path("aggregates").path("details").path("awake").path("sum")));
+			Event.PERCENTAGE,
+			percentageValue(
+				node.path("aggregates").path("sum"),
+				node.path("aggregates").path("details").path("awake").path("sum")
+			)
+		);
 		event.setValue(Event.SOURCE, SOURCE);
 		event.setValue(Event.AUTHOR, author);
 		return event;
@@ -75,7 +77,7 @@ class SleepResult {
 		int dividend = dividendNode.intValue();
 		int divisor = divisorNode.intValue();
 		Preconditions.checkState(dividend != 0);
-		return Percentage.valueOf(divisor > 0 ? 100 * (dividend - divisor) / dividend : 100);
+		return Percentage.valueOf(divisor > 0 ? (100 * (dividend - divisor)) / dividend : 100);
 	}
 
 	public String getNext() {

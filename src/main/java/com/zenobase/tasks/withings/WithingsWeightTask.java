@@ -25,12 +25,13 @@ public class WithingsWeightTask extends Task {
 	}
 
 	WithingsWeightTask(
-			String bucketId,
-			Identity principal,
-			String tag,
-			Unit<Mass> unit,
-			DateTimeZone timezone,
-			@Nullable String marker) {
+		String bucketId,
+		Identity principal,
+		String tag,
+		Unit<Mass> unit,
+		DateTimeZone timezone,
+		@Nullable String marker
+	) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);

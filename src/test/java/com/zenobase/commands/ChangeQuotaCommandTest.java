@@ -13,12 +13,12 @@ import com.zenobase.repositories.UserRepository;
 public class ChangeQuotaCommandTest {
 
 	private final UserRepository users = mock(UserRepository.class);
-	private final CommandHandlerRegistry registry =
-			CommandHandlerRegistry.containing(new ChangeQuotaCommand.Handler(users));
+	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
+		new ChangeQuotaCommand.Handler(users)
+	);
 
 	@Test
 	public void test() {
-
 		User user = new User("tester");
 		when(users.find(user.getName())).thenReturn(user);
 
@@ -37,7 +37,6 @@ public class ChangeQuotaCommandTest {
 
 	@Test
 	public void testChangeNonExistentUser() {
-
 		User user = new User("tester");
 
 		Command command = new ChangeQuotaCommand(user.asIdentity(), user.getName(), null, 50000);

@@ -22,22 +22,23 @@ public class EventChunksTest {
 
 	@Test
 	public void test() throws IOException {
-
 		int total = 102;
 		String bucketId = Generator.id();
 		EventRepository events = mock(EventRepository.class);
 
-		doAnswer((Answer<Void>) invocation -> {
-					Callback<ObjectNode> callback = (Callback<ObjectNode>) invocation.getArgument(2);
-					for (int i = 0; i < total; ++i) {
-						ObjectNode fakeEvent = Nodes.newObject();
-						fakeEvent.put("@id", Generator.id());
-						callback.call(fakeEvent);
-					}
-					return null;
-				})
-				.when(events)
-				.find(eq(bucketId), any(Search.class), any(Callback.class));
+		doAnswer(
+			(Answer<Void>) invocation -> {
+				Callback<ObjectNode> callback = (Callback<ObjectNode>) invocation.getArgument(2);
+				for (int i = 0; i < total; ++i) {
+					ObjectNode fakeEvent = Nodes.newObject();
+					fakeEvent.put("@id", Generator.id());
+					callback.call(fakeEvent);
+				}
+				return null;
+			}
+		)
+			.when(events)
+			.find(eq(bucketId), any(Search.class), any(Callback.class));
 
 		ObjectNode result = onReady(new EventChunks(events, bucketId, List.of()));
 

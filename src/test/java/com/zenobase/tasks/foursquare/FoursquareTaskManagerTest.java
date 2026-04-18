@@ -23,7 +23,6 @@ public class FoursquareTaskManagerTest {
 
 	@Test
 	public void test() {
-
 		FoursquareCredentialsManager credentialsManager = mock(FoursquareCredentialsManager.class);
 		FoursquareTaskManager manager = new FoursquareTaskManager(credentialsManager);
 		OAuthCredentials credentials = mock(OAuthCredentials.class);

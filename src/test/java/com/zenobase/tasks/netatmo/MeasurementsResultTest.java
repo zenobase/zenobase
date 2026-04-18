@@ -24,8 +24,12 @@ public class MeasurementsResultTest extends ResultTestSupport {
 	public void test5min() {
 		DateTimeZone tz = DateTimeZone.forOffsetHours(-7);
 		Device device = new Device("1", "test", DateTime.now(tz), DateTime.now(tz), new Location("1", "2"), TYPES);
-		MeasurementsResult result =
-				new MeasurementsResult(readObject("MeasurementsResultTest-5min.json"), TESTER, device, false);
+		MeasurementsResult result = new MeasurementsResult(
+			readObject("MeasurementsResultTest-5min.json"),
+			TESTER,
+			device,
+			false
+		);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(10);
 		Event expected = new Event(events.get(0).getId());
@@ -48,8 +52,12 @@ public class MeasurementsResultTest extends ResultTestSupport {
 	public void test1h() {
 		DateTimeZone tz = DateTimeZone.forOffsetHours(-7);
 		Device device = new Device("1", "test", DateTime.now(tz), DateTime.now(tz), new Location("1", "2"), TYPES);
-		MeasurementsResult result =
-				new MeasurementsResult(readObject("MeasurementsResultTest-1h.json"), TESTER, device, true);
+		MeasurementsResult result = new MeasurementsResult(
+			readObject("MeasurementsResultTest-1h.json"),
+			TESTER,
+			device,
+			true
+		);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(16);
 		Event expected = new Event(events.get(0).getId());
@@ -71,8 +79,12 @@ public class MeasurementsResultTest extends ResultTestSupport {
 	public void test1hNoTypes() {
 		DateTimeZone tz = DateTimeZone.forOffsetHours(-7);
 		Device device = new Device("1", "test", DateTime.now(tz), DateTime.now(tz), new Location("1", "2"), Set.of());
-		MeasurementsResult result =
-				new MeasurementsResult(readObject("MeasurementsResultTest-1h.json"), TESTER, device, true);
+		MeasurementsResult result = new MeasurementsResult(
+			readObject("MeasurementsResultTest-1h.json"),
+			TESTER,
+			device,
+			true
+		);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(16);
 		Event expected = new Event(events.get(0).getId());

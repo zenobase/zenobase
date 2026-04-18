@@ -52,35 +52,43 @@ public class FitbitStepsTaskManager extends FitbitTaskManagerSupport<FitbitSteps
 			try {
 				if (task.isHourly()) {
 					OAuthRequest request = new OAuthRequest(
-							Verb.GET,
-							"https://api.fitbit.com/1/user/-/activities/steps/date/" + date + "/1d/15min.json");
+						Verb.GET,
+						"https://api.fitbit.com/1/user/-/activities/steps/date/" + date + "/1d/15min.json"
+					);
 					Response response = send(request, credentials);
-					events.addAll(new FitbitIntradayStepsResult(
-									parseObject(response),
-									task.getTag(),
-									task.getPrincipal(),
-									date,
-									profile.getTimezone())
-							.getEvents());
+					events.addAll(
+						new FitbitIntradayStepsResult(
+							parseObject(response),
+							task.getTag(),
+							task.getPrincipal(),
+							date,
+							profile.getTimezone()
+						).getEvents()
+					);
 				} else {
 					OAuthRequest request = new OAuthRequest(
-							Verb.GET, "https://api.fitbit.com/1/user/-/activities/date/" + date + ".json");
+						Verb.GET,
+						"https://api.fitbit.com/1/user/-/activities/date/" + date + ".json"
+					);
 					request.addHeader("Accept-Language", profile.getDistanceLocale());
 					Response response = send(request, credentials);
-					events.addAll(new FitbitStepsResult(
-									parseObject(response),
-									task.getTag(),
-									task.getPrincipal(),
-									date,
-									profile.getTimezone(),
-									profile.getDistanceUnit(),
-									profile.getHeightUnit(),
-									task.getEnergyUnit(),
-									task.includeBMR())
-							.getEvents());
+					events.addAll(
+						new FitbitStepsResult(
+							parseObject(response),
+							task.getTag(),
+							task.getPrincipal(),
+							date,
+							profile.getTimezone(),
+							profile.getDistanceUnit(),
+							profile.getHeightUnit(),
+							task.getEnergyUnit(),
+							task.includeBMR()
+						).getEvents()
+					);
 				}
 			} catch (InvalidStatusException e) {
-				if (e.getStatus() == 429) { // reached rate limit
+				if (e.getStatus() == 429) {
+					// reached rate limit
 					logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());
 					syncDate = date;
 					break;

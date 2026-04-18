@@ -39,8 +39,9 @@ public class MapFacet extends FilteredFacet {
 
 	@Override
 	public void configure(SearchRequest.Builder builder) {
-		Aggregation grid =
-				Aggregation.of(a -> a.geohashGrid(g -> g.field(field).precision(p -> p.geohashLength(precision))));
+		Aggregation grid = Aggregation.of(a ->
+			a.geohashGrid(g -> g.field(field).precision(p -> p.geohashLength(precision)))
+		);
 		addAggregation(getId(), grid, builder);
 	}
 
@@ -70,10 +71,12 @@ public class MapFacet extends FilteredFacet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-		return options -> new MapFacet(
+		return options ->
+			new MapFacet(
 				Objects.requireNonNull(options.get("id")),
 				Objects.requireNonNull(options.get("field", String.class, Event.LOCATION.getName())),
 				Objects.requireNonNull(options.get("factor", Double.class, 0.2)),
-				filterParser.parse(options.get("filter")));
+				filterParser.parse(options.get("filter"))
+			);
 	}
 }

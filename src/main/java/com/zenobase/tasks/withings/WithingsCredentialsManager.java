@@ -30,10 +30,11 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 
 	@Inject
 	public WithingsCredentialsManager(
-			CredentialsRepository repository,
-			@Named("withings.api.key") String apiKey,
-			@Named("withings.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+		CredentialsRepository repository,
+		@Named("withings.api.key") String apiKey,
+		@Named("withings.api.secret") String apiSecret,
+		@Named("oauth.hostname") String callbackUrl
+	) {
 		super(TYPE, repository, new WithingsApi(), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -56,10 +57,10 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 		}
 		Token token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-				.build();
+			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+			.with(Credentials.CREDENTIALS)
+			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+			.build();
 	}
 
 	@Override
@@ -87,17 +88,17 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 			credentials.setToken(new WithingsAccessTokenExtractor().extract(response.getBody()));
 		} else {
 			logger.warn(
-					"Couldn't refresh credentials {}: {} -> {}",
-					credentials.getId(),
-					response.getHeaders(),
-					response.getBody());
+				"Couldn't refresh credentials {}: {} -> {}",
+				credentials.getId(),
+				response.getHeaders(),
+				response.getBody()
+			);
 		}
 	}
 
 	@Override
 	public void sign(OAuthRequest request, OAuthCredentials credentials) {
-		request.addQuerystringParameter(
-				"access_token", Objects.requireNonNull(credentials.getToken()).getToken());
+		request.addQuerystringParameter("access_token", Objects.requireNonNull(credentials.getToken()).getToken());
 	}
 
 	@Override

@@ -48,9 +48,8 @@ public class DistanceConstraintBuilderTest extends ConstraintBuilderTestSupport 
 	@Test
 	public void testBadDistance() {
 		assertThatThrownBy(() -> {
-					addConstraint("%s:%s~%s", Event.LOCATION, LAS_VEGAS, "x"); // location:-115.17,36.08~x
-					execute();
-				})
-				.isInstanceOf(NumberFormatException.class);
+			addConstraint("%s:%s~%s", Event.LOCATION, LAS_VEGAS, "x"); // location:-115.17,36.08~x
+			execute();
+		}).isInstanceOf(NumberFormatException.class);
 	}
 }

@@ -46,9 +46,9 @@ public class DefaultPartialList<T> extends AbstractList<T> implements PartialLis
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof PartialList<?> list
-				&& total == list.getTotal()
-				&& Iterables.elementsEqual(elements, list);
+		return (
+			that instanceof PartialList<?> list && total == list.getTotal() && Iterables.elementsEqual(elements, list)
+		);
 	}
 
 	@Override

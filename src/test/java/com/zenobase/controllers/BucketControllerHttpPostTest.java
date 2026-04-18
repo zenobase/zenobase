@@ -73,10 +73,13 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	public void testConflict() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(from.getId())).thenReturn(from.copy());
-		when(dispatcher.dispatch(any(UpdateBucketCommand.class)))
-				.thenThrow(new OpenSearchException(ErrorResponse.of(r -> r.status(409)
-						.error(e2 ->
-								e2.type("version_conflict_engine_exception").reason("version conflict")))));
+		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenThrow(
+			new OpenSearchException(
+				ErrorResponse.of(r ->
+					r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))
+				)
+			)
+		);
 		try (Http1ClientResponse result = call(from.getId(), to.toJson())) {
 			assertThat(result).hasStatus(409);
 		}

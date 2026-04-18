@@ -59,8 +59,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			reauthorize(credentials);
 		}
 		List<Event> events = new ArrayList<>();
-		String to = Objects.requireNonNull(
-				formatMarker(DateTime.now(DateTimeZone.UTC).minusMinutes(1)));
+		String to = Objects.requireNonNull(formatMarker(DateTime.now(DateTimeZone.UTC).minusMinutes(1)));
 		for (Device device : getDevices(credentials, task.includeModules())) {
 			events.addAll(getEvents(task, credentials, device, to));
 		}
@@ -147,7 +146,9 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("scale", hourly ? "1hour" : "max");
 			request.addQuerystringParameter("optimize", "false");
 			request.addQuerystringParameter(
-					"type", "Temperature,Pressure,Noise,Humidity,CO2,GustStrength," + (hourly ? "sum_rain" : "Rain"));
+				"type",
+				"Temperature,Pressure,Noise,Humidity,CO2,GustStrength," + (hourly ? "sum_rain" : "Rain")
+			);
 			rate.acquire();
 			Response response = send(request, credentials);
 			return new MeasurementsResult(parseObject(response), principal, device, hourly);
@@ -155,22 +156,31 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 	}
 
 	private Command createCommand(
-			NetatmoTask task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
+		NetatmoTask task,
+		OAuthCredentials credentials,
+		List<Event> events,
+		Token expiredToken
+	) {
 		var command = new CompoundCommand(task.getPrincipal(), "ran netatmo task", "reverted netatmo task");
-		command.add(UpdateTaskCommand.builder(task)
+		command.add(
+			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 				.set(
-						Task.MARKER,
-						task.getMarker(),
-						events.isEmpty() ? task.getMarker() : getMarker(events, task.isHourly()))
+					Task.MARKER,
+					task.getMarker(),
+					events.isEmpty() ? task.getMarker() : getMarker(events, task.isHourly())
+				)
 				.set(Task.UNDO, task.getUndoId(), command.getId())
-				.build());
+				.build()
+		);
 		if (!Objects.equals(credentials.getToken(), expiredToken)) {
-			command.add(UpdateCredentialsCommand.builder(credentials)
+			command.add(
+				UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
-					.build());
+					.build()
+			);
 		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
@@ -180,7 +190,8 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 
 	private static @Nullable String getMarker(List<Event> events, boolean hourly) {
 		DateTime last = Objects.requireNonNull(
-				Objects.requireNonNull(Iterables.getLast(events)).getValue(Event.TIMESTAMP));
+			Objects.requireNonNull(Iterables.getLast(events)).getValue(Event.TIMESTAMP)
+		);
 		return formatMarker(hourly ? last.plusHours(1) : last.plusSeconds(1));
 	}
 }

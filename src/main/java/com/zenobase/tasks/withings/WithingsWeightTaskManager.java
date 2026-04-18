@@ -33,18 +33,16 @@ public class WithingsWeightTaskManager extends WithingsTaskManagerSupport<Within
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "body");
 		Unit<Mass> unit = MoreObjects.firstNonNull(new UnitField<Mass>("unit").getValue(settings), Units.KG);
 		DateTimeZone timezone = DateTimeZone.forID(
-				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+			MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC")
+		);
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
 		return new WithingsWeightTask(bucketId, principal, tag, unit, timezone, marker);
 	}
 
 	private static @Nullable String parseMarker(@Nullable String marker, DateTimeZone timezone) {
 		return marker != null
-				? Long.toString(LocalDateTime.parse(marker.replace("Z", ""))
-								.toDateTime(timezone)
-								.getMillis()
-						/ 1000)
-				: null;
+			? Long.toString(LocalDateTime.parse(marker.replace("Z", "")).toDateTime(timezone).getMillis() / 1000)
+			: null;
 	}
 
 	@Override
@@ -52,7 +50,12 @@ public class WithingsWeightTaskManager extends WithingsTaskManagerSupport<Within
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
 		var result = new WithingsWeightResult(
-				parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
+			parseObject(response),
+			task.getPrincipal(),
+			task.getTag(),
+			task.getUnit(),
+			task.getTimezone()
+		);
 		if (result.getStatus() == 401) {
 			throw new InvalidCredentialsException(credentials);
 		}

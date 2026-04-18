@@ -71,16 +71,15 @@ public class StatsFacet extends FilteredFacet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-
 		return new FacetBuilder() {
-
 			@Override
 			public Facet build(FacetOptions options) {
 				return new StatsFacet(
-						Objects.requireNonNull(options.get("id")),
-						Objects.requireNonNull(options.get("field")),
-						getUnit(options.get("unit")),
-						filterParser.parse(options.get("filter")));
+					Objects.requireNonNull(options.get("id")),
+					Objects.requireNonNull(options.get("field")),
+					getUnit(options.get("unit")),
+					filterParser.parse(options.get("filter"))
+				);
 			}
 
 			private Unit<?> getUnit(@Nullable String value) {

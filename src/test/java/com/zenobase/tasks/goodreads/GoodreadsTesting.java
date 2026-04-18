@@ -10,8 +10,9 @@ public class GoodreadsTesting extends TaskTestingSupport {
 	@Test
 	public void test() {
 		run(
-				new GoodreadsTaskManager(newCredentialsManager()),
-				Nodes.newObject().put("tag", "Book").put("shelf", "read"));
+			new GoodreadsTaskManager(newCredentialsManager()),
+			Nodes.newObject().put("tag", "Book").put("shelf", "read")
+		);
 	}
 
 	@Override

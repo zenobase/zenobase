@@ -12,8 +12,8 @@ public class CommandTest {
 		Identity principal = new Identity();
 		Command command = new TestCommand(principal, "foo");
 		new EqualsTester()
-				.addEqualityGroup(command, new TestCommand(command.toJson()))
-				.addEqualityGroup(new TestCommand(principal, "foo"))
-				.testEquals();
+			.addEqualityGroup(command, new TestCommand(command.toJson()))
+			.addEqualityGroup(new TestCommand(principal, "foo"))
+			.testEquals();
 	}
 }

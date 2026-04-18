@@ -45,7 +45,6 @@ public class GeoBoundsFacetTest extends FacetTestSupport {
 
 	@Test
 	public void test() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -64,7 +63,6 @@ public class GeoBoundsFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testFiltered() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -83,7 +81,6 @@ public class GeoBoundsFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testEmpty() {
-
 		addFacet("id:%s,type:%s", FACET_ID, GeoBoundsFacet.TYPE);
 
 		ObjectNode result = execute();

@@ -22,7 +22,6 @@ public class TaskRefresherTest {
 
 	@Test
 	public void test() {
-
 		String taskType = "test";
 		User user = new User("tester");
 		Bucket bucket = new Bucket();
@@ -42,7 +41,6 @@ public class TaskRefresherTest {
 
 	@Test
 	public void testBadBucket() {
-
 		String taskType = "test";
 		User user = new User("tester");
 		Bucket bucket = new Bucket();
@@ -56,7 +54,6 @@ public class TaskRefresherTest {
 
 	@Test
 	public void testBadRole() {
-
 		String taskType = "test";
 		User user = new User("tester");
 		Bucket bucket = new Bucket();
@@ -72,7 +69,6 @@ public class TaskRefresherTest {
 
 	@Test
 	public void testBadType() {
-
 		String taskType = "test";
 		User user = new User("tester");
 		Bucket bucket = new Bucket();
@@ -88,7 +84,6 @@ public class TaskRefresherTest {
 
 	@Test
 	public void testNoop() {
-
 		String taskType = "test";
 		User user = new User("tester");
 		Bucket bucket = new Bucket();

@@ -32,13 +32,13 @@ public class TaskListController extends ControllerSupport {
 
 	@Inject
 	public TaskListController(
-			AuthorizationContext security,
-			CommandDispatcher dispatcher,
-			TaskManagerRegistry registry,
-			TaskRepository tasks,
-			BucketRepository buckets,
-			UserRepository users) {
-
+		AuthorizationContext security,
+		CommandDispatcher dispatcher,
+		TaskManagerRegistry registry,
+		TaskRepository tasks,
+		BucketRepository buckets,
+		UserRepository users
+	) {
 		super(security);
 		this.dispatcher = dispatcher;
 		this.registry = registry;

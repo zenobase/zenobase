@@ -46,9 +46,7 @@ public abstract class FieldTestSupport<T> extends OpenSearchTestSupport {
 		ObjectNode foundNode = index.get(id);
 		foundNode.remove(DomainNode.SEQ_NO_FIELD);
 		foundNode.remove(DomainNode.PRIMARY_TERM_FIELD);
-		assertThat(Nodes.readObject(foundNode.toString()))
-				.isEqualTo(Nodes.readObject(
-						node.toString())); // TODO investigate why some tests fail if we don't reparse the json
+		assertThat(Nodes.readObject(foundNode.toString())).isEqualTo(Nodes.readObject(node.toString())); // TODO investigate why some tests fail if we don't reparse the json
 	}
 
 	@AfterEach

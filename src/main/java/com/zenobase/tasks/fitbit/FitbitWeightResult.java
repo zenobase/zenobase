@@ -21,12 +21,13 @@ class FitbitWeightResult extends FitbitResultSupport {
 	private final Unit<Mass> weightUnit;
 
 	public FitbitWeightResult(
-			JsonNode node,
-			@Nullable String tag,
-			Identity author,
-			LocalDate date,
-			DateTimeZone timezone,
-			Unit<Mass> weightUnit) {
+		JsonNode node,
+		@Nullable String tag,
+		Identity author,
+		LocalDate date,
+		DateTimeZone timezone,
+		Unit<Mass> weightUnit
+	) {
 		super(node, tag, author, timezone);
 		this.date = date;
 		this.weightUnit = weightUnit;

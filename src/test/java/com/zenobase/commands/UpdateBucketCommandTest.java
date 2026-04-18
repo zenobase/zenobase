@@ -17,8 +17,9 @@ import com.zenobase.repositories.BucketRepository;
 public class UpdateBucketCommandTest {
 
 	private final BucketRepository repository = mock(BucketRepository.class);
-	private final CommandHandlerRegistry registry =
-			CommandHandlerRegistry.containing(new UpdateBucketCommand.Handler(repository));
+	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
+		new UpdateBucketCommand.Handler(repository)
+	);
 	private final Identity principal = new Identity();
 	private final Bucket from = new Bucket();
 	private final Bucket to = from.copy();
@@ -33,7 +34,6 @@ public class UpdateBucketCommandTest {
 
 	@Test
 	public void test() {
-
 		Command command = new UpdateBucketCommand(principal, from, to);
 		registry.execute(command);
 		verify(repository).update(from, to);
@@ -52,7 +52,6 @@ public class UpdateBucketCommandTest {
 
 	@Test
 	public void testReplaceAliases() {
-
 		from.addAlias(new Alias("foo"));
 		from.addAlias(new Alias("bar"));
 		to.addAlias(new Alias("foo"));
@@ -65,7 +64,6 @@ public class UpdateBucketCommandTest {
 
 	@Test
 	public void testRecoverFromVersionConflict() {
-
 		Bucket from2 = from.copy();
 		from2.setVersion(1);
 		from2.setOptimisticLock(new OptimisticLock(1, 1));
@@ -73,8 +71,11 @@ public class UpdateBucketCommandTest {
 		to2.setVersion(1);
 
 		Command command = new UpdateBucketCommand(principal, from, to);
-		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409)
-				.error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
+		Exception e = new OpenSearchException(
+			ErrorResponse.of(r ->
+				r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))
+			)
+		);
 		doThrow(e).when(repository).update(from, to);
 		Bucket current = from.copy();
 		current.setVersion(1);
@@ -86,10 +87,12 @@ public class UpdateBucketCommandTest {
 
 	@Test
 	public void testUnrecoverableVersionConflict() {
-
 		Command command = new UpdateBucketCommand(principal, from, to);
-		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409)
-				.error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
+		Exception e = new OpenSearchException(
+			ErrorResponse.of(r ->
+				r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))
+			)
+		);
 		doThrow(e).when(repository).update(from, to);
 		Bucket current = from.copy();
 		current.setVersion(3);

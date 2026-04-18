@@ -10,11 +10,12 @@ public class LastFmTesting extends TaskTestingSupport {
 	@Test
 	public void test() {
 		run(
-				new LastFmTaskManager(newCredentialsManager()),
-				Nodes.newObject()
-						.put("tag", "track")
-						.put("timezone", "America/Los_Angeles")
-						.put("marker", "2014-12-10T17:35:45.000Z"));
+			new LastFmTaskManager(newCredentialsManager()),
+			Nodes.newObject()
+				.put("tag", "track")
+				.put("timezone", "America/Los_Angeles")
+				.put("marker", "2014-12-10T17:35:45.000Z")
+		);
 	}
 
 	@Override

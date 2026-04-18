@@ -1,31 +1,31 @@
 {
-    "username": "jdoe",
-    "first_name": "John",
-    "last_name": "Doe",
-    "display_name": "Eric Jain",
-    "last_initial": "J.",
-    "weight": null,
-    "communication": {
-        "promotions": true,
-        "newsletter": true,
-        "system_messages": true
-    },
-    "display_measurement_system": "imperial",
-    "time_zone": "America/Los_Angeles",
-    "birthdate": "1970-01-01",
-    "height": null,
-    "sharing": {
-        "twitter": false,
-        "facebook": false
-    },
-    "last_login": "2014-01-02T22:44:19+00:00",
-    "location": {
-        "country": "US",
-        "region": "WA",
-        "locality": "Seattle",
-        "address": ""
-    },
-    "gender": "M",
-    "id": 12345678,
-    "date_joined": "2013-08-22T17:54:30+00:00"
+	"username": "jdoe",
+	"first_name": "John",
+	"last_name": "Doe",
+	"display_name": "Eric Jain",
+	"last_initial": "J.",
+	"weight": null,
+	"communication": {
+		"promotions": true,
+		"newsletter": true,
+		"system_messages": true
+	},
+	"display_measurement_system": "imperial",
+	"time_zone": "America/Los_Angeles",
+	"birthdate": "1970-01-01",
+	"height": null,
+	"sharing": {
+		"twitter": false,
+		"facebook": false
+	},
+	"last_login": "2014-01-02T22:44:19+00:00",
+	"location": {
+		"country": "US",
+		"region": "WA",
+		"locality": "Seattle",
+		"address": ""
+	},
+	"gender": "M",
+	"id": 12345678,
+	"date_joined": "2013-08-22T17:54:30+00:00"
 }

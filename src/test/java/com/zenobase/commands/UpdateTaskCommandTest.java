@@ -14,12 +14,12 @@ public class UpdateTaskCommandTest {
 
 	private final Identity principal = new Identity();
 	private final TaskRepository repository = mock(TaskRepository.class);
-	private final CommandHandlerRegistry registry =
-			CommandHandlerRegistry.containing(new UpdateTaskCommand.Handler(repository));
+	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
+		new UpdateTaskCommand.Handler(repository)
+	);
 
 	@Test
 	public void test() {
-
 		Task from = new Task("do nothing", Generator.id(), principal);
 		from.setCompleted(DateTime.now().minusDays(1));
 
@@ -27,8 +27,8 @@ public class UpdateTaskCommandTest {
 		to.setCompleted(DateTime.now());
 
 		Command command = UpdateTaskCommand.builder(from)
-				.set(Task.COMPLETED, from.getCompleted(), to.getCompleted())
-				.build();
+			.set(Task.COMPLETED, from.getCompleted(), to.getCompleted())
+			.build();
 		when(repository.find(from.getId())).thenReturn(from.copy());
 		registry.execute(command);
 		verify(repository).update(to);

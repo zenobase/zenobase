@@ -34,12 +34,12 @@ public class BucketController extends ControllerSupport {
 
 	@Inject
 	public BucketController(
-			AuthorizationContext security,
-			CommandDispatcher dispatcher,
-			BucketRepository buckets,
-			UserRepository users,
-			TaskRepository tasks) {
-
+		AuthorizationContext security,
+		CommandDispatcher dispatcher,
+		BucketRepository buckets,
+		UserRepository users,
+		TaskRepository tasks
+	) {
 		super(security);
 		this.dispatcher = dispatcher;
 		this.buckets = buckets;
@@ -202,10 +202,13 @@ public class BucketController extends ControllerSupport {
 			return;
 		}
 		CompoundCommand command = new CompoundCommand(
-				auth.getPrincipal(), "deleted bucket and associated data", "restored bucket and associated data");
-		tasks.find(
-				new TaskQuery().bucketEqualTo(bucketId),
-				task -> command.add(new DeleteTaskCommand(auth.getPrincipal(), task)));
+			auth.getPrincipal(),
+			"deleted bucket and associated data",
+			"restored bucket and associated data"
+		);
+		tasks.find(new TaskQuery().bucketEqualTo(bucketId), task ->
+			command.add(new DeleteTaskCommand(auth.getPrincipal(), task))
+		);
 		command.add(new DeleteBucketCommand(auth.getPrincipal(), bucket));
 		String commandId = dispatcher.dispatch(command.unwrap());
 		setHeader(res, COMMAND_ID, commandId);

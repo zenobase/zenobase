@@ -9,7 +9,6 @@ import org.joda.time.format.ISODateTimeFormat;
  * Interval without a time zone.
  */
 public record LocalInterval(LocalDateTime start, LocalDateTime end) implements Comparable<LocalInterval> {
-
 	public LocalInterval {
 		Preconditions.checkArgument(!end.isBefore(start), "The end instant must be greater or equal to the start");
 	}
@@ -19,8 +18,7 @@ public record LocalInterval(LocalDateTime start, LocalDateTime end) implements C
 	}
 
 	public long toDurationMillis() {
-		return end.toDateTime(DateTimeZone.UTC).getMillis()
-				- start.toDateTime(DateTimeZone.UTC).getMillis();
+		return end.toDateTime(DateTimeZone.UTC).getMillis() - start.toDateTime(DateTimeZone.UTC).getMillis();
 	}
 
 	@Override

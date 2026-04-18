@@ -24,7 +24,6 @@ public class NetatmoTaskManagerTest {
 
 	@Test
 	public void test() {
-
 		NetatmoCredentialsManager credentialsManager = mock(NetatmoCredentialsManager.class);
 		NetatmoTaskManager manager = spy(new NetatmoTaskManager(credentialsManager));
 		OAuthCredentials credentials = mock(OAuthCredentials.class);

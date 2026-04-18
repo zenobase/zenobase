@@ -22,7 +22,12 @@ abstract class TimelineFacetSupport extends FilteredFacet {
 	protected final Unit<?> unit;
 
 	protected TimelineFacetSupport(
-			String id, String keyField, String valueField, Unit<?> unit, @Nullable Query filter) {
+		String id,
+		String keyField,
+		String valueField,
+		Unit<?> unit,
+		@Nullable Query filter
+	) {
 		super(id, filter);
 		this.keyField = keyField;
 		this.valueField = valueField;
@@ -31,8 +36,8 @@ abstract class TimelineFacetSupport extends FilteredFacet {
 
 	protected String getField() {
 		return Units.isDimensionless(unit)
-				? valueField
-				: Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
+			? valueField
+			: Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
 	}
 
 	protected JsonNode toJson(Iterable<ObjectNode> values) {

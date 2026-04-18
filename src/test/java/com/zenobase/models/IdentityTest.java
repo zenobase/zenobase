@@ -11,10 +11,7 @@ public class IdentityTest {
 	public void testEqualsHashCode() {
 		Identity me = new Identity();
 		Identity you = new Identity();
-		new EqualsTester()
-				.addEqualityGroup(me, new Identity(me.id()))
-				.addEqualityGroup(you)
-				.testEquals();
+		new EqualsTester().addEqualityGroup(me, new Identity(me.id())).addEqualityGroup(you).testEquals();
 	}
 
 	@Test

@@ -9,7 +9,6 @@ public class JsonDiffTest {
 
 	@Test
 	public void test() {
-
 		ObjectNode original = Nodes.newObject();
 		original.put("a", 1);
 		original.put("b", false);
@@ -25,7 +24,6 @@ public class JsonDiffTest {
 
 	@Test
 	public void testNestedModification() {
-
 		ObjectNode original = Nodes.newObject();
 		ObjectNode orifinalNested = Nodes.newObject();
 		orifinalNested.put("value", 1);
@@ -41,7 +39,6 @@ public class JsonDiffTest {
 
 	@Test
 	public void testNestedUnchanged() {
-
 		ObjectNode original = Nodes.newObject();
 		ObjectNode orifinalNested = Nodes.newObject();
 		orifinalNested.put("value", 1);
@@ -57,7 +54,6 @@ public class JsonDiffTest {
 
 	@Test
 	public void testValueToObject() {
-
 		ObjectNode original = Nodes.newObject();
 		original.put("a", 1);
 
@@ -71,7 +67,6 @@ public class JsonDiffTest {
 
 	@Test
 	public void testObjectToValue() {
-
 		ObjectNode original = Nodes.newObject();
 		ObjectNode nested = Nodes.newObject();
 		nested.put("value", 1);

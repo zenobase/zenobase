@@ -10,11 +10,12 @@ public class RescueTimeTesting extends TaskTestingSupport {
 	@Test
 	public void test() {
 		run(
-				new RescueTimeProductivityTaskManager(newCredentialsManager()),
-				Nodes.newObject()
-						.put("timezone", "America/Los_Angeles")
-						.put("marker", "2014-11-01T10:00:00.000")
-						.put("kind", "overview"));
+			new RescueTimeProductivityTaskManager(newCredentialsManager()),
+			Nodes.newObject()
+				.put("timezone", "America/Los_Angeles")
+				.put("marker", "2014-11-01T10:00:00.000")
+				.put("kind", "overview")
+		);
 	}
 
 	@Override

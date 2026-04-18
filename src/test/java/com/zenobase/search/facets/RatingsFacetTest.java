@@ -34,7 +34,6 @@ public class RatingsFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testDefault() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -61,7 +60,6 @@ public class RatingsFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testFiltered() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -82,7 +80,6 @@ public class RatingsFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testWithScaleZeroToTen() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -112,7 +109,6 @@ public class RatingsFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testEmpty() {
-
 		addFacet("id:%s,type:%s", FACET_ID, RatingsFacet.TYPE);
 
 		ObjectNode result = execute();

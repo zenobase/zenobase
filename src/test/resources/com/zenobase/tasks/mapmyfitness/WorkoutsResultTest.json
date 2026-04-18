@@ -1,114 +1,114 @@
 {
-    "_links": {
-        "self": [
-            {
-                "href": "/v7.0/workout/?limit=20&user=37756949&offset=0"
-            }
-        ],
-        "documentation": [
-            {
-                "href": "https://www.mapmyapi.com/docs/Workout"
-            }
-        ]
-    },
-    "_embedded": {
-        "workouts": [
-            {
-                "start_datetime": "2014-04-24T22:36:33+00:00",
-                "name": "Walked 3.34 mi on 2014/04/24",
-                "updated_datetime": "2014-04-24T23:28:07+00:00",
-                "created_datetime": "2014-04-24T23:27:34+00:00",
-                "aggregates": {
-                    "active_time_total": 2991,
-                    "distance_total": 5375.51473536,
-                    "steps_total": 1000,
-                    "speed_avg": 1.7972304416,
-                    "heartrate_max": 176,
-                    "elapsed_time_total": 2992,
-                    "heartrate_avg": 115,
-                    "metabolic_energy_total": 0
-                },
-                "reference_key": null,
-                "start_locale_timezone": "America/Los_Angeles",
-                "source": "MapMyRun Android App",
-                "_links": {
-                    "route": [
-                        {
-                            "href": "/v7.0/route/400640020/",
-                            "id": "400640020"
-                        }
-                    ],
-                    "self": [
-                        {
-                            "href": "/v7.0/workout/547836386/",
-                            "id": "547836386"
-                        }
-                    ],
-                    "activity_type": [
-                        {
-                            "href": "/v7.0/activity_type/9/",
-                            "id": "9"
-                        }
-                    ],
-                    "user": [
-                        {
-                            "href": "/v7.0/user/37756949/",
-                            "id": "37756949"
-                        }
-                    ],
-                    "privacy": [
-                        {
-                            "href": "/v7.0/privacy_option/1/",
-                            "id": "1"
-                        }
-                    ]
-                },
-                "has_time_series": true
-            },
-            {
-                "start_datetime": "2014-11-06T19:00:00+00:00",
-                "name": "Test Workout",
-                "updated_datetime": "2014-11-06T19:25:13+00:00",
-                "created_datetime": "2014-11-06T19:25:13+00:00",
-                "aggregates": {
-                    "active_time_total": 600,
-                    "distance_total": 0,
-                    "elapsed_time_total": 600,
-                    "metabolic_energy_total": 192464
-                },
-                "reference_key": null,
-                "start_locale_timezone": "America/Los_Angeles",
-                "source": "MapMyRun Android 3.x",
-                "_links": {
-                    "self": [
-                        {
-                            "href": "/v7.0/workout/787788009/",
-                            "id": "787788009"
-                        }
-                    ],
-                    "activity_type": [
-                        {
-                            "href": "/v7.0/activity_type/285/",
-                            "id": "285"
-                        }
-                    ],
-                    "user": [
-                        {
-                            "href": "/v7.0/user/37756949/",
-                            "id": "37756949"
-                        }
-                    ],
-                    "privacy": [
-                        {
-                            "href": "/v7.0/privacy_option/1/",
-                            "id": "1"
-                        }
-                    ]
-                },
-                "has_time_series": false,
-                "is_verified": false
-            }
-        ]
-    },
-    "total_count": 3
+	"_links": {
+		"self": [
+			{
+				"href": "/v7.0/workout/?limit=20&user=37756949&offset=0"
+			}
+		],
+		"documentation": [
+			{
+				"href": "https://www.mapmyapi.com/docs/Workout"
+			}
+		]
+	},
+	"_embedded": {
+		"workouts": [
+			{
+				"start_datetime": "2014-04-24T22:36:33+00:00",
+				"name": "Walked 3.34 mi on 2014/04/24",
+				"updated_datetime": "2014-04-24T23:28:07+00:00",
+				"created_datetime": "2014-04-24T23:27:34+00:00",
+				"aggregates": {
+					"active_time_total": 2991,
+					"distance_total": 5375.51473536,
+					"steps_total": 1000,
+					"speed_avg": 1.7972304416,
+					"heartrate_max": 176,
+					"elapsed_time_total": 2992,
+					"heartrate_avg": 115,
+					"metabolic_energy_total": 0
+				},
+				"reference_key": null,
+				"start_locale_timezone": "America/Los_Angeles",
+				"source": "MapMyRun Android App",
+				"_links": {
+					"route": [
+						{
+							"href": "/v7.0/route/400640020/",
+							"id": "400640020"
+						}
+					],
+					"self": [
+						{
+							"href": "/v7.0/workout/547836386/",
+							"id": "547836386"
+						}
+					],
+					"activity_type": [
+						{
+							"href": "/v7.0/activity_type/9/",
+							"id": "9"
+						}
+					],
+					"user": [
+						{
+							"href": "/v7.0/user/37756949/",
+							"id": "37756949"
+						}
+					],
+					"privacy": [
+						{
+							"href": "/v7.0/privacy_option/1/",
+							"id": "1"
+						}
+					]
+				},
+				"has_time_series": true
+			},
+			{
+				"start_datetime": "2014-11-06T19:00:00+00:00",
+				"name": "Test Workout",
+				"updated_datetime": "2014-11-06T19:25:13+00:00",
+				"created_datetime": "2014-11-06T19:25:13+00:00",
+				"aggregates": {
+					"active_time_total": 600,
+					"distance_total": 0,
+					"elapsed_time_total": 600,
+					"metabolic_energy_total": 192464
+				},
+				"reference_key": null,
+				"start_locale_timezone": "America/Los_Angeles",
+				"source": "MapMyRun Android 3.x",
+				"_links": {
+					"self": [
+						{
+							"href": "/v7.0/workout/787788009/",
+							"id": "787788009"
+						}
+					],
+					"activity_type": [
+						{
+							"href": "/v7.0/activity_type/285/",
+							"id": "285"
+						}
+					],
+					"user": [
+						{
+							"href": "/v7.0/user/37756949/",
+							"id": "37756949"
+						}
+					],
+					"privacy": [
+						{
+							"href": "/v7.0/privacy_option/1/",
+							"id": "1"
+						}
+					]
+				},
+				"has_time_series": false,
+				"is_verified": false
+			}
+		]
+	},
+	"total_count": 3
 }

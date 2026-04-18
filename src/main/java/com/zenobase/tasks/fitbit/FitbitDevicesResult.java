@@ -25,8 +25,7 @@ class FitbitDevicesResult {
 		LocalDate latest = null;
 		for (JsonNode device : node) {
 			if (deviceType.name().equals(device.path("type").textValue())) {
-				LocalDate date = LocalDateTime.parse(device.path("lastSyncTime").textValue())
-						.toLocalDate();
+				LocalDate date = LocalDateTime.parse(device.path("lastSyncTime").textValue()).toLocalDate();
 				if (latest == null || date.isAfter(latest)) {
 					latest = date;
 				}

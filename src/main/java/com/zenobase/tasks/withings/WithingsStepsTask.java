@@ -26,12 +26,13 @@ public class WithingsStepsTask extends Task {
 	}
 
 	WithingsStepsTask(
-			String bucketId,
-			Identity principal,
-			String tag,
-			Unit<Length> lengthUnit,
-			Unit<Energy> energyUnit,
-			@Nullable String marker) {
+		String bucketId,
+		Identity principal,
+		String tag,
+		Unit<Length> lengthUnit,
+		Unit<Energy> energyUnit,
+		@Nullable String marker
+	) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);

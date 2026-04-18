@@ -17,9 +17,12 @@ public class FitbitActivitiesResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-
-		FitbitActivitiesResult result =
-				new FitbitActivitiesResult(readObject("FitbitActivitiesResultTest.json"), TESTER, true, Units.MI);
+		FitbitActivitiesResult result = new FitbitActivitiesResult(
+			readObject("FitbitActivitiesResultTest.json"),
+			TESTER,
+			true,
+			Units.MI
+		);
 		assertThat(result.next()).isNotNull();
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(2);
@@ -52,8 +55,12 @@ public class FitbitActivitiesResultTest extends ResultTestSupport {
 
 	@Test
 	public void testExcludeAutodetected() {
-		FitbitActivitiesResult result =
-				new FitbitActivitiesResult(readObject("FitbitActivitiesResultTest.json"), TESTER, false, Units.MI);
+		FitbitActivitiesResult result = new FitbitActivitiesResult(
+			readObject("FitbitActivitiesResultTest.json"),
+			TESTER,
+			false,
+			Units.MI
+		);
 		assertThat(result.next()).isNotNull();
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);

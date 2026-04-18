@@ -62,8 +62,11 @@ public class StravaTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("per_page", "100");
 			request.addQuerystringParameter("page", Integer.toString(i + 1));
 			Response response = send(request, credentials);
-			StravaActivitiesResult result =
-					new StravaActivitiesResult(parseArray(response), task.getPrincipal(), task.isMetric());
+			StravaActivitiesResult result = new StravaActivitiesResult(
+				parseArray(response),
+				task.getPrincipal(),
+				task.isMetric()
+			);
 			if (!events.addAll(result.getEvents())) {
 				break;
 			}
@@ -91,20 +94,31 @@ public class StravaTaskManager extends OAuthTaskManager {
 	}
 
 	private Command createCommand(
-			StravaTask task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
+		StravaTask task,
+		OAuthCredentials credentials,
+		List<Event> events,
+		Token expiredToken
+	) {
 		var command = new CompoundCommand(
-				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
-		command.add(UpdateTaskCommand.builder(task)
+			task.getPrincipal(),
+			"ran " + getType() + " task",
+			"reverted " + getType() + " task"
+		);
+		command.add(
+			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
-				.build());
+				.build()
+		);
 		if (!Objects.equals(credentials.getToken(), expiredToken)) {
-			command.add(UpdateCredentialsCommand.builder(credentials)
+			command.add(
+				UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
-					.build());
+					.build()
+			);
 		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));

@@ -38,12 +38,13 @@ public class HeatmapFacet extends FilteredFacet {
 	private final int precision;
 
 	private HeatmapFacet(
-			String id,
-			String keyField,
-			@Nullable String valueField,
-			Unit<?> unit,
-			int precision,
-			@Nullable Query filter) {
+		String id,
+		String keyField,
+		@Nullable String valueField,
+		Unit<?> unit,
+		int precision,
+		@Nullable Query filter
+	) {
 		super(id, filter);
 		Preconditions.checkArgument(precision >= 1 && precision <= 10, "invalid precision value: %s", precision);
 		this.keyField = keyField;
@@ -57,14 +58,18 @@ public class HeatmapFacet extends FilteredFacet {
 		String vf = valueField;
 		Aggregation aggregation;
 		if (vf != null) {
-			String sumField =
-					Units.isDimensionless(unit) ? vf : Field.concat(vf, DecimalMeasureField.VALUE_SI.getName());
-			aggregation =
-					Aggregation.of(a -> a.geohashGrid(g -> g.field(keyField).precision(p -> p.geohashLength(precision)))
-							.aggregations("sum", Aggregation.of(sa -> sa.sum(s -> s.field(sumField)))));
+			String sumField = Units.isDimensionless(unit)
+				? vf
+				: Field.concat(vf, DecimalMeasureField.VALUE_SI.getName());
+			aggregation = Aggregation.of(a ->
+				a
+					.geohashGrid(g -> g.field(keyField).precision(p -> p.geohashLength(precision)))
+					.aggregations("sum", Aggregation.of(sa -> sa.sum(s -> s.field(sumField))))
+			);
 		} else {
-			aggregation = Aggregation.of(
-					a -> a.geohashGrid(g -> g.field(keyField).precision(p -> p.geohashLength(precision))));
+			aggregation = Aggregation.of(a ->
+				a.geohashGrid(g -> g.field(keyField).precision(p -> p.geohashLength(precision)))
+			);
 		}
 		addAggregation(getId(), aggregation, builder);
 	}
@@ -78,9 +83,9 @@ public class HeatmapFacet extends FilteredFacet {
 		}
 		for (GeoHashGridBucket bucket : aggregate.geohashGrid().buckets().array()) {
 			var sumValue = Optional.ofNullable(bucket.aggregations().get("sum"))
-					.map(a -> a.sum().value())
-					.map(OptionalDouble::of)
-					.orElse(OptionalDouble.empty());
+				.map(a -> a.sum().value())
+				.map(OptionalDouble::of)
+				.orElse(OptionalDouble.empty());
 			if (sumValue.isEmpty() || sumValue.getAsDouble() > 0.0) {
 				ObjectNode entryNode = result.addObject();
 				Point point = GeohashUtils.decode(bucket.key(), SpatialContext.GEO);
@@ -107,12 +112,13 @@ public class HeatmapFacet extends FilteredFacet {
 		return options -> {
 			String unit = options.get("unit");
 			return new HeatmapFacet(
-					Objects.requireNonNull(options.get("id")),
-					Objects.requireNonNull(options.get("field", String.class, Event.LOCATION.getName())),
-					options.get("value_field", String.class, null),
-					unit != null ? Units.valueOf(unit) : Unit.ONE,
-					Objects.requireNonNull(options.get("precision", Integer.class, 8)),
-					filterParser.parse(options.get("filter")));
+				Objects.requireNonNull(options.get("id")),
+				Objects.requireNonNull(options.get("field", String.class, Event.LOCATION.getName())),
+				options.get("value_field", String.class, null),
+				unit != null ? Units.valueOf(unit) : Unit.ONE,
+				Objects.requireNonNull(options.get("precision", Integer.class, 8)),
+				filterParser.parse(options.get("filter"))
+			);
 		};
 	}
 }

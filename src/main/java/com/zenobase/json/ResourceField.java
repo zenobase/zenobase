@@ -45,8 +45,9 @@ public class ResourceField extends Field<Resource> {
 	@Override
 	protected Resource getValue(JsonNode node) {
 		return new Resource(
-				Objects.requireNonNull(titleField.getValue((ObjectNode) node)),
-				Objects.requireNonNull(urlField.getValue((ObjectNode) node)));
+			Objects.requireNonNull(titleField.getValue((ObjectNode) node)),
+			Objects.requireNonNull(urlField.getValue((ObjectNode) node))
+		);
 	}
 
 	@Override

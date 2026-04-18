@@ -1,260 +1,246 @@
 {
-    "meta": {
-        "limit": 100,
-        "next": null,
-        "offset": 0,
-        "previous": null,
-        "total_count": 8
-    },
-    "objects": [
-        {
-            "activityattributes": [
-                {
-                    "attrtype": "user",
-                    "id": 1,
-                    "name": "distance",
-                    "resource_uri": "/api/v1/activityattribute/1/",
-                    "unit": {
-                        "id": 103,
-                        "info": "",
-                        "resource_uri": "/api/v1/unit/103/",
-                        "si_long": "kilometer",
-                        "si_short": "km"
-                    },
-                    "user": null,
-                    "value": null
-                },
-                {
-                    "attrtype": "user",
-                    "id": 2,
-                    "name": "fatigue",
-                    "resource_uri": "/api/v1/activityattribute/2/",
-                    "unit": {
-                        "id": 2,
-                        "info": "Qualitative scale, select between 1 and 10",
-                        "resource_uri": "/api/v1/unit/2/",
-                        "si_long": "",
-                        "si_short": ""
-                    },
-                    "user": null,
-                    "value": null
-                },
-                {
-                    "attrtype": "user",
-                    "id": 3,
-                    "name": "energy",
-                    "resource_uri": "/api/v1/activityattribute/3/",
-                    "unit": {
-                        "id": 400,
-                        "info": "",
-                        "resource_uri": "/api/v1/unit/400/",
-                        "si_long": "joule",
-                        "si_short": "J"
-                    },
-                    "user": null,
-                    "value": null
-                }
-            ],
-            "created": "2014-06-26T13:56:50+00:00",
-            "duration": "20:04:00",
-            "end": 357351321600,
-            "id": 37441,
-            "labels": [],
-            "last_modified": "2014-03-27T07:00:00+00:00",
-            "metrics": [
-                {
-                    "name": "heartrate_avg",
-                    "resource_uri": "/api/v1/metric/44/",
-                    "title": "HR Avg",
-                    "unit": {
-                        "id": 700,
-                        "resource_uri": "/api/v1/unit/700/",
-                        "si_long": "beats per minute",
-                        "si_short": "bpm"
-                    },
-                    "value": 52.892962177689604,
-                    "zone": 0,
-                    "zones": [
-                        65,
-                        67,
-                        70,
-                        72,
-                        74,
-                        77
-                    ]
-                },
-                {
-                    "name": "energyecg_vo2_with_baseline_kcal",
-                    "resource_uri": "/api/v1/metric/139/",
-                    "title": "energyecg vo2 with baseline kcal",
-                    "unit": {
-                        "id": 551,
-                        "resource_uri": "/api/v1/unit/551/",
-                        "si_long": "Calorie",
-                        "si_short": "Cal"
-                    },
-                    "value": 1173.8847849489473,
-                    "zone": -1,
-                    "zones": []
-                },
-                {
-                    "name": "HRVHFnorm_avg_copy",
-                    "resource_uri": "/api/v1/metric/170/",
-                    "title": "HRVHFnormAvg",
-                    "unit": {
-                        "id": 3,
-                        "resource_uri": "/api/v1/unit/3/",
-                        "si_long": "percent",
-                        "si_short": "%"
-                    },
-                    "value": null,
-                    "zone": null,
-                    "zones": [
-                        50,
-                        60,
-                        70,
-                        80,
-                        90,
-                        100
-                    ]
-                },
-                {
-                    "name": "SleepTotal_time",
-                    "resource_uri": "/api/v1/metric/1032/",
-                    "title": "Sleep total time",
-                    "unit": {
-                        "id": 901,
-                        "resource_uri": "/api/v1/unit/901/",
-                        "si_long": "second",
-                        "si_short": "s"
-                    },
-                    "value": 0,
-                    "zone": -1,
-                    "zones": []
-                },
-                {
-                    "name": "SleepPositionP1_time",
-                    "resource_uri": "/api/v1/metric/1033/",
-                    "title": "Sleep position P1 time",
-                    "unit": {
-                        "id": 901,
-                        "resource_uri": "/api/v1/unit/901/",
-                        "si_long": "second",
-                        "si_short": "s"
-                    },
-                    "value": 0,
-                    "zone": -1,
-                    "zones": []
-                },
-                {
-                    "name": "sleep_position_P2_time",
-                    "resource_uri": "/api/v1/metric/1034/",
-                    "title": "Sleep position P2 time",
-                    "unit": {
-                        "id": 901,
-                        "resource_uri": "/api/v1/unit/901/",
-                        "si_long": "second",
-                        "si_short": "s"
-                    },
-                    "value": 0,
-                    "zone": -1,
-                    "zones": []
-                },
-                {
-                    "name": "sleep_position_P3_time",
-                    "resource_uri": "/api/v1/metric/1035/",
-                    "title": "Sleep position P3 time",
-                    "unit": {
-                        "id": 901,
-                        "resource_uri": "/api/v1/unit/901/",
-                        "si_long": "second",
-                        "si_short": "s"
-                    },
-                    "value": 0,
-                    "zone": -1,
-                    "zones": []
-                },
-                {
-                    "name": "sleep_position_P4_time",
-                    "resource_uri": "/api/v1/metric/1036/",
-                    "title": "Sleep position P4 time",
-                    "unit": {
-                        "id": 901,
-                        "resource_uri": "/api/v1/unit/901/",
-                        "si_long": "second",
-                        "si_short": "s"
-                    },
-                    "value": 0,
-                    "zone": -1,
-                    "zones": []
-                },
-                {
-                    "name": "sleep_position_P5_time",
-                    "resource_uri": "/api/v1/metric/1037/",
-                    "title": "Sleep position P5 time",
-                    "unit": {
-                        "id": 901,
-                        "resource_uri": "/api/v1/unit/901/",
-                        "si_long": "second",
-                        "si_short": "s"
-                    },
-                    "value": 0,
-                    "zone": -1,
-                    "zones": []
-                },
-                {
-                    "name": "SleepPositionChanges",
-                    "resource_uri": "/api/v1/metric/1038/",
-                    "title": "SleepPositionChanges",
-                    "unit": {
-                        "id": 2,
-                        "resource_uri": "/api/v1/unit/2/",
-                        "si_long": "",
-                        "si_short": ""
-                    },
-                    "value": 0,
-                    "zone": -1,
-                    "zones": []
-                },
-                {
-                    "name": "SleepEfficiency",
-                    "resource_uri": "/api/v1/metric/1039/",
-                    "title": "SleepEfficiency",
-                    "unit": {
-                        "id": 3,
-                        "resource_uri": "/api/v1/unit/3/",
-                        "si_long": "percent",
-                        "si_short": "%"
-                    },
-                    "value": 80,
-                    "zone": null,
-                    "zones": []
-                },
-                {
-                    "name": "energyecg_total_kcal",
-                    "resource_uri": "/api/v1/metric/2003/",
-                    "title": "Energy",
-                    "unit": {
-                        "id": 551,
-                        "resource_uri": "/api/v1/unit/551/",
-                        "si_long": "Calorie",
-                        "si_short": "Cal"
-                    },
-                    "value": 300.50397931409805,
-                    "zone": -1,
-                    "zones": []
-                }
-            ],
-            "name": "Sleep",
-            "note": "test",
-            "parent": null,
-            "rank": 0,
-            "resource_uri": "/api/v1/range/37441/",
-            "start": 357332828160,
-            "start_date": "2014-03-26T10:56:00+00:00",
-            "status": "complete",
-            "trainingroutine": "/api/v1/trainingroutine/12/",
-            "user": "/api/v1/user/1511/"
-        }
-    ]
+	"meta": {
+		"limit": 100,
+		"next": null,
+		"offset": 0,
+		"previous": null,
+		"total_count": 8
+	},
+	"objects": [
+		{
+			"activityattributes": [
+				{
+					"attrtype": "user",
+					"id": 1,
+					"name": "distance",
+					"resource_uri": "/api/v1/activityattribute/1/",
+					"unit": {
+						"id": 103,
+						"info": "",
+						"resource_uri": "/api/v1/unit/103/",
+						"si_long": "kilometer",
+						"si_short": "km"
+					},
+					"user": null,
+					"value": null
+				},
+				{
+					"attrtype": "user",
+					"id": 2,
+					"name": "fatigue",
+					"resource_uri": "/api/v1/activityattribute/2/",
+					"unit": {
+						"id": 2,
+						"info": "Qualitative scale, select between 1 and 10",
+						"resource_uri": "/api/v1/unit/2/",
+						"si_long": "",
+						"si_short": ""
+					},
+					"user": null,
+					"value": null
+				},
+				{
+					"attrtype": "user",
+					"id": 3,
+					"name": "energy",
+					"resource_uri": "/api/v1/activityattribute/3/",
+					"unit": {
+						"id": 400,
+						"info": "",
+						"resource_uri": "/api/v1/unit/400/",
+						"si_long": "joule",
+						"si_short": "J"
+					},
+					"user": null,
+					"value": null
+				}
+			],
+			"created": "2014-06-26T13:56:50+00:00",
+			"duration": "20:04:00",
+			"end": 357351321600,
+			"id": 37441,
+			"labels": [],
+			"last_modified": "2014-03-27T07:00:00+00:00",
+			"metrics": [
+				{
+					"name": "heartrate_avg",
+					"resource_uri": "/api/v1/metric/44/",
+					"title": "HR Avg",
+					"unit": {
+						"id": 700,
+						"resource_uri": "/api/v1/unit/700/",
+						"si_long": "beats per minute",
+						"si_short": "bpm"
+					},
+					"value": 52.892962177689604,
+					"zone": 0,
+					"zones": [65, 67, 70, 72, 74, 77]
+				},
+				{
+					"name": "energyecg_vo2_with_baseline_kcal",
+					"resource_uri": "/api/v1/metric/139/",
+					"title": "energyecg vo2 with baseline kcal",
+					"unit": {
+						"id": 551,
+						"resource_uri": "/api/v1/unit/551/",
+						"si_long": "Calorie",
+						"si_short": "Cal"
+					},
+					"value": 1173.8847849489473,
+					"zone": -1,
+					"zones": []
+				},
+				{
+					"name": "HRVHFnorm_avg_copy",
+					"resource_uri": "/api/v1/metric/170/",
+					"title": "HRVHFnormAvg",
+					"unit": {
+						"id": 3,
+						"resource_uri": "/api/v1/unit/3/",
+						"si_long": "percent",
+						"si_short": "%"
+					},
+					"value": null,
+					"zone": null,
+					"zones": [50, 60, 70, 80, 90, 100]
+				},
+				{
+					"name": "SleepTotal_time",
+					"resource_uri": "/api/v1/metric/1032/",
+					"title": "Sleep total time",
+					"unit": {
+						"id": 901,
+						"resource_uri": "/api/v1/unit/901/",
+						"si_long": "second",
+						"si_short": "s"
+					},
+					"value": 0,
+					"zone": -1,
+					"zones": []
+				},
+				{
+					"name": "SleepPositionP1_time",
+					"resource_uri": "/api/v1/metric/1033/",
+					"title": "Sleep position P1 time",
+					"unit": {
+						"id": 901,
+						"resource_uri": "/api/v1/unit/901/",
+						"si_long": "second",
+						"si_short": "s"
+					},
+					"value": 0,
+					"zone": -1,
+					"zones": []
+				},
+				{
+					"name": "sleep_position_P2_time",
+					"resource_uri": "/api/v1/metric/1034/",
+					"title": "Sleep position P2 time",
+					"unit": {
+						"id": 901,
+						"resource_uri": "/api/v1/unit/901/",
+						"si_long": "second",
+						"si_short": "s"
+					},
+					"value": 0,
+					"zone": -1,
+					"zones": []
+				},
+				{
+					"name": "sleep_position_P3_time",
+					"resource_uri": "/api/v1/metric/1035/",
+					"title": "Sleep position P3 time",
+					"unit": {
+						"id": 901,
+						"resource_uri": "/api/v1/unit/901/",
+						"si_long": "second",
+						"si_short": "s"
+					},
+					"value": 0,
+					"zone": -1,
+					"zones": []
+				},
+				{
+					"name": "sleep_position_P4_time",
+					"resource_uri": "/api/v1/metric/1036/",
+					"title": "Sleep position P4 time",
+					"unit": {
+						"id": 901,
+						"resource_uri": "/api/v1/unit/901/",
+						"si_long": "second",
+						"si_short": "s"
+					},
+					"value": 0,
+					"zone": -1,
+					"zones": []
+				},
+				{
+					"name": "sleep_position_P5_time",
+					"resource_uri": "/api/v1/metric/1037/",
+					"title": "Sleep position P5 time",
+					"unit": {
+						"id": 901,
+						"resource_uri": "/api/v1/unit/901/",
+						"si_long": "second",
+						"si_short": "s"
+					},
+					"value": 0,
+					"zone": -1,
+					"zones": []
+				},
+				{
+					"name": "SleepPositionChanges",
+					"resource_uri": "/api/v1/metric/1038/",
+					"title": "SleepPositionChanges",
+					"unit": {
+						"id": 2,
+						"resource_uri": "/api/v1/unit/2/",
+						"si_long": "",
+						"si_short": ""
+					},
+					"value": 0,
+					"zone": -1,
+					"zones": []
+				},
+				{
+					"name": "SleepEfficiency",
+					"resource_uri": "/api/v1/metric/1039/",
+					"title": "SleepEfficiency",
+					"unit": {
+						"id": 3,
+						"resource_uri": "/api/v1/unit/3/",
+						"si_long": "percent",
+						"si_short": "%"
+					},
+					"value": 80,
+					"zone": null,
+					"zones": []
+				},
+				{
+					"name": "energyecg_total_kcal",
+					"resource_uri": "/api/v1/metric/2003/",
+					"title": "Energy",
+					"unit": {
+						"id": 551,
+						"resource_uri": "/api/v1/unit/551/",
+						"si_long": "Calorie",
+						"si_short": "Cal"
+					},
+					"value": 300.50397931409805,
+					"zone": -1,
+					"zones": []
+				}
+			],
+			"name": "Sleep",
+			"note": "test",
+			"parent": null,
+			"rank": 0,
+			"resource_uri": "/api/v1/range/37441/",
+			"start": 357332828160,
+			"start_date": "2014-03-26T10:56:00+00:00",
+			"status": "complete",
+			"trainingroutine": "/api/v1/trainingroutine/12/",
+			"user": "/api/v1/user/1511/"
+		}
+	]
 }

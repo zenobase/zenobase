@@ -36,15 +36,12 @@ public class Measures {
 	@SuppressWarnings("unchecked")
 	public static <Q extends Quantity> DecimalMeasure<Q> toStandard(DecimalMeasure<Q> measure) {
 		return Units.isStandard(measure.getUnit())
-				? measure
-				: measure.to((Unit<Q>) measure.getUnit().getStandardUnit(), MathContext.DECIMAL32);
+			? measure
+			: measure.to((Unit<Q>) measure.getUnit().getStandardUnit(), MathContext.DECIMAL32);
 	}
 
 	public static @Nullable BigDecimal convert(double value, Unit<?> unit) {
-		return round(
-				Units.isStandard(unit)
-						? value
-						: unit.getStandardUnit().getConverterTo(unit).convert(value));
+		return round(Units.isStandard(unit) ? value : unit.getStandardUnit().getConverterTo(unit).convert(value));
 	}
 
 	public static @Nullable BigDecimal round(double value) {

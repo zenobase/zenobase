@@ -53,7 +53,11 @@ public class Scheduler {
 	private void schedule(LocalTime begin, Period repeat, Runnable runnable) {
 		Duration initialDelay = nextExecution(DateTime.now(DateTimeZone.UTC), begin, repeat);
 		executor.scheduleAtFixedRate(
-				runnable, initialDelay.getMillis(), toDurationMillis(repeat), TimeUnit.MILLISECONDS);
+			runnable,
+			initialDelay.getMillis(),
+			toDurationMillis(repeat),
+			TimeUnit.MILLISECONDS
+		);
 	}
 
 	static Duration nextExecution(DateTime now, LocalTime begin, Period repeat) {

@@ -10,8 +10,9 @@ public class EventSearchTest {
 
 	@Test
 	public void testUnsupportedFilter() {
-		assertThatThrownBy(() -> new EventSearchBuilder().addConstraint("xxx:lunch"))
-				.isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> new EventSearchBuilder().addConstraint("xxx:lunch")).isInstanceOf(
+			IllegalArgumentException.class
+		);
 	}
 
 	@Test
@@ -21,34 +22,23 @@ public class EventSearchTest {
 
 	@Test
 	public void testEqualsHashCode() {
-		Search a = new EventSearchBuilder()
-				.addConstraint("tag:a")
-				.addConstraint("tag:b")
-				.buildSearch();
-		Search b = new EventSearchBuilder()
-				.addConstraints(Lists.newArrayList("tag:a", "tag:b"))
-				.buildSearch();
+		Search a = new EventSearchBuilder().addConstraint("tag:a").addConstraint("tag:b").buildSearch();
+		Search b = new EventSearchBuilder().addConstraints(Lists.newArrayList("tag:a", "tag:b")).buildSearch();
 		Search c = new EventSearchBuilder()
-				.addFacet("id:c1,type:list")
-				.addFacet("id:c2,type:count,field:tag")
-				.buildSearch();
+			.addFacet("id:c1,type:list")
+			.addFacet("id:c2,type:count,field:tag")
+			.buildSearch();
 		Search d = new EventSearchBuilder()
-				.addFacets(new String[] {"id:c1,type:list", "id:c2,type:count,field:tag"})
-				.buildSearch();
+			.addFacets(new String[] { "id:c1,type:list", "id:c2,type:count,field:tag" })
+			.buildSearch();
 		Search e = new EventSearchBuilder().buildSearch();
-		Search f = new EventSearchBuilder()
-				.addConstraints(Lists.newArrayList())
-				.addFacets(new String[0])
-				.buildSearch();
-		Search g = new EventSearchBuilder()
-				.addConstraint("tag:a")
-				.addFacet("id:c2,type:count,field:tag")
-				.buildSearch();
+		Search f = new EventSearchBuilder().addConstraints(Lists.newArrayList()).addFacets(new String[0]).buildSearch();
+		Search g = new EventSearchBuilder().addConstraint("tag:a").addFacet("id:c2,type:count,field:tag").buildSearch();
 		new EqualsTester()
-				.addEqualityGroup(a, b)
-				.addEqualityGroup(c, d)
-				.addEqualityGroup(e, f)
-				.addEqualityGroup(g)
-				.testEquals();
+			.addEqualityGroup(a, b)
+			.addEqualityGroup(c, d)
+			.addEqualityGroup(e, f)
+			.addEqualityGroup(g)
+			.testEquals();
 	}
 }

@@ -14,9 +14,11 @@ public class WakaTimeDurationsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-
-		WakaTimeDurationsResult result =
-				new WakaTimeDurationsResult(readObject("WakaTimeDurationsResultTest.json"), TESTER, "project");
+		WakaTimeDurationsResult result = new WakaTimeDurationsResult(
+			readObject("WakaTimeDurationsResultTest.json"),
+			TESTER,
+			"project"
+		);
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(12);
 

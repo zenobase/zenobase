@@ -45,8 +45,7 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(FoursquareTask task, OAuthCredentials credentials) {
-		String marker = Objects.requireNonNull(
-				formatMarker(DateTime.now(DateTimeZone.UTC).minusMinutes(1)));
+		String marker = Objects.requireNonNull(formatMarker(DateTime.now(DateTimeZone.UTC).minusMinutes(1)));
 		List<Event> events = new ArrayList<>();
 		for (int offset = 0; execute(task, credentials, marker, offset, events); offset += LIMIT) {}
 		return createCommand(task, marker, events);
@@ -61,7 +60,12 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 	}
 
 	private boolean execute(
-			FoursquareTask task, OAuthCredentials credentials, String marker, int offset, List<Event> events) {
+		FoursquareTask task,
+		OAuthCredentials credentials,
+		String marker,
+		int offset,
+		List<Event> events
+	) {
 		var request = new OAuthRequest(Verb.GET, "https://api.foursquare.com/v2/users/self/checkins");
 		request.addQuerystringParameter("v", API_VERSION);
 		if (task.getMarker() != null) {
@@ -79,12 +83,14 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 
 	private Command createCommand(FoursquareTask task, String marker, List<Event> events) {
 		var command = new CompoundCommand(task.getPrincipal(), "ran foursquare task", "reverted foursquare task");
-		command.add(UpdateTaskCommand.builder(task)
+		command.add(
+			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 				.set(Task.MARKER, task.getMarker(), marker)
 				.set(Task.UNDO, task.getUndoId(), command.getId())
-				.build());
+				.build()
+		);
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}

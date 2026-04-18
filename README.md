@@ -2,13 +2,13 @@
 
 Java 25 / Helidon SE backend for [zenobase/zenobase-web](https://github.com/zenobase/zenobase-web/), deployed to [api.zenobase.com](https://api.zenobase.com/).
 
-
 ## Getting Started
 
 1. Install Java 25
-2. Copy `conf/application-local.yaml.template` to `conf/application-local.yaml`, and optionally set API keys for third-party integrations
-3. `./run.sh` builds and starts a backend container on http://localhost:9000, including OpenSearch and localauth0 containers
-
+2. Install Node.js (see `.nvmrc`) with pnpm via Corepack (`corepack enable`)
+3. Run `pnpm install` to install Prettier
+4. Copy `conf/application-local.yaml.template` to `conf/application-local.yaml`, and optionally set API keys for third-party integrations
+5. `./run.sh` builds and starts a backend container on http://localhost:9000, including OpenSearch and localauth0 containers
 
 ## Development
 

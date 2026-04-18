@@ -36,8 +36,7 @@ public class BucketListControllerHttpPostTest extends BucketListControllerTestSu
 			assertThat(result).hasContent(bucket.toJson());
 			assertThat(bucket.getLabel()).isEqualTo(label);
 			assertThat(bucket.getDescription()).isEqualTo(description);
-			assertThat(bucket.hasRole(new Authorization(user.asIdentity()), Role.OWNER))
-					.isTrue();
+			assertThat(bucket.hasRole(new Authorization(user.asIdentity()), Role.OWNER)).isTrue();
 			assertThat(result).hasHeader("Location", "/buckets/" + bucket.getId());
 			assertThat(result).hasHeader(COMMAND_ID, commandId);
 		}
@@ -53,15 +52,17 @@ public class BucketListControllerHttpPostTest extends BucketListControllerTestSu
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(dispatcher.dispatch(arg.capture())).thenReturn(commandId);
 		when(buckets.find(alias.getId())).thenReturn(alias);
-		try (Http1ClientResponse result =
-				call(new CreateBucketForm(label, null, List.of(new Alias(alias.getId()))).toJson())) {
+		try (
+			Http1ClientResponse result = call(
+				new CreateBucketForm(label, null, List.of(new Alias(alias.getId()))).toJson()
+			)
+		) {
 			assertThat(result).hasStatus(201).hasHeader(COMMAND_ID, commandId);
 			Bucket bucket = arg.getValue().getBucket();
 			assertThat(result).hasContent(bucket.toJson());
 			assertThat(bucket.getLabel()).isEqualTo(label);
 			assertThat(bucket.getAliases()).containsExactly(new Alias(alias.getId()));
-			assertThat(bucket.hasRole(new Authorization(user.asIdentity()), Role.OWNER))
-					.isTrue();
+			assertThat(bucket.hasRole(new Authorization(user.asIdentity()), Role.OWNER)).isTrue();
 			assertThat(result).hasHeader("Location", "/buckets/" + bucket.getId());
 			assertThat(result).hasHeader(COMMAND_ID, commandId);
 		}
@@ -74,8 +75,11 @@ public class BucketListControllerHttpPostTest extends BucketListControllerTestSu
 		alias.addRole(new Identity(), Role.OWNER);
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(alias.getId())).thenReturn(alias);
-		try (Http1ClientResponse result =
-				call(new CreateBucketForm(label, null, List.of(new Alias(alias.getId()))).toJson())) {
+		try (
+			Http1ClientResponse result = call(
+				new CreateBucketForm(label, null, List.of(new Alias(alias.getId()))).toJson()
+			)
+		) {
 			assertThat(result).hasStatus(400);
 		}
 	}
@@ -108,8 +112,11 @@ public class BucketListControllerHttpPostTest extends BucketListControllerTestSu
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(dispatcher.dispatch(arg.capture())).thenReturn(commandId);
 		when(buckets.find(alias.getId())).thenReturn(alias);
-		try (Http1ClientResponse result =
-				call(new CreateBucketForm(label, null, List.of(new Alias(alias.getId()))).toJson())) {
+		try (
+			Http1ClientResponse result = call(
+				new CreateBucketForm(label, null, List.of(new Alias(alias.getId()))).toJson()
+			)
+		) {
 			assertThat(result).hasStatus(400);
 			verifyNoInteractions(dispatcher);
 		}
@@ -124,8 +131,11 @@ public class BucketListControllerHttpPostTest extends BucketListControllerTestSu
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(dispatcher.dispatch(arg.capture())).thenReturn(commandId);
 		when(buckets.find(alias.getId())).thenReturn(null);
-		try (Http1ClientResponse result =
-				call(new CreateBucketForm(label, null, List.of(new Alias(alias.getId()))).toJson())) {
+		try (
+			Http1ClientResponse result = call(
+				new CreateBucketForm(label, null, List.of(new Alias(alias.getId()))).toJson()
+			)
+		) {
 			assertThat(result).hasStatus(400);
 			verifyNoInteractions(dispatcher);
 		}

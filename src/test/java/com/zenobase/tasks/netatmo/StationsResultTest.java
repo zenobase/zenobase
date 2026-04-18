@@ -25,11 +25,11 @@ public class StationsResultTest extends ResultTestSupport {
 		assertThat(dev0.getModuleId()).as("module id").isNull();
 		assertThat(dev0.getLabel()).as("label").isEqualTo("Bedroom");
 		assertThat(dev0.getCreated())
-				.as("created")
-				.isEqualTo(new DateTime("2013-03-28T23:40:07.000Z", DateTimeZone.UTC));
+			.as("created")
+			.isEqualTo(new DateTime("2013-03-28T23:40:07.000Z", DateTimeZone.UTC));
 		assertThat(dev0.getUpdated())
-				.as("updated")
-				.isEqualTo(new DateTime("2016-11-03T18:58:14.000Z", DateTimeZone.forID("America/Los_Angeles")));
+			.as("updated")
+			.isEqualTo(new DateTime("2016-11-03T18:58:14.000Z", DateTimeZone.forID("America/Los_Angeles")));
 		assertThat(dev0.getLocation()).as("location").isEqualTo(new Location("47.6097", "-122.3331"));
 		assertThat(dev0.supports("Temperature")).as("supports temperature").isTrue();
 		assertThat(dev0.supports("Noise")).as("supports temperature").isTrue();
@@ -40,11 +40,11 @@ public class StationsResultTest extends ResultTestSupport {
 		assertThat(dev1.getModuleId()).as("module id").isEqualTo("02:00:00:00:7b:a2");
 		assertThat(dev1.getLabel()).as("label").isEqualTo("Bathroom");
 		assertThat(dev1.getCreated())
-				.as("created")
-				.isEqualTo(new DateTime("2013-03-28T23:40:07.000Z", DateTimeZone.UTC));
+			.as("created")
+			.isEqualTo(new DateTime("2013-03-28T23:40:07.000Z", DateTimeZone.UTC));
 		assertThat(dev1.getUpdated())
-				.as("updated")
-				.isEqualTo(new DateTime("2016-11-03T18:58:14.000Z", DateTimeZone.forID("America/Los_Angeles")));
+			.as("updated")
+			.isEqualTo(new DateTime("2016-11-03T18:58:14.000Z", DateTimeZone.forID("America/Los_Angeles")));
 		assertThat(dev1.getLocation()).as("location").isEqualTo(new Location("47.6097", "-122.3331"));
 		assertThat(dev1.supports("Temperature")).as("supports temperature").isTrue();
 		assertThat(dev1.supports("Noise")).as("supports temperature").isFalse();

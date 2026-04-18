@@ -37,7 +37,6 @@ public class OffsetTimelineFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testDefaultInterval() {
-
 		addEvent(first);
 		addEvent(last);
 		addFacet("id:%s,type:%s,timezone:%s", FACET_ID, TimelineFacet.TYPE, UTC);
@@ -55,7 +54,6 @@ public class OffsetTimelineFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testDefaultIntervalWithFilter() {
-
 		addEvent(first);
 		addEvent(last);
 		addFacet("id:%s,type:%s,timezone:%s,filter:%s", FACET_ID, TimelineFacet.TYPE, UTC, "count:(*..3000)");
@@ -69,7 +67,6 @@ public class OffsetTimelineFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testDefaultIntervalWithMeasureField() {
-
 		addEvent(first);
 		addEvent(last);
 		addFacet("id:%s,type:%s,field:%s,unit:%s,timezone:%s", FACET_ID, TimelineFacet.TYPE, "distance", "m", UTC);
@@ -96,7 +93,6 @@ public class OffsetTimelineFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testDefaultIntervalWithNumericField() {
-
 		addEvent(first);
 		addEvent(last);
 		addFacet("id:%s,type:%s,field:%s,timezone:%s", FACET_ID, TimelineFacet.TYPE, "count", UTC);
@@ -125,7 +121,6 @@ public class OffsetTimelineFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testYearInterval() {
-
 		addEvent(first);
 		addEvent(last);
 		addFacet("id:%s,type:%s,interval:%s,timezone:%s", FACET_ID, TimelineFacet.TYPE, "year", UTC);
@@ -139,12 +134,17 @@ public class OffsetTimelineFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testYearIntervalWithMeasureField() {
-
 		addEvent(first);
 		addEvent(last);
 		addFacet(
-				"id:%s,type:%s,interval:%s,field:%s,unit:%s,timezone:%s",
-				FACET_ID, TimelineFacet.TYPE, "year", "distance", "m", UTC);
+			"id:%s,type:%s,interval:%s,field:%s,unit:%s,timezone:%s",
+			FACET_ID,
+			TimelineFacet.TYPE,
+			"year",
+			"distance",
+			"m",
+			UTC
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
@@ -158,11 +158,16 @@ public class OffsetTimelineFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testMonthInterval() {
-
 		addEvent(first);
 		addEvent(last);
 		addFacet(
-				"id:%s,type:%s,interval:%s,range:%s,timezone:%s", FACET_ID, TimelineFacet.TYPE, "month", "2012TZ", UTC);
+			"id:%s,type:%s,interval:%s,range:%s,timezone:%s",
+			FACET_ID,
+			TimelineFacet.TYPE,
+			"month",
+			"2012TZ",
+			UTC
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
@@ -179,12 +184,16 @@ public class OffsetTimelineFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testDayInterval() {
-
 		addEvent(first);
 		addEvent(last);
 		addFacet(
-				"id:%s,type:%s,interval:%s,range:%s,timezone:%s",
-				FACET_ID, TimelineFacet.TYPE, "day", "2012-03TZ", UTC);
+			"id:%s,type:%s,interval:%s,range:%s,timezone:%s",
+			FACET_ID,
+			TimelineFacet.TYPE,
+			"day",
+			"2012-03TZ",
+			UTC
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
@@ -197,12 +206,16 @@ public class OffsetTimelineFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testHourInterval() {
-
 		addEvent(first);
 		addEvent(last);
 		addFacet(
-				"id:%s,type:%s,interval:%s,range:%s,timezone:%s",
-				FACET_ID, TimelineFacet.TYPE, "hour", "2012-03-31TZ", UTC);
+			"id:%s,type:%s,interval:%s,range:%s,timezone:%s",
+			FACET_ID,
+			TimelineFacet.TYPE,
+			"hour",
+			"2012-03-31TZ",
+			UTC
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
@@ -217,12 +230,16 @@ public class OffsetTimelineFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testHourIntervalWithOffset() {
-
 		addEvent(first);
 		addEvent(last);
 		addFacet(
-				"id:%s,type:%s,interval:%s,range:%s,timezone:%s",
-				FACET_ID, TimelineFacet.TYPE, "hour", "2012-03-31T-08:00", "-08:00");
+			"id:%s,type:%s,interval:%s,range:%s,timezone:%s",
+			FACET_ID,
+			TimelineFacet.TYPE,
+			"hour",
+			"2012-03-31T-08:00",
+			"-08:00"
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
@@ -237,12 +254,16 @@ public class OffsetTimelineFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testMinuteInterval() {
-
 		addEvent(first);
 		addEvent(last);
 		addFacet(
-				"id:%s,type:%s,interval:%s,range:%s,timezone:%s",
-				FACET_ID, TimelineFacet.TYPE, "minute", "2012-03-31T20Z", UTC);
+			"id:%s,type:%s,interval:%s,range:%s,timezone:%s",
+			FACET_ID,
+			TimelineFacet.TYPE,
+			"minute",
+			"2012-03-31T20Z",
+			UTC
+		);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
@@ -257,7 +278,6 @@ public class OffsetTimelineFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testEmpty() {
-
 		addFacet("id:%s,type:%s,timezone:%s", FACET_ID, TimelineFacet.TYPE, UTC);
 
 		ObjectNode result = execute();

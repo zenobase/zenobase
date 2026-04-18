@@ -13,11 +13,12 @@ public class CreateAndDeleteTaskCommandTest {
 
 	private final TaskRepository repository = mock(TaskRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-			new CreateTaskCommand.Handler(repository), new DeleteTaskCommand.Handler(repository));
+		new CreateTaskCommand.Handler(repository),
+		new DeleteTaskCommand.Handler(repository)
+	);
 
 	@Test
 	public void test() {
-
 		Identity principal = new Identity();
 		String bucketId = Generator.id();
 		String type = "test";

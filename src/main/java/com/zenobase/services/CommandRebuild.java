@@ -56,13 +56,14 @@ public class CommandRebuild {
 
 	@Inject
 	public CommandRebuild(
-			@Named("opensearch.rebuild") String sourceHost,
-			@Named("opensearch.rebuild_parallelism") int parallelism,
-			CommandDispatcher dispatcher,
-			UserRepository targetUsers,
-			CredentialsRepository targetCredentials,
-			BucketRepository targetBuckets,
-			TaskRepository targetTasks) {
+		@Named("opensearch.rebuild") String sourceHost,
+		@Named("opensearch.rebuild_parallelism") int parallelism,
+		CommandDispatcher dispatcher,
+		UserRepository targetUsers,
+		CredentialsRepository targetCredentials,
+		BucketRepository targetBuckets,
+		TaskRepository targetTasks
+	) {
 		this.sourceHost = sourceHost;
 		this.parallelism = parallelism;
 		this.dispatcher = dispatcher;
@@ -92,10 +93,11 @@ public class CommandRebuild {
 	}
 
 	private void rebuild(
-			IndexManager indexManager,
-			RepositorySupport<?> targetRepo,
-			String label,
-			ToIntFunction<IndexManager> action) {
+		IndexManager indexManager,
+		RepositorySupport<?> targetRepo,
+		String label,
+		ToIntFunction<IndexManager> action
+	) {
 		targetRepo.disableRefresh(true);
 		try {
 			Stopwatch timer = Stopwatch.createStarted();
@@ -116,10 +118,13 @@ public class CommandRebuild {
 
 	private int rebuildCredentials(IndexManager indexManager) {
 		List<Credentials> allCredentials = new ArrayList<>();
-		new CredentialsRepository(indexManager)
-				.findAll(SearchOrder.asc(Credentials.CREATED, Credentials.ID), allCredentials::add);
-		allCredentials.forEach(
-				credential -> dispatcher.dispatch(new CreateCredentialsCommand(credential.getPrincipal(), credential)));
+		new CredentialsRepository(indexManager).findAll(
+			SearchOrder.asc(Credentials.CREATED, Credentials.ID),
+			allCredentials::add
+		);
+		allCredentials.forEach(credential ->
+			dispatcher.dispatch(new CreateCredentialsCommand(credential.getPrincipal(), credential))
+		);
 		return allCredentials.size();
 	}
 
@@ -129,37 +134,47 @@ public class CommandRebuild {
 		List<Bucket> allBuckets = new ArrayList<>();
 		buckets.findAll(SearchOrder.asc(Bucket.CREATED, Bucket.ID), allBuckets::add);
 		runInParallel(
-				allBuckets,
-				bucket -> Objects.requireNonNull(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)))
-						.id(),
-				bucket -> {
-					Identity owner = Objects.requireNonNull(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)));
-					dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
-					if (!bucket.isVirtual()) {
-						rebuildEvents(events, owner, bucket.getId(), Objects.requireNonNull(bucket.getCreated()));
-					}
-				},
-				Bucket::getId);
+			allBuckets,
+			bucket -> Objects.requireNonNull(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER))).id(),
+			bucket -> {
+				Identity owner = Objects.requireNonNull(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)));
+				dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
+				if (!bucket.isVirtual()) {
+					rebuildEvents(events, owner, bucket.getId(), Objects.requireNonNull(bucket.getCreated()));
+				}
+			},
+			Bucket::getId
+		);
 		return allBuckets.size();
 	}
 
 	private <T> void runInParallel(
-			List<T> items, Function<T, String> laneKey, Consumer<T> action, Function<T, String> itemLabel) {
+		List<T> items,
+		Function<T, String> laneKey,
+		Consumer<T> action,
+		Function<T, String> itemLabel
+	) {
 		var failures = new AtomicInteger();
 		int effectiveParallelism =
-				parallelism > 0 ? parallelism : Math.max(2, Runtime.getRuntime().availableProcessors());
+			parallelism > 0 ? parallelism : Math.max(2, Runtime.getRuntime().availableProcessors());
 		logger.info("Using {} executor(s)", effectiveParallelism);
 		ThreadPoolExecutor[] lanes = new ThreadPoolExecutor[effectiveParallelism];
 		for (int i = 0; i < effectiveParallelism; ++i) {
 			lanes[i] = new ThreadPoolExecutor(
-					1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(100), (r, executor) -> {
-						try {
-							executor.getQueue().put(r);
-						} catch (InterruptedException e) {
-							Thread.currentThread().interrupt();
-							throw new RuntimeException(e);
-						}
-					});
+				1,
+				1,
+				0L,
+				TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<>(100),
+				(r, executor) -> {
+					try {
+						executor.getQueue().put(r);
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+						throw new RuntimeException(e);
+					}
+				}
+			);
 		}
 		for (T item : items) {
 			if (failures.get() >= MAX_FAILURES) {
@@ -203,7 +218,8 @@ public class CommandRebuild {
 			batchSize.addAndGet(estimateSize(event));
 			if (batchSize.get() >= MAX_BATCH_BYTES) {
 				dispatcher.dispatch(
-						new CreateEventsCommand(owner, bucketId, batch, timestamp.plusMillis(batchNum.get())));
+					new CreateEventsCommand(owner, bucketId, batch, timestamp.plusMillis(batchNum.get()))
+				);
 				batch.clear();
 				batchSize.set(0);
 				batchNum.incrementAndGet();

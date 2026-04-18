@@ -24,7 +24,12 @@ class FitbitIntradayStepsResult extends FitbitResultSupport {
 	private final LocalDate date;
 
 	public FitbitIntradayStepsResult(
-			JsonNode node, String tag, Identity author, LocalDate date, DateTimeZone timezone) {
+		JsonNode node,
+		String tag,
+		Identity author,
+		LocalDate date,
+		DateTimeZone timezone
+	) {
 		super(node, tag, author, timezone);
 		this.date = date;
 	}
@@ -40,8 +45,7 @@ class FitbitIntradayStepsResult extends FitbitResultSupport {
 	private Map<DateTime, Integer> valuesByHour() {
 		Map<DateTime, Integer> values = Maps.newLinkedHashMap();
 		for (JsonNode recordNode : node.path("activities-steps-intraday").path("dataset")) {
-			DateTime hour =
-					toDateTimeFullHour(LocalTime.parse(recordNode.path("time").textValue()));
+			DateTime hour = toDateTimeFullHour(LocalTime.parse(recordNode.path("time").textValue()));
 			if (hour != null) {
 				int value = recordNode.path("value").intValue();
 				Integer count = MoreObjects.firstNonNull(values.get(hour), 0);
@@ -52,10 +56,9 @@ class FitbitIntradayStepsResult extends FitbitResultSupport {
 	}
 
 	private @Nullable DateTime toDateTimeFullHour(LocalTime local) {
-		return toDateTimeFullHour(date.toLocalDateTime(local)
-				.withMinuteOfHour(0)
-				.withSecondOfMinute(0)
-				.withMillisOfSecond(0));
+		return toDateTimeFullHour(
+			date.toLocalDateTime(local).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)
+		);
 	}
 
 	private @Nullable DateTime toDateTimeFullHour(LocalDateTime local) {

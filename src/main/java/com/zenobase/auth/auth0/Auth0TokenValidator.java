@@ -27,26 +27,28 @@ public class Auth0TokenValidator {
 	static final String EMAIL_VERIFIED_CLAIM = "https://zenobase.com/email_verified";
 
 	public record Auth0Claims(
-			String externalId,
-			@Nullable String username,
-			@Nullable String email,
-			boolean emailVerified) {}
+		String externalId,
+		@Nullable String username,
+		@Nullable String email,
+		boolean emailVerified
+	) {}
 
 	private final String issuer;
 	private final JWTVerifier verifier;
 
 	@Inject
 	public Auth0TokenValidator(
-			@Named("auth0.domain") String domain,
-			@Named("auth0.audience") String audience,
-			@Named("auth0.jwks_domain") String jwksDomain) {
+		@Named("auth0.domain") String domain,
+		@Named("auth0.audience") String audience,
+		@Named("auth0.jwks_domain") String jwksDomain
+	) {
 		String jwksUrl = (jwksDomain.isEmpty() ? domain : jwksDomain) + "/.well-known/jwks.json";
 		JwkProvider jwkProvider;
 		try {
 			jwkProvider = new JwkProviderBuilder(URI.create(jwksUrl).toURL())
-					.cached(5, 1, TimeUnit.HOURS)
-					.rateLimited(10, 1, TimeUnit.MINUTES)
-					.build();
+				.cached(5, 1, TimeUnit.HOURS)
+				.rateLimited(10, 1, TimeUnit.MINUTES)
+				.build();
 		} catch (Exception e) {
 			throw new RuntimeException("Invalid JWKS URL: " + jwksUrl, e);
 		}
@@ -72,8 +74,7 @@ public class Auth0TokenValidator {
 		};
 		Algorithm algorithm = Algorithm.RSA256(keyProvider);
 		this.issuer = domain.startsWith("http") ? domain + "/" : "https://" + domain + "/";
-		this.verifier =
-				JWT.require(algorithm).withIssuer(issuer).withAudience(audience).build();
+		this.verifier = JWT.require(algorithm).withIssuer(issuer).withAudience(audience).build();
 	}
 
 	public String issuer() {

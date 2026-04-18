@@ -16,11 +16,12 @@ public class CreateAndDeleteEventsCommandTest {
 
 	private final EventRepository repository = mock(EventRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-			new CreateEventsCommand.Handler(repository), new DeleteEventsCommand.Handler(repository));
+		new CreateEventsCommand.Handler(repository),
+		new DeleteEventsCommand.Handler(repository)
+	);
 
 	@Test
 	public void test() {
-
 		Identity principal = new Identity();
 		String bucketId = Generator.id();
 		Event e1 = new Event();

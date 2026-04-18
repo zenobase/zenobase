@@ -11,9 +11,7 @@ public class WildcardConstraintBuilder extends ConstraintBuilder {
 
 	@Override
 	public @Nullable Query build(String value) {
-		return containsWildcard(value)
-				? Query.of(q -> q.wildcard(w -> w.field(getPath()).value(value)))
-				: null;
+		return containsWildcard(value) ? Query.of(q -> q.wildcard(w -> w.field(getPath()).value(value))) : null;
 	}
 
 	private static boolean containsWildcard(String value) {

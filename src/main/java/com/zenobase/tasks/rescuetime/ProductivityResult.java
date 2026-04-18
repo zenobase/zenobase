@@ -43,9 +43,7 @@ public class ProductivityResult {
 		for (JsonNode hourNode : node.path("rows")) {
 			try {
 				events.add(getEvent(hourNode));
-			} catch (IllegalInstantException e) {
-
-			}
+			} catch (IllegalInstantException e) {}
 		}
 		return events;
 	}
@@ -61,9 +59,7 @@ public class ProductivityResult {
 			event.addValue(Event.TAG, node.path(3).textValue());
 		}
 		if (node.path(4).isNumber()) {
-			event.setValue(
-					Event.RATING,
-					Rating.valueOf(Ints.checkedCast(Math.round(node.get(4).doubleValue()))));
+			event.setValue(Event.RATING, Rating.valueOf(Ints.checkedCast(Math.round(node.get(4).doubleValue()))));
 		}
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);

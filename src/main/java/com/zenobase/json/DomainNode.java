@@ -40,9 +40,7 @@ public class DomainNode {
 
 	public @Nullable OptimisticLock getOptimisticLock() {
 		if (node.has(SEQ_NO_FIELD) && node.has(PRIMARY_TERM_FIELD)) {
-			return new OptimisticLock(
-					node.get(SEQ_NO_FIELD).asLong(),
-					node.get(PRIMARY_TERM_FIELD).asLong());
+			return new OptimisticLock(node.get(SEQ_NO_FIELD).asLong(), node.get(PRIMARY_TERM_FIELD).asLong());
 		}
 		return null;
 	}
@@ -140,10 +138,12 @@ public class DomainNode {
 	private static <T extends DomainNode> T as(Class<T> type, ObjectNode node) {
 		try {
 			return type.getConstructor(ObjectNode.class).newInstance(node);
-		} catch (InstantiationException
-				| NoSuchMethodException
-				| InvocationTargetException
-				| IllegalAccessException e) {
+		} catch (
+			InstantiationException
+			| NoSuchMethodException
+			| InvocationTargetException
+			| IllegalAccessException e
+		) {
 			throw new AssertionError(e);
 		}
 	}

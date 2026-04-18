@@ -24,11 +24,11 @@ public class JournalController extends ControllerSupport {
 
 	@Inject
 	public JournalController(
-			AuthorizationContext security,
-			CommandDispatcher dispatcher,
-			CommandRepository repository,
-			UserRepository users) {
-
+		AuthorizationContext security,
+		CommandDispatcher dispatcher,
+		CommandRepository repository,
+		UserRepository users
+	) {
 		super(security);
 		this.dispatcher = dispatcher;
 		this.repository = repository;
@@ -82,9 +82,16 @@ public class JournalController extends ControllerSupport {
 			return;
 		}
 		sendOk(
-				res,
-				CommandList.toJson(repository.find(
-						new CommandQuery().principalEqualTo(principal), CommandQuery.DEFAULT_ORDER, offset, limit)));
+			res,
+			CommandList.toJson(
+				repository.find(
+					new CommandQuery().principalEqualTo(principal),
+					CommandQuery.DEFAULT_ORDER,
+					offset,
+					limit
+				)
+			)
+		);
 	}
 
 	public void post(ServerRequest req, ServerResponse res) {

@@ -1,25 +1,25 @@
 {
-  "data": [
-    {
-      "average_heart_rate": 56.5,
-      "bedtime_end": "2018-12-03T07:36:27+02:00",
-      "bedtime_start": "2018-12-02T21:46:27+02:00",
-      "efficiency": 88,
-      "total_sleep_duration": 35400
-    },
-    {
-      "average_heart_rate": 55.75,
-      "bedtime_end": "2018-12-04T06:35:44+02:00",
-      "bedtime_start": "2018-12-04T00:06:44+02:00",
-      "efficiency": 76,
-      "total_sleep_duration": 23340
-    },
-    {
-      "average_heart_rate": 59.125,
-      "bedtime_end": "2018-12-21T07:29:00+02:00",
-      "bedtime_start": "2018-12-20T23:35:00+02:00",
-      "efficiency": 93,
-      "total_sleep_duration": 28440
-    }
-  ]
+	"data": [
+		{
+			"average_heart_rate": 56.5,
+			"bedtime_end": "2018-12-03T07:36:27+02:00",
+			"bedtime_start": "2018-12-02T21:46:27+02:00",
+			"efficiency": 88,
+			"total_sleep_duration": 35400
+		},
+		{
+			"average_heart_rate": 55.75,
+			"bedtime_end": "2018-12-04T06:35:44+02:00",
+			"bedtime_start": "2018-12-04T00:06:44+02:00",
+			"efficiency": 76,
+			"total_sleep_duration": 23340
+		},
+		{
+			"average_heart_rate": 59.125,
+			"bedtime_end": "2018-12-21T07:29:00+02:00",
+			"bedtime_start": "2018-12-20T23:35:00+02:00",
+			"efficiency": 93,
+			"total_sleep_duration": 28440
+		}
+	]
 }

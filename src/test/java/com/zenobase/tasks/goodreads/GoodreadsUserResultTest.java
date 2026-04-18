@@ -10,7 +10,6 @@ public class GoodreadsUserResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-
 		GoodreadsUserResult result = new GoodreadsUserResult(readXml("auth_user.xml"));
 		assertThat(result.getId()).isEqualTo("63900829");
 	}

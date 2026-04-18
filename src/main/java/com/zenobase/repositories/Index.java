@@ -63,10 +63,12 @@ public class Index {
 	public void create(int shards, int replicas) {
 		try {
 			String autoExpandReplicas = replicas == Integer.MAX_VALUE ? "0-all" : "0-" + replicas;
-			boolean acknowledged = client.indices()
-					.create(c -> c.index(indexName)
-							.settings(s -> s.numberOfShards(shards).autoExpandReplicas(autoExpandReplicas)))
-					.acknowledged();
+			boolean acknowledged = client
+				.indices()
+				.create(c ->
+					c.index(indexName).settings(s -> s.numberOfShards(shards).autoExpandReplicas(autoExpandReplicas))
+				)
+				.acknowledged();
 			Preconditions.checkState(acknowledged, "Expected acknowledgement of index creation: %s", indexName);
 			Preconditions.checkState(new Cluster(client).isReady(), "Expected at least one shard in cluster");
 		} catch (IOException e) {
@@ -77,13 +79,16 @@ public class Index {
 	public void putMapping(Schema schema) {
 		try {
 			String json = schema.toJson().toString();
-			client.generic()
-					.execute(org.opensearch.client.opensearch.generic.Requests.builder()
-							.endpoint(indexName + "/_mapping")
-							.method("PUT")
-							.json(json)
-							.build())
-					.close();
+			client
+				.generic()
+				.execute(
+					org.opensearch.client.opensearch.generic.Requests.builder()
+						.endpoint(indexName + "/_mapping")
+						.method("PUT")
+						.json(json)
+						.build()
+				)
+				.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -116,11 +121,11 @@ public class Index {
 	private void index(String id, ObjectNode node, boolean refresh) {
 		try {
 			IndexRequest.Builder<ObjectNode> builder = new IndexRequest.Builder<ObjectNode>()
-					.index(indexName)
-					.id(id)
-					.document(stripMetadata(node))
-					.opType(OpType.Create)
-					.refresh(refreshPolicy(refresh));
+				.index(indexName)
+				.id(id)
+				.document(stripMetadata(node))
+				.opType(OpType.Create)
+				.refresh(refreshPolicy(refresh));
 			IndexResponse response = client.index(builder.build());
 			DomainNode.VERSION.setValue(node, response.version());
 		} catch (IOException e) {
@@ -131,14 +136,17 @@ public class Index {
 	private void index(String id, DomainNode node, OpType operation, boolean refresh) {
 		try {
 			IndexRequest.Builder<ObjectNode> builder = new IndexRequest.Builder<ObjectNode>()
-					.index(indexName)
-					.id(id)
-					.document(stripMetadata(node.toJson()))
-					.opType(operation)
-					.refresh(refreshPolicy(refresh));
+				.index(indexName)
+				.id(id)
+				.document(stripMetadata(node.toJson()))
+				.opType(operation)
+				.refresh(refreshPolicy(refresh));
 			if (operation == OpType.Index) {
 				OptimisticLock lock = Preconditions.checkNotNull(
-						node.getOptimisticLock(), "Missing optimistic lock: %s", node.toJson());
+					node.getOptimisticLock(),
+					"Missing optimistic lock: %s",
+					node.toJson()
+				);
 				builder.ifSeqNo(lock.seqNo());
 				builder.ifPrimaryTerm(lock.primaryTerm());
 			}
@@ -162,18 +170,23 @@ public class Index {
 					opBuilder.create(c -> c.index(indexName).id(node.getId()).document(doc));
 				} else {
 					OptimisticLock lock = Preconditions.checkNotNull(
-							node.getOptimisticLock(), "Missing optimistic lock: %s", node.toJson());
-					opBuilder.index(idx -> idx.index(indexName)
+						node.getOptimisticLock(),
+						"Missing optimistic lock: %s",
+						node.toJson()
+					);
+					opBuilder.index(idx ->
+						idx
+							.index(indexName)
 							.id(node.getId())
 							.document(doc)
 							.ifSeqNo(lock.seqNo())
-							.ifPrimaryTerm(lock.primaryTerm()));
+							.ifPrimaryTerm(lock.primaryTerm())
+					);
 				}
 				operations.add(opBuilder.build());
 			}
 			try {
-				BulkResponse bulkResponse =
-						client.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh)));
+				BulkResponse bulkResponse = client.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh)));
 				List<BulkResponseItem> items = bulkResponse.items();
 				String failureMessage = getFailureMessage(items);
 				if (failureMessage != null) {
@@ -191,8 +204,7 @@ public class Index {
 				for (int i = 0; i < items.size(); ++i) {
 					DomainNode node = nodes.get(begin + i);
 					node.setVersion(items.get(i).version());
-					node.setOptimisticLock(new OptimisticLock(
-							items.get(i).seqNo(), items.get(i).primaryTerm()));
+					node.setOptimisticLock(new OptimisticLock(items.get(i).seqNo(), items.get(i).primaryTerm()));
 				}
 			} catch (IOException e) {
 				throw new RuntimeException(e);
@@ -219,10 +231,11 @@ public class Index {
 
 	public boolean delete(String id, boolean refresh) {
 		try {
-			return client.delete(d -> d.index(indexName).id(id).refresh(refreshPolicy(refresh)))
-					.result()
-					.jsonValue()
-					.equals("deleted");
+			return client
+				.delete(d -> d.index(indexName).id(id).refresh(refreshPolicy(refresh)))
+				.result()
+				.jsonValue()
+				.equals("deleted");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -231,12 +244,10 @@ public class Index {
 	public boolean delete(List<String> ids, boolean refresh) {
 		List<BulkOperation> operations = new ArrayList<>();
 		for (String id : ids) {
-			operations.add(
-					BulkOperation.of(op -> op.delete(d -> d.index(indexName).id(id))));
+			operations.add(BulkOperation.of(op -> op.delete(d -> d.index(indexName).id(id))));
 		}
 		try {
-			BulkResponse bulkResponse =
-					client.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh)));
+			BulkResponse bulkResponse = client.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh)));
 			String failureMessage = getFailureMessage(bulkResponse.items());
 			if (failureMessage != null) {
 				throw new RuntimeException("Couldn't delete an item: " + failureMessage);
@@ -249,7 +260,10 @@ public class Index {
 
 	public boolean exists() {
 		try {
-			return client.indices().exists(e -> e.index(indexName)).value();
+			return client
+				.indices()
+				.exists(e -> e.index(indexName))
+				.value();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -266,8 +280,9 @@ public class Index {
 	}
 
 	public NodeList find(Query query) {
-		SearchRequest request = SearchRequest.of(
-				s -> s.index(indexName).query(query).version(true).seqNoPrimaryTerm(true));
+		SearchRequest request = SearchRequest.of(s ->
+			s.index(indexName).query(query).version(true).seqNoPrimaryTerm(true)
+		);
 		SearchResponse<ObjectNode> response = search(request);
 		List<ObjectNode> nodes = new ArrayList<>(response.hits().hits().size());
 		for (Hit<ObjectNode> hit : response.hits().hits()) {
@@ -295,17 +310,18 @@ public class Index {
 
 	public void find(Query query, SearchOrder order, Callback<ObjectNode> callback, int pageSize) {
 		find(
-				() -> {
-					var builder = new SearchRequest.Builder()
-							.index(indexName)
-							.query(query)
-							.size(pageSize)
-							.version(true)
-							.seqNoPrimaryTerm(true);
-					order.apply(builder);
-					return builder;
-				},
-				callback);
+			() -> {
+				var builder = new SearchRequest.Builder()
+					.index(indexName)
+					.query(query)
+					.size(pageSize)
+					.version(true)
+					.seqNoPrimaryTerm(true);
+				order.apply(builder);
+				return builder;
+			},
+			callback
+		);
 	}
 
 	public void find(Supplier<SearchRequest.Builder> requestBuilder, Callback<ObjectNode> callback) {
@@ -333,8 +349,7 @@ public class Index {
 
 	public @Nullable ObjectNode get(String id) {
 		try {
-			GetResponse<ObjectNode> response =
-					client.get(g -> g.index(indexName).id(id), ObjectNode.class);
+			GetResponse<ObjectNode> response = client.get(g -> g.index(indexName).id(id), ObjectNode.class);
 			if (!response.found()) return null;
 			ObjectNode node = response.source();
 			DomainNode.VERSION.setValue(node, response.version());
@@ -365,13 +380,23 @@ public class Index {
 	}
 
 	public int count() {
-		SearchRequest request = SearchRequest.of(s -> s.index(indexName).size(0).trackTotalHits(t -> t.enabled(true)));
+		SearchRequest request = SearchRequest.of(s ->
+			s
+				.index(indexName)
+				.size(0)
+				.trackTotalHits(t -> t.enabled(true))
+		);
 		return Ints.saturatedCast(search(request).hits().total().value());
 	}
 
 	public int count(Query query) {
-		SearchRequest request =
-				SearchRequest.of(s -> s.index(indexName).query(query).size(0).trackTotalHits(t -> t.enabled(true)));
+		SearchRequest request = SearchRequest.of(s ->
+			s
+				.index(indexName)
+				.query(query)
+				.size(0)
+				.trackTotalHits(t -> t.enabled(true))
+		);
 		return Ints.saturatedCast(search(request).hits().total().value());
 	}
 
@@ -379,7 +404,10 @@ public class Index {
 		ImmutableSet<String> aliases = aliases();
 		if (aliases.isEmpty()) {
 			try {
-				return client.indices().close(c -> c.index(indexName)).acknowledged();
+				return client
+					.indices()
+					.close(c -> c.index(indexName))
+					.acknowledged();
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -391,11 +419,12 @@ public class Index {
 	private ImmutableSet<String> aliases() {
 		try {
 			ImmutableSet.Builder<String> builder = ImmutableSet.builder();
-			client.indices()
-					.getAlias(a -> a.index(indexName))
-					.result()
-					.values()
-					.forEach(indexAliases -> indexAliases.aliases().keySet().forEach(builder::add));
+			client
+				.indices()
+				.getAlias(a -> a.index(indexName))
+				.result()
+				.values()
+				.forEach(indexAliases -> indexAliases.aliases().keySet().forEach(builder::add));
 			return builder.build();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -404,14 +433,15 @@ public class Index {
 
 	private boolean close(Iterable<String> aliases) {
 		try {
-			return client.indices()
-					.updateAliases(u -> {
-						for (String alias : aliases) {
-							u.actions(a -> a.remove(r -> r.index(indexName).alias(alias)));
-						}
-						return u;
-					})
-					.acknowledged();
+			return client
+				.indices()
+				.updateAliases(u -> {
+					for (String alias : aliases) {
+						u.actions(a -> a.remove(r -> r.index(indexName).alias(alias)));
+					}
+					return u;
+				})
+				.acknowledged();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

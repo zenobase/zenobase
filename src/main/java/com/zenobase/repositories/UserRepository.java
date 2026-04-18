@@ -59,14 +59,17 @@ public class UserRepository extends RepositorySupport<User> {
 	}
 
 	public PartialList<User> find(UserQuery query, int offset, int limit) {
-		SearchRequest request = SearchRequest.of(s -> s.index(index.getIndexName())
+		SearchRequest request = SearchRequest.of(s ->
+			s
+				.index(index.getIndexName())
 				.query(query.build())
 				.sort(so -> so.field(f -> f.field(User.NAME.getName()).order(SortOrder.Asc)))
 				.from(offset)
 				.size(limit)
 				.trackTotalHits(t -> t.enabled(true))
 				.version(true)
-				.seqNoPrimaryTerm(true));
+				.seqNoPrimaryTerm(true)
+		);
 		return new UserList(index.find(request));
 	}
 

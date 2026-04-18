@@ -72,14 +72,14 @@ abstract class OuraResultSupport {
 
 	protected @Nullable DecimalMeasure<Energy> energyValue(JsonNode node) {
 		return !isZero(node)
-				? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.KCAL)
-				: null;
+			? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.KCAL)
+			: null;
 	}
 
 	protected @Nullable DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
 		return !isZero(node)
-				? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.BPM)
-				: null;
+			? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.BPM)
+			: null;
 	}
 
 	protected @Nullable Rating ratingValue(JsonNode node) {

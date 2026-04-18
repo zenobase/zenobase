@@ -1,69 +1,69 @@
 {
-    "minStartTimeNs": "0",
-    "maxEndTimeNs": "1414809072201000000",
-    "dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:merge_step_deltas",
-    "point": [
-        {
-            "startTimeNanos": "1414600305945997952",
-            "endTimeNanos": "1414600365946000000",
-            "dataTypeName": "com.google.step_count.delta",
-            "originDataSourceId": "derived:com.google.step_count.cumulative:com.google.android.gms:LGE:Nexus 4:3c9c8cdb:soft_step_counter",
-            "value": [
-                {
-                    "intVal": 30
-                }
-            ],
-            "modifiedTimeMillis": "1414607623718"
-        },
-        {
-            "startTimeNanos": "1414605422268000000",
-            "endTimeNanos": "1414605482268000000",
-            "dataTypeName": "com.google.step_count.delta",
-            "originDataSourceId": "derived:com.google.step_count.cumulative:com.google.android.gms:LGE:Nexus 4:3c9c8cdb:soft_step_counter",
-            "value": [
-                {
-                    "intVal": 2
-                }
-            ],
-            "modifiedTimeMillis": "1414607623718"
-        },
-        {
-            "startTimeNanos": "1464905858000000000",
-            "endTimeNanos": "1464905860000000000",
-            "dataTypeName": "com.google.nutrition",
-            "originDataSourceId": "raw:com.google.nutrition:com.fitnow.loseit:",
-            "value": [
-                {
-                    "mapVal": [
-                        {
-                            "key": "protein",
-                            "value": {
-                                "fpVal": 5.32574987411499
-                            }
-                        },
-                        {
-                            "key": "calories",
-                            "value": {
-                                "fpVal": 153.4949951171875
-                            }
-                        },
-                        {
-                            "key": "sugar",
-                            "value": {
-                                "fpVal": 0.40095001459121704
-                            }
-                        }
-                    ]
-                },
-                {
-                    "intVal": 1
-                },
-                {
-                    "stringVal": "Oatmeal"
-                }
-            ],
-            "modifiedTimeMillis": "1464992349373"
-        }
-    ],
-    "nextPageToken": "xxx"
+	"minStartTimeNs": "0",
+	"maxEndTimeNs": "1414809072201000000",
+	"dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:merge_step_deltas",
+	"point": [
+		{
+			"startTimeNanos": "1414600305945997952",
+			"endTimeNanos": "1414600365946000000",
+			"dataTypeName": "com.google.step_count.delta",
+			"originDataSourceId": "derived:com.google.step_count.cumulative:com.google.android.gms:LGE:Nexus 4:3c9c8cdb:soft_step_counter",
+			"value": [
+				{
+					"intVal": 30
+				}
+			],
+			"modifiedTimeMillis": "1414607623718"
+		},
+		{
+			"startTimeNanos": "1414605422268000000",
+			"endTimeNanos": "1414605482268000000",
+			"dataTypeName": "com.google.step_count.delta",
+			"originDataSourceId": "derived:com.google.step_count.cumulative:com.google.android.gms:LGE:Nexus 4:3c9c8cdb:soft_step_counter",
+			"value": [
+				{
+					"intVal": 2
+				}
+			],
+			"modifiedTimeMillis": "1414607623718"
+		},
+		{
+			"startTimeNanos": "1464905858000000000",
+			"endTimeNanos": "1464905860000000000",
+			"dataTypeName": "com.google.nutrition",
+			"originDataSourceId": "raw:com.google.nutrition:com.fitnow.loseit:",
+			"value": [
+				{
+					"mapVal": [
+						{
+							"key": "protein",
+							"value": {
+								"fpVal": 5.32574987411499
+							}
+						},
+						{
+							"key": "calories",
+							"value": {
+								"fpVal": 153.4949951171875
+							}
+						},
+						{
+							"key": "sugar",
+							"value": {
+								"fpVal": 0.40095001459121704
+							}
+						}
+					]
+				},
+				{
+					"intVal": 1
+				},
+				{
+					"stringVal": "Oatmeal"
+				}
+			],
+			"modifiedTimeMillis": "1464992349373"
+		}
+	],
+	"nextPageToken": "xxx"
 }

@@ -43,9 +43,13 @@ public class DistanceConstraintBuilder extends ConstraintBuilder {
 		double lat = location.latitude().doubleValue();
 		double lon = location.longitude().doubleValue();
 		String dist = distance.doubleValue(Units.KM) + "km";
-		return Query.of(q -> q.geoDistance(g -> g.field(getPath())
-				.location(GeoLocation.of(
-						gl -> gl.latlon(LatLonGeoLocation.of(ll -> ll.lat(lat).lon(lon)))))
-				.distance(dist)));
+		return Query.of(q ->
+			q.geoDistance(g ->
+				g
+					.field(getPath())
+					.location(GeoLocation.of(gl -> gl.latlon(LatLonGeoLocation.of(ll -> ll.lat(lat).lon(lon)))))
+					.distance(dist)
+			)
+		);
 	}
 }

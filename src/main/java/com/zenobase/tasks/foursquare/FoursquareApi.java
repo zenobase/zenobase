@@ -21,9 +21,9 @@ public class FoursquareApi extends CustomApi20 {
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
 		return new UriBuilder("https://foursquare.com/oauth2/authenticate")
-				.addParameter("response_type", "code")
-				.addParameter("client_id", config.getApiKey())
-				.addParameter("redirect_uri", config.getCallback())
-				.build();
+			.addParameter("response_type", "code")
+			.addParameter("client_id", config.getApiKey())
+			.addParameter("redirect_uri", config.getCallback())
+			.build();
 	}
 }

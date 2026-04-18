@@ -1,38 +1,38 @@
 {
-    "status": 0,
-    "body": {
-        "series": [
-            {
-                "startdate": 1394527166,
-                "state": 0,
-                "enddate": 1394527526
-            },
-            {
-                "startdate": 1394527526,
-                "state": 1,
-                "enddate": 1394527586
-            },
-            {
-                "startdate": 1394527586,
-                "state": 2,
-                "enddate": 1394552666
-            },
-            {
-                "startdate": 1394620517,
-                "state": 0,
-                "enddate": 1394621357
-            },
-            {
-                "startdate": 1394621357,
-                "state": 1,
-                "enddate": 1394622377
-            },
-            {
-                "startdate": 1394622377,
-                "state": 2,
-                "enddate": 1394647397
-            }
-        ]
-    },
-    "model": 16
+	"status": 0,
+	"body": {
+		"series": [
+			{
+				"startdate": 1394527166,
+				"state": 0,
+				"enddate": 1394527526
+			},
+			{
+				"startdate": 1394527526,
+				"state": 1,
+				"enddate": 1394527586
+			},
+			{
+				"startdate": 1394527586,
+				"state": 2,
+				"enddate": 1394552666
+			},
+			{
+				"startdate": 1394620517,
+				"state": 0,
+				"enddate": 1394621357
+			},
+			{
+				"startdate": 1394621357,
+				"state": 1,
+				"enddate": 1394622377
+			},
+			{
+				"startdate": 1394622377,
+				"state": 2,
+				"enddate": 1394647397
+			}
+		]
+	},
+	"model": 16
 }

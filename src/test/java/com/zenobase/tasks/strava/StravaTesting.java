@@ -10,8 +10,9 @@ public class StravaTesting extends TaskTestingSupport {
 	@Test
 	public void test() {
 		run(
-				new StravaTaskManager(newCredentialsManager()),
-				Nodes.newObject().put("marker", "2015-06-01").put("metric", "false"));
+			new StravaTaskManager(newCredentialsManager()),
+			Nodes.newObject().put("marker", "2015-06-01").put("metric", "false")
+		);
 	}
 
 	@Override

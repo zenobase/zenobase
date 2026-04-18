@@ -23,22 +23,23 @@ import com.zenobase.oauth.OAuth2TokenExtractor;
  */
 public class Google2Api extends DefaultApi20 {
 
-	private static final String SCOPE = Joiner.on(' ')
-			.join(
-					"https://www.googleapis.com/auth/userinfo.email",
-					"https://www.googleapis.com/auth/fitness.activity.read",
-					"https://www.googleapis.com/auth/fitness.body.read",
-					"https://www.googleapis.com/auth/fitness.location.read");
+	private static final String SCOPE = Joiner.on(' ').join(
+		"https://www.googleapis.com/auth/userinfo.email",
+		"https://www.googleapis.com/auth/fitness.activity.read",
+		"https://www.googleapis.com/auth/fitness.body.read",
+		"https://www.googleapis.com/auth/fitness.location.read"
+	);
 
-	private static final String AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/auth?"
-			+ Joiner.on('&')
-					.join(
-							"response_type=code",
-							"access_type=offline",
-							"approval_prompt=force",
-							"client_id=%s",
-							"redirect_uri=%s",
-							"scope=%s");
+	private static final String AUTHORIZE_URL =
+		"https://accounts.google.com/o/oauth2/auth?" +
+		Joiner.on('&').join(
+			"response_type=code",
+			"access_type=offline",
+			"approval_prompt=force",
+			"client_id=%s",
+			"redirect_uri=%s",
+			"scope=%s"
+		);
 
 	@Override
 	public String getAccessTokenEndpoint() {
@@ -53,10 +54,11 @@ public class Google2Api extends DefaultApi20 {
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
 		return String.format(
-				AUTHORIZE_URL,
-				config.getApiKey(),
-				OAuthEncoder.encode(config.getCallback()),
-				OAuthEncoder.encode(SCOPE));
+			AUTHORIZE_URL,
+			config.getApiKey(),
+			OAuthEncoder.encode(config.getCallback()),
+			OAuthEncoder.encode(SCOPE)
+		);
 	}
 
 	@Override

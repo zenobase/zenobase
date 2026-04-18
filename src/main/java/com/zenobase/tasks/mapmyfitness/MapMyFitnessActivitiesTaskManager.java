@@ -22,8 +22,7 @@ import com.zenobase.tasks.Task;
 
 public class MapMyFitnessActivitiesTaskManager extends MapMyFitnessTaskManagerSupport {
 
-	private static final Cache<String, String> TYPES =
-			CacheBuilder.newBuilder().maximumSize(100).build();
+	private static final Cache<String, String> TYPES = CacheBuilder.newBuilder().maximumSize(100).build();
 
 	@Inject
 	public MapMyFitnessActivitiesTaskManager(MapMyFitnessCredentialsManager credentialsManager) {

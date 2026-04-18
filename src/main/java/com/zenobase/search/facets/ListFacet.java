@@ -56,19 +56,22 @@ public class ListFacet extends Facet {
 				event.setVersion(hit.version());
 			}
 			event.setOptimisticLock(
-					new OptimisticLock(Objects.requireNonNull(hit.seqNo()), Objects.requireNonNull(hit.primaryTerm())));
+				new OptimisticLock(Objects.requireNonNull(hit.seqNo()), Objects.requireNonNull(hit.primaryTerm()))
+			);
 			eventsNode.add(event.toJson());
 		}
 		return eventsNode;
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser, Schema schema) {
-		return options -> new ListFacet(
+		return options ->
+			new ListFacet(
 				Objects.requireNonNull(options.get("id")),
 				Objects.requireNonNull(options.get("offset", Integer.class, 0)),
 				Objects.requireNonNull(options.get("limit", Integer.class, 10)),
 				Objects.requireNonNull(options.get("order", String.class, "-timestamp")),
 				filterParser.parse(options.get("filter")),
-				schema);
+				schema
+			);
 	}
 }

@@ -31,10 +31,11 @@ public class OuraCredentialsManager extends OAuthCredentialsManager {
 
 	@Inject
 	public OuraCredentialsManager(
-			CredentialsRepository integrations,
-			@Named("oura.api.key") String apiKey,
-			@Named("oura.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+		CredentialsRepository integrations,
+		@Named("oura.api.key") String apiKey,
+		@Named("oura.api.secret") String apiSecret,
+		@Named("oauth.hostname") String callbackUrl
+	) {
 		super(TYPE, integrations, new OuraApi(), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -57,10 +58,10 @@ public class OuraCredentialsManager extends OAuthCredentialsManager {
 		}
 		Token token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-				.build();
+			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+			.with(Credentials.CREDENTIALS)
+			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+			.build();
 	}
 
 	@Override
@@ -72,7 +73,9 @@ public class OuraCredentialsManager extends OAuthCredentialsManager {
 		var request = new OAuthRequest(Verb.POST, OuraApi.ACCESS_TOKEN_ENDPOINT);
 		request.addBodyParameter("grant_type", "refresh_token");
 		request.addBodyParameter(
-				"refresh_token", ((ExpiringToken) Objects.requireNonNull(credentials.getToken())).getRefreshToken());
+			"refresh_token",
+			((ExpiringToken) Objects.requireNonNull(credentials.getToken())).getRefreshToken()
+		);
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
 		request.addBodyParameter(OAuthConstants.CLIENT_SECRET, getApiSecret());
 		credentials.setToken(new OAuth2TokenExtractor().extract(request.send().getBody()));
@@ -85,8 +88,6 @@ public class OuraCredentialsManager extends OAuthCredentialsManager {
 
 	@Override
 	public void sign(OAuthRequest request, OAuthCredentials credentials) {
-		request.addHeader(
-				"Authorization",
-				"Bearer " + Objects.requireNonNull(credentials.getToken()).getToken());
+		request.addHeader("Authorization", "Bearer " + Objects.requireNonNull(credentials.getToken()).getToken());
 	}
 }

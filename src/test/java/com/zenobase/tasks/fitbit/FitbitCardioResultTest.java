@@ -20,8 +20,12 @@ public class FitbitCardioResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		FitbitCardioResult result =
-				new FitbitCardioResult(readObject("FitbitCardioResultTest.json"), TAG, TESTER, TIMEZONE);
+		FitbitCardioResult result = new FitbitCardioResult(
+			readObject("FitbitCardioResultTest.json"),
+			TAG,
+			TESTER,
+			TIMEZONE
+		);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(8);
 		Event expected = new Event(events.get(0).getId());

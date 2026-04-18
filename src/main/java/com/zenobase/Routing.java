@@ -39,10 +39,14 @@ class Routing {
 				scope.setContexts("opensearch.type", e.error().type());
 				scope.setContexts("opensearch.reason", e.error().reason());
 				scope.setContexts(
-						"opensearch.root_causes",
-						e.error().rootCause().stream()
-								.map(rc -> rc.type() + ": " + rc.reason())
-								.toList());
+					"opensearch.root_causes",
+					e
+						.error()
+						.rootCause()
+						.stream()
+						.map(rc -> rc.type() + ": " + rc.reason())
+						.toList()
+				);
 			});
 			ControllerSupport.sendInternalServerError(res, "internal error");
 		});

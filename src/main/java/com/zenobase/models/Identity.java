@@ -6,7 +6,6 @@ import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 
 public record Identity(String id) {
-
 	public static final Identity PUBLIC = new Identity("*");
 
 	public Identity() {

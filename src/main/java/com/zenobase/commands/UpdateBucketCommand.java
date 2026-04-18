@@ -91,9 +91,10 @@ public class UpdateBucketCommand extends Command {
 				Bucket current = repository.find(command.getTo().getId());
 				if (current != null && current.getVersion() < command.getTo().getVersion()) {
 					logger.warn(
-							"Recovering from a bucket version conflict: {} -> {}...",
-							command.getTo().getVersion(),
-							current.getVersion());
+						"Recovering from a bucket version conflict: {} -> {}...",
+						command.getTo().getVersion(),
+						current.getVersion()
+					);
 					Bucket correctedFrom = command.getFrom().copy();
 					correctedFrom.setVersion(current.getVersion());
 					correctedFrom.setOptimisticLock(Objects.requireNonNull(current.getOptimisticLock()));
@@ -109,9 +110,7 @@ public class UpdateBucketCommand extends Command {
 		}
 
 		private void update(UpdateBucketCommand command) {
-			repository.update(
-					command.getFrom(),
-					command.getTo().copy()); // copy to prevent the version number from being incremented
+			repository.update(command.getFrom(), command.getTo().copy()); // copy to prevent the version number from being incremented
 		}
 	}
 }

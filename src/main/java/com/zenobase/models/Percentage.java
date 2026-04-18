@@ -6,7 +6,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Range;
 
 public record Percentage(BigDecimal value) implements Comparable<Percentage> {
-
 	private static final Range<BigDecimal> RANGE = Range.closed(BigDecimal.ZERO, BigDecimal.valueOf(100L));
 
 	public Percentage {

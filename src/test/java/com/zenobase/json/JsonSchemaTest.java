@@ -37,15 +37,15 @@ public class JsonSchemaTest {
 
 	@Test
 	public void testToString() {
-		String json = JsonSchema.forFields(List.of(Event.ID, Event.TAG), Event.READ_ONLY_FIELDS)
-				.toJson()
-				.toString();
-		assertThat(json).isEqualTo("""
-						{"type":"object","properties":{\
-						"@id":{"type":"string","readOnly":true},\
-						"tag":{"oneOf":[\
-						{"type":"string"},\
-						{"type":"array","items":{"type":"string"}}]}}}""");
+		String json = JsonSchema.forFields(List.of(Event.ID, Event.TAG), Event.READ_ONLY_FIELDS).toJson().toString();
+		assertThat(json).isEqualTo(
+			"""
+			{"type":"object","properties":{\
+			"@id":{"type":"string","readOnly":true},\
+			"tag":{"oneOf":[\
+			{"type":"string"},\
+			{"type":"array","items":{"type":"string"}}]}}}"""
+		);
 	}
 
 	@Test
@@ -64,23 +64,29 @@ public class JsonSchemaTest {
 	public void testMeasureField() {
 		JsonSchema schema = Event.DISTANCE.toJsonSchema();
 		assertThat(schema.type()).isEqualTo("object");
-		assertThat(schema.properties())
-				.containsExactly(Map.entry("@value", JsonSchema.number()), Map.entry("unit", JsonSchema.string()));
+		assertThat(schema.properties()).containsExactly(
+			Map.entry("@value", JsonSchema.number()),
+			Map.entry("unit", JsonSchema.string())
+		);
 	}
 
 	@Test
 	public void testResourceField() {
 		JsonSchema schema = Event.SOURCE.toJsonSchema();
 		assertThat(schema.type()).isEqualTo("object");
-		assertThat(schema.properties())
-				.containsExactly(Map.entry("title", JsonSchema.string()), Map.entry("url", JsonSchema.string("uri")));
+		assertThat(schema.properties()).containsExactly(
+			Map.entry("title", JsonSchema.string()),
+			Map.entry("url", JsonSchema.string("uri"))
+		);
 	}
 
 	@Test
 	public void testLocationField() {
 		JsonSchema schema = Event.LOCATION.toJsonSchema();
 		assertThat(schema.type()).isEqualTo("object");
-		assertThat(schema.properties())
-				.containsExactly(Map.entry("lat", JsonSchema.number()), Map.entry("lon", JsonSchema.number()));
+		assertThat(schema.properties()).containsExactly(
+			Map.entry("lat", JsonSchema.number()),
+			Map.entry("lon", JsonSchema.number())
+		);
 	}
 }

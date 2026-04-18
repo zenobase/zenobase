@@ -31,10 +31,11 @@ public class TraktCredentialsManager extends OAuthCredentialsManager {
 
 	@Inject
 	public TraktCredentialsManager(
-			CredentialsRepository integrations,
-			@Named("trakt.api.key") String apiKey,
-			@Named("trakt.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+		CredentialsRepository integrations,
+		@Named("trakt.api.key") String apiKey,
+		@Named("trakt.api.secret") String apiSecret,
+		@Named("oauth.hostname") String callbackUrl
+	) {
 		super(TYPE, integrations, new TraktApi(), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -57,10 +58,10 @@ public class TraktCredentialsManager extends OAuthCredentialsManager {
 		}
 		Token token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-				.build();
+			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+			.with(Credentials.CREDENTIALS)
+			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+			.build();
 	}
 
 	@Override
@@ -74,7 +75,9 @@ public class TraktCredentialsManager extends OAuthCredentialsManager {
 		request.addHeader("trakt-api-key", getApiKey());
 		request.addBodyParameter("grant_type", "refresh_token");
 		request.addBodyParameter(
-				"refresh_token", ((ExpiringToken) Objects.requireNonNull(credentials.getToken())).getRefreshToken());
+			"refresh_token",
+			((ExpiringToken) Objects.requireNonNull(credentials.getToken())).getRefreshToken()
+		);
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
 		request.addBodyParameter(OAuthConstants.CLIENT_SECRET, getApiSecret());
 		credentials.setToken(new OAuth2TokenExtractor().extract(request.send().getBody()));
@@ -90,8 +93,6 @@ public class TraktCredentialsManager extends OAuthCredentialsManager {
 		request.addHeader("Content-Type", "application/json");
 		request.addHeader("trakt-api-version", "2");
 		request.addHeader("trakt-api-key", getApiKey());
-		request.addHeader(
-				"Authorization",
-				"Bearer " + Objects.requireNonNull(credentials.getToken()).getToken());
+		request.addHeader("Authorization", "Bearer " + Objects.requireNonNull(credentials.getToken()).getToken());
 	}
 }

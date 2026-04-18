@@ -1,22 +1,22 @@
 {
-  "data": [
-    {
-      "day": "2018-12-02",
-      "score": 93,
-      "steps": 15604,
-      "total_calories": 3039
-    },
-    {
-      "day": "2018-12-03",
-      "score": 98,
-      "steps": 1023,
-      "total_calories": 2054
-    },
-    {
-      "day": "2018-12-04",
-      "score": 89,
-      "steps": 9714,
-      "total_calories": 2677
-    }
-  ]
+	"data": [
+		{
+			"day": "2018-12-02",
+			"score": 93,
+			"steps": 15604,
+			"total_calories": 3039
+		},
+		{
+			"day": "2018-12-03",
+			"score": 98,
+			"steps": 1023,
+			"total_calories": 2054
+		},
+		{
+			"day": "2018-12-04",
+			"score": 89,
+			"steps": 9714,
+			"total_calories": 2677
+		}
+	]
 }

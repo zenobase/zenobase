@@ -37,17 +37,19 @@ public class RatingsFacet extends FilteredFacet {
 
 	@Override
 	public void configure(SearchRequest.Builder builder) {
-		Aggregation range = Aggregation.of(a -> a.range(r -> {
-			r.field(field);
-			r.ranges(rng -> rng.to(JsonData.of(from)));
-			for (double i = from; i < to; i += step) {
-				double rangeFrom = i;
-				double rangeTo = Math.min(i + step, to);
-				r.ranges(rng -> rng.from(JsonData.of(rangeFrom)).to(JsonData.of(rangeTo)));
-			}
-			r.ranges(rng -> rng.from(JsonData.of(to)));
-			return r;
-		}));
+		Aggregation range = Aggregation.of(a ->
+			a.range(r -> {
+				r.field(field);
+				r.ranges(rng -> rng.to(JsonData.of(from)));
+				for (double i = from; i < to; i += step) {
+					double rangeFrom = i;
+					double rangeTo = Math.min(i + step, to);
+					r.ranges(rng -> rng.from(JsonData.of(rangeFrom)).to(JsonData.of(rangeTo)));
+				}
+				r.ranges(rng -> rng.from(JsonData.of(to)));
+				return r;
+			})
+		);
 		addAggregation(getId(), range, builder);
 	}
 
@@ -58,8 +60,7 @@ public class RatingsFacet extends FilteredFacet {
 		if (aggregate == null) {
 			return result;
 		}
-		for (RangeBucket entry :
-				ImmutableList.copyOf(aggregate.range().buckets().array()).reverse()) {
+		for (RangeBucket entry : ImmutableList.copyOf(aggregate.range().buckets().array()).reverse()) {
 			if (entry.docCount() > 0L) {
 				ObjectNode entryNode = result.addObject();
 				Double fromValue = entry.from();
@@ -77,10 +78,12 @@ public class RatingsFacet extends FilteredFacet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-		return options -> new RatingsFacet(
+		return options ->
+			new RatingsFacet(
 				Objects.requireNonNull(options.get("id")),
 				Event.RATING.getName(),
 				Objects.requireNonNull(options.get("scale", Integer.class, 5)),
-				filterParser.parse(options.get("filter")));
+				filterParser.parse(options.get("filter"))
+			);
 	}
 }

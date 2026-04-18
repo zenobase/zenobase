@@ -32,7 +32,6 @@ public class CommandRebuildTest extends OpenSearchTestSupport {
 
 	@Test
 	public void test() {
-
 		CommandDispatcher dispatcher = Mockito.mock(CommandDispatcher.class);
 		UserRepository users = new UserRepository(getManager());
 		CredentialsRepository credentials = new CredentialsRepository(getManager());
@@ -44,8 +43,7 @@ public class CommandRebuildTest extends OpenSearchTestSupport {
 		Credentials credential = new Credentials("test", user.asIdentity());
 		Bucket bucket = new Bucket();
 		bucket.addRole(user.asIdentity(), Role.OWNER);
-		Uninterruptibles.sleepUninterruptibly(
-				2, TimeUnit.MILLISECONDS); // ensure that the view has a later created timestamp
+		Uninterruptibles.sleepUninterruptibly(2, TimeUnit.MILLISECONDS); // ensure that the view has a later created timestamp
 		Bucket view = new Bucket();
 		view.addRole(user.asIdentity(), Role.OWNER);
 		view.addAlias(new Alias(bucket.getId()));

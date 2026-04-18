@@ -33,7 +33,6 @@ public abstract class CustomApi20 extends DefaultApi20 {
 	@Override
 	public OAuthService createService(OAuthConfig config) {
 		return new OAuth20ServiceImpl(this, config) {
-
 			@Override
 			public Token getAccessToken(Token requestToken, Verifier verifier) {
 				OAuthRequest request = new OAuthRequest(getAccessTokenVerb(), getAccessTokenEndpoint());

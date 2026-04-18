@@ -1,25 +1,25 @@
 {
-    "user": {
-        "avatar": "http://www.fitbit.com/images/profile/defaultProfile_100_male.gif",
-        "country": "US",
-        "dateOfBirth": "1978-01-01",
-        "displayName": "Eric",
-        "distanceUnit": "en_US",
-        "encodedId": "23P634",
-        "foodsLocale": "en_US",
-        "fullName": "Eric",
-        "gender": "MALE",
-        "glucoseUnit": "en_US",
-        "height": 185,
-        "heightUnit": "en_US",
-        "locale": "en_US",
-        "memberSince": "2012-11-15",
-        "offsetFromUTCMillis": -28800000,
-        "strideLengthRunning": 0,
-        "strideLengthWalking": 0,
-        "timezone": "America/Los_Angeles",
-        "waterUnit": "en_US",
-        "weight": 72,
-        "weightUnit": "en_US"
-    }
+	"user": {
+		"avatar": "http://www.fitbit.com/images/profile/defaultProfile_100_male.gif",
+		"country": "US",
+		"dateOfBirth": "1978-01-01",
+		"displayName": "Eric",
+		"distanceUnit": "en_US",
+		"encodedId": "23P634",
+		"foodsLocale": "en_US",
+		"fullName": "Eric",
+		"gender": "MALE",
+		"glucoseUnit": "en_US",
+		"height": 185,
+		"heightUnit": "en_US",
+		"locale": "en_US",
+		"memberSince": "2012-11-15",
+		"offsetFromUTCMillis": -28800000,
+		"strideLengthRunning": 0,
+		"strideLengthWalking": 0,
+		"timezone": "America/Los_Angeles",
+		"waterUnit": "en_US",
+		"weight": 72,
+		"weightUnit": "en_US"
+	}
 }

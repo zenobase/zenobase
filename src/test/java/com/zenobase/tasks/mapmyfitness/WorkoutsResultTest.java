@@ -16,7 +16,6 @@ public class WorkoutsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-
 		WorkoutsResult result = new WorkoutsResult(readObject("WorkoutsResultTest.json"), TESTER, true);
 		List<Workout> workouts = result.getWorkouts();
 		assertThat(workouts).hasSize(2);

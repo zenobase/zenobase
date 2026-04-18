@@ -30,9 +30,9 @@ public class Auth0UserSynchronizer {
 	private final UserRepository users;
 	private final CommandDispatcher dispatcher;
 	private final Cache<String, Boolean> synced = CacheBuilder.newBuilder()
-			.maximumSize(CACHE_MAX_SIZE)
-			.expireAfterWrite(CACHE_TTL)
-			.build();
+		.maximumSize(CACHE_MAX_SIZE)
+		.expireAfterWrite(CACHE_TTL)
+		.build();
 
 	@Inject
 	public Auth0UserSynchronizer(UserRepository users, CommandDispatcher dispatcher) {
@@ -52,10 +52,11 @@ public class Auth0UserSynchronizer {
 				user = createUser(username, claims);
 			} else if (!isExternalIdBindingValid(user, claims)) {
 				logger.warn(
-						"Rejecting Auth0 login for {}: subject {} does not match bound external_id {}",
-						username,
-						claims.externalId(),
-						user.getExternalId());
+					"Rejecting Auth0 login for {}: subject {} does not match bound external_id {}",
+					username,
+					claims.externalId(),
+					user.getExternalId()
+				);
 				return null;
 			} else if (synced.getIfPresent(user.getId()) == null) {
 				syncExternalId(user, claims);
@@ -117,8 +118,16 @@ public class Auth0UserSynchronizer {
 			String name = user.getName();
 			String currentEmail = user.getEmail();
 			if (name != null && currentEmail != null) {
-				dispatcher.dispatch(new ChangeUserEmailCommand(
-						user.asIdentity(), name, currentEmail, auth0Email, user.isVerified(), claims.emailVerified()));
+				dispatcher.dispatch(
+					new ChangeUserEmailCommand(
+						user.asIdentity(),
+						name,
+						currentEmail,
+						auth0Email,
+						user.isVerified(),
+						claims.emailVerified()
+					)
+				);
 				logger.debug("Synced email for user {} from Auth0", name);
 			}
 		}

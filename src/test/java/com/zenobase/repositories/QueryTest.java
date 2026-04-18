@@ -29,7 +29,9 @@ public class QueryTest {
 	@Test
 	public void testIsNull() {
 		assertThatQueryBuildsTo(
-				new QuerySupport().isNull(FIELD), "{\"bool\":{\"must_not\":[{\"exists\":{\"field\":\"tag\"}}]}}");
+			new QuerySupport().isNull(FIELD),
+			"{\"bool\":{\"must_not\":[{\"exists\":{\"field\":\"tag\"}}]}}"
+		);
 	}
 
 	@Test
@@ -45,8 +47,9 @@ public class QueryTest {
 	@Test
 	public void testBoolean() {
 		assertThatQueryBuildsTo(
-				new QuerySupport().equalTo(FIELD, "foo").equalTo(FIELD, "bar"),
-				"{\"bool\":{\"must\":[{\"term\":{\"tag\":{\"value\":\"foo\"}}},{\"term\":{\"tag\":{\"value\":\"bar\"}}}]}}");
+			new QuerySupport().equalTo(FIELD, "foo").equalTo(FIELD, "bar"),
+			"{\"bool\":{\"must\":[{\"term\":{\"tag\":{\"value\":\"foo\"}}},{\"term\":{\"tag\":{\"value\":\"bar\"}}}]}}"
+		);
 	}
 
 	private static void assertThatQueryBuildsTo(QuerySupport query, String expected) {
@@ -63,10 +66,6 @@ public class QueryTest {
 		QuerySupport q2 = new QuerySupport().equalTo(FIELD, "foo");
 		QuerySupport q3 = new QuerySupport().equalTo(FIELD, "bar");
 		QuerySupport q4 = new QuerySupport();
-		new EqualsTester()
-				.addEqualityGroup(q1, q2)
-				.addEqualityGroup(q3)
-				.addEqualityGroup(q4)
-				.testEquals();
+		new EqualsTester().addEqualityGroup(q1, q2).addEqualityGroup(q3).addEqualityGroup(q4).testEquals();
 	}
 }

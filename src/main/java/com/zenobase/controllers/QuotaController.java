@@ -22,7 +22,11 @@ public class QuotaController extends ControllerSupport {
 
 	@Inject
 	public QuotaController(
-			AuthorizationContext security, UserRepository users, QuotaManager quotas, CommandDispatcher dispatcher) {
+		AuthorizationContext security,
+		UserRepository users,
+		QuotaManager quotas,
+		CommandDispatcher dispatcher
+	) {
 		super(security);
 		this.users = users;
 		this.quotas = quotas;

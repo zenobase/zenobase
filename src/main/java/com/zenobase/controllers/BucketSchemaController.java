@@ -40,9 +40,6 @@ public class BucketSchemaController extends ControllerSupport {
 			}
 			return;
 		}
-		sendOk(
-				res,
-				JsonSchema.forFields(events.fields(bucketId), Event.READ_ONLY_FIELDS)
-						.toJson());
+		sendOk(res, JsonSchema.forFields(events.fields(bucketId), Event.READ_ONLY_FIELDS).toJson());
 	}
 }

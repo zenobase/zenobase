@@ -39,7 +39,10 @@ class TrackInfoResult {
 
 	private static Resource resourceValue(JsonNode node) {
 		String artistName = Preconditions.checkNotNull(
-				textValue(node.path("artist").path("name")), "missing artist name: %s", node);
+			textValue(node.path("artist").path("name")),
+			"missing artist name: %s",
+			node
+		);
 		String trackName = Preconditions.checkNotNull(textValue(node.path("name")), "missing track name: %s", node);
 		String url = Preconditions.checkNotNull(textValue(node.path("url")), "missing url: %s", node);
 		return new Resource(artistName + " - " + trackName, url);

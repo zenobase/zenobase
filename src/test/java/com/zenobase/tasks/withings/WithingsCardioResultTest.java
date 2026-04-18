@@ -17,10 +17,11 @@ public class WithingsCardioResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 		WithingsCardioResult result = new WithingsCardioResult(
-				readObject("WithingsCardioResultTest.json"),
-				TESTER,
-				"heart rate",
-				DateTimeZone.forID("America/Los_Angeles"));
+			readObject("WithingsCardioResultTest.json"),
+			TESTER,
+			"heart rate",
+			DateTimeZone.forID("America/Los_Angeles")
+		);
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		assertThat(result.getMarker()).as("marker").isEqualTo("1387899568");
 		List<Event> events = result.getEvents();

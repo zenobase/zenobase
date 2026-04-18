@@ -10,7 +10,6 @@ public class PropertiesBuilderTest {
 
 	@Test
 	public void test() {
-
 		String key = "me";
 		String value = "too";
 		Properties properties = new PropertiesBuilder().put(key, value).build();

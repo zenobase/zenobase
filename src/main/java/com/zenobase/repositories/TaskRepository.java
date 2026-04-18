@@ -59,13 +59,13 @@ public class TaskRepository extends RepositorySupport<Task> {
 
 	public PartialList<Task> find(TaskQuery query, SearchOrder order, int offset, int limit) {
 		SearchRequest.Builder builder = new SearchRequest.Builder()
-				.index(index.getIndexName())
-				.query(query.build())
-				.version(true)
-				.seqNoPrimaryTerm(true)
-				.from(offset)
-				.size(limit)
-				.trackTotalHits(t -> t.enabled(true));
+			.index(index.getIndexName())
+			.query(query.build())
+			.version(true)
+			.seqNoPrimaryTerm(true)
+			.from(offset)
+			.size(limit)
+			.trackTotalHits(t -> t.enabled(true));
 		order.apply(builder);
 		return new TaskList(index.find(builder.build()));
 	}

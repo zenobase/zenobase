@@ -26,7 +26,9 @@ import com.zenobase.common.Globals;
 import com.zenobase.jobs.Scheduler;
 import com.zenobase.repositories.IndexManager;
 import com.zenobase.repositories.UserRepository;
-import com.zenobase.services.*;
+import com.zenobase.services.Bus;
+import com.zenobase.services.CommandRebuild;
+import com.zenobase.services.CommandReplay;
 
 public class Main {
 
@@ -52,10 +54,10 @@ public class Main {
 	private Config createConfig() {
 		var overridePath = System.getProperty("config.file", "conf/application-local.yaml");
 		return Config.builder()
-				.addSource(ConfigSources.environmentVariables())
-				.addSource(ConfigSources.file(overridePath).optional())
-				.addSource(ConfigSources.classpath("application.yaml"))
-				.build();
+			.addSource(ConfigSources.environmentVariables())
+			.addSource(ConfigSources.file(overridePath).optional())
+			.addSource(ConfigSources.classpath("application.yaml"))
+			.build();
 	}
 
 	private Injector createInjector(Config config) {
@@ -64,16 +66,19 @@ public class Main {
 
 	private ObserveFeature createObserveFeature(AtomicBoolean ready, Injector injector) {
 		return ObserveFeature.builder()
-				.addObserver(HealthObserver.builder()
-						.useSystemServices(false)
-						.details(true)
-						.addCheck(createServerCheck(), HealthCheckType.LIVENESS, "server")
-						.addCheck(
-								createReadinessCheck(ready, injector.getInstance(IndexManager.class)),
-								HealthCheckType.READINESS,
-								"readiness")
-						.build())
-				.build();
+			.addObserver(
+				HealthObserver.builder()
+					.useSystemServices(false)
+					.details(true)
+					.addCheck(createServerCheck(), HealthCheckType.LIVENESS, "server")
+					.addCheck(
+						createReadinessCheck(ready, injector.getInstance(IndexManager.class)),
+						HealthCheckType.READINESS,
+						"readiness"
+					)
+					.build()
+			)
+			.build();
 	}
 
 	private Supplier<HealthCheckResponse> createServerCheck() {
@@ -87,37 +92,40 @@ public class Main {
 			}
 			var health = indexManager.getCluster().getHealth();
 			return HealthCheckResponse.builder()
-					.status(health.status() != HealthStatus.Red)
-					.detail("status", health.status().jsonValue())
-					.detail("data_nodes", health.numberOfDataNodes())
-					.build();
+				.status(health.status() != HealthStatus.Red)
+				.detail("status", health.status().jsonValue())
+				.detail("data_nodes", health.numberOfDataNodes())
+				.build();
 		};
 	}
 
 	private CorsFeature createCorsFeature(Config config) {
 		var allowedOrigins = Set.copyOf(
-				config.get("cors.allowed.origins").asList(String.class).orElse(List.of("https://zenobase.com")));
+			config.get("cors.allowed.origins").asList(String.class).orElse(List.of("https://zenobase.com"))
+		);
 		return CorsFeature.builder()
-				.addPath(CorsPathConfig.builder()
-						.pathPattern("/{+}")
-						.allowOrigins(allowedOrigins)
-						.allowMethods(Set.of("GET", "POST", "PUT", "DELETE", "OPTIONS"))
-						.allowHeaders(Set.of("*"))
-						.exposeHeaders(Set.of("Link", "Location", "X-Command-ID", "X-Credentials"))
-						.allowCredentials(true)
-						.maxAge(Duration.ofHours(1))
-						.build())
-				.build();
+			.addPath(
+				CorsPathConfig.builder()
+					.pathPattern("/{+}")
+					.allowOrigins(allowedOrigins)
+					.allowMethods(Set.of("GET", "POST", "PUT", "DELETE", "OPTIONS"))
+					.allowHeaders(Set.of("*"))
+					.exposeHeaders(Set.of("Link", "Location", "X-Command-ID", "X-Credentials"))
+					.allowCredentials(true)
+					.maxAge(Duration.ofHours(1))
+					.build()
+			)
+			.build();
 	}
 
 	private void startServer(Config config, Injector injector, ObserveFeature observeFeature, CorsFeature corsFeature) {
 		var server = WebServer.builder()
-				.config(config.get("server"))
-				.addFeature(observeFeature)
-				.addFeature(corsFeature)
-				.routing(routing -> Routing.buildRouting(routing, injector))
-				.build()
-				.start();
+			.config(config.get("server"))
+			.addFeature(observeFeature)
+			.addFeature(corsFeature)
+			.routing(routing -> Routing.buildRouting(routing, injector))
+			.build()
+			.start();
 
 		logger.info("Server started on port {}", server.port());
 
@@ -138,7 +146,8 @@ public class Main {
 		var users = injector.getInstance(UserRepository.class);
 		if (!users.isEmpty()) {
 			throw new IllegalStateException(
-					"Migration incomplete: replay/rebuild is configured but target domain already has data");
+				"Migration incomplete: replay/rebuild is configured but target domain already has data"
+			);
 		}
 		if (replayBinding != null) {
 			replayBinding.getProvider().get().replay();

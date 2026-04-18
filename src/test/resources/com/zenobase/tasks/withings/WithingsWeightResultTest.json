@@ -1,1 +1,32 @@
-{"status":0,"body":{"updatetime":1353615011,"measuregrps":[{"grpid":88946637,"attrib":0,"date":1353606557,"category":1,"measures":[{"value":71550,"type":1,"unit":-3},{"value":61921,"type":5,"unit":-3},{"value":13459,"type":6,"unit":-3},{"value":9629,"type":8,"unit":-3}]},{"grpid":88872795,"attrib":0,"date":1353565430,"category":1,"measures":[{"value":71900,"type":1,"unit":-3},{"value":62719,"type":5,"unit":-3},{"value":12770,"type":6,"unit":-3},{"value":9181,"type":8,"unit":-3}]}]}}
+{
+	"status": 0,
+	"body": {
+		"updatetime": 1353615011,
+		"measuregrps": [
+			{
+				"grpid": 88946637,
+				"attrib": 0,
+				"date": 1353606557,
+				"category": 1,
+				"measures": [
+					{ "value": 71550, "type": 1, "unit": -3 },
+					{ "value": 61921, "type": 5, "unit": -3 },
+					{ "value": 13459, "type": 6, "unit": -3 },
+					{ "value": 9629, "type": 8, "unit": -3 }
+				]
+			},
+			{
+				"grpid": 88872795,
+				"attrib": 0,
+				"date": 1353565430,
+				"category": 1,
+				"measures": [
+					{ "value": 71900, "type": 1, "unit": -3 },
+					{ "value": 62719, "type": 5, "unit": -3 },
+					{ "value": 12770, "type": 6, "unit": -3 },
+					{ "value": 9181, "type": 8, "unit": -3 }
+				]
+			}
+		]
+	}
+}

@@ -35,14 +35,14 @@ public class AccountController extends ControllerSupport {
 
 	@Inject
 	public AccountController(
-			AuthorizationContext security,
-			UserRepository users,
-			BucketRepository buckets,
-			TaskRepository tasks,
-			CredentialsRepository credentials,
-			CommandDispatcher dispatcher,
-			UserDirectory userDirectory) {
-
+		AuthorizationContext security,
+		UserRepository users,
+		BucketRepository buckets,
+		TaskRepository tasks,
+		CredentialsRepository credentials,
+		CommandDispatcher dispatcher,
+		UserDirectory userDirectory
+	) {
 		super(security);
 		this.users = users;
 		this.buckets = buckets;
@@ -64,7 +64,7 @@ public class AccountController extends ControllerSupport {
 			sendNotFound(res);
 			return;
 		}
-		if (auth.getScope() != null || !user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
+		if (auth.getScope() != null || (!user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal()))) {
 			sendForbidden(res);
 			return;
 		}
@@ -77,22 +77,23 @@ public class AccountController extends ControllerSupport {
 
 	public Command buildCloseAccountCommand(Identity principal, User user, Authorization current) {
 		var command = new CompoundCommand(
-				principal,
-				String.format("closed account %s", user.getName()),
-				String.format("reopened account %s", user.getName()));
+			principal,
+			String.format("closed account %s", user.getName()),
+			String.format("reopened account %s", user.getName())
+		);
 		command.add(new DeleteUserCommand(principal, user));
-		buckets.find(
-				new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(true),
-				bucket -> command.add(new DeleteBucketCommand(principal, bucket)));
-		buckets.find(
-				new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(false),
-				bucket -> command.add(new DeleteBucketCommand(principal, bucket)));
-		tasks.find(
-				new TaskQuery().principalEqualTo(user.asIdentity()),
-				task -> command.add(new DeleteTaskCommand(principal, task)));
-		credentials.find(
-				new CredentialsQuery().principalEqualTo(user.asIdentity()),
-				credentials -> command.add(new DeleteCredentialsCommand(principal, credentials)));
+		buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(true), bucket ->
+			command.add(new DeleteBucketCommand(principal, bucket))
+		);
+		buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(false), bucket ->
+			command.add(new DeleteBucketCommand(principal, bucket))
+		);
+		tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()), task ->
+			command.add(new DeleteTaskCommand(principal, task))
+		);
+		credentials.find(new CredentialsQuery().principalEqualTo(user.asIdentity()), credentials ->
+			command.add(new DeleteCredentialsCommand(principal, credentials))
+		);
 		return command;
 	}
 }

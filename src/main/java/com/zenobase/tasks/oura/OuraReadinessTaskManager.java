@@ -31,8 +31,7 @@ public class OuraReadinessTaskManager extends OuraTaskManagerSupport {
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = DateTime.parse(settings.path("marker").textValue()).toString();
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "readiness");
-		DateTimeZone zone = DateTimeZone.forID(
-				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone zone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		return new OuraReadinessTask(bucketId, principal, marker, tag, zone);
 	}
 
@@ -54,8 +53,13 @@ public class OuraReadinessTaskManager extends OuraTaskManagerSupport {
 		request.addQuerystringParameter("end_date", end.toLocalDate().toString());
 		Response response = send(request, credentials);
 		events.addAll(
-				new OuraReadinessResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone())
-						.getEvents());
+			new OuraReadinessResult(
+				parseObject(response),
+				task.getPrincipal(),
+				task.getTag(),
+				task.getTimezone()
+			).getEvents()
+		);
 		return createCommand(task, credentials, events, Objects.requireNonNull(token));
 	}
 }

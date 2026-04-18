@@ -42,8 +42,10 @@ public class GeoBoundsFacet extends FilteredFacet {
 			return result;
 		}
 		GeoBoundsAggregate bounds = aggregate.geoBounds();
-		if (bounds.bounds() != null
-				&& bounds.bounds()._kind() == org.opensearch.client.opensearch._types.GeoBounds.Kind.Tlbr) {
+		if (
+			bounds.bounds() != null &&
+			bounds.bounds()._kind() == org.opensearch.client.opensearch._types.GeoBounds.Kind.Tlbr
+		) {
 			TopLeftBottomRightGeoBounds tlbr = bounds.bounds().tlbr();
 			GeoLocation tl = tlbr.topLeft();
 			GeoLocation br = tlbr.bottomRight();
@@ -58,9 +60,11 @@ public class GeoBoundsFacet extends FilteredFacet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-		return options -> new GeoBoundsFacet(
+		return options ->
+			new GeoBoundsFacet(
 				Objects.requireNonNull(options.get("id")),
 				Objects.requireNonNull(options.get("field", String.class, Event.LOCATION.getName())),
-				filterParser.parse(options.get("filter")));
+				filterParser.parse(options.get("filter"))
+			);
 	}
 }

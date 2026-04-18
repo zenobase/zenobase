@@ -38,9 +38,10 @@ public class CommandReplay {
 
 	@Inject
 	public CommandReplay(
-			@Named("opensearch.replay") String sourceHost,
-			CommandParserRegistry parsers,
-			CommandDispatcher dispatcher) {
+		@Named("opensearch.replay") String sourceHost,
+		CommandParserRegistry parsers,
+		CommandDispatcher dispatcher
+	) {
 		this.sourceHost = sourceHost;
 		this.parsers = parsers;
 		this.dispatcher = dispatcher;
@@ -72,21 +73,24 @@ public class CommandReplay {
 			count.incrementAndGet();
 		});
 		logger.warn(
-				"Replayed {} and discarded {} commands out of {} with {} failures in {} s",
-				replayed.get(),
-				count.get() - replayed.get(),
-				repository.size(),
-				failures.get(),
-				timer.elapsed(TimeUnit.SECONDS));
+			"Replayed {} and discarded {} commands out of {} with {} failures in {} s",
+			replayed.get(),
+			count.get() - replayed.get(),
+			repository.size(),
+			failures.get(),
+			timer.elapsed(TimeUnit.SECONDS)
+		);
 		if (failures.get() > 0) {
 			throw new IllegalStateException("Replay completed with one or more failures");
 		}
 	}
 
 	private static boolean shouldDiscard(Command command, StringFilter identities) {
-		return command instanceof CreateAuthorizationCommand
-				|| command instanceof DeleteAuthorizationCommand
-				|| !identities.mightContain(command.getPrincipal().id());
+		return (
+			command instanceof CreateAuthorizationCommand ||
+			command instanceof DeleteAuthorizationCommand ||
+			!identities.mightContain(command.getPrincipal().id())
+		);
 	}
 
 	private static StringFilter buildIdentitiesFilter(IndexManager indexManager) {

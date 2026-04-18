@@ -36,14 +36,16 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 	private final Class<T> taskClass;
 
 	protected GoogleFitTaskManagerSupport(
-			String type, GoogleCredentialsManager credentialsManager, Class<T> taskClass) {
+		String type,
+		GoogleCredentialsManager credentialsManager,
+		Class<T> taskClass
+	) {
 		super(type, credentialsManager);
 		this.taskClass = taskClass;
 	}
 
 	@Override
 	public Command execute(Task task, OAuthCredentials credentials) {
-
 		Token token = Objects.requireNonNull(credentials.getToken());
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
@@ -70,51 +72,74 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 	}
 
 	protected List<DataPoint> getDataPoints(
-			GoogleFitTaskSupport task, OAuthCredentials credentials, DataStream stream) {
+		GoogleFitTaskSupport task,
+		OAuthCredentials credentials,
+		DataStream stream
+	) {
 		return getDataPoints(
-				Objects.requireNonNull(task.getFrom()), DateTime.now(), task.getTimezone(), credentials, stream);
+			Objects.requireNonNull(task.getFrom()),
+			DateTime.now(),
+			task.getTimezone(),
+			credentials,
+			stream
+		);
 	}
 
 	protected List<DataPoint> getDataPoints(
-			DateTime begin, DateTime end, DateTimeZone zone, OAuthCredentials credentials, DataStream stream) {
+		DateTime begin,
+		DateTime end,
+		DateTimeZone zone,
+		OAuthCredentials credentials,
+		DataStream stream
+	) {
 		var request = new OAuthRequest(
-				Verb.GET,
-				String.format(
-						"https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%d-%d",
-						UrlEscapers.urlPathSegmentEscaper().escape(stream.id()),
-						begin.getMillis() * 1000000,
-						end.getMillis() * 1000000));
+			Verb.GET,
+			String.format(
+				"https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%d-%d",
+				UrlEscapers.urlPathSegmentEscaper().escape(stream.id()),
+				begin.getMillis() * 1000000,
+				end.getMillis() * 1000000
+			)
+		);
 		Response response = send(request, credentials);
 		return new DatasetResult(parseObject(response), zone).getDataPoints();
 	}
 
 	protected void getDataPoints(
-			GoogleFitTaskSupport task, OAuthCredentials credentials, DataStream stream, Consumer<DataPoint> consumer) {
+		GoogleFitTaskSupport task,
+		OAuthCredentials credentials,
+		DataStream stream,
+		Consumer<DataPoint> consumer
+	) {
 		getDataPoints(
-				Objects.requireNonNull(task.getFrom()),
-				DateTime.now(),
-				task.getTimezone(),
-				credentials,
-				stream,
-				consumer);
+			Objects.requireNonNull(task.getFrom()),
+			DateTime.now(),
+			task.getTimezone(),
+			credentials,
+			stream,
+			consumer
+		);
 	}
 
 	private void getDataPoints(
-			DateTime begin,
-			DateTime end,
-			DateTimeZone zone,
-			OAuthCredentials credentials,
-			DataStream stream,
-			Consumer<DataPoint> consumer) {
+		DateTime begin,
+		DateTime end,
+		DateTimeZone zone,
+		OAuthCredentials credentials,
+		DataStream stream,
+		Consumer<DataPoint> consumer
+	) {
 		String pageToken = null;
 		do {
 			var request = new OAuthRequest(
-					Verb.GET,
-					String.format(
-							"https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%d-%d",
-							UrlEscapers.urlPathSegmentEscaper().escape(stream.id()),
-							begin.getMillis() * 1000000,
-							end.getMillis() * 1000000));
+				Verb.GET,
+				String.format(
+					"https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%d-%d",
+					UrlEscapers.urlPathSegmentEscaper().escape(stream.id()),
+					begin.getMillis() * 1000000,
+					end.getMillis() * 1000000
+				)
+			);
 			request.addQuerystringParameter("limit", "1000");
 			if (pageToken != null) {
 				request.addQuerystringParameter("pageToken", pageToken);
@@ -129,8 +154,9 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 	protected static Range<DateTime> getRange(Event event) {
 		ImmutableList<DateTime> values = event.getValues(Event.TIMESTAMP);
 		return Range.closed(
-				Objects.requireNonNull(Ordering.natural().min(values)),
-				Objects.requireNonNull(Ordering.natural().max(values)));
+			Objects.requireNonNull(Ordering.natural().min(values)),
+			Objects.requireNonNull(Ordering.natural().max(values))
+		);
 	}
 
 	protected Iterable<DataStream> filter(Iterable<DataStream> streams, String... dataTypes) {
@@ -146,18 +172,25 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 
 	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
 		var command = new CompoundCommand(
-				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
-		command.add(UpdateTaskCommand.builder(task)
+			task.getPrincipal(),
+			"ran " + getType() + " task",
+			"reverted " + getType() + " task"
+		);
+		command.add(
+			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
-				.build());
+				.build()
+		);
 		if (!Objects.equals(credentials.getToken(), expiredToken)) {
-			command.add(UpdateCredentialsCommand.builder(credentials)
+			command.add(
+				UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
-					.build());
+					.build()
+			);
 		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));

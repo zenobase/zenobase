@@ -20,8 +20,7 @@ public class TaskListControllerFindByUserTest extends TaskListControllerTestSupp
 	public void test() {
 		TaskList list = new TaskList(DefaultPartialList.of());
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		when(tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()), 0, 10))
-				.thenReturn(list);
+		when(tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()), 0, 10)).thenReturn(list);
 		try (Http1ClientResponse result = call(user.getId(), null, 0, 10)) {
 			assertThat(result).hasStatus(200).hasContent(TaskList.toJson(list));
 		}
@@ -94,17 +93,19 @@ public class TaskListControllerFindByUserTest extends TaskListControllerTestSupp
 		when(auth.current(any())).thenReturn(new Authorization(superuser));
 		when(users.find(user.getId())).thenReturn(user);
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()).queryString("type:foo"), 0, 10))
-				.thenReturn(list);
+		when(tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()).queryString("type:foo"), 0, 10)).thenReturn(
+			list
+		);
 		try (Http1ClientResponse result = call(user.getId(), "type:foo", 0, 10)) {
 			assertThat(result).hasStatus(200).hasContent(TaskList.toJson(list));
 		}
 	}
 
 	private Http1ClientResponse call(String userId, String q, int offset, int limit) {
-		var request = client.get("/users/" + userId + "/tasks/")
-				.queryParam("offset", String.valueOf(offset))
-				.queryParam("limit", String.valueOf(limit));
+		var request = client
+			.get("/users/" + userId + "/tasks/")
+			.queryParam("offset", String.valueOf(offset))
+			.queryParam("limit", String.valueOf(limit));
 		if (q != null) {
 			request = request.queryParam("q", q);
 		}

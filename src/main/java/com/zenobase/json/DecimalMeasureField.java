@@ -63,7 +63,9 @@ public class DecimalMeasureField<Q extends Quantity> extends Field<DecimalMeasur
 
 	private @Nullable DecimalMeasure<Q> getDecimalMeasure(ObjectNode node) {
 		return Measures.valueOf(
-				Objects.requireNonNull(VALUE.getValue(node)), Objects.requireNonNull(UNIT.getValue(node)));
+			Objects.requireNonNull(VALUE.getValue(node)),
+			Objects.requireNonNull(UNIT.getValue(node))
+		);
 	}
 
 	@Override

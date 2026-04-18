@@ -15,7 +15,6 @@ public class SpreadsheetPrinterTest {
 
 	@Test
 	public void test() throws IOException {
-
 		ArrayNode node = Nodes.newArray();
 
 		ObjectNode n1 = Nodes.newObject();
@@ -36,10 +35,11 @@ public class SpreadsheetPrinterTest {
 		ObjectNode n4 = Nodes.newObject();
 		n4.put("label", "Qux");
 		n4.set(
-				"objects",
-				Nodes.newArray()
-						.add(Nodes.newObject().put("lat", 1).put("lon", 2))
-						.add(Nodes.newObject().put("lat", 3).put("lon", 4)));
+			"objects",
+			Nodes.newArray()
+				.add(Nodes.newObject().put("lat", 1).put("lon", 2))
+				.add(Nodes.newObject().put("lat", 3).put("lon", 4))
+		);
 		node.add(n4);
 
 		StringWriter out = new StringWriter();
@@ -47,12 +47,12 @@ public class SpreadsheetPrinterTest {
 		printer.print(node);
 		printer.close();
 
-		assertThat(out.toString())
-				.isEqualTo(
-						"\"label\",\"value\",\"values\",\"object.@value\",\"object.unit\",\"objects.lat\",\"objects.lon\"\n"
-								+ "\"Foo\",\"1\"\"\",\"\",\"\",\"\",\"\",\"\"\n"
-								+ "\"Bar\",\"\",\"red;green;blue\",\"\",\"\",\"\",\"\"\n"
-								+ "\"Baz\",\"\",\"\",\"100\",\"mi\",\"\",\"\"\n"
-								+ "\"Qux\",\"\",\"\",\"\",\"\",\"1;3\",\"2;4\"\n");
+		assertThat(out.toString()).isEqualTo(
+			"\"label\",\"value\",\"values\",\"object.@value\",\"object.unit\",\"objects.lat\",\"objects.lon\"\n" +
+				"\"Foo\",\"1\"\"\",\"\",\"\",\"\",\"\",\"\"\n" +
+				"\"Bar\",\"\",\"red;green;blue\",\"\",\"\",\"\",\"\"\n" +
+				"\"Baz\",\"\",\"\",\"100\",\"mi\",\"\",\"\"\n" +
+				"\"Qux\",\"\",\"\",\"\",\"\",\"1;3\",\"2;4\"\n"
+		);
 	}
 }

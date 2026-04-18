@@ -58,8 +58,7 @@ public class NodeAssertTest {
 
 	@Test
 	public void testFailEqualToText() {
-		assertThatThrownBy(() -> assertThat(new TextNode("Foo")).isEqualTo("Bar"))
-				.isInstanceOf(AssertionError.class);
+		assertThatThrownBy(() -> assertThat(new TextNode("Foo")).isEqualTo("Bar")).isInstanceOf(AssertionError.class);
 	}
 
 	@Test

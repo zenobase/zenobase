@@ -13,19 +13,25 @@ import com.zenobase.repositories.UserRepository;
 public class ChangeUserEmailCommandTest {
 
 	private final UserRepository users = mock(UserRepository.class);
-	private final CommandHandlerRegistry registry =
-			CommandHandlerRegistry.containing(new ChangeUserEmailCommand.Handler(users));
+	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
+		new ChangeUserEmailCommand.Handler(users)
+	);
 
 	@Test
 	public void test() {
-
 		User user = new User("tester");
 		when(users.find(user.getName())).thenReturn(user);
 		String first = "jdoe@zenobase.org";
 		String second = "jdoe@zenobase.com";
 
-		Command command =
-				new ChangeUserEmailCommand(user.asIdentity(), user.getName(), user.getEmail(), first, false, false);
+		Command command = new ChangeUserEmailCommand(
+			user.asIdentity(),
+			user.getName(),
+			user.getEmail(),
+			first,
+			false,
+			false
+		);
 		registry.execute(command);
 		assertThat(user.getEmail()).as("email").isEqualTo(first);
 		assertThat(user.isVerified()).as("user is verified").isFalse();
@@ -48,7 +54,6 @@ public class ChangeUserEmailCommandTest {
 
 	@Test
 	public void testChangeNonExistentUser() {
-
 		User user = new User("tester");
 
 		Command command = new ChangeUserEmailCommand(user.asIdentity(), user.getName(), null, null, false, false);

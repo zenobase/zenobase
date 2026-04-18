@@ -49,8 +49,9 @@ class WeightResult {
 		var event = new Event();
 		event.addValue(Event.TAG, tag);
 		event.setValue(
-				Event.TIMESTAMP,
-				dateTimeValue(node.path("datetime_utc"), dateTimeZoneValue(node.path("datetime_timezone"))));
+			Event.TIMESTAMP,
+			dateTimeValue(node.path("datetime_utc"), dateTimeZoneValue(node.path("datetime_timezone")))
+		);
 		event.setValue(Event.WEIGHT, weightValue(node.path("mass")));
 		event.setValue(Event.PERCENTAGE, percentageValue(node.path("fat_percent")));
 		event.setValue(Event.SOURCE, SOURCE);
@@ -73,9 +74,8 @@ class WeightResult {
 	private @Nullable DecimalMeasure<Mass> weightValue(JsonNode node) {
 		Unit<Mass> unit = imperial ? Units.LB : Units.KG;
 		return !isZero(node)
-				? Measures.valueOf(
-						Objects.requireNonNull(Measures.round(Measures.convert(node.asDouble(), unit), 1)), unit)
-				: null;
+			? Measures.valueOf(Objects.requireNonNull(Measures.round(Measures.convert(node.asDouble(), unit), 1)), unit)
+			: null;
 	}
 
 	private @Nullable Percentage percentageValue(JsonNode node) {

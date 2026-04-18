@@ -16,7 +16,6 @@ public class WeightResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-
 		WeightResult result = new WeightResult(readObject("WeightResultTest.json"), TESTER, "mass", true);
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(2);

@@ -20,9 +20,9 @@ import com.google.common.base.Strings;
 public class Nodes {
 
 	public static final ObjectMapper MAPPER = JsonMapper.builder()
-			.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
-			.disable(JsonNodeFeature.STRIP_TRAILING_BIGDECIMAL_ZEROES)
-			.build();
+		.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
+		.disable(JsonNodeFeature.STRIP_TRAILING_BIGDECIMAL_ZEROES)
+		.build();
 
 	private Nodes() {}
 

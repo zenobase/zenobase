@@ -61,9 +61,8 @@ public class MeasureConstraintBuilderTest extends ConstraintBuilderTestSupport {
 	@Test
 	public void testIllegalContraint() {
 		assertThatThrownBy(() -> {
-					addConstraint("%s:%s", Event.DISTANCE, "foo");
-					execute();
-				})
-				.isInstanceOf(IllegalArgumentException.class);
+			addConstraint("%s:%s", Event.DISTANCE, "foo");
+			execute();
+		}).isInstanceOf(IllegalArgumentException.class);
 	}
 }

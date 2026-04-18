@@ -1,69 +1,66 @@
 {
-    "total_descent": null,
-    "city": "Seattle",
-    "data_source": "api3:",
-    "description": "",
-    "updated_datetime": "2014-04-17T23:00:59+00:00",
-    "created_datetime": "2014-04-17T23:00:59+00:00",
-    "country": "us",
-    "start_point_type": "",
-    "starting_location": {
-        "type": "Point",
-        "coordinates": [
-            -122.36104538,
-            47.62688383
-        ]
-    },
-    "distance": 4836.3643646324,
-    "name": "3.00 mi walk on 2014/04/17",
-    "climbs": null,
-    "state": "WA",
-    "max_elevation": null,
-    "postal_code": "",
-    "min_elevation": null,
-    "_links": {
-        "activity_types": [
-            {
-                "href": "/v7.0/activity_type/9/",
-                "id": "9"
-            }
-        ],
-        "privacy": [
-            {
-                "href": "/v7.0/privacy_option/1/",
-                "id": "1"
-            }
-        ],
-        "self": [
-            {
-                "href": "/v7.0/route/394927596/?user=37756949",
-                "id": "394927596"
-            }
-        ],
-        "alternate": [
-            {
-                "href": "/v7.0/route/394927596/?format=kml&field_set=detailed",
-                "id": "394927596",
-                "name": "kml"
-            }
-        ],
-        "user": [
-            {
-                "href": "/v7.0/user/37756949/",
-                "id": "37756949"
-            }
-        ],
-        "thumbnail": [
-            {
-                "href": "//drzetlglcbfx.cloudfront.net/routes/thumbnail/394927596?size=100x100&ts=1397775659"
-            }
-        ],
-        "documentation": [
-            {
-                "href": "https://www.mapmyapi.com/docs/Route"
-            }
-        ]
-    },
-    "points": null,
-    "total_ascent": null
+	"total_descent": null,
+	"city": "Seattle",
+	"data_source": "api3:",
+	"description": "",
+	"updated_datetime": "2014-04-17T23:00:59+00:00",
+	"created_datetime": "2014-04-17T23:00:59+00:00",
+	"country": "us",
+	"start_point_type": "",
+	"starting_location": {
+		"type": "Point",
+		"coordinates": [-122.36104538, 47.62688383]
+	},
+	"distance": 4836.3643646324,
+	"name": "3.00 mi walk on 2014/04/17",
+	"climbs": null,
+	"state": "WA",
+	"max_elevation": null,
+	"postal_code": "",
+	"min_elevation": null,
+	"_links": {
+		"activity_types": [
+			{
+				"href": "/v7.0/activity_type/9/",
+				"id": "9"
+			}
+		],
+		"privacy": [
+			{
+				"href": "/v7.0/privacy_option/1/",
+				"id": "1"
+			}
+		],
+		"self": [
+			{
+				"href": "/v7.0/route/394927596/?user=37756949",
+				"id": "394927596"
+			}
+		],
+		"alternate": [
+			{
+				"href": "/v7.0/route/394927596/?format=kml&field_set=detailed",
+				"id": "394927596",
+				"name": "kml"
+			}
+		],
+		"user": [
+			{
+				"href": "/v7.0/user/37756949/",
+				"id": "37756949"
+			}
+		],
+		"thumbnail": [
+			{
+				"href": "//drzetlglcbfx.cloudfront.net/routes/thumbnail/394927596?size=100x100&ts=1397775659"
+			}
+		],
+		"documentation": [
+			{
+				"href": "https://www.mapmyapi.com/docs/Route"
+			}
+		]
+	},
+	"points": null,
+	"total_ascent": null
 }

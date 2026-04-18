@@ -12,7 +12,6 @@ public class LocationMapTest {
 
 	@Test
 	public void test() {
-
 		DateTime t0 = DateTime.parse("2014-03-01T12:00:00.000Z");
 		DateTime t1 = DateTime.parse("2014-03-01T13:00:00.000Z");
 		DateTime t2 = DateTime.parse("2014-03-01T14:00:00.000Z");
@@ -43,7 +42,6 @@ public class LocationMapTest {
 
 	@Test
 	public void testTimeRange() {
-
 		DateTime t0 = DateTime.parse("2014-03-01T12:00:00.000Z");
 		DateTime t1 = DateTime.parse("2014-03-01T13:00:00.000Z");
 		DateTime t2 = DateTime.parse("2014-03-01T14:00:00.000Z");
@@ -68,8 +66,7 @@ public class LocationMapTest {
 		assertThat(locations.getFirst(Range.closedOpen(t1, t2))).isEqualTo(l0);
 		assertThat(locations.getFirst(Range.closedOpen(t2, t3))).isEqualTo(l1);
 		assertThat(locations.getFirst(Range.closedOpen(t0, t4))).isEqualTo(l0);
-		assertThat(locations.getFirst(Range.closedOpen(t1.plusMinutes(5), t2.minusMinutes(5))))
-				.isEqualTo(l0);
+		assertThat(locations.getFirst(Range.closedOpen(t1.plusMinutes(5), t2.minusMinutes(5)))).isEqualTo(l0);
 		assertThat(locations.getFirst(Range.closedOpen(t0, t1))).isNull();
 		assertThat(locations.getFirst(Range.closedOpen(t3, t4))).isNull();
 	}

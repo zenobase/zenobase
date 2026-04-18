@@ -71,8 +71,7 @@ public class SleepCloudResult {
 		if (node.isMissingNode()) {
 			return DateTimeZone.UTC;
 		}
-		String value =
-				node.textValue().replace("GMT--", "-").replace("GMT-", "-").replace("GMT+", "+");
+		String value = node.textValue().replace("GMT--", "-").replace("GMT-", "-").replace("GMT+", "+");
 		if (value.length() < 6) {
 			value = value.charAt(0) + "0" + value.substring(1);
 		}

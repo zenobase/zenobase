@@ -40,25 +40,30 @@ public class OpenSearchClientFactory implements ClientFactory {
 	public static OpenSearchClient createClient(String host, String region) {
 		var uri = URI.create(host);
 		if ("https".equals(uri.getScheme())) {
-			var httpClient = AwsCrtHttpClient.builder()
-					.connectionTimeout(Duration.ofSeconds(30))
-					.build();
+			var httpClient = AwsCrtHttpClient.builder().connectionTimeout(Duration.ofSeconds(30)).build();
 			var transport = new AwsSdk2Transport(
-					httpClient,
-					uri.getHost(),
-					"es",
-					Region.of(region),
-					AwsSdk2TransportOptions.builder().build());
+				httpClient,
+				uri.getHost(),
+				"es",
+				Region.of(region),
+				AwsSdk2TransportOptions.builder().build()
+			);
 			return new OpenSearchClient(transport);
 		}
 		var httpHost = HttpHost.create(uri);
-		return new OpenSearchClient(ApacheHttpClient5TransportBuilder.builder(httpHost)
+		return new OpenSearchClient(
+			ApacheHttpClient5TransportBuilder.builder(httpHost)
 				.setMapper(new JacksonJsonpMapper())
-				.setHttpClientConfigCallback(builder -> builder.addRequestInterceptorFirst(
-								(request, entity, context) -> request.setHeader("Accept-Encoding", "gzip"))
-						.setDefaultRequestConfig(RequestConfig.custom()
-								.setResponseTimeout(60, TimeUnit.SECONDS)
-								.build()))
-				.build());
+				.setHttpClientConfigCallback(builder ->
+					builder
+						.addRequestInterceptorFirst((request, entity, context) ->
+							request.setHeader("Accept-Encoding", "gzip")
+						)
+						.setDefaultRequestConfig(
+							RequestConfig.custom().setResponseTimeout(60, TimeUnit.SECONDS).build()
+						)
+				)
+				.build()
+		);
 	}
 }

@@ -12,12 +12,12 @@ import com.zenobase.repositories.UserRepository;
 public class SuspendUserCommandTest {
 
 	private final UserRepository users = mock(UserRepository.class);
-	private final CommandHandlerRegistry registry =
-			CommandHandlerRegistry.containing(new SuspendUserCommand.Handler(users));
+	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
+		new SuspendUserCommand.Handler(users)
+	);
 
 	@Test
 	public void test() {
-
 		User user = new User("tester");
 		when(users.find(user.getName())).thenReturn(user);
 
@@ -36,7 +36,6 @@ public class SuspendUserCommandTest {
 
 	@Test
 	public void testSuspendNonExistentUser() {
-
 		User user = new User("tester");
 
 		Command command = new SuspendUserCommand(user.asIdentity(), user.getName(), true);

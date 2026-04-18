@@ -38,7 +38,6 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 	@Test
 	public void test() {
-
 		// create bucket
 		Bucket b1 = newBucket("Test Bucket", ME);
 		b1.setWidgets(List.of(newWidget()));
@@ -63,7 +62,6 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 	@Test
 	public void testUpdateAliases() {
-
 		Bucket b1 = insert("Foo", ME);
 		Bucket b2 = insert("Bar", ME);
 		Bucket b3 = insert("Baz", ME);
@@ -98,14 +96,12 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 		List<Bucket> expected = insert(11);
 		SearchOrder order = BucketQuery.DEFAULT_ORDER.reverse();
 		assertThat(repository.find(new BucketQuery(), order, 0, 10))
-				.hasTotal(expected.size())
-				.isEqualTo(expected.subList(0, 10));
+			.hasTotal(expected.size())
+			.isEqualTo(expected.subList(0, 10));
 		assertThat(repository.find(new BucketQuery(), order, 10, 10))
-				.hasTotal(expected.size())
-				.isEqualTo(expected.subList(10, 11));
-		assertThat(repository.find(new BucketQuery(), order, 20, 10))
-				.hasTotal(expected.size())
-				.isEmpty();
+			.hasTotal(expected.size())
+			.isEqualTo(expected.subList(10, 11));
+		assertThat(repository.find(new BucketQuery(), order, 20, 10)).hasTotal(expected.size()).isEmpty();
 	}
 
 	@Test
@@ -128,7 +124,6 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 	@Test
 	public void testFindIsAlias() {
-
 		Bucket b1 = insert("foo", ME);
 		Bucket b2 = insert("bar", ME, b1.getId());
 		assertThat(repository.isAliased(b1.getId())).isTrue();
@@ -145,7 +140,6 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 	@Test
 	public void testFindIsRefreshable() {
-
 		Bucket b1 = newBucket("foo", ME);
 		b1.setRefresh(false);
 		repository.store(b1);
@@ -161,7 +155,6 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 	@Test
 	public void testFindIncludeArchived() {
-
 		Bucket b1 = newBucket("foo", ME);
 		b1.setArchived(false);
 		repository.store(b1);
@@ -182,8 +175,7 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 	private List<Bucket> insert(int size) {
 		List<Bucket> buckets = Lists.newArrayListWithCapacity(size);
 		for (int i = 0; i < size; ++i) {
-			Uninterruptibles.sleepUninterruptibly(
-					5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
+			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
 			Bucket bucket = newBucket(String.format("bucket%03d", i + 1), ME);
 			buckets.add(bucket);
 			repository.store(bucket);

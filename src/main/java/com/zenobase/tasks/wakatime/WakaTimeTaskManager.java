@@ -74,9 +74,8 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 					}
 				}
 			} catch (InvalidStatusException e) {
-				if (e.getStatus() == 402
-						&& date.isBefore(
-								today.minusWeeks(2))) { // free WakaTime accounts are limited to 2 weeks of history
+				if (e.getStatus() == 402 && date.isBefore(today.minusWeeks(2))) {
+					// free WakaTime accounts are limited to 2 weeks of history
 					date = today.minusWeeks(2);
 				} else {
 					throw e;
@@ -93,18 +92,25 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 
 	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
 		var command = new CompoundCommand(
-				task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
-		command.add(UpdateTaskCommand.builder(task)
+			task.getPrincipal(),
+			"ran " + getType() + " task",
+			"reverted " + getType() + " task"
+		);
+		command.add(
+			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
-				.build());
+				.build()
+		);
 		if (!Objects.equals(credentials.getToken(), expiredToken)) {
-			command.add(UpdateCredentialsCommand.builder(credentials)
+			command.add(
+				UpdateCredentialsCommand.builder(credentials)
 					.with(Credentials.CREDENTIALS)
 					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
-					.build());
+					.build()
+			);
 		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));

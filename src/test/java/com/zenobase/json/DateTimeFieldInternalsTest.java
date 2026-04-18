@@ -14,7 +14,6 @@ public class DateTimeFieldInternalsTest {
 
 	@Test
 	public void testLocal() {
-
 		DateTime timestamp = new DateTime(2013, 10, 6, 11, 59, DateTimeZone.forOffsetHours(-7));
 		ObjectNode node = Nodes.newObject();
 		field.setValue(node, timestamp);
@@ -32,7 +31,6 @@ public class DateTimeFieldInternalsTest {
 
 	@Test
 	public void testMinMax() {
-
 		DateTime begin = new DateTime(2014, 11, 2, 22, 5, DateTimeZone.forOffsetHours(-7));
 		DateTime end = new DateTime(2014, 11, 3, 8, 10, DateTimeZone.forOffsetHours(-8));
 		ObjectNode node = Nodes.newObject();

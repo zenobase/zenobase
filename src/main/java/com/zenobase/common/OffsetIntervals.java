@@ -1,6 +1,10 @@
 package com.zenobase.common;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
@@ -24,85 +28,88 @@ public class OffsetIntervals extends DateTimeFormatSupport {
 		MONTH(DurationFieldType.months()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder.append(yearElement())
-						.append(monthElement())
-						.appendLiteral('T')
-						.append(offsetElement());
+				return builder.append(yearElement()).append(monthElement()).appendLiteral('T').append(offsetElement());
 			}
 		},
 
 		WEEK(DurationFieldType.weeks()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder.append(yearElement())
-						.append(weekofYearElement())
-						.appendLiteral('T')
-						.append(offsetElement());
+				return builder
+					.append(yearElement())
+					.append(weekofYearElement())
+					.appendLiteral('T')
+					.append(offsetElement());
 			}
 		},
 
 		DAY(DurationFieldType.days()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder.append(yearElement())
-						.append(monthElement())
-						.append(dayOfMonthElement())
-						.appendLiteral('T')
-						.append(offsetElement());
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.append(dayOfMonthElement())
+					.appendLiteral('T')
+					.append(offsetElement());
 			}
 		},
 
 		HOUR(DurationFieldType.hours()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder.append(yearElement())
-						.append(monthElement())
-						.append(dayOfMonthElement())
-						.appendLiteral('T')
-						.append(hourElement())
-						.append(offsetElement());
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.append(dayOfMonthElement())
+					.appendLiteral('T')
+					.append(hourElement())
+					.append(offsetElement());
 			}
 		},
 
 		MINUTE(DurationFieldType.minutes()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder.append(yearElement())
-						.append(monthElement())
-						.append(dayOfMonthElement())
-						.appendLiteral('T')
-						.append(hourElement())
-						.append(minuteElement())
-						.append(offsetElement());
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.append(dayOfMonthElement())
+					.appendLiteral('T')
+					.append(hourElement())
+					.append(minuteElement())
+					.append(offsetElement());
 			}
 		},
 
 		SECOND(DurationFieldType.seconds()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder.append(yearElement())
-						.append(monthElement())
-						.append(dayOfMonthElement())
-						.appendLiteral('T')
-						.append(hourElement())
-						.append(minuteElement())
-						.append(secondElement())
-						.append(offsetElement());
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.append(dayOfMonthElement())
+					.appendLiteral('T')
+					.append(hourElement())
+					.append(minuteElement())
+					.append(secondElement())
+					.append(offsetElement());
 			}
 		},
 
 		MILLISECOND(DurationFieldType.millis()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
-				return builder.append(yearElement())
-						.append(monthElement())
-						.append(dayOfMonthElement())
-						.appendLiteral('T')
-						.append(hourElement())
-						.append(minuteElement())
-						.append(secondElement())
-						.append(millisElement())
-						.append(offsetElement());
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.append(dayOfMonthElement())
+					.appendLiteral('T')
+					.append(hourElement())
+					.append(minuteElement())
+					.append(secondElement())
+					.append(millisElement())
+					.append(offsetElement());
 			}
 		};
 
@@ -111,8 +118,7 @@ public class OffsetIntervals extends DateTimeFormatSupport {
 		private final Period period;
 
 		IntervalType(DurationFieldType type) {
-			this.format =
-					configure(new DateTimeFormatterBuilder()).toFormatter().withOffsetParsed();
+			this.format = configure(new DateTimeFormatterBuilder()).toFormatter().withOffsetParsed();
 			this.length = format.getParser().estimateParsedLength() - 1;
 			this.period = new Period().withField(type, 1);
 		}
@@ -160,15 +166,13 @@ public class OffsetIntervals extends DateTimeFormatSupport {
 	}
 
 	public static String toString(DateTime time, @Nullable String interval) {
-		IntervalType format =
-				IntervalType.valueOf(Objects.requireNonNull(interval).toUpperCase(Locale.ROOT));
+		IntervalType format = IntervalType.valueOf(Objects.requireNonNull(interval).toUpperCase(Locale.ROOT));
 		Preconditions.checkNotNull(format, "Unsupported interval: %s", interval);
 		return format.toString(time);
 	}
 
 	public static List<DateTime> expand(DateTime start, DateTime end, @Nullable String interval) {
-		IntervalType format =
-				IntervalType.valueOf(Objects.requireNonNull(interval).toUpperCase(Locale.ROOT));
+		IntervalType format = IntervalType.valueOf(Objects.requireNonNull(interval).toUpperCase(Locale.ROOT));
 		Preconditions.checkNotNull(format, "Unsupported interval: %s", interval);
 		return format.toList(new Interval(start, end));
 	}

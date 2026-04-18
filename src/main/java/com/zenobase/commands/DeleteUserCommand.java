@@ -69,8 +69,7 @@ public class DeleteUserCommand extends Command {
 		@Override
 		public void executeTyped(DeleteUserCommand command) {
 			if (!repository.delete(command.getUser())) {
-				throw new NonExistentUserException(
-						"Tried to delete nonexistent user: " + command.getUser().getName());
+				throw new NonExistentUserException("Tried to delete nonexistent user: " + command.getUser().getName());
 			}
 		}
 	}

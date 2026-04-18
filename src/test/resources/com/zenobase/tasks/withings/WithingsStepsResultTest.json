@@ -1,31 +1,31 @@
 {
-    "status": 0,
-    "body": {
-        "activities": [
-            {
-                "date": "2013-12-16",
-                "steps": 13548,
-                "distance": 12672.74,
-                "calories": 1231.8,
-                "elevation": 321.66,
-                "timezone": "America/Los_Angeles"
-            },
-            {
-                "date": "2013-12-17",
-                "steps": 14917,
-                "distance": 13562.715,
-                "calories": 1428.97,
-                "elevation": 390.98,
-                "timezone": "Europe/Zurich"
-            },
-            {
-                "date": "2013-12-15",
-                "steps": 4604,
-                "distance": 4193.641,
-                "calories": 465.51,
-                "elevation": 95.95,
-                "timezone": "Europe/Zurich"
-            }
-        ]
-    }
+	"status": 0,
+	"body": {
+		"activities": [
+			{
+				"date": "2013-12-16",
+				"steps": 13548,
+				"distance": 12672.74,
+				"calories": 1231.8,
+				"elevation": 321.66,
+				"timezone": "America/Los_Angeles"
+			},
+			{
+				"date": "2013-12-17",
+				"steps": 14917,
+				"distance": 13562.715,
+				"calories": 1428.97,
+				"elevation": 390.98,
+				"timezone": "Europe/Zurich"
+			},
+			{
+				"date": "2013-12-15",
+				"steps": 4604,
+				"distance": 4193.641,
+				"calories": 465.51,
+				"elevation": 95.95,
+				"timezone": "Europe/Zurich"
+			}
+		]
+	}
 }

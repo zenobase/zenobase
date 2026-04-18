@@ -32,8 +32,8 @@ public class GoodreadsApi extends DefaultApi10a {
 	@Override
 	public String getAuthorizationUrl(Token requestToken) {
 		return new UriBuilder("https://www.goodreads.com/oauth/authorize")
-				.addParameter("oauth_token", requestToken.getToken())
-				.addParameter("oauth_callback", callbackUrl)
-				.build();
+			.addParameter("oauth_token", requestToken.getToken())
+			.addParameter("oauth_callback", callbackUrl)
+			.build();
 	}
 }

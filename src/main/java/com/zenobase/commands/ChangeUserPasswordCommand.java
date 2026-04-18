@@ -43,10 +43,11 @@ public class ChangeUserPasswordCommand extends Command {
 	@Override
 	public Command reverse(Identity principal) {
 		return new ChangeUserPasswordCommand(
-				principal,
-				Objects.requireNonNull(getUsername()),
-				Objects.requireNonNull(getTo()),
-				Objects.requireNonNull(getFrom()));
+			principal,
+			Objects.requireNonNull(getUsername()),
+			Objects.requireNonNull(getTo()),
+			Objects.requireNonNull(getFrom())
+		);
 	}
 
 	@Override

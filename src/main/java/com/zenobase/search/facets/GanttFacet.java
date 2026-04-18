@@ -41,13 +41,14 @@ public class GanttFacet extends FilteredFacet {
 	private final DateTimeZone timezone;
 
 	private GanttFacet(
-			String id,
-			String keyField,
-			String valueField,
-			String order,
-			int limit,
-			DateTimeZone timezone,
-			@Nullable Query filter) {
+		String id,
+		String keyField,
+		String valueField,
+		String order,
+		int limit,
+		DateTimeZone timezone,
+		@Nullable Query filter
+	) {
 		super(id, filter);
 		this.keyField = keyField;
 		this.valueField = valueField;
@@ -58,7 +59,9 @@ public class GanttFacet extends FilteredFacet {
 
 	@Override
 	public void configure(SearchRequest.Builder builder) {
-		Aggregation aggregation = Aggregation.of(a -> a.terms(t -> {
+		Aggregation aggregation = Aggregation.of(a ->
+			a
+				.terms(t -> {
 					t.field(keyField).size(limit);
 					boolean asc = !order.startsWith("-");
 					String orderField = asc ? order : order.substring(1);
@@ -71,7 +74,8 @@ public class GanttFacet extends FilteredFacet {
 					}
 					return t;
 				})
-				.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(valueField)))));
+				.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(valueField))))
+		);
 		addAggregation(getId(), aggregation, builder);
 	}
 
@@ -105,13 +109,15 @@ public class GanttFacet extends FilteredFacet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-		return options -> new GanttFacet(
+		return options ->
+			new GanttFacet(
 				Objects.requireNonNull(options.get("id")),
 				Objects.requireNonNull(options.get("field")),
 				Objects.requireNonNull(options.get("key_field", String.class, Event.TIMESTAMP.getName())),
 				Objects.requireNonNull(options.get("order", String.class, "-max")),
 				Objects.requireNonNull(options.get("limit", Integer.class, 10)),
 				Objects.requireNonNull(options.get("timezone", DateTimeZone.class, DateTimeZone.UTC)),
-				filterParser.parse(options.get("filter")));
+				filterParser.parse(options.get("filter"))
+			);
 	}
 }

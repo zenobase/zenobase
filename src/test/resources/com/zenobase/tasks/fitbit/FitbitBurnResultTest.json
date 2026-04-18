@@ -1,16 +1,16 @@
 {
-  "activities-calories": [
-    {
-      "dateTime": "2016-04-25",
-      "value": "2789"
-    },
-    {
-      "dateTime": "2016-04-26",
-      "value": "2760"
-    },
-    {
-      "dateTime": "2016-04-27",
-      "value": "2698"
-    }
-  ]
+	"activities-calories": [
+		{
+			"dateTime": "2016-04-25",
+			"value": "2789"
+		},
+		{
+			"dateTime": "2016-04-26",
+			"value": "2760"
+		},
+		{
+			"dateTime": "2016-04-27",
+			"value": "2698"
+		}
+	]
 }

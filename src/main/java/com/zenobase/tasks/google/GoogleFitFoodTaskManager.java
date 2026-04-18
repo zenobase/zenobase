@@ -27,8 +27,7 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		DateTimeZone zone = DateTimeZone.forID(
-				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone zone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		DateTime begin = DateTime.parse(settings.path("marker").textValue()).withZoneRetainFields(zone);
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "Food");
 		return new GoogleFitFoodTask(bucketId, principal, zone, tag, begin.toString());
@@ -36,7 +35,10 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 
 	@Override
 	protected List<Event> createEvents(
-			GoogleFitFoodTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
+		GoogleFitFoodTask task,
+		OAuthCredentials credentials,
+		Map<String, DataStream> streams
+	) {
 		List<Event> events = createEventsFromNutritionStreams(task, credentials, streams);
 		if (events.isEmpty()) {
 			events = createEventsFromLegacyStream(task, credentials, streams);
@@ -45,7 +47,10 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 	}
 
 	private List<Event> createEventsFromNutritionStreams(
-			GoogleFitFoodTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
+		GoogleFitFoodTask task,
+		OAuthCredentials credentials,
+		Map<String, DataStream> streams
+	) {
 		List<Event> events = new ArrayList<>();
 		for (DataStream stream : filter(streams.values(), "com.google.nutrition")) {
 			getDataPoints(task, credentials, stream, point -> {
@@ -64,10 +69,14 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 	}
 
 	private List<Event> createEventsFromLegacyStream(
-			GoogleFitFoodTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
+		GoogleFitFoodTask task,
+		OAuthCredentials credentials,
+		Map<String, DataStream> streams
+	) {
 		List<Event> events = new ArrayList<>();
-		DataStream stream =
-				streams.get("derived:com.google.calories.consumed:com.google.android.gms:merge_calories_consumed");
+		DataStream stream = streams.get(
+			"derived:com.google.calories.consumed:com.google.android.gms:merge_calories_consumed"
+		);
 		if (stream != null) {
 			getDataPoints(task, credentials, stream, point -> {
 				BigDecimal value = point.getValue(0, BigDecimal.class);

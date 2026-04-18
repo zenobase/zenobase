@@ -28,8 +28,7 @@ public class GoogleFitCardioTaskManager extends GoogleFitTaskManagerSupport<Goog
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		DateTimeZone zone = DateTimeZone.forID(
-				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone zone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		DateTime begin = DateTime.parse(settings.path("marker").textValue()).withZoneRetainFields(zone);
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "Cardio");
 		return new GoogleFitCardioTask(bucketId, principal, zone, tag, begin.toString());
@@ -37,10 +36,16 @@ public class GoogleFitCardioTaskManager extends GoogleFitTaskManagerSupport<Goog
 
 	@Override
 	protected List<Event> createEvents(
-			GoogleFitCardioTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
+		GoogleFitCardioTask task,
+		OAuthCredentials credentials,
+		Map<String, DataStream> streams
+	) {
 		List<Event> events = new ArrayList<>();
-		for (DataStream stream :
-				filter(streams.values(), "com.google.heart_rate.bpm", "com.google.heart_rate.summary")) {
+		for (DataStream stream : filter(
+			streams.values(),
+			"com.google.heart_rate.bpm",
+			"com.google.heart_rate.summary"
+		)) {
 			if (!stream.id().contains("derived")) {
 				getDataPoints(task, credentials, stream, point -> {
 					BigDecimal value = point.getValue(0, BigDecimal.class);
@@ -53,8 +58,9 @@ public class GoogleFitCardioTaskManager extends GoogleFitTaskManagerSupport<Goog
 							event.setValue(Event.DURATION, point.getDuration());
 						}
 						event.setValue(
-								Event.FREQUENCY,
-								Measures.valueOf(Objects.requireNonNull(Measures.round(value, 0)), Units.BPM));
+							Event.FREQUENCY,
+							Measures.valueOf(Objects.requireNonNull(Measures.round(value, 0)), Units.BPM)
+						);
 						event.setValue(Event.AUTHOR, task.getPrincipal());
 						event.setValue(Event.SOURCE, stream.source());
 						events.add(event);

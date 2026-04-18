@@ -16,7 +16,6 @@ public class GoodreadsReviewListResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-
 		GoodreadsReviewListResult result = new GoodreadsReviewListResult(readXml("review_list.xml"), TESTER, "Book");
 		List<Event> actual = result.getEvents(dateTime("2018-04-14T12:00:00Z"));
 		assertThat(actual.size()).isEqualTo(1);
@@ -29,10 +28,12 @@ public class GoodreadsReviewListResultTest extends ResultTestSupport {
 		expected.setValue(Event.RATING, Rating.valueOf(80));
 		expected.setValue(Event.COUNT, 100);
 		expected.setValue(
-				Event.RESOURCE,
-				new Resource(
-						"The First 20 Minutes: Surprising Science Reveals How We Can: Exercise Better, Train Smarter, Live Longer",
-						"https://www.goodreads.com/review/show/2347385187"));
+			Event.RESOURCE,
+			new Resource(
+				"The First 20 Minutes: Surprising Science Reveals How We Can: Exercise Better, Train Smarter, Live Longer",
+				"https://www.goodreads.com/review/show/2347385187"
+			)
+		);
 		expected.setValue(Event.SOURCE, GoodreadsReviewListResult.SOURCE);
 		expected.setValue(Event.AUTHOR, TESTER);
 		assertThat(actual.get(0)).isEqualTo(expected);

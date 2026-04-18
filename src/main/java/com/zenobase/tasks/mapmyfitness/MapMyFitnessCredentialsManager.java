@@ -31,10 +31,11 @@ public class MapMyFitnessCredentialsManager extends OAuthCredentialsManager {
 
 	@Inject
 	public MapMyFitnessCredentialsManager(
-			CredentialsRepository repository,
-			@Named("mapmyfitness.api.key") String apiKey,
-			@Named("mapmyfitness.api.secret") String apiSecret,
-			@Named("oauth.hostname") String callbackUrl) {
+		CredentialsRepository repository,
+		@Named("mapmyfitness.api.key") String apiKey,
+		@Named("mapmyfitness.api.secret") String apiSecret,
+		@Named("oauth.hostname") String callbackUrl
+	) {
 		super(TYPE, repository, new MapMyFitnessApi(), apiKey, apiSecret, callbackUrl);
 	}
 
@@ -57,10 +58,10 @@ public class MapMyFitnessCredentialsManager extends OAuthCredentialsManager {
 		}
 		ExpiringToken token = (ExpiringToken) getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
-				.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
-				.with(Credentials.CREDENTIALS)
-				.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-				.build();
+			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
+			.with(Credentials.CREDENTIALS)
+			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
+			.build();
 	}
 
 	@Override
@@ -73,7 +74,9 @@ public class MapMyFitnessCredentialsManager extends OAuthCredentialsManager {
 		request.addHeader("Api-Key", getApiKey());
 		request.addBodyParameter("grant_type", "refresh_token");
 		request.addBodyParameter(
-				"refresh_token", ((ExpiringToken) Objects.requireNonNull(credentials.getToken())).getRefreshToken());
+			"refresh_token",
+			((ExpiringToken) Objects.requireNonNull(credentials.getToken())).getRefreshToken()
+		);
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
 		request.addBodyParameter(OAuthConstants.CLIENT_SECRET, getApiSecret());
 		credentials.setToken(new OAuth2TokenExtractor().extract(request.send().getBody()));
@@ -87,8 +90,6 @@ public class MapMyFitnessCredentialsManager extends OAuthCredentialsManager {
 	@Override
 	public void sign(OAuthRequest request, OAuthCredentials credentials) {
 		request.addHeader("Api-Key", getApiKey());
-		request.addHeader(
-				"Authorization",
-				"Bearer " + Objects.requireNonNull(credentials.getToken()).getToken());
+		request.addHeader("Authorization", "Bearer " + Objects.requireNonNull(credentials.getToken()).getToken());
 	}
 }

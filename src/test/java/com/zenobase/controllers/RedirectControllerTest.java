@@ -37,8 +37,7 @@ public class RedirectControllerTest extends ControllerTestSupport {
 	@Test
 	public void testUser() {
 		String url = "https://zenobase.com/";
-		try (Http1ClientResponse result =
-				client.get("/to").queryParam("url", url).followRedirects(false).request()) {
+		try (Http1ClientResponse result = client.get("/to").queryParam("url", url).followRedirects(false).request()) {
 			assertThat(result).hasStatus(302).hasHeader("Location", url).isEmpty();
 		}
 	}

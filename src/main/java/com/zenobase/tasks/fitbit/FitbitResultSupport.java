@@ -37,7 +37,11 @@ abstract class FitbitResultSupport {
 	protected final @Nullable DateTimeZone timezone;
 
 	protected FitbitResultSupport(
-			JsonNode node, @Nullable String tag, Identity author, @Nullable DateTimeZone timezone) {
+		JsonNode node,
+		@Nullable String tag,
+		Identity author,
+		@Nullable DateTimeZone timezone
+	) {
 		this.node = node;
 		this.tag = tag;
 		this.author = author;
@@ -88,8 +92,8 @@ abstract class FitbitResultSupport {
 
 	protected static @Nullable DecimalMeasure<Velocity> velocityValue(JsonNode node, Unit<Velocity> unit) {
 		return node.asInt() > 0
-				? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue())), unit)
-				: null;
+			? Measures.valueOf(Objects.requireNonNull(Measures.round(node.decimalValue())), unit)
+			: null;
 	}
 
 	protected static @Nullable DecimalMeasure<Pace> paceValue(JsonNode node, Unit<Pace> unit) {

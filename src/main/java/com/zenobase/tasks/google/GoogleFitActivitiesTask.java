@@ -18,12 +18,13 @@ public class GoogleFitActivitiesTask extends GoogleFitTaskSupport {
 	}
 
 	public GoogleFitActivitiesTask(
-			String bucketId,
-			Identity principal,
-			DateTimeZone timezone,
-			boolean metric,
-			boolean derived,
-			String marker) {
+		String bucketId,
+		Identity principal,
+		DateTimeZone timezone,
+		boolean metric,
+		boolean derived,
+		String marker
+	) {
 		super(TYPE, bucketId, principal, timezone, marker);
 		setSetting(METRIC, metric);
 		setSetting(DERIVED, derived);

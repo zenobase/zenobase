@@ -18,7 +18,7 @@ public class QueryConstraintBuilderTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"foobar", ":bar", "foo:", ""})
+	@ValueSource(strings = { "foobar", ":bar", "foo:", "" })
 	public void testInvalidInput(String input) {
 		assertThatThrownBy(() -> QueryConstraint.parse(input)).isInstanceOf(IllegalArgumentException.class);
 	}

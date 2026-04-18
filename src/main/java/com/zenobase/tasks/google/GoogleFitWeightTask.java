@@ -21,7 +21,13 @@ public class GoogleFitWeightTask extends GoogleFitTaskSupport {
 	}
 
 	public GoogleFitWeightTask(
-			String bucketId, Identity principal, DateTimeZone timezone, boolean metric, String tag, String marker) {
+		String bucketId,
+		Identity principal,
+		DateTimeZone timezone,
+		boolean metric,
+		String tag,
+		String marker
+	) {
 		super(TYPE, bucketId, principal, timezone, marker);
 		setSetting(METRIC, metric);
 		setSetting(TAG, tag);

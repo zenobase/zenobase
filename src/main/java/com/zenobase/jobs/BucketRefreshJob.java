@@ -34,7 +34,11 @@ public class BucketRefreshJob extends Job {
 
 	@Inject
 	public BucketRefreshJob(
-			BucketRepository buckets, UserRepository users, TaskRepository tasks, TaskRefresher refresher) {
+		BucketRepository buckets,
+		UserRepository users,
+		TaskRepository tasks,
+		TaskRefresher refresher
+	) {
 		super("refresh buckets", new LocalTime(2, 0), Period.hours(6));
 		this.buckets = buckets;
 		this.users = users;
@@ -52,13 +56,21 @@ public class BucketRefreshJob extends Job {
 			if (owner != null && hasRefreshPrivilege(owner)) {
 				try {
 					for (Task task : tasks.find(
-							new TaskQuery().bucketEqualTo(bucket.getId()), TaskQuery.orderByCreated(true), 0, 100)) {
+						new TaskQuery().bucketEqualTo(bucket.getId()),
+						TaskQuery.orderByCreated(true),
+						0,
+						100
+					)) {
 						refresher.refresh(task);
 						counter.incrementAndGet();
 					}
 				} catch (CredentialsException e) {
 					logger.warn(
-							"Couldn't refresh bucket {} for {}: {}", bucket.getId(), owner.getName(), e.getMessage());
+						"Couldn't refresh bucket {} for {}: {}",
+						bucket.getId(),
+						owner.getName(),
+						e.getMessage()
+					);
 				} catch (RuntimeException e) {
 					logger.error("Couldn't refresh bucket {} for {}", bucket.getId(), owner.getName(), e);
 				}

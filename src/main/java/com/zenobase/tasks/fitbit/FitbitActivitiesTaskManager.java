@@ -59,11 +59,16 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 				Response response = send(request, credentials);
 				JsonNode node = parseObject(response);
 				FitbitActivitiesResult result = new FitbitActivitiesResult(
-						node, task.getPrincipal(), task.includeAutodetected(), profile.getDistanceUnit());
+					node,
+					task.getPrincipal(),
+					task.includeAutodetected(),
+					profile.getDistanceUnit()
+				);
 				events.addAll(result.getEvents());
 				url = result.next();
 			} catch (InvalidStatusException e) {
-				if (e.getStatus() == 429) { // reached rate limit
+				if (e.getStatus() == 429) {
+					// reached rate limit
 					logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());
 					break;
 				}
@@ -71,15 +76,19 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 			}
 		}
 		return createCommand(
-				task, credentials, events, MoreObjects.firstNonNull(getMarker(events), task.getMarker()), token);
+			task,
+			credentials,
+			events,
+			MoreObjects.firstNonNull(getMarker(events), task.getMarker()),
+			token
+		);
 	}
 
 	private static @Nullable String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
 			Duration duration = event.getValue(Event.DURATION);
-			DateTime time =
-					Objects.requireNonNull(event.getValue(Event.TIMESTAMP)).plus(duration);
+			DateTime time = Objects.requireNonNull(event.getValue(Event.TIMESTAMP)).plus(duration);
 			if (latest == null || time.isAfter(latest)) {
 				latest = time;
 			}

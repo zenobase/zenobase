@@ -35,7 +35,6 @@ public class GanttFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testDefault() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -58,7 +57,6 @@ public class GanttFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testOrderByTerm() {
-
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
@@ -81,7 +79,6 @@ public class GanttFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testEmpty() {
-
 		addFacet("id:%s,type:%s,field:%s", FACET_ID, GanttFacet.TYPE, Event.TAG);
 
 		ObjectNode result = execute();

@@ -36,7 +36,6 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 
 	@Test
 	public void testCRUD() {
-
 		Bucket bucket = new Bucket();
 		new BucketRepository(getManager()).store(bucket);
 
@@ -58,14 +57,12 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		assertThat(repository.size(bucket.getId())).as("bucket size").isEqualTo(1L);
 		assertThat(repository.find(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
 		NodeAssert.assertThat(repository.find(bucket.getId(), new EventSearchBuilder().buildSearch()))
-				.path(Search.TOTAL.getName())
-				.isEqualTo(1);
+			.path(Search.TOTAL.getName())
+			.isEqualTo(1);
 		List<Event> all = new ArrayList<>();
 		repository.findAll(bucket.getId(), all::add);
 		assertThat(all).as("event count in bucket").hasSize(1);
-		assertThat(repository.terms(bucket.getId(), Event.TAG.getName()))
-				.as("tags")
-				.containsOnly("test", "demo");
+		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").containsOnly("test", "demo");
 
 		// update event
 		Event before = event.copy();
@@ -74,8 +71,8 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		repository.refresh(bucket.getId());
 		assertThat(repository.find(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
 		assertThat(repository.terms(bucket.getId(), Event.TAG.getName()))
-				.as("tags")
-				.containsOnly("test", "demo", "updated");
+			.as("tags")
+			.containsOnly("test", "demo", "updated");
 
 		// delete event
 		repository.delete(bucket.getId(), event.getId());
@@ -84,14 +81,11 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		assertThat(repository.size(me)).as("event count for user").isZero();
 		assertThat(repository.size(bucket.getId())).as("bucket size").isZero();
 		assertThat(repository.find(bucket.getId(), event.getId())).as("event").isNull();
-		assertThat(repository.terms(bucket.getId(), Event.TAG.getName()))
-				.as("tags")
-				.isEmpty();
+		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").isEmpty();
 	}
 
 	@Test
 	public void testBulk() {
-
 		Bucket bucket = new Bucket();
 		new BucketRepository(getManager()).store(bucket);
 
@@ -118,7 +112,6 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 
 	@Test
 	public void testBulkWithNoValidEvents() {
-
 		Bucket bucket = new Bucket();
 		new BucketRepository(getManager()).store(bucket);
 
@@ -128,15 +121,14 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 
 		// add event
 		assertThatThrownBy(() -> repository.add(bucket.getId(), Lists.newArrayList(e1)))
-				.isInstanceOf(RuntimeException.class)
-				.hasMessageContaining("is not allowed");
+			.isInstanceOf(RuntimeException.class)
+			.hasMessageContaining("is not allowed");
 		repository.refresh(bucket.getId());
 		assertThat(repository.size()).as("repository size").isEqualTo(0L);
 	}
 
 	@Test
 	public void testBulkWithInvalidEvent() {
-
 		Bucket bucket = new Bucket();
 		new BucketRepository(getManager()).store(bucket);
 
@@ -148,15 +140,14 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 
 		// add events
 		assertThatThrownBy(() -> repository.add(bucket.getId(), Lists.newArrayList(e1, e2)))
-				.isInstanceOf(RuntimeException.class)
-				.hasMessageContaining("is not allowed");
+			.isInstanceOf(RuntimeException.class)
+			.hasMessageContaining("is not allowed");
 		repository.refresh(bucket.getId());
 		assertThat(repository.size()).as("repository size").isEqualTo(0L);
 	}
 
 	@Test
 	public void testOptimisticLockFailure() {
-
 		Bucket bucket = new Bucket();
 		new BucketRepository(getManager()).store(bucket);
 
@@ -174,13 +165,11 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		repository.update(bucket.getId(), current, current);
 
 		stale.addValue(Event.TAG, "conflict");
-		assertThatThrownBy(() -> repository.update(bucket.getId(), stale, stale))
-				.hasMessageContaining("409 Conflict");
+		assertThatThrownBy(() -> repository.update(bucket.getId(), stale, stale)).hasMessageContaining("409 Conflict");
 	}
 
 	@Test
 	public void testFields() {
-
 		Bucket bucket = new Bucket();
 		new BucketRepository(getManager()).store(bucket);
 
@@ -193,7 +182,9 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		e1.addValue(Event.TAG, "a");
 		e1.setValue(Event.DISTANCE, Measures.valueOf("5 km"));
 		e1.setValue(
-				Event.LOCATION, new Location(new java.math.BigDecimal("37.77"), new java.math.BigDecimal("-122.42")));
+			Event.LOCATION,
+			new Location(new java.math.BigDecimal("37.77"), new java.math.BigDecimal("-122.42"))
+		);
 		e1.setValue(Event.SOURCE, new Resource("Test", "https://example.com/test"));
 
 		Event e2 = new Event();
@@ -213,20 +204,20 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		// counts: 3 for ID/AUTHOR/TIMESTAMP/TAG, 2 for DISTANCE, 1 for SOURCE/LOCATION;
 		// ties broken by Event.FIELDS declaration order
 		assertThat(repository.fields(bucket.getId()))
-				.as("fields by frequency")
-				.containsExactly(
-						Event.ID,
-						Event.AUTHOR,
-						Event.TIMESTAMP,
-						Event.TAG,
-						Event.DISTANCE,
-						Event.SOURCE,
-						Event.LOCATION);
+			.as("fields by frequency")
+			.containsExactly(
+				Event.ID,
+				Event.AUTHOR,
+				Event.TIMESTAMP,
+				Event.TAG,
+				Event.DISTANCE,
+				Event.SOURCE,
+				Event.LOCATION
+			);
 	}
 
 	@Test
 	public void testTimestamp() {
-
 		Bucket bucket = new Bucket();
 		new BucketRepository(getManager()).store(bucket);
 		Event event = new Event();

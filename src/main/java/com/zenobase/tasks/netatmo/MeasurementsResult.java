@@ -53,8 +53,7 @@ class MeasurementsResult {
 	public Event getEvent(Map.Entry<String, JsonNode> entry) {
 		ArrayNode node = (ArrayNode) entry.getValue();
 		var event = new Event();
-		DateTime timestamp = new DateTime(
-				Long.parseLong(entry.getKey()) * 1000, device.getUpdated().getZone());
+		DateTime timestamp = new DateTime(Long.parseLong(entry.getKey()) * 1000, device.getUpdated().getZone());
 		if (hourly) {
 			event.setValue(Event.TIMESTAMP, timestamp.withMinuteOfHour(0));
 			event.setValue(Event.DURATION, Duration.standardHours(1));
@@ -105,19 +104,23 @@ class MeasurementsResult {
 	 * @see <a href="http://www.engineeringtoolbox.com/co2-comfort-level-d_1024.html">CO2 Comfort Levels</a>
 	 */
 	private static int getRating(int value) {
-		if (value < 450) { // outdoor
+		if (value < 450) {
+			// outdoor
 			return 100;
 		}
-		if (value < 600) { // ok
+		if (value < 600) {
+			// ok
 			return 80;
 		}
 		if (value < 800) {
 			return 60;
 		}
-		if (value < 1000) { // drowsy
+		if (value < 1000) {
+			// drowsy
 			return 40;
 		}
-		if (value < 2500) { // hazard
+		if (value < 2500) {
+			// hazard
 			return 20;
 		}
 		return 0;

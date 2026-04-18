@@ -15,11 +15,12 @@ public class WithingsSleepResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 		WithingsSleepResult result = new WithingsSleepResult(
-				readObject("WithingsSleepResultTest.json"),
-				TESTER,
-				"sleep",
-				true,
-				DateTimeZone.forID("America/Los_Angeles"));
+			readObject("WithingsSleepResultTest.json"),
+			TESTER,
+			"sleep",
+			true,
+			DateTimeZone.forID("America/Los_Angeles")
+		);
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		assertThat(result.getEvents()).as("events").hasSize(6);
 		WithingsSleepResult merged = result.merge();

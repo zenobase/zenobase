@@ -23,7 +23,12 @@ public class FitbitBurnIntradayResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 		FitbitBurnIntradayResult result = new FitbitBurnIntradayResult(
-				readObject("FitbitBurnIntradayResultTest.json"), TAG, TESTER, DATE, TIMEZONE);
+			readObject("FitbitBurnIntradayResultTest.json"),
+			TAG,
+			TESTER,
+			DATE,
+			TIMEZONE
+		);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(24);
 		Event expected = new Event(events.get(0).getId());

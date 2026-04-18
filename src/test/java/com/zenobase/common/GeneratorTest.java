@@ -17,10 +17,7 @@ public class GeneratorTest {
 			freq.add(id.charAt(0));
 		}
 		for (Multiset.Entry<Character> entry : freq.entrySet()) {
-			assertThat(entry.getCount())
-					.as("frequency of " + entry.getElement())
-					.isGreaterThan(200)
-					.isLessThan(400);
+			assertThat(entry.getCount()).as("frequency of " + entry.getElement()).isGreaterThan(200).isLessThan(400);
 		}
 	}
 }

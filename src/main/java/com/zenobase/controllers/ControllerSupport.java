@@ -107,8 +107,7 @@ public abstract class ControllerSupport implements CustomHeaders {
 	public static void sendError(ServerResponse res, Status status, String message) {
 		res.status(status);
 		res.header(HeaderNames.CONTENT_TYPE, "application/json");
-		res.send(Nodes.newObject("message", sanitize(MoreObjects.firstNonNull(message, "?")))
-				.toString());
+		res.send(Nodes.newObject("message", sanitize(MoreObjects.firstNonNull(message, "?"))).toString());
 	}
 
 	private static String sanitize(String message) {

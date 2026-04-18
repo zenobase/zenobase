@@ -190,8 +190,7 @@ public abstract class Field<T> {
 	}
 
 	protected final void copyConstraintBuilders(Field<?> target) {
-		for (Map.Entry<String, ConstraintBuilder> entry :
-				getConstraintBuilders().entries()) {
+		for (Map.Entry<String, ConstraintBuilder> entry : getConstraintBuilders().entries()) {
 			target.addConstraintBuilder(entry.getKey(), entry.getValue());
 		}
 	}

@@ -31,8 +31,7 @@ public class OuraStepsTaskManager extends OuraTaskManagerSupport {
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = DateTime.parse(settings.path("marker").textValue()).toString();
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "steps");
-		DateTimeZone zone = DateTimeZone.forID(
-				MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		DateTimeZone zone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		return new OuraStepsTask(bucketId, principal, marker, tag, zone);
 	}
 
@@ -55,7 +54,8 @@ public class OuraStepsTaskManager extends OuraTaskManagerSupport {
 		Response response = send(request, credentials);
 		String tag = MoreObjects.firstNonNull(task.getTag(), "steps");
 		events.addAll(
-				new OuraStepsResult(parseObject(response), task.getPrincipal(), tag, task.getTimezone()).getEvents());
+			new OuraStepsResult(parseObject(response), task.getPrincipal(), tag, task.getTimezone()).getEvents()
+		);
 		return createCommand(task, credentials, events, token);
 	}
 }

@@ -37,7 +37,6 @@ public class ListFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testDefault() {
-
 		addEvent(e2);
 		addEvent(e1);
 		addEvent(e3);
@@ -53,7 +52,6 @@ public class ListFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testFiltered() {
-
 		addEvent(e2);
 		addEvent(e1);
 		addEvent(e3);
@@ -67,7 +65,6 @@ public class ListFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testEmpty() {
-
 		addFacet("id:%s,type:%s", FACET_ID, ListFacet.TYPE);
 
 		ObjectNode result = execute();
@@ -77,7 +74,6 @@ public class ListFacetTest extends FacetTestSupport {
 
 	@Test
 	public void testOrderByTag() {
-
 		addEvent(e2);
 		addEvent(e1);
 		addEvent(e3);

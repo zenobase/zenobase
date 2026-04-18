@@ -1,22 +1,22 @@
 {
-    "dataSource": [
-        {
-            "dataStreamId": "derived:com.google.step_count.delta",
-            "dataStreamName": "estimated_steps",
-            "type": "derived",
-            "dataType": {
-                "name": "com.google.step_count.delta",
-                "field": [
-                    {
-                        "name": "steps",
-                        "format": "integer"
-                    }
-                ]
-            },
-            "application": {
-                "packageName": "com.google.android.gms",
-                "version": ""
-            }
-        }
-    ]
+	"dataSource": [
+		{
+			"dataStreamId": "derived:com.google.step_count.delta",
+			"dataStreamName": "estimated_steps",
+			"type": "derived",
+			"dataType": {
+				"name": "com.google.step_count.delta",
+				"field": [
+					{
+						"name": "steps",
+						"format": "integer"
+					}
+				]
+			},
+			"application": {
+				"packageName": "com.google.android.gms",
+				"version": ""
+			}
+		}
+	]
 }

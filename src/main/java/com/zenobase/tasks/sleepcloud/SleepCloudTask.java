@@ -33,9 +33,7 @@ public class SleepCloudTask extends Task {
 
 	public @Nullable DateTime getFrom() {
 		String marker = getMarker();
-		return marker != null
-				? DateTime.parse(marker, ISODateTimeFormat.dateTime().withOffsetParsed())
-				: null;
+		return marker != null ? DateTime.parse(marker, ISODateTimeFormat.dateTime().withOffsetParsed()) : null;
 	}
 
 	public boolean useRanges() {

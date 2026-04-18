@@ -14,11 +14,11 @@ public class LocationTest {
 		Location l3 = new Location("47", "-122");
 		Location l4 = new Location("48.8742", "2.3470");
 		new EqualsTester()
-				.addEqualityGroup(l1, new Location(l1.latitude(), l1.longitude()))
-				.addEqualityGroup(l2)
-				.addEqualityGroup(l3)
-				.addEqualityGroup(l4)
-				.testEquals();
+			.addEqualityGroup(l1, new Location(l1.latitude(), l1.longitude()))
+			.addEqualityGroup(l2)
+			.addEqualityGroup(l3)
+			.addEqualityGroup(l4)
+			.testEquals();
 	}
 
 	@Test

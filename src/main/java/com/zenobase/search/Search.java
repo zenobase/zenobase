@@ -60,11 +60,13 @@ public class Search {
 		if (must.isEmpty() && mustNot.isEmpty()) {
 			return Query.of(q -> q.matchAll(m -> m));
 		}
-		return Query.of(q -> q.bool(b -> {
-			if (!must.isEmpty()) b.filter(must);
-			if (!mustNot.isEmpty()) b.mustNot(mustNot);
-			return b;
-		}));
+		return Query.of(q ->
+			q.bool(b -> {
+				if (!must.isEmpty()) b.filter(must);
+				if (!mustNot.isEmpty()) b.mustNot(mustNot);
+				return b;
+			})
+		);
 	}
 
 	private ObjectNode toJson(SearchResponse<ObjectNode> response) {
@@ -83,10 +85,12 @@ public class Search {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof Search s
-				&& facets.toString().equals(s.facets.toString())
-				&& toJsonStrings(must).equals(toJsonStrings(s.must))
-				&& toJsonStrings(mustNot).equals(toJsonStrings(s.mustNot));
+		return (
+			that instanceof Search s &&
+			facets.toString().equals(s.facets.toString()) &&
+			toJsonStrings(must).equals(toJsonStrings(s.must)) &&
+			toJsonStrings(mustNot).equals(toJsonStrings(s.mustNot))
+		);
 	}
 
 	@Override
