@@ -12,7 +12,6 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
-import org.joda.time.IllegalInstantException;
 import org.joda.time.LocalDateTime;
 import org.jspecify.annotations.Nullable;
 
@@ -39,9 +38,7 @@ public class ProductivityResult {
 	public List<Event> getEvents() {
 		List<Event> events = new ArrayList<>();
 		for (JsonNode hourNode : node.path("rows")) {
-			try {
-				events.add(getEvent(hourNode));
-			} catch (IllegalInstantException e) {}
+			events.add(getEvent(hourNode));
 		}
 		return events;
 	}
