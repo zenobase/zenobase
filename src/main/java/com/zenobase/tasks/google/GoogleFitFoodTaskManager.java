@@ -52,14 +52,12 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 		List<Event> events = new ArrayList<>();
 		for (DataStream stream : filter(streams.values(), "com.google.nutrition")) {
 			getDataPoints(task, credentials, stream, point -> {
-				Event event = newEvent(point, task, streams);
-				Map<String, Object> values = point.getValue(0, Map.class);
-				if (values != null) {
-					BigDecimal value = (BigDecimal) values.get("calories");
-					if (value != null) {
-						event.setValue(Event.ENERGY, Measures.valueOf(value, Units.KCAL));
-						events.add(event);
-					}
+				if (
+					point.getValue(0) instanceof Map<?, ?> values && values.get("calories") instanceof BigDecimal value
+				) {
+					Event event = newEvent(point, task, streams);
+					event.setValue(Event.ENERGY, Measures.valueOf(value, Units.KCAL));
+					events.add(event);
 				}
 			});
 		}
