@@ -304,6 +304,7 @@
                             -Xep:EqualsIncompatibleType:ERROR
                             -Xep:ExpensiveLenientFormatString:ERROR
                             -Xep:FormatStringShouldUsePlaceholders:ERROR
+                            -Xep:FutureReturnValueIgnored:ERROR
                             -Xep:ImmutableEnumChecker:ERROR
                             -Xep:InjectOnConstructorOfAbstractClass:ERROR
                             -Xep:JodaConstructors:ERROR

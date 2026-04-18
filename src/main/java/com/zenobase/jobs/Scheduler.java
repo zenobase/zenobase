@@ -7,11 +7,7 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-import org.joda.time.LocalTime;
-import org.joda.time.Period;
+import org.joda.time.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +49,7 @@ public class Scheduler {
 		});
 	}
 
+	@SuppressWarnings("FutureReturnValueIgnored")
 	private void schedule(LocalTime begin, Period repeat, Runnable runnable) {
 		Duration initialDelay = nextExecution(DateTime.now(DateTimeZone.UTC), begin, repeat);
 		executor.scheduleAtFixedRate(
