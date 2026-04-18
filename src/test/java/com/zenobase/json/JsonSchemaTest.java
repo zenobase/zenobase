@@ -3,6 +3,7 @@ package com.zenobase.json;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,81 +13,74 @@ public class JsonSchemaTest {
 
 	@Test
 	public void testEmpty() {
-		JsonSchema schema = JsonSchema.forFields(List.of());
+		JsonSchema schema = JsonSchema.forFields(List.of(), Event.READ_ONLY_FIELDS);
 		assertThat(schema.type()).isEqualTo("object");
 		assertThat(schema.properties()).isEmpty();
 	}
 
 	@Test
-	public void testScalarFields() {
-		JsonSchema schema = JsonSchema.forFields(List.of(
-				Event.TAG, Event.NOTE, Event.COUNT, Event.CURRENCY, Event.RATING, Event.PERCENTAGE, Event.DURATION));
-
-		assertThat(schema.properties().get("tag")).isEqualTo(JsonSchema.string());
-		assertThat(schema.properties().get("note")).isEqualTo(JsonSchema.string());
-		assertThat(schema.properties().get("count")).isEqualTo(JsonSchema.integer());
-		assertThat(schema.properties().get("currency")).isEqualTo(JsonSchema.number());
-		assertThat(schema.properties().get("rating")).isEqualTo(JsonSchema.integer());
-		assertThat(schema.properties().get("percentage")).isEqualTo(JsonSchema.number());
-		assertThat(schema.properties().get("duration")).isEqualTo(JsonSchema.integer());
+	public void testReadOnly() {
+		JsonSchema schema = JsonSchema.forFields(List.of(Event.ID, Event.AUTHOR), Event.READ_ONLY_FIELDS);
+		assertThat(schema.properties().get("@id").type()).isEqualTo("string");
+		assertThat(schema.properties().get("@id").readOnly()).isTrue();
+		assertThat(schema.properties().get("author").readOnly()).isTrue();
 	}
 
 	@Test
-	public void testDateTimeField() {
-		JsonSchema schema = JsonSchema.forFields(List.of(Event.TIMESTAMP));
-		assertThat(schema.properties().get("timestamp")).isEqualTo(JsonSchema.string("date-time"));
+	public void testOneOf() {
+		JsonSchema schema = JsonSchema.forFields(List.of(Event.TAG), Event.READ_ONLY_FIELDS);
+		JsonSchema tag = schema.properties().get("tag");
+		assertThat(tag.type()).isNull();
+		assertThat(tag.readOnly()).isNull();
+		assertThat(tag.oneOf()).containsExactly(JsonSchema.string(), JsonSchema.array(JsonSchema.string()));
 	}
 
 	@Test
-	public void testMeasureField() {
-		JsonSchema schema = JsonSchema.forFields(List.of(Event.DISTANCE));
-		JsonSchema distance = schema.properties().get("distance");
-		assertThat(distance.type()).isEqualTo("object");
-		assertThat(distance.properties())
-				.containsExactly(
-						java.util.Map.entry("@value", JsonSchema.number()),
-						java.util.Map.entry("unit", JsonSchema.string()));
-	}
-
-	@Test
-	public void testResourceField() {
-		JsonSchema schema = JsonSchema.forFields(List.of(Event.SOURCE));
-		JsonSchema source = schema.properties().get("source");
-		assertThat(source.type()).isEqualTo("object");
-		assertThat(source.properties())
-				.containsExactly(
-						java.util.Map.entry("title", JsonSchema.string()),
-						java.util.Map.entry("url", JsonSchema.string("uri")));
-	}
-
-	@Test
-	public void testLocationField() {
-		JsonSchema schema = JsonSchema.forFields(List.of(Event.LOCATION));
-		JsonSchema location = schema.properties().get("location");
-		assertThat(location.type()).isEqualTo("object");
-		assertThat(location.properties())
-				.containsExactly(
-						java.util.Map.entry("lat", JsonSchema.number()),
-						java.util.Map.entry("lon", JsonSchema.number()));
-	}
-
-	@Test
-	public void testToJsonOmitsNulls() {
-		String json = JsonSchema.string().toJson().toString();
-		assertThat(json).isEqualTo("{\"type\":\"string\"}");
-	}
-
-	@Test
-	public void testToJsonPreservesPropertyOrder() {
-		String json = JsonSchema.forFields(List.of(Event.TAG, Event.COUNT, Event.DISTANCE))
+	public void testToString() {
+		String json = JsonSchema.forFields(List.of(Event.ID, Event.TAG), Event.READ_ONLY_FIELDS)
 				.toJson()
 				.toString();
 		assertThat(json).isEqualTo("""
 						{"type":"object","properties":{\
-						"tag":{"type":"string"},\
-						"count":{"type":"integer"},\
-						"distance":{"type":"object","properties":{\
-						"@value":{"type":"number"},\
-						"unit":{"type":"string"}}}}}""");
+						"@id":{"type":"string","readOnly":true},\
+						"tag":{"oneOf":[\
+						{"type":"string"},\
+						{"type":"array","items":{"type":"string"}}]}}}""");
+	}
+
+	@Test
+	public void testScalarFields() {
+		assertThat(Event.TAG.toJsonSchema()).isEqualTo(JsonSchema.string());
+		assertThat(Event.NOTE.toJsonSchema()).isEqualTo(JsonSchema.string());
+		assertThat(Event.COUNT.toJsonSchema()).isEqualTo(JsonSchema.integer());
+		assertThat(Event.CURRENCY.toJsonSchema()).isEqualTo(JsonSchema.number());
+		assertThat(Event.RATING.toJsonSchema()).isEqualTo(JsonSchema.integer());
+		assertThat(Event.PERCENTAGE.toJsonSchema()).isEqualTo(JsonSchema.number());
+		assertThat(Event.DURATION.toJsonSchema()).isEqualTo(JsonSchema.integer());
+		assertThat(Event.TIMESTAMP.toJsonSchema()).isEqualTo(JsonSchema.string("date-time"));
+	}
+
+	@Test
+	public void testMeasureField() {
+		JsonSchema schema = Event.DISTANCE.toJsonSchema();
+		assertThat(schema.type()).isEqualTo("object");
+		assertThat(schema.properties())
+				.containsExactly(Map.entry("@value", JsonSchema.number()), Map.entry("unit", JsonSchema.string()));
+	}
+
+	@Test
+	public void testResourceField() {
+		JsonSchema schema = Event.SOURCE.toJsonSchema();
+		assertThat(schema.type()).isEqualTo("object");
+		assertThat(schema.properties())
+				.containsExactly(Map.entry("title", JsonSchema.string()), Map.entry("url", JsonSchema.string("uri")));
+	}
+
+	@Test
+	public void testLocationField() {
+		JsonSchema schema = Event.LOCATION.toJsonSchema();
+		assertThat(schema.type()).isEqualTo("object");
+		assertThat(schema.properties())
+				.containsExactly(Map.entry("lat", JsonSchema.number()), Map.entry("lon", JsonSchema.number()));
 	}
 }

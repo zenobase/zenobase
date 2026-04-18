@@ -167,7 +167,7 @@ public abstract class Field<T> {
 			case "date" -> JsonSchema.string("date-time");
 			case "byte", "integer", "long" -> JsonSchema.integer();
 			case "float", "double" -> JsonSchema.number();
-			default -> new JsonSchema(schemaType, null, null);
+			default -> new JsonSchema(schemaType, null, null, null, null, null);
 		};
 	}
 

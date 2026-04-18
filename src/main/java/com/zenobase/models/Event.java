@@ -74,6 +74,8 @@ public class Event extends DomainNode {
 	public static final DecimalField CURRENCY = new DecimalField("currency");
 	public static final TextField NOTE = new TextField("note");
 
+	public static final ImmutableSet<Field<?>> READ_ONLY_FIELDS = ImmutableSet.of(ID, AUTHOR);
+
 	public static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(
 			ID,
 			BUCKET,

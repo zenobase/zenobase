@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 
 import com.zenobase.json.JsonSchema;
 import com.zenobase.models.Bucket;
+import com.zenobase.models.Event;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.BucketRepository;
@@ -39,6 +40,9 @@ public class BucketSchemaController extends ControllerSupport {
 			}
 			return;
 		}
-		sendOk(res, JsonSchema.forFields(events.fields(bucketId)).toJson());
+		sendOk(
+				res,
+				JsonSchema.forFields(events.fields(bucketId), Event.READ_ONLY_FIELDS)
+						.toJson());
 	}
 }
