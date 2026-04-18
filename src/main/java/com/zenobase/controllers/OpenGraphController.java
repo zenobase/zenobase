@@ -27,7 +27,7 @@ public class OpenGraphController extends ControllerSupport {
 		String url = req.query().first("url").orElse(null);
 		if (url == null || !url.startsWith("http")) {
 			if (url != null) {
-				get(res, "http://" + url);
+				get(res, "https://" + url);
 				return;
 			}
 			sendBadRequest(res, "URL is required");

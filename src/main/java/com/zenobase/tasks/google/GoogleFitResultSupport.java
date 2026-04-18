@@ -34,7 +34,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.fitnow.loseit", new Resource("Lose It!", "https://www.loseit.com/"))
 		.put("com.google.android.maps.mytracks", new Resource("MyTracks", "https://google.com/"))
 		.put("com.getsomeheadspace.android", new Resource("Headspace", "https://www.headspace.com/"))
-		.put("com.iforpowell.android.ipbike", new Resource("IpBike", "http://www.iforpowell.com/cms/"))
+		.put("com.iforpowell.android.ipbike", new Resource("IpBike", "https://www.iforpowell.com/cms/"))
 		.put("com.mapmyfitness.android2", new Resource("MapMyFitness", "https://www.mapmyfitness.com/"))
 		.put("com.mapmyhike.android2", new Resource("MapMyHike", "https://www.mapmyhike.com/"))
 		.put("com.mapmyrun.android2", new Resource("MapMyRun", "https://www.mapmyrun.com/"))
@@ -43,7 +43,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.motorola.omni", new Resource("Moto Body", "https://www.motorola.com/us/software-and-apps/moto-body"))
 		.put("com.mybasis.android.basis.peak", new Resource("Basis", "https://www.mybasis.com/"))
 		.put("com.myfitnesspal.android", new Resource("MyFitnessPal", "https://www.myfitnesspal.com/"))
-		.put("com.nike.plusgps", new Resource("Nike+", "http://nikeplus.nike.com/"))
+		.put("com.nike.plusgps", new Resource("Nike+", "https://nikeplus.nike.com/"))
 		.put("com.wsl.noom", new Resource("Noom", "https://www.noom.com/"))
 		.put(
 			"com.northpark.pushups",
@@ -61,7 +61,7 @@ abstract class GoogleFitResultSupport {
 		)
 		.put(
 			"com.ryansteckler.perfectcinch",
-			new Resource("Cinch Weight Loss and Fitness", "http://www.perfectcinch.com/")
+			new Resource("Cinch Weight Loss and Fitness", "https://www.perfectcinch.com/")
 		)
 		.put("com.sillens.shapeupclub", new Resource("Lifesum", "https://lifesum.com/"))
 		.put("com.strava", new Resource("Strava", "https://www.strava.com/"))
@@ -70,7 +70,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.vitrox.facion.gui", new Resource("What's My Heart Rate", "https://facion.net/wmhr"))
 		.put("com.withings", new Resource("Withings", "https://www.withings.com/us/"))
 		.put("com.withings.wiscale2", new Resource("Withings", "https://www.withings.com/us/"))
-		.put("com.xiaomi.hm.health", new Resource("Mi Fit", "http://www.mi.com/"))
+		.put("com.xiaomi.hm.health", new Resource("Mi Fit", "https://www.mi.com/"))
 		.put("fi.polar.beat", new Resource("Polar Beat", "https://www.polar.com/beat/"))
 		.put("fi.polar.polarflow", new Resource("Polar Flow", "https://flow.polar.com/"))
 		.put("si.modula.android.instantheartrate", new Resource("Azumio", "https://www.azumio.com/"))

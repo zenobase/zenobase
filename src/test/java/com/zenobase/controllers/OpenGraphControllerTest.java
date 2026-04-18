@@ -38,7 +38,7 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 	public void test() {
 		try (Http1ClientResponse result = call("ogp.me")) {
 			NodeAssert node = assertThat(result).hasStatus(200).asObjectNode();
-			node.path("url").isEqualTo("http://ogp.me");
+			node.path("url").isEqualTo("https://ogp.me");
 			node.path("title").isEqualTo("Open Graph protocol");
 		}
 	}
