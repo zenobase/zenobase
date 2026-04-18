@@ -10,9 +10,9 @@
   sudo ln -s /usr/local/sessionmanagerplugin/bin/session-manager-plugin /usr/local/bin/session-manager-plugin
   rm session-manager-plugin.pkg
   ```
-- GitHub repo (zenobase/zenobase)
-- [Pulumi Cloud](https://app.pulumi.com/) account
-- Node.js 18+
+- Pulumi (`brew install pulumi`) with a Pulumi Cloud account
+- Node.js (see `../.nvmrc`) with pnpm via Corepack (`corepack enable`)
+
 
 ## AWS: GitHub OIDC Identity Provider
 
@@ -43,36 +43,25 @@ aws acm request-certificate \
   --region us-east-1
 ```
 
-Complete DNS validation by adding the CNAME records shown in the output. Note the certificate ARN for Pulumi config.
+Complete DNS validation by adding the CNAME/ALIAS records shown in the output. Note the certificate ARN for Pulumi config.
 
-## AWS: EC2 Key Pair
-
-Check for an existing key pair:
-
-```sh
-aws ec2 describe-key-pairs --key-names zeno --region us-east-1
-```
-
-If none exists (or we no longer have access to the private key file), create one:
-
-```sh
-aws ec2 create-key-pair \
-  --key-name zeno \
-  --query 'KeyMaterial' \
-  --output text \
-  --region us-east-1 > zeno.pem
-chmod 400 zeno.pem
-```
 
 ## Pulumi: Initial Setup
 
 ```sh
 cd infra
-npm install
+pnpm install
 pulumi stack init prod
 ```
 
-Config values are in `Pulumi.prod.yaml`.
+Set the certificate ARN (written to `Pulumi.prod.yaml`):
+
+```sh
+pulumi config set certificateArn <arn>
+```
+
+Other config values are in `Pulumi.prod.yaml`.
+
 
 ## AWS: Secrets Manager
 
@@ -87,6 +76,7 @@ aws secretsmanager create-secret \
 
 The ECS task retrieves this secret on startup and writes it to `/etc/app/prod.yaml`.
 
+
 ## Bootstrap
 
 1. Run `pulumi up` locally to create all infrastructure (including the GitHub Actions IAM role).
@@ -94,7 +84,7 @@ The ECS task retrieves this secret on startup and writes it to `/etc/app/prod.ya
    ```sh
    gh variable set AWS_ROLE_ARN --body "$(pulumi stack output ghActionsRoleArn)"
    ```
-3. Create a DNS CNAME record pointing `zenobase.com` to the ALB DNS name (`pulumi stack output albDnsName`).
-4. On the first run the instance will be unhealthy because there are no images in ECR yet.
+3. Create a DNS ALIAS record pointing `zenobase.com` to the ALB DNS name (`pulumi stack output albDnsName`).
+4. On the first run the service will be unhealthy because there are no images in ECR yet.
 5. Push to `main` to trigger the CI workflow (tests, builds, and pushes images to ECR).
-6. Deploy using the procedure in the root README.
+6. Deploy using the procedure in [RUNBOOK.md](../RUNBOOK.md).
