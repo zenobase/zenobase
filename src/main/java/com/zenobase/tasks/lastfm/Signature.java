@@ -17,6 +17,7 @@ public class Signature {
 		this.secret = secret;
 	}
 
+	@SuppressWarnings("deprecation")
 	public String sign(Map<String, String> params) {
 		String hash = Hashing.md5().hashString(toString(params) + secret, StandardCharsets.UTF_8).toString();
 		Preconditions.checkState(hash.length() == 32, "Expected 32 chars in hash but got: %s", hash);

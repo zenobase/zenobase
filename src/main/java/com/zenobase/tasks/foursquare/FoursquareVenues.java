@@ -9,7 +9,7 @@ import com.google.common.util.concurrent.RateLimiter;
 import com.zenobase.json.Nodes;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
@@ -25,7 +25,7 @@ public class FoursquareVenues {
 
 	private final LoadingCache<String, FoursquareVenue> cache = CacheBuilder.newBuilder()
 		.maximumSize(1000L)
-		.expireAfterAccess(5, TimeUnit.MINUTES)
+		.expireAfterAccess(Duration.ofMinutes(5))
 		.build(
 			new CacheLoader<>() {
 				@Override
