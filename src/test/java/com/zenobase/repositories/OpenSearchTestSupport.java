@@ -4,15 +4,13 @@ import static org.mockito.Mockito.*;
 
 import com.zenobase.common.Callback;
 import com.zenobase.services.ClientFactory;
+import com.zenobase.services.OpenSearchClientFactory;
 import com.zenobase.testing.Integration;
 import java.io.IOException;
 import java.time.Duration;
-import org.apache.hc.core5.http.HttpHost;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
@@ -33,10 +31,7 @@ public abstract class OpenSearchTestSupport {
 			.waitingFor(Wait.forHttp("/_cluster/health").forStatusCode(200).withStartupTimeout(Duration.ofMinutes(2)));
 		container.start();
 		String host = "http://" + container.getHost() + ":" + container.getMappedPort(9200);
-		HttpHost httpHost = HttpHost.create(java.net.URI.create(host));
-		sharedClient = new OpenSearchClient(
-			ApacheHttpClient5TransportBuilder.builder(httpHost).setMapper(new JacksonJsonpMapper()).build()
-		);
+		sharedClient = OpenSearchClientFactory.createClient(host, "us-east-1");
 	}
 
 	private IndexManager manager;
