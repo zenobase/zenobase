@@ -1,6 +1,7 @@
 package com.zenobase.scripts;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -61,9 +62,9 @@ public class BulkMail implements Callable<Integer> {
 			.stream()
 			.filter(line -> !line.isBlank())
 			.map(line -> {
-				String[] fields = line.split("\t");
-				Preconditions.checkArgument(fields.length == 2, "Cannot parse line: %s", line);
-				return new Recipient(fields[0], fields[1]);
+				List<String> fields = Splitter.on('\t').splitToList(line);
+				Preconditions.checkArgument(fields.size() == 2, "Cannot parse line: %s", line);
+				return new Recipient(fields.get(0), fields.get(1));
 			});
 	}
 

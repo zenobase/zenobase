@@ -35,10 +35,10 @@ public class FilterBuilderSupport {
 	}
 
 	public FilterBuilderSupport addConstraint(String expression) {
-		String[] tokens = expression.split(":", 2);
-		Preconditions.checkArgument(tokens.length == 2, "Can't parse constraint: %s", expression);
-		String field = tokens[0];
-		String[] values = tokens[1].split(" OR ");
+		List<String> tokens = Splitter.on(':').limit(2).splitToList(expression);
+		Preconditions.checkArgument(tokens.size() == 2, "Can't parse constraint: %s", expression);
+		String field = tokens.get(0);
+		Iterable<String> values = Splitter.on(" OR ").split(tokens.get(1));
 		boolean negated = false;
 		if (field.startsWith("-")) {
 			negated = true;

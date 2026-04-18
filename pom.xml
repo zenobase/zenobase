@@ -293,7 +293,6 @@
                         <arg>
                             -Xplugin:ErrorProne
                             -XepExcludedPaths:.*/src/test/.*
-                            -XepDisableAllWarnings
                             -Xep:BigDecimalEquals:ERROR
                             -Xep:BoxedPrimitiveEquality:ERROR
                             -Xep:CanonicalDuration:ERROR
@@ -322,6 +321,7 @@
                             -Xep:RethrowReflectiveOperationExceptionAsLinkageError:ERROR
                             -Xep:ReturnValueIgnored:ERROR
                             -Xep:StringCaseLocaleUsage:ERROR
+                            -Xep:StringSplitter:ERROR
                             -Xep:UnnecessaryLambda:OFF
                             -Xep:UnnecessaryParentheses:ERROR
                             -Xep:UnusedVariable:ERROR

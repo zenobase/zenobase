@@ -1,7 +1,10 @@
 package com.zenobase.search.facets;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
 
@@ -52,13 +55,15 @@ public class FacetOptions {
 		map.put(key, value);
 	}
 
+	private static final Splitter UNESCAPED_COMMA = Splitter.on(Pattern.compile("(?<!\\\\),"));
+	private static final Splitter KEY_VALUE = Splitter.on(':').limit(2);
+
 	public static FacetOptions parse(String value) {
 		var options = new FacetOptions();
-		for (String option : value.split("(?<!\\\\),")) {
-			// unescaped commas
-			String[] tokens = option.replaceAll("\\\\,", ",").split(":", 2);
-			if (tokens.length == 2 && !isEmpty(tokens[0]) && !isEmpty(tokens[1])) {
-				options.set(tokens[0], tokens[1]);
+		for (String option : UNESCAPED_COMMA.split(value)) {
+			List<String> tokens = KEY_VALUE.splitToList(option.replaceAll("\\\\,", ","));
+			if (tokens.size() == 2 && !isEmpty(tokens.get(0)) && !isEmpty(tokens.get(1))) {
+				options.set(tokens.get(0), tokens.get(1));
 			}
 		}
 		return options;

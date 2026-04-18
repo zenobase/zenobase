@@ -1,5 +1,6 @@
 package com.zenobase.commands;
 
+import com.google.common.base.Splitter;
 import com.google.common.io.Files;
 import com.google.common.io.LineProcessor;
 import com.zenobase.common.RandomElement;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import javax.measure.DecimalMeasure;
@@ -170,13 +172,17 @@ public class RandomEvent {
 
 							@Override
 							public boolean processLine(String line) {
-								String[] tokens = line.split("\t");
-								String title = String.format("%s (%d)", tokens[5], Integer.parseInt(tokens[11]));
-								String url = tokens[15];
-								Duration duration = !tokens[10].isEmpty()
-									? Duration.standardMinutes(Integer.parseInt(tokens[10]))
+								List<String> tokens = Splitter.on('\t').splitToList(line);
+								String title = String.format(
+									"%s (%d)",
+									tokens.get(5),
+									Integer.parseInt(tokens.get(11))
+								);
+								String url = tokens.get(15);
+								Duration duration = !tokens.get(10).isEmpty()
+									? Duration.standardMinutes(Integer.parseInt(tokens.get(10)))
 									: null;
-								int weight = Integer.parseInt(tokens[13]);
+								int weight = Integer.parseInt(tokens.get(13));
 								resources.add(new Movie(title, url, duration), weight);
 								return true;
 							}

@@ -2,6 +2,7 @@ package com.zenobase.tasks.strava;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
 import com.zenobase.common.Measures;
 import com.zenobase.common.Pace;
 import com.zenobase.common.Units;
@@ -65,9 +66,9 @@ class StravaActivitiesResult {
 
 	private DateTimeZone dateTimeZoneValue(JsonNode node) {
 		Preconditions.checkState(node.isTextual(), "expected a node with a time zone: <%s>", node);
-		String[] tokens = node.textValue().split(" ");
-		Preconditions.checkState(tokens.length == 2, "can't parse time zone value: <%s>", node);
-		return DateTimeZone.forID(tokens[1]);
+		List<String> tokens = Splitter.on(' ').splitToList(node.textValue());
+		Preconditions.checkState(tokens.size() == 2, "can't parse time zone value: <%s>", node);
+		return DateTimeZone.forID(tokens.get(1));
 	}
 
 	private DateTime dateTimeValue(JsonNode node, DateTimeZone zone) {
