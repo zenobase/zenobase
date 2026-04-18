@@ -303,6 +303,7 @@
                             -Xep:ExpensiveLenientFormatString:ERROR
                             -Xep:FormatStringShouldUsePlaceholders:ERROR
                             -Xep:ImmutableEnumChecker:ERROR
+                            -Xep:JodaConstructors:ERROR
                             -Xep:LoopOverCharArray:ERROR
                             -Xep:MissingOverride:ERROR
                             -Xep:NonOverridingEquals:ERROR

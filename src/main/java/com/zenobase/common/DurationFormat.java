@@ -12,7 +12,7 @@ public class DurationFormat {
 		if (isLong(s)) {
 			return Duration.millis(Long.parseLong(s));
 		}
-		var duration = new Duration(0);
+		var duration = Duration.ZERO;
 		var scanner = new Scanner(s);
 		while (scanner.hasNext()) {
 			String token = scanner.next();
