@@ -21,7 +21,7 @@ public class SpendQuotaCommand extends Command {
 
 	@Override
 	public Command reverse(Identity principal) {
-		return new SpendQuotaCommand(principal, getCost());
+		return new SpendQuotaCommand(principal, -getCost());
 	}
 
 	@Override
