@@ -306,6 +306,7 @@
                             -Xep:JodaConstructors:ERROR
                             -Xep:LoopOverCharArray:ERROR
                             -Xep:MissingOverride:ERROR
+                            -Xep:MixedMutabilityReturnType:ERROR
                             -Xep:NonOverridingEquals:ERROR
                             -Xep:NullAway:ERROR
                             -XepOpt:NullAway:OnlyNullMarked=true

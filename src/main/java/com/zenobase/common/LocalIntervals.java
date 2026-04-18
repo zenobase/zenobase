@@ -129,7 +129,7 @@ public class LocalIntervals extends DateTimeFormatSupport {
 				}
 				instants.add(start);
 			}
-			return instants;
+			return Collections.unmodifiableList(instants);
 		}
 	}
 

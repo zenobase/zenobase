@@ -1,11 +1,7 @@
 package com.zenobase.common;
 
 import com.google.common.base.Preconditions;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 import org.joda.time.DateTime;
 import org.joda.time.DurationFieldType;
 import org.joda.time.Interval;
@@ -144,7 +140,7 @@ public class OffsetIntervals extends DateTimeFormatSupport {
 				}
 				instants.add(start);
 			}
-			return instants;
+			return Collections.unmodifiableList(instants);
 		}
 	}
 
