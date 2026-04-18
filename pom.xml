@@ -300,6 +300,7 @@
                             -Xep:DefaultCharset:ERROR
                             -Xep:EffectivelyPrivate:OFF
                             -Xep:EqualsIncompatibleType:ERROR
+                            -Xep:ExpensiveLenientFormatString:ERROR
                             -Xep:FormatStringShouldUsePlaceholders:ERROR
                             -Xep:ImmutableEnumChecker:ERROR
                             -Xep:LoopOverCharArray:ERROR

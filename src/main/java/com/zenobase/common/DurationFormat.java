@@ -17,7 +17,7 @@ public class DurationFormat {
 		while (scanner.hasNext()) {
 			String token = scanner.next();
 			int i = indexOfFirstLetter(token);
-			Preconditions.checkArgument(i > 0, String.format("Can't parse <%s> in <%s>", token, s));
+			Preconditions.checkArgument(i > 0, "Can't parse <%s> in <%s>", token, s);
 			long amount = Long.parseLong(token.substring(0, i));
 			String unit = token.substring(i);
 			duration = duration.withDurationAdded(valueOf(amount, unit), 1);
