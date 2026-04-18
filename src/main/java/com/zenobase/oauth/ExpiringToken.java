@@ -1,11 +1,13 @@
 package com.zenobase.oauth;
 
+import java.io.Serial;
 import org.joda.time.DateTime;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.Token;
 
 public class ExpiringToken extends Token {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final @Nullable DateTime expires;

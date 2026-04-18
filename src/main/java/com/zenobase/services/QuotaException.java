@@ -1,7 +1,10 @@
 package com.zenobase.services;
 
+import java.io.Serial;
+
 public class QuotaException extends RuntimeException {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final int remaining;

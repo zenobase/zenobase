@@ -1,5 +1,6 @@
 package com.zenobase.tasks.lastfm;
 
+import java.io.Serial;
 import org.scribe.model.Token;
 
 /**
@@ -7,6 +8,7 @@ import org.scribe.model.Token;
  */
 public class LastFmToken extends Token {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final String scope;

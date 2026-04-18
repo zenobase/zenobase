@@ -1,5 +1,6 @@
 package com.zenobase.common;
 
+import java.io.Serial;
 import org.joda.time.Interval;
 import org.joda.time.ReadableInterval;
 import org.joda.time.base.BaseInterval;
@@ -9,6 +10,7 @@ import org.joda.time.base.BaseInterval;
  */
 public class ComparableInterval extends BaseInterval implements ReadableInterval, Comparable<ComparableInterval> {
 
+	@Serial
 	private static final long serialVersionUID = -5270005086692266606L;
 
 	public ComparableInterval(Interval interval) {

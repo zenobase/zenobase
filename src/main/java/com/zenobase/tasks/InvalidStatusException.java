@@ -1,7 +1,10 @@
 package com.zenobase.tasks;
 
+import java.io.Serial;
+
 public class InvalidStatusException extends RuntimeException {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final int status;
