@@ -2,17 +2,12 @@ package com.zenobase.tasks.mapmyfitness;
 
 import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
-import com.zenobase.commands.Command;
-import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventsCommand;
-import com.zenobase.commands.UpdateCredentialsCommand;
-import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.commands.*;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
-import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 import org.joda.time.DateTime;
@@ -28,7 +23,6 @@ abstract class MapMyFitnessTaskManagerSupport extends OAuthTaskManager {
 	private static final RateLimiter RATE_LIMITER = RateLimiter.create(10);
 	protected static final String HOST = "https://oauth2-api.mapmyapi.com";
 
-	@Inject
 	public MapMyFitnessTaskManagerSupport(String type, MapMyFitnessCredentialsManager credentialsManager) {
 		super(type, credentialsManager);
 	}
