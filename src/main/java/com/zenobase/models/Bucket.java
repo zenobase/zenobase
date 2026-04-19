@@ -168,6 +168,10 @@ public class Bucket extends DomainNode {
 		return new Bucket(toJson().deepCopy());
 	}
 
+	public Bucket sanitize() {
+		return new Bucket(SCHEMA.sanitize(toJson()));
+	}
+
 	public boolean valid() {
 		return !Strings.isNullOrEmpty(getLabel()) && !getPrincipals(Role.OWNER).isEmpty();
 	}

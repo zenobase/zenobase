@@ -110,7 +110,10 @@ public class CommandRebuild {
 	private int rebuildUsers(IndexManager indexManager) {
 		List<User> allUsers = new ArrayList<>();
 		new UserRepository(indexManager).findAll(SearchOrder.asc(User.CREATED, User.ID), allUsers::add);
-		allUsers.forEach(user -> dispatcher.dispatch(new CreateUserCommand(user.asIdentity(), user)));
+		allUsers.forEach(user -> {
+			User sanitized = user.sanitize();
+			dispatcher.dispatch(new CreateUserCommand(sanitized.asIdentity(), sanitized));
+		});
 		return allUsers.size();
 	}
 
@@ -120,9 +123,10 @@ public class CommandRebuild {
 			SearchOrder.asc(Credentials.CREATED, Credentials.ID),
 			allCredentials::add
 		);
-		allCredentials.forEach(credential ->
-			dispatcher.dispatch(new CreateCredentialsCommand(credential.getPrincipal(), credential))
-		);
+		allCredentials.forEach(credential -> {
+			Credentials sanitized = credential.sanitize();
+			dispatcher.dispatch(new CreateCredentialsCommand(sanitized.getPrincipal(), sanitized));
+		});
 		return allCredentials.size();
 	}
 
@@ -136,7 +140,7 @@ public class CommandRebuild {
 			bucket -> Objects.requireNonNull(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER))).id(),
 			bucket -> {
 				Identity owner = Objects.requireNonNull(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)));
-				dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
+				dispatcher.dispatch(new CreateBucketCommand(owner, bucket.sanitize()));
 				if (!bucket.isVirtual()) {
 					rebuildEvents(events, owner, bucket.getId(), Objects.requireNonNull(bucket.getCreated()));
 				}

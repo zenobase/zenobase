@@ -97,6 +97,10 @@ public class Credentials extends DomainNode {
 		return sanitized;
 	}
 
+	public Credentials sanitize() {
+		return new Credentials(getSchema().sanitize(toJson()));
+	}
+
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
 			.add(VERSION)

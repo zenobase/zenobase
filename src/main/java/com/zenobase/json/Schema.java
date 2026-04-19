@@ -33,6 +33,18 @@ public class Schema {
 		return fields.get(path);
 	}
 
+	public ObjectNode sanitize(ObjectNode node) {
+		ObjectNode result = Nodes.newObject();
+		node
+			.properties()
+			.forEach(entry -> {
+				if (fields.containsKey(entry.getKey())) {
+					result.set(entry.getKey(), entry.getValue());
+				}
+			});
+		return result;
+	}
+
 	public ImmutableMultimap<String, ConstraintBuilder> getConstraintBuilders() {
 		return constraintBuilders;
 	}

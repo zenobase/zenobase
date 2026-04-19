@@ -149,4 +149,8 @@ public class User extends DomainNode {
 	public User copy() {
 		return new User(toJson().deepCopy());
 	}
+
+	public User sanitize() {
+		return new User(getSchema().sanitize(toJson()));
+	}
 }
