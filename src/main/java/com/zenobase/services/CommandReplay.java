@@ -4,8 +4,6 @@ import com.google.common.base.Stopwatch;
 import com.google.common.primitives.Ints;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
-import com.zenobase.commands.CreateAuthorizationCommand;
-import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.commands.NonExistentUserException;
 import com.zenobase.common.StringBloomFilter;
 import com.zenobase.common.StringFilter;
@@ -84,11 +82,7 @@ public class CommandReplay {
 	}
 
 	private static boolean shouldDiscard(Command command, StringFilter identities) {
-		return (
-			command instanceof CreateAuthorizationCommand ||
-			command instanceof DeleteAuthorizationCommand ||
-			!identities.mightContain(command.getPrincipal().id())
-		);
+		return !identities.mightContain(command.getPrincipal().id());
 	}
 
 	private static StringFilter buildIdentitiesFilter(IndexManager indexManager) {
