@@ -17,7 +17,6 @@ public class JsonStream {
 	public JsonStream(OutputStream out) throws IOException {
 		generator = new JsonFactory().createGenerator(out);
 		generator.setCodec(MAPPER);
-		generator.useDefaultPrettyPrinter();
 		generator.writeStartObject();
 	}
 
