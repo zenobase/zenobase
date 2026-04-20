@@ -17,10 +17,6 @@ public class NetatmoTask extends Task {
 		super(node);
 	}
 
-	public NetatmoTask(String bucketId, Identity principal, boolean includeModules, boolean hourly) {
-		this(bucketId, principal, includeModules, hourly, null);
-	}
-
 	NetatmoTask(String bucketId, Identity principal, boolean includeModules, boolean hourly, @Nullable String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);

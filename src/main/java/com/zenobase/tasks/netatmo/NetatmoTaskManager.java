@@ -15,6 +15,7 @@ import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 import jakarta.inject.Inject;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +33,10 @@ import org.slf4j.LoggerFactory;
 public class NetatmoTaskManager extends OAuthTaskManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(NetatmoTaskManager.class);
+
+	private static final long WINDOW_SEC_MAX = Duration.ofDays(7).toSeconds();
+	private static final long WINDOW_SEC_HOURLY = Duration.ofDays(60).toSeconds();
+	private static final long MAX_BATCH_BYTES = 1_000_000;
 
 	@Inject
 	public NetatmoTaskManager(NetatmoCredentialsManager credentialsManager) {
@@ -77,27 +82,40 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 	}
 
 	private List<Event> getEvents(NetatmoTask task, OAuthCredentials credentials, Device device, String to) {
-		List<Event> events = new ArrayList<>();
-		MeasurementsQuery request = new MeasurementsQuery(task.getPrincipal(), credentials, device, task.isHourly());
-		while (events.size() < 10000) {
-			String from = null;
-			if (!events.isEmpty()) {
-				from = getMarker(events, task.isHourly());
-			} else if (task.getMarker() != null) {
-				from = task.getMarker();
-			} else {
-				from = formatMarker(device.getCreated());
-			}
-			if (!events.addAll(request.find(from, to).getEvents())) {
-				break;
-			}
+		String startMarker = task.getMarker() != null ? task.getMarker() : formatMarker(device.getCreated());
+		if (startMarker == null) {
+			return List.of();
 		}
-		if (events.size() >= 10000) {
-			logger.warn("Reached maximum number of measurements: {}", events.size());
+		MeasurementsQuery request = new MeasurementsQuery(task.getPrincipal(), credentials, device, task.isHourly());
+		long fromSec = Long.parseLong(startMarker);
+		long toSec = Long.parseLong(to);
+		long windowSec = task.isHourly() ? WINDOW_SEC_HOURLY : WINDOW_SEC_MAX;
+		List<Event> events = new ArrayList<>();
+		long byteCount = 0;
+		while (byteCount < MAX_BATCH_BYTES && fromSec < toSec) {
+			long windowToSec = Math.min(toSec, fromSec + windowSec);
+			List<Event> page = request.find(Long.toString(fromSec), Long.toString(windowToSec)).getEvents();
+			events.addAll(page);
+			byteCount += totalJsonSize(page);
+			fromSec =
+				page.size() < 1000
+					? windowToSec
+					: Long.parseLong(Objects.requireNonNull(getMarker(events, task.isHourly())));
+		}
+		if (byteCount >= MAX_BATCH_BYTES) {
+			logger.warn("Reached maximum batch size: {} events, {} bytes", events.size(), byteCount);
 		} else if (!events.isEmpty() && task.isHourly()) {
 			events.removeLast(); // data for the last hour can still change
 		}
 		return events;
+	}
+
+	private static long totalJsonSize(List<Event> events) {
+		long total = 0;
+		for (Event event : events) {
+			total += event.toJson().toString().length();
+		}
+		return total;
 	}
 
 	private class DevicesQuery {
