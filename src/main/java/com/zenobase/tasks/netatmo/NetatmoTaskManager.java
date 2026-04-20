@@ -36,6 +36,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 
 	private static final long WINDOW_SEC_MAX = Duration.ofDays(7).toSeconds();
 	private static final long WINDOW_SEC_HOURLY = Duration.ofDays(60).toSeconds();
+	private static final long MAX_WINDOW_SEC = Duration.ofDays(365).toSeconds();
 	private static final long MAX_BATCH_BYTES = 1_000_000;
 
 	@Inject
@@ -89,7 +90,8 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		MeasurementsQuery request = new MeasurementsQuery(task.getPrincipal(), credentials, device, task.isHourly());
 		long fromSec = Long.parseLong(startMarker);
 		long toSec = Long.parseLong(to);
-		long windowSec = task.isHourly() ? WINDOW_SEC_HOURLY : WINDOW_SEC_MAX;
+		long baseWindowSec = task.isHourly() ? WINDOW_SEC_HOURLY : WINDOW_SEC_MAX;
+		long windowSec = baseWindowSec;
 		List<Event> events = new ArrayList<>();
 		long byteCount = 0;
 		while (byteCount < MAX_BATCH_BYTES && fromSec < toSec) {
@@ -97,10 +99,16 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			List<Event> page = request.find(Long.toString(fromSec), Long.toString(windowToSec)).getEvents();
 			events.addAll(page);
 			byteCount += totalJsonSize(page);
-			fromSec =
-				page.size() < 1000
-					? windowToSec
-					: Long.parseLong(Objects.requireNonNull(getMarker(events, task.isHourly())));
+			if (page.isEmpty()) {
+				fromSec = windowToSec;
+				windowSec = Math.min(windowSec * 2, MAX_WINDOW_SEC);
+			} else {
+				windowSec = baseWindowSec;
+				fromSec =
+					page.size() < 1000
+						? windowToSec
+						: Long.parseLong(Objects.requireNonNull(getMarker(events, task.isHourly())));
+			}
 		}
 		if (byteCount >= MAX_BATCH_BYTES) {
 			logger.warn("Reached maximum batch size: {} events, {} bytes", events.size(), byteCount);
