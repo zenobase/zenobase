@@ -3,11 +3,7 @@ package com.zenobase.tasks.netatmo;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.RateLimiter;
-import com.zenobase.commands.Command;
-import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventsCommand;
-import com.zenobase.commands.UpdateCredentialsCommand;
-import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.commands.*;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Credentials;
@@ -37,7 +33,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 	private static final long WINDOW_SEC_MAX = Duration.ofDays(7).toSeconds();
 	private static final long WINDOW_SEC_HOURLY = Duration.ofDays(60).toSeconds();
 	private static final long MAX_WINDOW_SEC = Duration.ofDays(365).toSeconds();
-	private static final long MAX_BATCH_BYTES = 1_000_000;
+	private static final int MAX_BATCH_EVENTS = 15_000; // ~5 MB of event JSON
 
 	@Inject
 	public NetatmoTaskManager(NetatmoCredentialsManager credentialsManager) {
@@ -93,12 +89,10 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		long baseWindowSec = task.isHourly() ? WINDOW_SEC_HOURLY : WINDOW_SEC_MAX;
 		long windowSec = baseWindowSec;
 		List<Event> events = new ArrayList<>();
-		long byteCount = 0;
-		while (byteCount < MAX_BATCH_BYTES && fromSec < toSec) {
+		while (events.size() < MAX_BATCH_EVENTS && fromSec < toSec) {
 			long windowToSec = Math.min(toSec, fromSec + windowSec);
 			List<Event> page = request.find(Long.toString(fromSec), Long.toString(windowToSec)).getEvents();
 			events.addAll(page);
-			byteCount += totalJsonSize(page);
 			if (page.isEmpty()) {
 				fromSec = windowToSec;
 				windowSec = Math.min(windowSec * 2, MAX_WINDOW_SEC);
@@ -110,20 +104,12 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 						: Long.parseLong(Objects.requireNonNull(getMarker(events, task.isHourly())));
 			}
 		}
-		if (byteCount >= MAX_BATCH_BYTES) {
-			logger.warn("Reached maximum batch size: {} events, {} bytes", events.size(), byteCount);
+		if (events.size() >= MAX_BATCH_EVENTS) {
+			logger.warn("Reached maximum batch size: {} events", events.size());
 		} else if (!events.isEmpty() && task.isHourly()) {
 			events.removeLast(); // data for the last hour can still change
 		}
 		return events;
-	}
-
-	private static long totalJsonSize(List<Event> events) {
-		long total = 0;
-		for (Event event : events) {
-			total += event.toJson().toString().length();
-		}
-		return total;
 	}
 
 	private class DevicesQuery {
