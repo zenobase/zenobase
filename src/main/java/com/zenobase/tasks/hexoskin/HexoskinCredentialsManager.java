@@ -33,7 +33,7 @@ public class HexoskinCredentialsManager extends OAuthCredentialsManager {
 		CredentialsRepository repository,
 		@Named("hexoskin.api.key") String apiKey,
 		@Named("hexoskin.api.secret") String apiSecret,
-		@Named("oauth.hostname") String callbackUrl
+		@Named("web.hostname") String callbackUrl
 	) {
 		super(TYPE, repository, new HexoskinApi(), apiKey, apiSecret, callbackUrl);
 	}

@@ -31,7 +31,7 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 		CredentialsRepository repository,
 		@Named("withings.api.key") String apiKey,
 		@Named("withings.api.secret") String apiSecret,
-		@Named("oauth.hostname") String callbackUrl
+		@Named("web.hostname") String callbackUrl
 	) {
 		super(TYPE, repository, new WithingsApi(), apiKey, apiSecret, callbackUrl);
 	}

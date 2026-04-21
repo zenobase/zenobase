@@ -32,7 +32,7 @@ public class MapMyFitnessCredentialsManager extends OAuthCredentialsManager {
 		CredentialsRepository repository,
 		@Named("mapmyfitness.api.key") String apiKey,
 		@Named("mapmyfitness.api.secret") String apiSecret,
-		@Named("oauth.hostname") String callbackUrl
+		@Named("web.hostname") String callbackUrl
 	) {
 		super(TYPE, repository, new MapMyFitnessApi(), apiKey, apiSecret, callbackUrl);
 	}

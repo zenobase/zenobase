@@ -28,7 +28,7 @@ public class FoursquareCredentialsManager extends OAuthCredentialsManager {
 		CredentialsRepository integrations,
 		@Named("foursquare.api.key") String apiKey,
 		@Named("foursquare.api.secret") String apiSecret,
-		@Named("oauth.hostname") String callbackUrl
+		@Named("web.hostname") String callbackUrl
 	) {
 		super(TYPE, integrations, new FoursquareApi(), apiKey, apiSecret, callbackUrl);
 	}

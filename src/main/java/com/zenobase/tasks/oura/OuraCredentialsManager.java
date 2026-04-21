@@ -32,7 +32,7 @@ public class OuraCredentialsManager extends OAuthCredentialsManager {
 		CredentialsRepository integrations,
 		@Named("oura.api.key") String apiKey,
 		@Named("oura.api.secret") String apiSecret,
-		@Named("oauth.hostname") String callbackUrl
+		@Named("web.hostname") String callbackUrl
 	) {
 		super(TYPE, integrations, new OuraApi(), apiKey, apiSecret, callbackUrl);
 	}

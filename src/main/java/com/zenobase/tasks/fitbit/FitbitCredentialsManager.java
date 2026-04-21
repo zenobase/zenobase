@@ -33,7 +33,7 @@ public class FitbitCredentialsManager extends OAuthCredentialsManager {
 		CredentialsRepository repository,
 		@Named("fitbit.api.key") String apiKey,
 		@Named("fitbit.api.secret") String apiSecret,
-		@Named("oauth.hostname") String callbackUrl
+		@Named("web.hostname") String callbackUrl
 	) {
 		super(TYPE, repository, new FitbitApi(), apiKey, apiSecret, callbackUrl);
 	}

@@ -32,7 +32,7 @@ public class TraktCredentialsManager extends OAuthCredentialsManager {
 		CredentialsRepository integrations,
 		@Named("trakt.api.key") String apiKey,
 		@Named("trakt.api.secret") String apiSecret,
-		@Named("oauth.hostname") String callbackUrl
+		@Named("web.hostname") String callbackUrl
 	) {
 		super(TYPE, integrations, new TraktApi(), apiKey, apiSecret, callbackUrl);
 	}

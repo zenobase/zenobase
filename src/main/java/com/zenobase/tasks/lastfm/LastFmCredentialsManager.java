@@ -33,7 +33,7 @@ public class LastFmCredentialsManager extends OAuthCredentialsManager {
 		CredentialsRepository repository,
 		@Named("lastfm.api.key") String apiKey,
 		@Named("lastfm.api.secret") String apiSecret,
-		@Named("oauth.hostname") String callbackUrl
+		@Named("web.hostname") String callbackUrl
 	) {
 		super(TYPE, repository, new LastFmApi(), apiKey, apiSecret, callbackUrl);
 		this.apiKey = apiKey;

@@ -2,8 +2,7 @@ server:
     port: 9000
     max-payload-size: 10485760
 
-hostname: "http://localhost:9000"
-oauth:
+web:
     hostname: "https://zenobase.com"
 
 auth0:

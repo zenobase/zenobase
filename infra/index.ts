@@ -12,9 +12,7 @@ const opensearchDomain = config.get("opensearchDomain") || "zenobase";
 const opensearchReplayDomain = config.get("opensearchReplayDomain") || "";
 const opensearchRebuildDomain = config.get("opensearchRebuildDomain") || "";
 const opensearchVersion = config.get("opensearchVersion") || "OpenSearch_3.3";
-const hostname = config.get("hostname") || "http://localhost:9000";
-const apiHostname = config.get("apiHostname") || "http://localhost:9000";
-const oauthHostname = config.get("oauthHostname") || "https://zenobase.com";
+const webHostname = config.get("webHostname") || "http://localhost:5173";
 const sentryDsn = config.get("sentryDsn") || "";
 const bastionEnabled = config.get("bastionEnabled") === "true";
 const fargateCpu = config.get("fargateCpu") || "1024";
@@ -732,9 +730,7 @@ const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
                 { name: "OPENSEARCH_SNAPSHOT_ROLE_ARN", value: snapshotRoleArn },
                 { name: "OPENSEARCH_REPLAY", value: replayUrl },
                 { name: "OPENSEARCH_REBUILD", value: rebuildUrl },
-                { name: "HOSTNAME", value: hostname },
-                { name: "API_HOSTNAME", value: apiHostname },
-                { name: "OAUTH_HOSTNAME", value: oauthHostname },
+                { name: "WEB_HOSTNAME", value: webHostname },
                 { name: "SENTRY_DSN", value: sentryDsn },
                 { name: "SENTRY_RELEASE", value: imageTag },
             ],

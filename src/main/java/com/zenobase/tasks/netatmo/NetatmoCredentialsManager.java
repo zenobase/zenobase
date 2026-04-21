@@ -32,7 +32,7 @@ public class NetatmoCredentialsManager extends OAuthCredentialsManager {
 		CredentialsRepository repository,
 		@Named("netatmo.api.key") String apiKey,
 		@Named("netatmo.api.secret") String apiSecret,
-		@Named("oauth.hostname") String callbackUrl
+		@Named("web.hostname") String callbackUrl
 	) {
 		super(TYPE, repository, new NetatmoApi(), apiKey, apiSecret, callbackUrl);
 	}
