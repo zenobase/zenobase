@@ -33,6 +33,10 @@ public class Auth0TokenAuthorizer implements TokenValidator {
 		if (identity == null) {
 			return null;
 		}
-		return new Authorization(identity);
+		Authorization authorization = new Authorization(identity);
+		if (claims.sessionId() != null) {
+			authorization.setSessionId(claims.sessionId());
+		}
+		return authorization;
 	}
 }
