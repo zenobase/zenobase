@@ -71,6 +71,34 @@ public class Auth0TokenValidatorTest {
 	}
 
 	@Test
+	public void testExtractsSessionIdClaim() {
+		String token = JWT.create()
+			.withKeyId(KID)
+			.withIssuer("http://localhost:" + jwksPort + "/")
+			.withAudience(AUDIENCE)
+			.withSubject("auth0|user-123")
+			.withClaim(Auth0TokenValidator.SID_CLAIM, "sid-abc")
+			.withIssuedAt(Instant.now())
+			.withExpiresAt(Instant.now().plusSeconds(3600))
+			.sign(Algorithm.RSA256(publicKey, privateKey));
+
+		Auth0TokenValidator.Auth0Claims claims = validator.validate(token);
+
+		assertThat(claims).isNotNull();
+		assertThat(claims.sessionId()).isEqualTo("sid-abc");
+	}
+
+	@Test
+	public void testTokenWithoutSessionId() {
+		String token = createToken("auth0|user-123", "user@example.com", true);
+
+		Auth0TokenValidator.Auth0Claims claims = validator.validate(token);
+
+		assertThat(claims).isNotNull();
+		assertThat(claims.sessionId()).isNull();
+	}
+
+	@Test
 	public void testRejectsExpiredToken() {
 		String token = JWT.create()
 			.withKeyId(KID)

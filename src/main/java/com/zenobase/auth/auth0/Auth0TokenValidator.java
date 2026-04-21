@@ -24,12 +24,14 @@ public class Auth0TokenValidator {
 	static final String USERNAME_CLAIM = "https://zenobase.com/username";
 	static final String EMAIL_CLAIM = "https://zenobase.com/email";
 	static final String EMAIL_VERIFIED_CLAIM = "https://zenobase.com/email_verified";
+	static final String SID_CLAIM = "sid";
 
 	public record Auth0Claims(
 		String externalId,
 		@Nullable String username,
 		@Nullable String email,
-		boolean emailVerified
+		boolean emailVerified,
+		@Nullable String sessionId
 	) {}
 
 	private final String issuer;
@@ -91,7 +93,8 @@ public class Auth0TokenValidator {
 			String username = jwt.getClaim(USERNAME_CLAIM).asString();
 			String email = jwt.getClaim(EMAIL_CLAIM).asString();
 			boolean emailVerified = parseBoolean(jwt.getClaim(EMAIL_VERIFIED_CLAIM));
-			return new Auth0Claims(subject, username, email, emailVerified);
+			String sessionId = jwt.getClaim(SID_CLAIM).asString();
+			return new Auth0Claims(subject, username, email, emailVerified, sessionId);
 		} catch (Exception e) {
 			logger.debug("Auth0 JWT validation failed: {}", e.getMessage());
 			return null;

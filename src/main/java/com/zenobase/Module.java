@@ -271,6 +271,7 @@ class Module extends AbstractModule {
 		bind(RedirectController.class).in(Singleton.class);
 		bind(OpenGraphController.class).in(Singleton.class);
 		bind(QuotaController.class).in(Singleton.class);
+		bind(SessionsController.class).in(Singleton.class);
 	}
 
 	private <T> void bindIfConfigured(String prefix, Class<? extends T> type, Multibinder<T> binder) {
