@@ -28,6 +28,7 @@ import com.zenobase.tasks.foursquare.FoursquareVenues;
 import com.zenobase.tasks.goodreads.GoodreadsCredentialsManager;
 import com.zenobase.tasks.goodreads.GoodreadsTaskManager;
 import com.zenobase.tasks.google.*;
+import com.zenobase.tasks.googlehealth.*;
 import com.zenobase.tasks.hexoskin.HexoskinActivitiesTaskManager;
 import com.zenobase.tasks.hexoskin.HexoskinCredentialsManager;
 import com.zenobase.tasks.hexoskin.HexoskinSleepTaskManager;
@@ -188,6 +189,7 @@ class Module extends AbstractModule {
 		bindIfConfigured("foursquare", FoursquareCredentialsManager.class, credentials);
 		bindIfConfigured("goodreads", GoodreadsCredentialsManager.class, credentials);
 		bindIfConfigured("google", GoogleCredentialsManager.class, credentials);
+		bindIfConfigured("google-health", GoogleHealthCredentialsManager.class, credentials);
 		bindIfConfigured("hexoskin", HexoskinCredentialsManager.class, credentials);
 		bindIfConfigured("lastfm", LastFmCredentialsManager.class, credentials);
 		bindIfConfigured("mapmyfitness", MapMyFitnessCredentialsManager.class, credentials);
@@ -218,6 +220,17 @@ class Module extends AbstractModule {
 		bindIfConfigured("google", GoogleFitCardioTaskManager.class, tasks);
 		bindIfConfigured("google", GoogleFitFoodTaskManager.class, tasks);
 		bindIfConfigured("google", GoogleFitWeightTaskManager.class, tasks);
+		bindIfConfigured("google-health", GoogleHealthActivitiesTaskManager.class, tasks);
+		bindIfConfigured("google-health", GoogleHealthBurnTaskManager.class, tasks);
+		bindIfConfigured("google-health", GoogleHealthCardioTaskManager.class, tasks);
+		bindIfConfigured("google-health", GoogleHealthFoodTaskManager.class, tasks);
+		bindIfConfigured("google-health", GoogleHealthHrvTaskManager.class, tasks);
+		bindIfConfigured("google-health", GoogleHealthRespiratoryTaskManager.class, tasks);
+		bindIfConfigured("google-health", GoogleHealthSleepTaskManager.class, tasks);
+		bindIfConfigured("google-health", GoogleHealthSpo2TaskManager.class, tasks);
+		bindIfConfigured("google-health", GoogleHealthStepsTaskManager.class, tasks);
+		bindIfConfigured("google-health", GoogleHealthTemperatureTaskManager.class, tasks);
+		bindIfConfigured("google-health", GoogleHealthWeightTaskManager.class, tasks);
 		bindIfConfigured("hexoskin", HexoskinActivitiesTaskManager.class, tasks);
 		bindIfConfigured("hexoskin", HexoskinSleepTaskManager.class, tasks);
 		bindIfConfigured("lastfm", LastFmTaskManager.class, tasks);
@@ -316,6 +329,7 @@ class Module extends AbstractModule {
 			"foursquare",
 			"goodreads",
 			"google",
+			"google-health",
 			"hexoskin",
 			"lastfm",
 			"mapmyfitness",
