@@ -28,7 +28,7 @@ public class RescueTimeCredentialsManager extends OAuthCredentialsManager {
 		CredentialsRepository integrations,
 		@Named("rescuetime.api.key") String apiKey,
 		@Named("rescuetime.api.secret") String apiSecret,
-		@Named("web.hostname") String callbackUrl
+		@Named("api.hostname") String callbackUrl
 	) {
 		super(TYPE, integrations, new RescueTimeApi(), apiKey, apiSecret, callbackUrl);
 	}

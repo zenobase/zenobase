@@ -32,7 +32,7 @@ public class GoogleCredentialsManager extends OAuthCredentialsManager {
 		CredentialsRepository integrations,
 		@Named("google.api.key") String apiKey,
 		@Named("google.api.secret") String apiSecret,
-		@Named("web.hostname") String callbackUrl
+		@Named("api.hostname") String callbackUrl
 	) {
 		super(TYPE, integrations, new Google2Api(), apiKey, apiSecret, callbackUrl);
 	}

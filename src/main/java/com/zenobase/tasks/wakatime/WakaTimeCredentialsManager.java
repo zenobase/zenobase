@@ -32,7 +32,7 @@ public class WakaTimeCredentialsManager extends OAuthCredentialsManager {
 		CredentialsRepository integrations,
 		@Named("wakatime.api.key") String apiKey,
 		@Named("wakatime.api.secret") String apiSecret,
-		@Named("web.hostname") String callbackUrl
+		@Named("api.hostname") String callbackUrl
 	) {
 		super(TYPE, integrations, new WakaTimeApi(), apiKey, apiSecret, callbackUrl);
 	}

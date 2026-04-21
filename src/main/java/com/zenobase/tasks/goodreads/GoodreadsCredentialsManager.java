@@ -28,7 +28,7 @@ public class GoodreadsCredentialsManager extends OAuthCredentialsManager {
 		CredentialsRepository integrations,
 		@Named("goodreads.api.key") String apiKey,
 		@Named("goodreads.api.secret") String apiSecret,
-		@Named("web.hostname") String callbackUrl
+		@Named("api.hostname") String callbackUrl
 	) {
 		super(TYPE, integrations, new GoodreadsApi(callbackUrl + "/oauth/callback/-"), apiKey, apiSecret, callbackUrl);
 	}

@@ -5,6 +5,9 @@ server:
 web:
     hostname: "https://zenobase.com"
 
+api:
+    hostname: "https://api.zenobase.com"
+
 auth0:
     domain: ""
     audience: ""

@@ -292,6 +292,7 @@ class Module extends AbstractModule {
 	private void bindConfiguration() {
 		// Core
 		bindString("web.hostname");
+		bindString("api.hostname");
 
 		// OpenSearch
 		bindString("opensearch.host");

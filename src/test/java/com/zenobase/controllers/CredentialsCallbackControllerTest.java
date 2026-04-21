@@ -7,6 +7,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import io.helidon.webserver.http.HttpRouting;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ public class CredentialsCallbackControllerTest extends ControllerTestSupport {
 			@Override
 			protected void configure() {
 				bind(AuthorizationContext.class).toInstance(auth);
+				bindConstant().annotatedWith(Names.named("web.hostname")).to("https://zenobase.com");
 				bind(CredentialsCallbackController.class).in(Singleton.class);
 			}
 		};
@@ -35,14 +37,16 @@ public class CredentialsCallbackControllerTest extends ControllerTestSupport {
 	@Test
 	public void testRedirect() {
 		try (Http1ClientResponse result = call("0123456789", "a=b&c=d")) {
-			assertThat(result).hasStatus(303).hasHeader("Location", "/#/credentials/0123456789?a=b&c=d");
+			assertThat(result)
+				.hasStatus(303)
+				.hasHeader("Location", "https://zenobase.com/#/credentials/0123456789?a=b&c=d");
 		}
 	}
 
 	@Test
 	public void testRedirectSentinel() {
 		try (Http1ClientResponse result = call("-", "a=b")) {
-			assertThat(result).hasStatus(303).hasHeader("Location", "/#/credentials/-?a=b");
+			assertThat(result).hasStatus(303).hasHeader("Location", "https://zenobase.com/#/credentials/-?a=b");
 		}
 	}
 

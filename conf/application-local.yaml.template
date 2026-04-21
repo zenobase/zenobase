@@ -1,6 +1,9 @@
 web:
   hostname: "http://localhost:5173"
 
+api:
+  hostname: "http://localhost:9000"
+
 auth0:
   domain: "http://localhost:3000"
   jwks_domain: "http://localauth0:3000"

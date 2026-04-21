@@ -32,7 +32,7 @@ public class StravaCredentialsManager extends OAuthCredentialsManager {
 		CredentialsRepository integrations,
 		@Named("strava.api.key") String apiKey,
 		@Named("strava.api.secret") String apiSecret,
-		@Named("web.hostname") String callbackUrl
+		@Named("api.hostname") String callbackUrl
 	) {
 		super(TYPE, integrations, new StravaApi(), apiKey, apiSecret, callbackUrl);
 	}
