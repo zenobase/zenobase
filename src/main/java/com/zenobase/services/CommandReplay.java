@@ -1,18 +1,17 @@
 package com.zenobase.services;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.primitives.Ints;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.commands.NonExistentUserException;
-import com.zenobase.common.StringBloomFilter;
-import com.zenobase.common.StringFilter;
 import com.zenobase.queries.CommandQuery;
 import com.zenobase.repositories.CommandRepository;
 import com.zenobase.repositories.IndexManager;
 import com.zenobase.repositories.UserRepository;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.opensearch.client.opensearch._types.OpenSearchException;
@@ -54,14 +53,14 @@ public class CommandReplay {
 
 	void replay(IndexManager indexManager) {
 		var repository = new CommandRepository(indexManager, parsers);
-		StringFilter identities = buildIdentitiesFilter(indexManager);
+		Set<String> identities = loadIdentities(indexManager);
 		logger.info("Replaying {} commands from {}...", repository.size(), sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
 		repository.find(new CommandQuery(), SearchOrder.asc(Command.TIMESTAMP, Command.ID), command -> {
 			if (failures.get() >= MAX_FAILURES) {
 				throw new IllegalStateException("Aborting replay after " + failures.get() + " failures");
 			}
-			if (shouldDiscard(command, identities)) {
+			if (!identities.contains(command.getPrincipal().id())) {
 				dispatcher.discard(command);
 			} else {
 				dispatchWithRetry(command);
@@ -81,19 +80,11 @@ public class CommandReplay {
 		}
 	}
 
-	private static boolean shouldDiscard(Command command, StringFilter identities) {
-		return !identities.mightContain(command.getPrincipal().id());
-	}
-
-	private static StringFilter buildIdentitiesFilter(IndexManager indexManager) {
+	private static Set<String> loadIdentities(IndexManager indexManager) {
 		var users = new UserRepository(indexManager);
-		StringFilter filter = new StringBloomFilter(Ints.checkedCast(users.size()));
-		users.find(user -> {
-			if (user.getEmail() != null) {
-				filter.put(user.getId());
-			}
-		});
-		return filter;
+		Set<String> identities = new HashSet<>();
+		users.find(user -> identities.add(user.getId()));
+		return identities;
 	}
 
 	private void dispatchWithRetry(Command command) {

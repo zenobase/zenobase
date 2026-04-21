@@ -21,39 +21,30 @@ import org.mockito.Mockito;
 public class CommandReplayTest extends OpenSearchTestSupport {
 
 	private final User user = new User("jdoe");
-	private final User guest = new User("ghost");
 	private final CommandParserRegistry parsers = CommandParserRegistry.containing(new TestCommand.Parser());
 
 	@Test
 	public void test() {
-		user.setEmail("jdoe@example.com");
-
 		List<Command> commandsToReplay = newCommands(55, user.asIdentity());
 		addCommands(commandsToReplay);
-		List<Command> commandsToDiscard = newCommands(50, new Identity());
-		addCommands(commandsToDiscard);
-		List<Command> guestCommandsToDiscard = newCommands(25, guest.asIdentity());
-		addCommands(guestCommandsToDiscard);
+		List<Command> commandsForDeletedUser = newCommands(50, new Identity());
+		addCommands(commandsForDeletedUser);
 
 		CommandDispatcher dispatcher = Mockito.mock(CommandDispatcher.class);
 
 		UserRepository users = new UserRepository(getManager());
 		users.store(user);
-		users.store(guest);
 		new CommandReplay("", parsers, dispatcher).replay(getManager());
 
 		InOrder dispatchOrder = Mockito.inOrder(dispatcher);
 		for (Command command : commandsToReplay) {
 			dispatchOrder.verify(dispatcher).dispatch(command);
 		}
-		for (Command command : commandsToDiscard) {
-			Mockito.verify(dispatcher).discard(command);
-		}
-		for (Command command : guestCommandsToDiscard) {
+		for (Command command : commandsForDeletedUser) {
 			Mockito.verify(dispatcher).discard(command);
 		}
 		assertEquals(
-			commandsToReplay.size() + commandsToDiscard.size() + guestCommandsToDiscard.size(),
+			commandsToReplay.size() + commandsForDeletedUser.size(),
 			Mockito.mockingDetails(dispatcher).getInvocations().size()
 		);
 	}
