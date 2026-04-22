@@ -23,7 +23,6 @@ public class Authorization extends DomainNode {
 	public static final IdentityField PRINCIPAL = new IdentityField("principal");
 	public static final IdentityField CLIENT = new IdentityField("client");
 	public static final TokenField SCOPE = new TokenField("scope");
-	public static final TokenField SESSION_ID = new TokenField("session_id", false);
 
 	public Authorization(ObjectNode node) {
 		super(node);
@@ -64,14 +63,6 @@ public class Authorization extends DomainNode {
 
 	public @Nullable String getScope() {
 		return getValue(SCOPE);
-	}
-
-	public @Nullable String getSessionId() {
-		return getValue(SESSION_ID);
-	}
-
-	public void setSessionId(@Nullable String sessionId) {
-		setValue(SESSION_ID, sessionId);
 	}
 
 	public boolean isPermitted(Authorization auth) {

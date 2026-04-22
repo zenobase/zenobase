@@ -1,7 +1,11 @@
 package com.zenobase;
 
 import com.google.inject.Injector;
-import com.zenobase.actions.*;
+import com.zenobase.actions.GatekeeperFilter;
+import com.zenobase.actions.LogContextFilter;
+import com.zenobase.actions.QuotaExceptionFilter;
+import com.zenobase.actions.SecurityHeadersFilter;
+import com.zenobase.actions.SentryFilter;
 import com.zenobase.controllers.*;
 import io.helidon.http.HeaderNames;
 import io.helidon.http.HttpException;
@@ -134,13 +138,6 @@ class Routing {
 		routing.get("/credentials/{credentialsId}", credentials::get);
 		routing.post("/credentials/{credentialsId}", credentials::update);
 		routing.delete("/credentials/{credentialsId}", credentials::delete);
-
-		// Sessions (backed by UserDirectory; LocalUserDirectory returns empty/no-op)
-		var sessions = injector.getInstance(SessionsController.class);
-		routing.get("/sessions/", sessions::findAll);
-		routing.get("/users/{userId}/sessions/", sessions::findByUser);
-		routing.delete("/users/{userId}/sessions/", sessions::deleteAll);
-		routing.delete("/users/{userId}/sessions/{sessionId}", sessions::deleteOne);
 
 		// Tasks
 		var taskList = injector.getInstance(TaskListController.class);
