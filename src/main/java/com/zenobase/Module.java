@@ -308,6 +308,7 @@ class Module extends AbstractModule {
 		bindString("auth0.domain");
 		bindString("auth0.audience");
 		bindString("auth0.jwks_domain");
+		bindString("auth0.m2m.domain");
 		bindString("auth0.m2m.client_id");
 		bindString("auth0.m2m.client_secret");
 

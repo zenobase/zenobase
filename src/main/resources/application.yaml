@@ -13,6 +13,8 @@ auth0:
     audience: ""
     jwks_domain: ""
     m2m:
+        # Canonical Auth0 tenant domain (e.g. dev-xyz.us.auth0.com), required when `domain` above is a custom domain.
+        domain: ""
         client_id: ""
         client_secret: ""
 
