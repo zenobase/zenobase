@@ -32,7 +32,11 @@ public class Auth0ManagementService implements UserDirectory {
 		@Named("auth0.m2m.client_id") String clientId,
 		@Named("auth0.m2m.client_secret") String clientSecret
 	) {
-		this.client = ManagementApi.builder().domain(domain).clientCredentials(clientId, clientSecret).build();
+		// The SDK's .domain(...) expects a bare hostname and constructs https://{domain}/api/v2
+		// internally. Our config convention (used by Auth0TokenValidator for the JWKS URL) stores
+		// the domain with the scheme included, so strip it here.
+		String host = domain.replaceFirst("^https?://", "");
+		this.client = ManagementApi.builder().domain(host).clientCredentials(clientId, clientSecret).build();
 	}
 
 	@VisibleForTesting
