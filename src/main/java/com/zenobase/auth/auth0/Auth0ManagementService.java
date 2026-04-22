@@ -29,13 +29,16 @@ public class Auth0ManagementService implements UserDirectory {
 	@Inject
 	public Auth0ManagementService(
 		@Named("auth0.domain") String domain,
+		@Named("auth0.m2m.domain") String m2mDomain,
 		@Named("auth0.m2m.client_id") String clientId,
 		@Named("auth0.m2m.client_secret") String clientSecret
 	) {
-		// The SDK's .domain(...) expects a bare hostname and constructs https://{domain}/api/v2
-		// internally. Our config convention (used by Auth0TokenValidator for the JWKS URL) stores
-		// the domain with the scheme included, so strip it here.
-		String host = domain.replaceFirst("^https?://", "");
+		// The Management API only accepts tokens whose audience is the *canonical* Auth0 tenant
+		// (https://<tenant>/api/v2/) — custom domains are not allowed for M2M-to-Management API.
+		// Prefer `auth0.m2m.domain` (canonical) when set; otherwise fall back to `auth0.domain`
+		// (which is fine when it's already the canonical tenant). The SDK's .domain(...) wants a
+		// bare hostname and prepends https:// itself, so strip any scheme our config carries.
+		String host = (m2mDomain.isEmpty() ? domain : m2mDomain).replaceFirst("^https?://", "");
 		this.client = ManagementApi.builder().domain(host).clientCredentials(clientId, clientSecret).build();
 	}
 
