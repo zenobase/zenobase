@@ -76,7 +76,7 @@ public class UserListControllerTest extends ControllerTestSupport {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		try (Http1ClientResponse result = call(null, 0, Integer.MAX_VALUE)) {
-			assertThat(result).hasStatus(200).hasContentType("text/plain");
+			assertThat(result).hasStatus(200).hasContentType("text/csv");
 		}
 	}
 

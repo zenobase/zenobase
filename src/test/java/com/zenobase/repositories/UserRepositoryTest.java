@@ -65,7 +65,7 @@ public class UserRepositoryTest extends OpenSearchTestSupport {
 	public void testFindWithCallback() {
 		List<User> expected = fill(11);
 		Callback<User> callback = mock(Callback.class);
-		repository.find(callback);
+		repository.find(new UserQuery(), callback);
 		verifyInteractions(callback, expected);
 	}
 

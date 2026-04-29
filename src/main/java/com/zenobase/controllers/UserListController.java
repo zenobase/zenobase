@@ -42,23 +42,24 @@ public class UserListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		if (limit == Integer.MAX_VALUE) {
-			findAll(res);
-			return;
-		}
 		UserQuery query = new UserQuery();
 		if (q != null) {
 			query = query.queryString(q);
 		}
+		if (limit == Integer.MAX_VALUE) {
+			findAll(res, query);
+			return;
+		}
 		sendOk(res, UserList.toJson(repository.find(query, offset, limit)));
 	}
 
-	private void findAll(ServerResponse res) {
-		setHeader(res, "Content-Type", "text/plain");
+	private void findAll(ServerResponse res, UserQuery query) {
+		setHeader(res, "Content-Type", "text/csv");
 		try (OutputStream os = res.outputStream()) {
 			Writer writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
-			repository.find(new UserPrinter(writer));
-			writer.flush();
+			UserPrinter printer = new UserPrinter(writer);
+			repository.find(query, printer);
+			printer.flush();
 		} catch (IOException e) {
 			logger.warn("Error streaming users", e);
 		}

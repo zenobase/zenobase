@@ -71,8 +71,8 @@ public class UserRepository extends RepositorySupport<User> {
 		return new UserList(index.find(request));
 	}
 
-	public void find(Callback<User> callback) {
-		super.find(new UserQuery().build(), SearchOrder.asc(User.CREATED, User.ID), callback);
+	public void find(UserQuery query, Callback<User> callback) {
+		super.find(query.build(), SearchOrder.asc(User.CREATED, User.ID), callback);
 	}
 
 	public boolean isSuperuser(Identity identity) {

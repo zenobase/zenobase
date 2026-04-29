@@ -5,6 +5,7 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.commands.NonExistentUserException;
 import com.zenobase.queries.CommandQuery;
+import com.zenobase.queries.UserQuery;
 import com.zenobase.repositories.CommandRepository;
 import com.zenobase.repositories.IndexManager;
 import com.zenobase.repositories.UserRepository;
@@ -83,7 +84,7 @@ public class CommandReplay {
 	private static Set<String> loadIdentities(IndexManager indexManager) {
 		var users = new UserRepository(indexManager);
 		Set<String> identities = new HashSet<>();
-		users.find(user -> identities.add(user.getId()));
+		users.find(new UserQuery(), user -> identities.add(user.getId()));
 		return identities;
 	}
 
