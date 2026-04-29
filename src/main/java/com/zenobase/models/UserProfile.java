@@ -9,6 +9,7 @@ public class UserProfile extends UserInfo {
 
 	private static final DateTimeField CREATED = new DateTimeField("created");
 	private static final TokenField EMAIL = new TokenField("email");
+	private static final TokenField EXTERNAL_ID = new TokenField("external_id");
 	private static final BooleanField VERIFIED = new BooleanField("verified");
 	private static final BooleanField SUSPENDED = new BooleanField("suspended");
 	private static final BooleanField SUPERUSER = new BooleanField("superuser");
@@ -19,6 +20,7 @@ public class UserProfile extends UserInfo {
 		super(user);
 		setValue(CREATED, user.getCreated());
 		setValue(EMAIL, user.getEmail());
+		setValue(EXTERNAL_ID, user.getExternalId());
 		if (user.isVerified()) {
 			setValue(VERIFIED, true);
 		}
