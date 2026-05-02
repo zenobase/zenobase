@@ -2,8 +2,6 @@ package com.zenobase.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.zenobase.search.constraints.ConstraintBuilder;
-import java.util.Map;
 import org.jspecify.annotations.Nullable;
 
 public class NestedField<T> extends Field<T> {
@@ -44,13 +42,6 @@ public class NestedField<T> extends Field<T> {
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		field.configureSchema(schema);
-	}
-
-	// TODO verify that this results in queries with the correct exact path
-	public void addConstraintBuilders(String path, Field<?> target) {
-		for (Map.Entry<String, ConstraintBuilder> entry : field.getConstraintBuilders().entries()) {
-			target.addConstraintBuilder(concat(path, entry.getKey()), entry.getValue());
-		}
 	}
 
 	@Override

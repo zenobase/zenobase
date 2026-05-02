@@ -17,7 +17,6 @@ public class AliasField extends Field<Alias> {
 
 	public AliasField(String name) {
 		super(name, Alias.class, "object");
-		idField.addConstraintBuilders(name, this);
 	}
 
 	@Override

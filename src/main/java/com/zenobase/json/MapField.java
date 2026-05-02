@@ -17,8 +17,6 @@ public abstract class MapField<K, V> extends Field<Map.Entry<K, V>> {
 		super(name, Object.class, "nested");
 		this.keyField = nest(getKeyField());
 		this.valueField = nest(getValueField());
-		keyField.addConstraintBuilders(name, this);
-		valueField.addConstraintBuilders(name, this);
 	}
 
 	protected abstract Field<K> getKeyField();
