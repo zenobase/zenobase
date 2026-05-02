@@ -2,6 +2,7 @@ package com.zenobase.testing;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.zenobase.json.DecimalMeasureField;
+import com.zenobase.json.Nodes;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Offset;
@@ -73,6 +74,18 @@ public class NodeAssert extends AbstractAssert<NodeAssert, JsonNode> {
 			.isTrue();
 		path(DecimalMeasureField.VALUE.getName()).isEqualTo(expectedValue);
 		path(DecimalMeasureField.UNIT.getName()).isEqualTo(expectedUnit);
+	}
+
+	/**
+	 * Compares two nodes by JSON value rather than node type. {@link JsonNode#equals(Object)} is
+	 * type-strict — e.g. a {@link com.fasterxml.jackson.databind.node.DecimalNode} holding a whole
+	 * {@link java.math.BigDecimal} does not equal an {@link com.fasterxml.jackson.databind.node.IntNode}
+	 * of the same value — so we reparse both sides through {@link Nodes#MAPPER} to canonicalize node
+	 * types before comparing.
+	 */
+	public NodeAssert isEqualTo(JsonNode expected) {
+		Assertions.assertThat(Nodes.read(actual.toString())).isEqualTo(Nodes.read(expected.toString()));
+		return this;
 	}
 
 	public NodeAssert path(String fieldName) {

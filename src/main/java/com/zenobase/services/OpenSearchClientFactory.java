@@ -1,5 +1,6 @@
 package com.zenobase.services;
 
+import com.zenobase.json.Nodes;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.net.URI;
@@ -38,6 +39,7 @@ public class OpenSearchClientFactory implements ClientFactory {
 
 	public static OpenSearchClient createClient(String host, String region) {
 		var uri = URI.create(host);
+		var mapper = new JacksonJsonpMapper(Nodes.MAPPER);
 		if ("https".equals(uri.getScheme())) {
 			var httpClient = AwsCrtHttpClient.builder().connectionTimeout(Duration.ofSeconds(30)).build();
 			var transport = new AwsSdk2Transport(
@@ -45,14 +47,14 @@ public class OpenSearchClientFactory implements ClientFactory {
 				uri.getHost(),
 				"es",
 				Region.of(region),
-				AwsSdk2TransportOptions.builder().build()
+				AwsSdk2TransportOptions.builder().setMapper(mapper).build()
 			);
 			return new OpenSearchClient(transport);
 		}
 		var httpHost = HttpHost.create(uri);
 		return new OpenSearchClient(
 			ApacheHttpClient5TransportBuilder.builder(httpHost)
-				.setMapper(new JacksonJsonpMapper())
+				.setMapper(mapper)
 				.setHttpClientConfigCallback(builder ->
 					builder
 						.addRequestInterceptorFirst((request, entity, context) ->
