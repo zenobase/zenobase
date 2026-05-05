@@ -53,6 +53,18 @@ public class TaskControllerHttpGetTest extends TaskControllerTestSupport {
 	}
 
 	@Test
+	public void testGetStaleTaskOnArchivedBucket() {
+		bucket.setArchived(true);
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(tasks.find(task.getId())).thenReturn(task.copy());
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		try (Http1ClientResponse result = call(task.getId())) {
+			assertThat(result).hasStatus(200).hasContent(task.toJson());
+			verifyNoInteractions(refresher);
+		}
+	}
+
+	@Test
 	public void testGetStaleTaskWithMissingCredentials() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(task.getId())).thenReturn(task.copy());

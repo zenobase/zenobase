@@ -99,6 +99,17 @@ public class EventControllerHttpPostTest extends EventControllerTestSupport {
 		}
 	}
 
+	@Test
+	public void testUpdateEventArchived() {
+		bucket.setArchived(true);
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		try (Http1ClientResponse result = call(bucket.getId(), from.getId(), to.toJson())) {
+			assertThat(result).hasStatus(409);
+			verifyNoInteractions(dispatcher);
+		}
+	}
+
 	private Http1ClientResponse call(String bucketId, String eventId, ObjectNode body) {
 		return client.put("/buckets/" + bucketId + "/" + eventId).submit(body);
 	}

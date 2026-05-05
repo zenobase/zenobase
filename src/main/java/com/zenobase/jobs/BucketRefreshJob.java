@@ -49,7 +49,7 @@ public class BucketRefreshJob extends Job {
 		Stopwatch timer = Stopwatch.createStarted();
 		var counter = new AtomicInteger();
 		logger.warn("Refreshing buckets...");
-		buckets.find(new BucketQuery().isRefreshable(), bucket -> {
+		buckets.find(new BucketQuery().isRefreshable().includeArchived(false), bucket -> {
 			User owner = users.find(Objects.requireNonNull(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER))));
 			if (owner != null && hasRefreshPrivilege(owner)) {
 				try {

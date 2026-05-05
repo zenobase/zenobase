@@ -166,6 +166,10 @@ public class TaskListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
+		if (bucket.isArchived()) {
+			sendConflict(res, "bucket is archived");
+			return;
+		}
 		if (!registry.exists(form.getType())) {
 			sendBadRequest(res, "unknown task type");
 			return;

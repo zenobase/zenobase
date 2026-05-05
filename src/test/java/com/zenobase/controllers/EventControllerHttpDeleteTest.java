@@ -81,6 +81,18 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 		}
 	}
 
+	@Test
+	public void testDeleteEventArchived() {
+		bucket.setArchived(true);
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(bucket.getId(), event.getId())).thenReturn(event);
+		try (Http1ClientResponse result = call(bucket, event)) {
+			assertThat(result).hasStatus(409);
+			verifyNoInteractions(dispatcher);
+		}
+	}
+
 	private Http1ClientResponse call(Bucket bucket, Event event) {
 		return client.delete("/buckets/" + bucket.getId() + "/" + event.getId()).request();
 	}

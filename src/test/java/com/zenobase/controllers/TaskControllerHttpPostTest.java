@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
+import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.tasks.Task;
@@ -94,6 +95,19 @@ public class TaskControllerHttpPostTest extends TaskControllerTestSupport {
 		when(tasks.find(task.getId())).thenReturn(task.copy());
 		try (Http1ClientResponse result = call(task.getId(), newSettings())) {
 			assertThat(result).hasStatus(403);
+			verifyNoInteractions(dispatcher);
+		}
+	}
+
+	@Test
+	public void testUpdateTaskArchived() {
+		Bucket bucket = new Bucket(task.getBucketId());
+		bucket.setArchived(true);
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(tasks.find(task.getId())).thenReturn(task.copy());
+		when(buckets.find(task.getBucketId())).thenReturn(bucket);
+		try (Http1ClientResponse result = call(task.getId(), newSettings())) {
+			assertThat(result).hasStatus(409);
 			verifyNoInteractions(dispatcher);
 		}
 	}

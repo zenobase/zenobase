@@ -3,6 +3,7 @@ package com.zenobase.controllers;
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -111,6 +112,17 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		try (Http1ClientResponse result = call(bucket, body)) {
 			assertThat(result).hasStatus(403);
+		}
+	}
+
+	@Test
+	public void testCreateEventArchived() {
+		bucket.setArchived(true);
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		try (Http1ClientResponse result = call(bucket, body)) {
+			assertThat(result).hasStatus(409);
+			verifyNoInteractions(dispatcher);
 		}
 	}
 

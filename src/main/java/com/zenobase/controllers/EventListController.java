@@ -226,6 +226,10 @@ public class EventListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
+		if (bucket.isArchived()) {
+			sendConflict(res, "bucket is archived");
+			return;
+		}
 		ObjectNode body = body(req);
 		var nodes = EVENTS.getValues(body);
 		if (!nodes.isEmpty()) {

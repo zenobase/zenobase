@@ -159,6 +159,30 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	}
 
 	@Test
+	public void testUpdateArchivedBucketRejected() {
+		from.setArchived(true);
+		to.setArchived(true);
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(from.getId())).thenReturn(from.copy());
+		try (Http1ClientResponse result = call(from.getId(), to.toJson())) {
+			assertThat(result).hasStatus(409);
+			verifyNoInteractions(dispatcher);
+		}
+	}
+
+	@Test
+	public void testUnarchiveBucket() {
+		from.setArchived(true);
+		String commandId = Generator.id();
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(from.getId())).thenReturn(from.copy());
+		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenReturn(commandId);
+		try (Http1ClientResponse result = call(from.getId(), to.toJson())) {
+			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, commandId).isEmpty();
+		}
+	}
+
+	@Test
 	public void testUpdateBucketReplaceAlias() {
 		String commandId = Generator.id();
 		Bucket alias = new Bucket("bar");

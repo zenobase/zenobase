@@ -164,6 +164,10 @@ public class Bucket extends DomainNode {
 		setValue(ARCHIVED, archived ? Boolean.TRUE : null);
 	}
 
+	public boolean isArchived() {
+		return Boolean.TRUE.equals(getValue(ARCHIVED));
+	}
+
 	public Bucket copy() {
 		return new Bucket(toJson().deepCopy());
 	}

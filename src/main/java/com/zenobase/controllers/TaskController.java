@@ -20,8 +20,12 @@ import com.zenobase.tasks.TaskRefresher;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskController extends ControllerSupport {
+
+	private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
 	private final CommandDispatcher dispatcher;
 	private final TaskManagerRegistry registry;
@@ -69,12 +73,21 @@ public class TaskController extends ControllerSupport {
 			return;
 		}
 		if (task.isStale() && !bus.isReadOnly()) {
-			try {
-				refresher.refresh(task);
-			} catch (IncompleteCredentialsException e) {
-				setHeader(res, "Link", "<" + e.getCredentials().getAuthorizationUrl() + ">");
-			} catch (MissingCredentialsException e) {
-				setHeader(res, "X-Credentials", e.getExpectedType());
+			Bucket bucket = buckets.find(task.getBucketId());
+			if (bucket != null && bucket.isArchived()) {
+				logger.info(
+					"Skipping refresh of stale task {} because bucket {} is archived",
+					task.getId(),
+					bucket.getId()
+				);
+			} else {
+				try {
+					refresher.refresh(task);
+				} catch (IncompleteCredentialsException e) {
+					setHeader(res, "Link", "<" + e.getCredentials().getAuthorizationUrl() + ">");
+				} catch (MissingCredentialsException e) {
+					setHeader(res, "X-Credentials", e.getExpectedType());
+				}
 			}
 		}
 		sendOk(res, task.toJson());
@@ -94,6 +107,11 @@ public class TaskController extends ControllerSupport {
 		}
 		if (!task.isPermitted(auth)) {
 			sendForbidden(res);
+			return;
+		}
+		Bucket bucket = buckets.find(task.getBucketId());
+		if (bucket != null && bucket.isArchived()) {
+			sendConflict(res, "bucket is archived");
 			return;
 		}
 		if (!registry.exists(task.getType())) {

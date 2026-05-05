@@ -75,6 +75,10 @@ public class EventController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
+		if (bucket.isArchived()) {
+			sendConflict(res, "bucket is archived");
+			return;
+		}
 		Event event = events.find(bucketId, eventId);
 		if (event == null) {
 			sendNotFound(res, "event not found");
@@ -112,6 +116,10 @@ public class EventController extends ControllerSupport {
 		}
 		if (!bucket.hasRole(auth, Role.OWNER)) {
 			sendForbidden(res);
+			return;
+		}
+		if (bucket.isArchived()) {
+			sendConflict(res, "bucket is archived");
 			return;
 		}
 		Event event = events.find(bucket.getId(), eventId);

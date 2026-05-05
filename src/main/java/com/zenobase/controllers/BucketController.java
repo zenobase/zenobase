@@ -147,6 +147,10 @@ public class BucketController extends ControllerSupport {
 			sendBadRequest(res, "bucket not valid");
 			return;
 		}
+		if (bucket.isArchived() && updated.isArchived()) {
+			sendConflict(res, "bucket is archived");
+			return;
+		}
 		if (!updated.getPrincipals(Role.OWNER).equals(bucket.getPrincipals(Role.OWNER))) {
 			sendBadRequest(res, "bucket owner can't change");
 			return;

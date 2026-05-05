@@ -87,6 +87,18 @@ public class TaskListControllerHttpPostTest extends TaskListControllerTestSuppor
 		}
 	}
 
+	@Test
+	public void testArchived() {
+		bucket.addRole(user.asIdentity(), Role.OWNER);
+		bucket.setArchived(true);
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		try (Http1ClientResponse result = call(form)) {
+			assertThat(result).hasStatus(409);
+			verifyNoInteractions(dispatcher);
+		}
+	}
+
 	private Http1ClientResponse call(CreateTaskForm form) {
 		return client.post("/tasks/").submit(form.toJson());
 	}
