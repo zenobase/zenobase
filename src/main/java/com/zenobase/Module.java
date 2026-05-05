@@ -16,6 +16,7 @@ import com.zenobase.auth.local.LocalUserDirectory;
 import com.zenobase.commands.*;
 import com.zenobase.controllers.*;
 import com.zenobase.jobs.*;
+import com.zenobase.metrics.JvmMetricsEmfTask;
 import com.zenobase.repositories.*;
 import com.zenobase.services.*;
 import com.zenobase.tasks.*;
@@ -116,6 +117,7 @@ class Module extends AbstractModule {
 		bind(CredentialsRepository.class).in(Singleton.class);
 		bind(QuotaManager.class).in(Singleton.class);
 		bind(Scheduler.class).asEagerSingleton();
+		bind(JvmMetricsEmfTask.class).in(Singleton.class);
 
 		if (isConfigured("foursquare")) {
 			bind(FoursquareVenues.class).in(Singleton.class);

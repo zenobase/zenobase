@@ -192,6 +192,13 @@
             <version>${aws.sdk.version}</version>
         </dependency>
 
+        <!-- CloudWatch EMF -->
+        <dependency>
+            <groupId>software.amazon.cloudwatchlogs</groupId>
+            <artifactId>aws-embedded-metrics</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+
         <!-- HTTP client (httpcore5 and httpclient5 are transitive via opensearch-java) -->
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>

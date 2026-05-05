@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.zenobase.common.Globals;
 import com.zenobase.jobs.Scheduler;
+import com.zenobase.metrics.JvmMetricsEmfTask;
 import com.zenobase.repositories.IndexManager;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.Bus;
@@ -38,6 +39,7 @@ public class Main {
 		Globals.put(Injector.class, injector);
 		var ready = new AtomicBoolean(false);
 		startServer(config, injector, createObserveFeature(ready, injector), createCorsFeature(config));
+		startMetricsCollection(injector);
 		try {
 			replay(injector);
 			enableWrites(injector);
@@ -132,6 +134,7 @@ public class Main {
 			injector.getInstance(Scheduler.class).close();
 			injector.getInstance(IndexManager.class).close();
 			injector.getInstance(Bus.class).close();
+			injector.getInstance(JvmMetricsEmfTask.class).close();
 		});
 	}
 
@@ -162,5 +165,9 @@ public class Main {
 
 	private void startScheduler(Injector injector) {
 		injector.getInstance(Scheduler.class).start();
+	}
+
+	private void startMetricsCollection(Injector injector) {
+		injector.getInstance(JvmMetricsEmfTask.class).start();
 	}
 }
