@@ -3,6 +3,7 @@ package com.zenobase;
 import com.google.inject.Injector;
 import com.zenobase.actions.GatekeeperFilter;
 import com.zenobase.actions.LogContextFilter;
+import com.zenobase.actions.MetricsFilter;
 import com.zenobase.actions.QuotaExceptionFilter;
 import com.zenobase.actions.SecurityHeadersFilter;
 import com.zenobase.actions.SentryFilter;
@@ -23,6 +24,7 @@ class Routing {
 		// Filters
 		routing.addFilter(new SecurityHeadersFilter());
 		routing.addFilter(injector.getInstance(LogContextFilter.class));
+		routing.addFilter(new MetricsFilter());
 		routing.addFilter(injector.getInstance(SentryFilter.class));
 		routing.addFilter(injector.getInstance(GatekeeperFilter.class));
 		routing.addFilter(injector.getInstance(QuotaExceptionFilter.class));
