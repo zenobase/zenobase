@@ -8,6 +8,7 @@ import com.google.inject.name.Names;
 import com.zenobase.actions.SentryFilter;
 import com.zenobase.auth.TokenValidator;
 import com.zenobase.auth.UserDirectory;
+import com.zenobase.auth.UserStateCache;
 import com.zenobase.auth.auth0.Auth0ManagementService;
 import com.zenobase.auth.auth0.Auth0TokenAuthorizer;
 import com.zenobase.auth.auth0.Auth0TokenValidator;
@@ -112,6 +113,7 @@ class Module extends AbstractModule {
 			bind(UserDirectory.class).to(LocalUserDirectory.class).in(Singleton.class);
 		}
 		bind(AuthorizationContext.class).in(Singleton.class);
+		bind(UserStateCache.class).in(Singleton.class);
 		bind(TaskRepository.class).in(Singleton.class);
 		bind(TaskRefresher.class).in(Singleton.class);
 		bind(CredentialsRepository.class).in(Singleton.class);

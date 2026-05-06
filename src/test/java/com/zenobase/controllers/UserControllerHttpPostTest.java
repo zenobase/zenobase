@@ -4,6 +4,7 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.auth.UserStateCache.UserState;
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.OptInCommand;
@@ -130,6 +131,17 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.asIdentity())).thenReturn(user);
 		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm(true).toJson())) {
+			assertThat(result).hasStatus(403);
+			verifyNoInteractions(dispatcher);
+		}
+	}
+
+	@Test
+	public void testSuspendedRequesterRejected() {
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(auth.userState(user.asIdentity())).thenReturn(UserState.SUSPENDED);
+		when(users.find(user.asIdentity())).thenReturn(user);
+		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm("jdoe@zenobase.com").toJson())) {
 			assertThat(result).hasStatus(403);
 			verifyNoInteractions(dispatcher);
 		}

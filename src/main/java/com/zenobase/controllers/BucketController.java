@@ -170,6 +170,9 @@ public class BucketController extends ControllerSupport {
 			sendBadRequest(res, "one or more aliases are invalid");
 			return;
 		}
+		if (!requireNotSuspended(auth, res)) {
+			return;
+		}
 		try {
 			String commandId = dispatcher.dispatch(new UpdateBucketCommand(auth.getPrincipal(), bucket, updated));
 			setHeader(res, COMMAND_ID, commandId);
@@ -201,6 +204,9 @@ public class BucketController extends ControllerSupport {
 		}
 		if (buckets.isAliased(bucketId)) {
 			sendConflict(res, "bucket is aliased");
+			return;
+		}
+		if (!requireNotSuspended(auth, res)) {
 			return;
 		}
 		CompoundCommand command = new CompoundCommand(

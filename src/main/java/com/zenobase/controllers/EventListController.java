@@ -230,6 +230,9 @@ public class EventListController extends ControllerSupport {
 			sendConflict(res, "bucket is archived");
 			return;
 		}
+		if (!requireNotSuspended(auth, res)) {
+			return;
+		}
 		ObjectNode body = body(req);
 		var nodes = EVENTS.getValues(body);
 		if (!nodes.isEmpty()) {

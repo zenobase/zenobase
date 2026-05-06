@@ -132,6 +132,9 @@ public class TaskController extends ControllerSupport {
 			sendBadRequest(res, "nothing to do");
 			return;
 		}
+		if (!requireNotSuspended(auth, res)) {
+			return;
+		}
 		String commandId = dispatcher.dispatch(command);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
@@ -152,6 +155,9 @@ public class TaskController extends ControllerSupport {
 		Bucket bucket = buckets.find(task.getBucketId());
 		if (bucket != null && !bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
 			sendForbidden(res);
+			return;
+		}
+		if (!requireNotSuspended(auth, res)) {
 			return;
 		}
 		String commandId = dispatcher.dispatch(new DeleteTaskCommand(auth.getPrincipal(), task));

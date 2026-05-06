@@ -3,6 +3,7 @@ package com.zenobase.commands;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
+import com.zenobase.auth.UserStateCache;
 import com.zenobase.models.User;
 import com.zenobase.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -10,9 +11,10 @@ import org.junit.jupiter.api.Test;
 public class CreateAndDeleteUserCommandTest {
 
 	private final UserRepository repository = mock(UserRepository.class);
+	private final UserStateCache userState = mock(UserStateCache.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
 		new CreateUserCommand.Handler(repository),
-		new DeleteUserCommand.Handler(repository)
+		new DeleteUserCommand.Handler(repository, userState)
 	);
 
 	@Test

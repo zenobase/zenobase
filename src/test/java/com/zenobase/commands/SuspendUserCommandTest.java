@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
+import com.zenobase.auth.UserStateCache;
 import com.zenobase.models.User;
 import com.zenobase.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -11,8 +12,9 @@ import org.junit.jupiter.api.Test;
 public class SuspendUserCommandTest {
 
 	private final UserRepository users = mock(UserRepository.class);
+	private final UserStateCache userState = mock(UserStateCache.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new SuspendUserCommand.Handler(users)
+		new SuspendUserCommand.Handler(users, userState)
 	);
 
 	@Test
@@ -23,6 +25,7 @@ public class SuspendUserCommandTest {
 		Command command = new SuspendUserCommand(user.asIdentity(), user.getName(), true);
 		registry.execute(command);
 		assertThat(user.isSuspended()).as("user is suspended").isTrue();
+		verify(userState).invalidate(user.asIdentity());
 
 		Command undo = command.reverse(user.asIdentity());
 		registry.execute(undo);

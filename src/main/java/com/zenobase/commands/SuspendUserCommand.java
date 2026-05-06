@@ -1,6 +1,7 @@
 package com.zenobase.commands;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.auth.UserStateCache;
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
@@ -64,11 +65,13 @@ public class SuspendUserCommand extends Command {
 	public static class Handler extends CommandHandler<SuspendUserCommand> {
 
 		private final UserRepository repository;
+		private final UserStateCache userState;
 
 		@Inject
-		public Handler(UserRepository repository) {
+		public Handler(UserRepository repository, UserStateCache userState) {
 			super(SuspendUserCommand.class);
 			this.repository = repository;
+			this.userState = userState;
 		}
 
 		@Override
@@ -77,6 +80,7 @@ public class SuspendUserCommand extends Command {
 			if (user != null) {
 				user.setSuspended(command.isSuspend());
 				repository.update(user);
+				userState.invalidate(user.asIdentity());
 			} else {
 				throw new NonExistentUserException("Tried to suspend a nonexistent user: " + command.getName());
 			}

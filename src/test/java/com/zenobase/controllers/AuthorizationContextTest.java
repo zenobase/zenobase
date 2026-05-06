@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.zenobase.auth.TokenValidator;
+import com.zenobase.auth.UserStateCache;
+import com.zenobase.auth.UserStateCache.UserState;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import io.helidon.http.HeaderNames;
@@ -19,14 +21,16 @@ public class AuthorizationContextTest {
 	private static final String AUTH0_ISSUER = "https://tenant.auth0.com/";
 
 	private final TokenValidator tokenValidator = mock(TokenValidator.class);
+	private final UserStateCache userState = mock(UserStateCache.class);
 
 	public AuthorizationContextTest() {
 		when(tokenValidator.issuer()).thenReturn(AUTH0_ISSUER);
+		when(userState.lookup(any())).thenReturn(UserState.ACTIVE);
 	}
 
 	private AuthorizationContext context() {
 		Set<TokenValidator> validators = Set.of(tokenValidator);
-		return new AuthorizationContext(validators);
+		return new AuthorizationContext(validators, userState);
 	}
 
 	@Test
@@ -66,6 +70,18 @@ public class AuthorizationContextTest {
 
 		assertThat(auth).isSameAs(expected);
 		verify(tokenValidator).validate(fakeJwt);
+	}
+
+	@Test
+	public void testRejectsMissingPrincipal() {
+		Identity identity = new Identity("auth0-user");
+		when(tokenValidator.validate(any())).thenReturn(new Authorization(identity));
+		when(userState.lookup(identity)).thenReturn(UserState.MISSING);
+
+		String fakeJwt = createFakeJwt(AUTH0_ISSUER);
+		ServerRequest request = mockRequest("Bearer " + fakeJwt);
+
+		assertThat(context().current(request)).isNull();
 	}
 
 	@Test
