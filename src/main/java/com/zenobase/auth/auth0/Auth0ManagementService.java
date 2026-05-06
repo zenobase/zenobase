@@ -53,6 +53,20 @@ public class Auth0ManagementService implements UserDirectory {
 	}
 
 	@Override
+	public void setSuspended(User user, boolean suspended) {
+		String externalId = user.getExternalId();
+		if (externalId == null) {
+			return;
+		}
+		try {
+			client.users().update(externalId, UpdateUserRequestContent.builder().blocked(suspended).build());
+			logger.info("Set Auth0 blocked={} for user {}", suspended, externalId);
+		} catch (Exception e) {
+			logger.warn("Failed to set Auth0 blocked={} for user {}: {}", suspended, externalId, e.getMessage());
+		}
+	}
+
+	@Override
 	public void deleteUser(User user) {
 		String externalId = user.getExternalId();
 		if (externalId == null) {

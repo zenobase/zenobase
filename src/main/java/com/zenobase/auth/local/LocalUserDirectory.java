@@ -11,6 +11,9 @@ public class LocalUserDirectory implements UserDirectory {
 	public void updateEmail(User user, String newEmail) {}
 
 	@Override
+	public void setSuspended(User user, boolean suspended) {}
+
+	@Override
 	public void deleteUser(User user) {}
 
 	@Override
