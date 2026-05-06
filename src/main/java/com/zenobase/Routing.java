@@ -88,6 +88,8 @@ class Routing {
 		// Accounts
 		var account = injector.getInstance(AccountController.class);
 		routing.delete("/users/{userId}", account::close);
+		routing.get("/users/{userId}/passkeys", account::listPasskeys);
+		routing.delete("/users/{userId}/passkeys/{passkeyId}", account::deletePasskey);
 
 		// Buckets
 		var bucketList = injector.getInstance(BucketListController.class);
