@@ -31,16 +31,20 @@ public abstract class OAuthTaskManager extends TaskManager {
 
 	@Override
 	public @Nullable Command execute(Task task) {
-		try {
-			OAuthCredentials credentials = getCredentials(task.getPrincipal());
-			return execute(task, credentials);
-		} catch (InvalidTokenException e) {
-			return createCommand(e);
-		}
+		OAuthCredentials credentials = getCredentials(task.getPrincipal());
+		return execute(task, credentials);
 	}
 
 	private OAuthCredentials getCredentials(Identity principal) {
 		return check(credentialsManager.find(principal));
+	}
+
+	public Command recoverInvalidToken(InvalidTokenException e) {
+		return createCommand(e);
+	}
+
+	public OAuthCredentials reload(InvalidTokenException e) {
+		return getCredentials(e.getCredentials().getPrincipal());
 	}
 
 	private OAuthCredentials check(@Nullable Credentials credentials) {

@@ -41,7 +41,16 @@ public class TaskRefresher {
 			return;
 		}
 		TaskManager manager = registry.find(task.getType());
-		Command command = manager.execute(task);
+		Command command;
+		try {
+			command = manager.execute(task);
+		} catch (InvalidTokenException e) {
+			if (manager instanceof OAuthTaskManager oauth) {
+				dispatcher.dispatch(oauth.recoverInvalidToken(e));
+				oauth.reload(e); // re-throws IncompleteCredentialsException with the new authorization URL
+			}
+			throw e;
+		}
 		if (command != null) {
 			dispatcher.dispatch(command);
 		} else {

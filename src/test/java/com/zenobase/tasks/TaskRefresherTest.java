@@ -1,5 +1,6 @@
 package com.zenobase.tasks;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import com.zenobase.commands.Command;
@@ -79,6 +80,33 @@ public class TaskRefresherTest {
 		new TaskRefresher(registry, buckets, dispatcher).refresh(task);
 
 		verifyNoInteractions(dispatcher);
+	}
+
+	@Test
+	public void testInvalidTokenRecovery() {
+		String taskType = "test";
+		User user = new User("tester");
+		Bucket bucket = new Bucket();
+		bucket.addRole(user.asIdentity(), Role.OWNER);
+		Task task = new Task(taskType, bucket.getId(), user.asIdentity());
+		Command recoveryCommand = mock(Command.class);
+		OAuthTaskManager oauthManager = mock(OAuthTaskManager.class);
+		OAuthCredentials credentials = mock(OAuthCredentials.class);
+		InvalidTokenException invalid = new InvalidTokenException(credentials);
+		IncompleteCredentialsException incomplete = new IncompleteCredentialsException(credentials);
+
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(registry.exists(taskType)).thenReturn(true);
+		when(registry.find(taskType)).thenReturn(oauthManager);
+		when(oauthManager.execute(task)).thenThrow(invalid);
+		when(oauthManager.recoverInvalidToken(invalid)).thenReturn(recoveryCommand);
+		when(oauthManager.reload(invalid)).thenThrow(incomplete);
+
+		IncompleteCredentialsException thrown = assertThrows(IncompleteCredentialsException.class, () ->
+			new TaskRefresher(registry, buckets, dispatcher).refresh(task)
+		);
+		assert thrown == incomplete;
+		verify(dispatcher).dispatch(recoveryCommand);
 	}
 
 	@Test
