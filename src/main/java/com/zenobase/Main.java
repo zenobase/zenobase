@@ -34,6 +34,7 @@ public class Main {
 	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
 	void main() {
+		var start = System.nanoTime();
 		var config = createConfig();
 		var injector = createInjector(config);
 		Globals.put(Injector.class, injector);
@@ -49,19 +50,26 @@ public class Main {
 			logger.error("Startup failed", e);
 			System.exit(1);
 		}
+		logger.info("Startup took {} ms", Duration.ofNanos(System.nanoTime() - start).toMillis());
 	}
 
 	private Config createConfig() {
+		var start = System.nanoTime();
 		var overridePath = System.getProperty("config.file", "conf/application-local.yaml");
-		return Config.builder()
+		var config = Config.builder()
 			.addSource(ConfigSources.environmentVariables())
 			.addSource(ConfigSources.file(overridePath).optional())
 			.addSource(ConfigSources.classpath("application.yaml"))
 			.build();
+		logger.info("Config loading took {} ms", Duration.ofNanos(System.nanoTime() - start).toMillis());
+		return config;
 	}
 
 	private Injector createInjector(Config config) {
-		return Guice.createInjector(new Module(config));
+		var start = System.nanoTime();
+		var injector = Guice.createInjector(new Module(config));
+		logger.info("Guice wiring took {} ms", Duration.ofNanos(System.nanoTime() - start).toMillis());
+		return injector;
 	}
 
 	private ObserveFeature createObserveFeature(AtomicBoolean ready, Injector injector) {
@@ -119,6 +127,7 @@ public class Main {
 	}
 
 	private void startServer(Config config, Injector injector, ObserveFeature observeFeature, CorsFeature corsFeature) {
+		var start = System.nanoTime();
 		var server = WebServer.builder()
 			.config(config.get("server"))
 			.addFeature(observeFeature)
@@ -127,7 +136,11 @@ public class Main {
 			.build()
 			.start();
 
-		logger.info("Server started on port {}", server.port());
+		logger.info(
+			"Server started on port {} in {} ms",
+			server.port(),
+			Duration.ofNanos(System.nanoTime() - start).toMillis()
+		);
 
 		io.helidon.Main.addShutdownHandler(() -> {
 			logger.info("Shutting down...");
@@ -164,10 +177,14 @@ public class Main {
 	}
 
 	private void startScheduler(Injector injector) {
+		var start = System.nanoTime();
 		injector.getInstance(Scheduler.class).start();
+		logger.info("Scheduler started in {} ms", Duration.ofNanos(System.nanoTime() - start).toMillis());
 	}
 
 	private void startMetricsCollection(Injector injector) {
+		var start = System.nanoTime();
 		injector.getInstance(JvmMetricsEmfTask.class).start();
+		logger.info("Metrics collection started in {} ms", Duration.ofNanos(System.nanoTime() - start).toMillis());
 	}
 }
