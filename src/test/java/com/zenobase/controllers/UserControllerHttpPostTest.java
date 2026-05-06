@@ -122,7 +122,6 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm(true).toJson())) {
 			assertThat(result).hasStatus(204);
 			verify(dispatcher).dispatch(ArgumentMatchers.any(SuspendUserCommand.class));
-			verify(userDirectory).setSuspended(user, true);
 		}
 	}
 
@@ -133,7 +132,6 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm(true).toJson())) {
 			assertThat(result).hasStatus(403);
 			verifyNoInteractions(dispatcher);
-			verify(userDirectory, never()).setSuspended(any(), anyBoolean());
 		}
 	}
 

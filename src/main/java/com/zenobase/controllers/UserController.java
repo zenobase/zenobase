@@ -136,7 +136,6 @@ public class UserController extends ControllerSupport {
 			suspended
 		);
 		String commandId = dispatcher.dispatch(command);
-		userDirectory.setSuspended(user, suspended);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}
