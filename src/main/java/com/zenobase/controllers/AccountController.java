@@ -150,11 +150,11 @@ public class AccountController extends ControllerSupport {
 				sendNotFound(res);
 				return;
 			}
-			logger.warn("Passkey delete failed for user {}: {}", user.getId(), e.getMessage());
+			logger.error("Passkey delete failed for user {}", user.getId(), e);
 			sendInternalServerError(res, "failed to delete passkey");
 			return;
 		} catch (RuntimeException e) {
-			logger.warn("Passkey delete failed for user {}: {}", user.getId(), e.getMessage());
+			logger.error("Passkey delete failed for user {}", user.getId(), e);
 			sendInternalServerError(res, "failed to delete passkey");
 			return;
 		}

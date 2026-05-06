@@ -48,7 +48,7 @@ public class Auth0ManagementService implements UserDirectory {
 				.update(externalId, UpdateUserRequestContent.builder().email(newEmail).emailVerified(false).build());
 			logger.info("Updated Auth0 email for user {} to {}", externalId, newEmail);
 		} catch (Exception e) {
-			logger.warn("Failed to update Auth0 email for user {}: {}", externalId, e.getMessage());
+			logger.error("Failed to update Auth0 email for user {}", externalId, e);
 		}
 	}
 
@@ -62,7 +62,7 @@ public class Auth0ManagementService implements UserDirectory {
 			client.users().update(externalId, UpdateUserRequestContent.builder().blocked(suspended).build());
 			logger.info("Set Auth0 blocked={} for user {}", suspended, externalId);
 		} catch (Exception e) {
-			logger.warn("Failed to set Auth0 blocked={} for user {}: {}", suspended, externalId, e.getMessage());
+			logger.error("Failed to set Auth0 blocked={} for user {}", suspended, externalId, e);
 		}
 	}
 
@@ -76,7 +76,7 @@ public class Auth0ManagementService implements UserDirectory {
 			client.users().delete(externalId);
 			logger.info("Deleted Auth0 user {}", externalId);
 		} catch (Exception e) {
-			logger.warn("Failed to delete Auth0 user {}: {}", externalId, e.getMessage());
+			logger.error("Failed to delete Auth0 user {}", externalId, e);
 		}
 	}
 
@@ -107,7 +107,7 @@ public class Auth0ManagementService implements UserDirectory {
 				});
 			return passkeys;
 		} catch (Exception e) {
-			logger.warn("Failed to list Auth0 passkeys for user {}: {}", externalId, e.getMessage());
+			logger.error("Failed to list Auth0 passkeys for user {}", externalId, e);
 			return List.of();
 		}
 	}
@@ -118,16 +118,11 @@ public class Auth0ManagementService implements UserDirectory {
 		if (externalId == null) {
 			return;
 		}
-		try {
-			var method = client.users().authenticationMethods().get(externalId, passkeyId);
-			if (!AuthenticationMethodTypeEnum.PASSKEY.equals(method.getType())) {
-				throw new IllegalArgumentException("authentication method is not a passkey");
-			}
-			client.users().authenticationMethods().delete(externalId, passkeyId);
-			logger.info("Deleted Auth0 passkey {} for user {}", passkeyId, externalId);
-		} catch (RuntimeException e) {
-			logger.warn("Failed to delete Auth0 passkey {} for user {}: {}", passkeyId, externalId, e.getMessage());
-			throw e;
+		var method = client.users().authenticationMethods().get(externalId, passkeyId);
+		if (!AuthenticationMethodTypeEnum.PASSKEY.equals(method.getType())) {
+			throw new IllegalArgumentException("authentication method is not a passkey");
 		}
+		client.users().authenticationMethods().delete(externalId, passkeyId);
+		logger.info("Deleted Auth0 passkey {} for user {}", passkeyId, externalId);
 	}
 }

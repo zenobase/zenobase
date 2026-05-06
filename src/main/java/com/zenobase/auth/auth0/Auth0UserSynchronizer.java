@@ -64,7 +64,7 @@ public class Auth0UserSynchronizer {
 			synced.put(user.getId(), Boolean.TRUE);
 			return user.asIdentity();
 		} catch (Exception e) {
-			logger.warn("Failed to sync user {} from Auth0: {}", username, e.getMessage());
+			logger.error("Failed to sync user {} from Auth0", username, e);
 			return null;
 		}
 	}
