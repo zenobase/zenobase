@@ -112,6 +112,9 @@ public class JournalController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
+		if (!requireNotSuspended(auth, res)) {
+			return;
+		}
 		String commandId = dispatcher.dispatch(command.reverse(auth.getPrincipal()));
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);

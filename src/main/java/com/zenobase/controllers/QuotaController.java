@@ -77,6 +77,9 @@ public class QuotaController extends ControllerSupport {
 			sendBadRequest(res, "bad request");
 			return;
 		}
+		if (!requireNotSuspended(auth, res)) {
+			return;
+		}
 		Command command = new SpendQuotaCommand(principal, cost);
 		dispatcher.dispatch(command);
 		setHeader(res, COMMAND_ID, command.getId());

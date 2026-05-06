@@ -1,6 +1,7 @@
 package com.zenobase.commands;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.auth.UserStateCache;
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
@@ -57,11 +58,13 @@ public class DeleteUserCommand extends Command {
 	public static class Handler extends CommandHandler<DeleteUserCommand> {
 
 		private final UserRepository repository;
+		private final UserStateCache userState;
 
 		@Inject
-		public Handler(UserRepository repository) {
+		public Handler(UserRepository repository, UserStateCache userState) {
 			super(DeleteUserCommand.class);
 			this.repository = repository;
+			this.userState = userState;
 		}
 
 		@Override
@@ -69,6 +72,7 @@ public class DeleteUserCommand extends Command {
 			if (!repository.delete(command.getUser())) {
 				throw new NonExistentUserException("Tried to delete nonexistent user: " + command.getUser().getName());
 			}
+			userState.invalidate(command.getUser().asIdentity());
 		}
 	}
 }

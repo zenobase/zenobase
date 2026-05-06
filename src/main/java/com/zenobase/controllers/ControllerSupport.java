@@ -3,6 +3,7 @@ package com.zenobase.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
+import com.zenobase.auth.UserStateCache;
 import com.zenobase.json.Nodes;
 import com.zenobase.oauth.Authorization;
 import io.helidon.http.HeaderNames;
@@ -25,6 +26,14 @@ public abstract class ControllerSupport implements CustomHeaders {
 
 	protected @Nullable Authorization getCurrentAuthorization(ServerRequest req) {
 		return authContext.current(req);
+	}
+
+	protected boolean requireNotSuspended(Authorization auth, ServerResponse res) {
+		if (authContext.userState(auth.getPrincipal()) == UserStateCache.UserState.SUSPENDED) {
+			sendForbidden(res, "account is suspended");
+			return false;
+		}
+		return true;
 	}
 
 	protected static ObjectNode body(ServerRequest req) {

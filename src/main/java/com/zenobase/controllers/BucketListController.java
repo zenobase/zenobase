@@ -143,6 +143,9 @@ public class BucketListController extends ControllerSupport {
 			sendBadRequest(res, "one or more aliases are invalid");
 			return;
 		}
+		if (!requireNotSuspended(auth, res)) {
+			return;
+		}
 		String commandId = dispatcher.dispatch(new CreateBucketCommand(auth.getPrincipal(), bucket));
 		setHeader(res, LOCATION, "/buckets/" + bucket.getId());
 		setHeader(res, COMMAND_ID, commandId);

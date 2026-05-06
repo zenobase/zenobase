@@ -179,6 +179,9 @@ public class TaskListController extends ControllerSupport {
 		if (settings == null) {
 			settings = Nodes.newObject();
 		}
+		if (!requireNotSuspended(auth, res)) {
+			return;
+		}
 		Task task = manager.newTask(form.getBucketId(), auth.getPrincipal(), settings);
 		String commandId = dispatcher.dispatch(new CreateTaskCommand(auth.getPrincipal(), task));
 		setHeader(res, LOCATION, "/tasks/" + task.getId());

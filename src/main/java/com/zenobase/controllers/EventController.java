@@ -86,6 +86,9 @@ public class EventController extends ControllerSupport {
 		}
 		Event updated = new Event(body(req));
 		updated.setValue(Event.AUTHOR, auth.getPrincipal());
+		if (!requireNotSuspended(auth, res)) {
+			return;
+		}
 		try {
 			String commandId = dispatcher.dispatch(
 				new UpdateEventCommand(auth.getPrincipal(), bucketId, event, updated)
@@ -125,6 +128,9 @@ public class EventController extends ControllerSupport {
 		Event event = events.find(bucket.getId(), eventId);
 		if (event == null) {
 			sendNotFound(res);
+			return;
+		}
+		if (!requireNotSuspended(auth, res)) {
 			return;
 		}
 		String commandId = dispatcher.dispatch(new DeleteEventCommand(auth.getPrincipal(), bucketId, event));

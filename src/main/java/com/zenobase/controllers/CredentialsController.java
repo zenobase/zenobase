@@ -96,6 +96,9 @@ public class CredentialsController extends ControllerSupport {
 			sendBadRequest(res, "nothing to do");
 			return;
 		}
+		if (!requireNotSuspended(auth, res)) {
+			return;
+		}
 		try {
 			String commandId = dispatcher.dispatch(command);
 			setHeader(res, COMMAND_ID, commandId);
@@ -123,6 +126,9 @@ public class CredentialsController extends ControllerSupport {
 		}
 		if (!credentials.isPermitted(auth) && !users.isSuperuser(auth.getPrincipal())) {
 			sendForbidden(res);
+			return;
+		}
+		if (!requireNotSuspended(auth, res)) {
 			return;
 		}
 		String commandId = dispatcher.dispatch(new DeleteCredentialsCommand(auth.getPrincipal(), credentials));

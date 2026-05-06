@@ -128,6 +128,9 @@ public class CredentialsListController extends ControllerSupport {
 			sendBadRequest(res, "already connected");
 			return;
 		}
+		if (!requireNotSuspended(auth, res)) {
+			return;
+		}
 		Credentials credentials = manager.newCredentials(auth.getPrincipal());
 		String commandId = dispatcher.dispatch(new CreateCredentialsCommand(auth.getPrincipal(), credentials));
 		setHeader(res, COMMAND_ID, commandId);

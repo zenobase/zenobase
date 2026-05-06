@@ -3,6 +3,8 @@ package com.zenobase.controllers;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.zenobase.auth.TokenValidator;
+import com.zenobase.auth.UserStateCache;
+import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import io.helidon.http.HeaderNames;
 import io.helidon.webserver.http.ServerRequest;
@@ -21,10 +23,16 @@ public class AuthorizationContext {
 	private static final String HEADER_PREFIX = "Bearer ";
 
 	private final Map<String, TokenValidator> validatorsByIssuer;
+	private final UserStateCache userState;
 
 	@Inject
-	public AuthorizationContext(Set<TokenValidator> validators) {
+	public AuthorizationContext(Set<TokenValidator> validators, UserStateCache userState) {
 		this.validatorsByIssuer = validators.stream().collect(Collectors.toMap(TokenValidator::issuer, v -> v));
+		this.userState = userState;
+	}
+
+	public UserStateCache.UserState userState(Identity principal) {
+		return userState.lookup(principal);
 	}
 
 	public @Nullable Authorization current(ServerRequest request) {
@@ -36,7 +44,15 @@ public class AuthorizationContext {
 			logger.debug("Non-JWT token received, rejecting");
 			return null;
 		}
-		return validateJwt(token);
+		Authorization auth = validateJwt(token);
+		if (auth == null) {
+			return null;
+		}
+		if (userState.lookup(auth.getPrincipal()) == UserStateCache.UserState.MISSING) {
+			logger.debug("Rejecting request: principal {} no longer exists", auth.getPrincipal());
+			return null;
+		}
+		return auth;
 	}
 
 	private @Nullable Authorization validateJwt(String token) {

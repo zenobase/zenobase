@@ -103,6 +103,9 @@ public class UserController extends ControllerSupport {
 			sendBadRequest(res, "invalid email address");
 			return;
 		}
+		if (!requireNotSuspended(auth, res)) {
+			return;
+		}
 		String userName = Objects.requireNonNull(user.getName());
 		String userEmail = Objects.requireNonNull(user.getEmail());
 		String commandId = dispatcher.dispatch(
@@ -130,6 +133,9 @@ public class UserController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
+		if (!requireNotSuspended(auth, res)) {
+			return;
+		}
 		Command command = new SuspendUserCommand(
 			auth.getPrincipal(),
 			Objects.requireNonNull(user.getName()),
@@ -150,6 +156,9 @@ public class UserController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
+		if (!requireNotSuspended(auth, res)) {
+			return;
+		}
 		String commandId = dispatcher.dispatch(
 			new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), form.getQuota())
 		);
@@ -165,6 +174,9 @@ public class UserController extends ControllerSupport {
 		}
 		if (auth.getScope() != null || (!user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal()))) {
 			sendForbidden(res);
+			return;
+		}
+		if (!requireNotSuspended(auth, res)) {
 			return;
 		}
 		Command c = Objects.requireNonNull(form.isOptedOut())

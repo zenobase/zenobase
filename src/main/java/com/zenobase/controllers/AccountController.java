@@ -71,6 +71,9 @@ public class AccountController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
+		if (!user.is(auth.getPrincipal()) && !requireNotSuspended(auth, res)) {
+			return;
+		}
 		Command command = buildCloseAccountCommand(auth.getPrincipal(), user);
 		String commandId = dispatcher.dispatch(command);
 		userDirectory.deleteUser(user);
