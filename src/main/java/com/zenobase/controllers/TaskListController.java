@@ -179,7 +179,7 @@ public class TaskListController extends ControllerSupport {
 		if (settings == null) {
 			settings = Nodes.newObject();
 		}
-		if (!requireNotSuspended(auth, res)) {
+		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
 		Task task = manager.newTask(form.getBucketId(), auth.getPrincipal(), settings);

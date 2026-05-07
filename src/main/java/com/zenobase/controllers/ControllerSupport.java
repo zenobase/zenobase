@@ -28,12 +28,12 @@ public abstract class ControllerSupport implements CustomHeaders {
 		return authContext.current(req);
 	}
 
-	protected boolean requireNotSuspended(Authorization auth, ServerResponse res) {
+	protected boolean sendForbiddenIfSuspended(Authorization auth, ServerResponse res) {
 		if (authContext.userState(auth.getPrincipal()) == UserStateCache.UserState.SUSPENDED) {
 			sendForbidden(res, "account is suspended");
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	protected static ObjectNode body(ServerRequest req) {

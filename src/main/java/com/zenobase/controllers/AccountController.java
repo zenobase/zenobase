@@ -71,7 +71,7 @@ public class AccountController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		if (!user.is(auth.getPrincipal()) && !requireNotSuspended(auth, res)) {
+		if (!user.is(auth.getPrincipal()) && sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
 		Command command = buildCloseAccountCommand(auth.getPrincipal(), user);

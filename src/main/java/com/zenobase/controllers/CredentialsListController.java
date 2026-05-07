@@ -128,7 +128,7 @@ public class CredentialsListController extends ControllerSupport {
 			sendBadRequest(res, "already connected");
 			return;
 		}
-		if (!requireNotSuspended(auth, res)) {
+		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
 		Credentials credentials = manager.newCredentials(auth.getPrincipal());

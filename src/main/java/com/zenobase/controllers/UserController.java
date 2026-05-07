@@ -103,7 +103,7 @@ public class UserController extends ControllerSupport {
 			sendBadRequest(res, "invalid email address");
 			return;
 		}
-		if (!requireNotSuspended(auth, res)) {
+		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
 		String userName = Objects.requireNonNull(user.getName());
@@ -133,7 +133,7 @@ public class UserController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		if (!requireNotSuspended(auth, res)) {
+		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
 		Command command = new SuspendUserCommand(
@@ -156,7 +156,7 @@ public class UserController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		if (!requireNotSuspended(auth, res)) {
+		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
 		String commandId = dispatcher.dispatch(
@@ -176,7 +176,7 @@ public class UserController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		if (!requireNotSuspended(auth, res)) {
+		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
 		Command c = Objects.requireNonNull(form.isOptedOut())
