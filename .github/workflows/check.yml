@@ -1,0 +1,47 @@
+name: Check
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+on:
+    pull_request:
+        branches: [main]
+        paths:
+            - "docker/**"
+            - "src/**"
+            - "!src/main/java/com/zenobase/scripts/**"
+            - "pom.xml"
+
+jobs:
+    check:
+        runs-on: ubuntu-latest
+        services:
+            opensearch:
+                image: opensearchproject/opensearch:3.3.0
+                ports:
+                    - 9200:9200
+                env:
+                    discovery.type: single-node
+                    plugins.security.disabled: "true"
+                    DISABLE_INSTALL_DEMO_CONFIG: "true"
+                options: >-
+                    --health-cmd "curl -f http://localhost:9200/_cluster/health || exit 1"
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 10
+                    --health-start-period 30s
+        steps:
+            - uses: actions/checkout@v6
+
+            - uses: actions/setup-java@v5
+              with:
+                  distribution: temurin
+                  java-version: 25
+                  cache: maven
+
+            - name: Check formatting
+              run: ./mvnw -B spotless:check
+
+            - name: Test
+              run: ./mvnw -B verify
