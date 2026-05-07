@@ -132,7 +132,7 @@ public class TaskController extends ControllerSupport {
 			sendBadRequest(res, "nothing to do");
 			return;
 		}
-		if (!requireNotSuspended(auth, res)) {
+		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
 		String commandId = dispatcher.dispatch(command);
@@ -157,7 +157,7 @@ public class TaskController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		if (!requireNotSuspended(auth, res)) {
+		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
 		String commandId = dispatcher.dispatch(new DeleteTaskCommand(auth.getPrincipal(), task));

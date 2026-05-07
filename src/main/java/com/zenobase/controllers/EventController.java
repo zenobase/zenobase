@@ -86,7 +86,7 @@ public class EventController extends ControllerSupport {
 		}
 		Event updated = new Event(body(req));
 		updated.setValue(Event.AUTHOR, auth.getPrincipal());
-		if (!requireNotSuspended(auth, res)) {
+		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
 		try {
@@ -130,7 +130,7 @@ public class EventController extends ControllerSupport {
 			sendNotFound(res);
 			return;
 		}
-		if (!requireNotSuspended(auth, res)) {
+		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
 		String commandId = dispatcher.dispatch(new DeleteEventCommand(auth.getPrincipal(), bucketId, event));

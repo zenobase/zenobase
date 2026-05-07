@@ -170,7 +170,7 @@ public class BucketController extends ControllerSupport {
 			sendBadRequest(res, "one or more aliases are invalid");
 			return;
 		}
-		if (!requireNotSuspended(auth, res)) {
+		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
 		try {
@@ -206,7 +206,7 @@ public class BucketController extends ControllerSupport {
 			sendConflict(res, "bucket is aliased");
 			return;
 		}
-		if (!requireNotSuspended(auth, res)) {
+		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
 		CompoundCommand command = new CompoundCommand(

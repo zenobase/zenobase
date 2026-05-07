@@ -230,7 +230,7 @@ public class EventListController extends ControllerSupport {
 			sendConflict(res, "bucket is archived");
 			return;
 		}
-		if (!requireNotSuspended(auth, res)) {
+		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
 		ObjectNode body = body(req);
