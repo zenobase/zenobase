@@ -2,6 +2,8 @@ package com.zenobase.auth.auth0;
 
 import com.auth0.client.mgmt.ManagementApi;
 import com.auth0.client.mgmt.types.AuthenticationMethodTypeEnum;
+import com.auth0.client.mgmt.types.ListUsersRequestParameters;
+import com.auth0.client.mgmt.types.SearchEngineVersionsEnum;
 import com.auth0.client.mgmt.types.UpdateUserRequestContent;
 import com.zenobase.auth.Passkey;
 import com.zenobase.auth.UserDirectory;
@@ -11,6 +13,7 @@ import jakarta.inject.Named;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +59,13 @@ public class Auth0ManagementService implements UserDirectory {
 	public void deleteUser(User user) {
 		String externalId = user.getExternalId();
 		if (externalId == null) {
+			// external_id is back-filled on Auth0 login (see Auth0UserSynchronizer), but legacy
+			// users who haven't logged in since that wired up still have it null locally even
+			// though they exist in Auth0. Fall back to a username lookup so we don't leave the
+			// Auth0 record behind.
+			externalId = lookupExternalIdByUsername(user.getName());
+		}
+		if (externalId == null) {
 			return;
 		}
 		try {
@@ -63,6 +73,32 @@ public class Auth0ManagementService implements UserDirectory {
 			logger.info("Deleted Auth0 user {}", externalId);
 		} catch (Exception e) {
 			logger.error("Failed to delete Auth0 user {}", externalId, e);
+		}
+	}
+
+	private @Nullable String lookupExternalIdByUsername(@Nullable String username) {
+		if (username == null) {
+			return null;
+		}
+		try {
+			var params = ListUsersRequestParameters.builder()
+				.q("username:\"" + username + "\"")
+				.searchEngine(SearchEngineVersionsEnum.V3)
+				.perPage(2)
+				.build();
+			var iter = client.users().list(params).iterator();
+			if (!iter.hasNext()) {
+				return null;
+			}
+			var first = iter.next();
+			if (iter.hasNext()) {
+				logger.error("Multiple Auth0 users found for username {}; not deleting", username);
+				return null;
+			}
+			return first.getUserId().orElse(null);
+		} catch (Exception e) {
+			logger.error("Failed to look up Auth0 user by username {}", username, e);
+			return null;
 		}
 	}
 
