@@ -249,6 +249,7 @@ class Module extends AbstractModule {
 		jobs.addBinding().to(BucketRefreshJob.class);
 		jobs.addBinding().to(CredentialsCleanupJob.class);
 		jobs.addBinding().to(SnapshotJob.class);
+		jobs.addBinding().to(UnverifiedEmailSuspensionJob.class);
 	}
 
 	private void bindControllers() {
