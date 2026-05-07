@@ -1,27 +1,19 @@
 package com.zenobase.scripts;
 
+import au.com.bytecode.opencsv.CSVReader;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
+import com.google.common.util.concurrent.Uninterruptibles;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 import software.amazon.awssdk.services.sesv2.SesV2Client;
-import software.amazon.awssdk.services.sesv2.model.AlreadyExistsException;
-import software.amazon.awssdk.services.sesv2.model.BulkEmailContent;
-import software.amazon.awssdk.services.sesv2.model.BulkEmailEntry;
-import software.amazon.awssdk.services.sesv2.model.CreateEmailTemplateRequest;
-import software.amazon.awssdk.services.sesv2.model.Destination;
-import software.amazon.awssdk.services.sesv2.model.EmailTemplateContent;
-import software.amazon.awssdk.services.sesv2.model.ReplacementEmailContent;
-import software.amazon.awssdk.services.sesv2.model.ReplacementTemplate;
-import software.amazon.awssdk.services.sesv2.model.SendBulkEmailRequest;
-import software.amazon.awssdk.services.sesv2.model.Template;
-import software.amazon.awssdk.services.sesv2.model.UpdateEmailTemplateRequest;
+import software.amazon.awssdk.services.sesv2.model.*;
 
 @CommandLine.Command(name = "bulk-mail")
 public class BulkMail implements Callable<Integer> {
@@ -44,7 +36,10 @@ public class BulkMail implements Callable<Integer> {
 		}
 	}
 
-	@Parameters(index = "0", description = "Path to a tab-delimited file containing usernames and email addresses")
+	@Parameters(
+		index = "0",
+		description = "Path to a CSV file with name, email, verified, suspended, and optedout columns"
+	)
 	private Path recipientsFile;
 
 	@Override
@@ -58,14 +53,32 @@ public class BulkMail implements Callable<Integer> {
 	}
 
 	private Stream<Recipient> readRecipients() throws Exception {
-		return Files.readAllLines(recipientsFile, StandardCharsets.UTF_8)
-			.stream()
-			.filter(line -> !line.isBlank())
-			.map(line -> {
-				List<String> fields = Splitter.on('\t').splitToList(line);
-				Preconditions.checkArgument(fields.size() == 2, "Cannot parse line: %s", line);
-				return new Recipient(fields.get(0), fields.get(1));
-			});
+		try (var reader = new CSVReader(Files.newBufferedReader(recipientsFile, StandardCharsets.UTF_8))) {
+			List<String[]> rows = reader.readAll();
+			Preconditions.checkArgument(!rows.isEmpty(), "File is empty: %s", recipientsFile);
+			String[] header = rows.getFirst();
+			int nameIdx = columnIndex(header, "name");
+			int emailIdx = columnIndex(header, "email");
+			int verifiedIdx = columnIndex(header, "verified");
+			int suspendedIdx = columnIndex(header, "suspended");
+			int optedoutIdx = columnIndex(header, "optedout");
+			return rows
+				.stream()
+				.skip(1)
+				.filter(r -> "true".equals(r[verifiedIdx]))
+				.filter(r -> !"true".equals(r[suspendedIdx]))
+				.filter(r -> !"true".equals(r[optedoutIdx]))
+				.map(r -> new Recipient(r[nameIdx], r[emailIdx]));
+		}
+	}
+
+	private static int columnIndex(String[] header, String name) {
+		for (int i = 0; i < header.length; ++i) {
+			if (name.equals(header[i])) {
+				return i;
+			}
+		}
+		throw new IllegalArgumentException("Missing column: " + name);
 	}
 
 	private BulkEmailEntry toEntry(Recipient recipient) {
@@ -102,25 +115,30 @@ public class BulkMail implements Callable<Integer> {
 		}
 	}
 
-	private void sendEmails(SesV2Client client, List<BulkEmailEntry> entries) {
-		System.out.printf("Sending bulk email to %d recipient(s)%n...", entries.size());
-		var response = client.sendBulkEmail(
-			SendBulkEmailRequest.builder()
-				.fromEmailAddress(FROM)
-				.defaultContent(
-					BulkEmailContent.builder()
-						.template(
-							Template.builder().templateName(TEMPLATE_NAME).templateData("{\"username\":\"\"}").build()
-						)
-						.build()
-				)
-				.bulkEmailEntries(entries)
-				.build()
-		);
+	private static final int BATCH_SIZE = 50;
+	private static final Duration BATCH_DELAY = Duration.ofSeconds(4);
 
-		var results = response.bulkEmailEntryResults();
-		for (int i = 0; i < results.size(); ++i) {
-			System.out.printf("%s: %s%n", entries.get(i).destination().toAddresses(), results.get(i).status());
+	private void sendEmails(SesV2Client client, List<BulkEmailEntry> entries) {
+		System.out.printf("Sending bulk email to %d recipient(s)%n", entries.size());
+		var content = BulkEmailContent.builder()
+			.template(Template.builder().templateName(TEMPLATE_NAME).templateData("{\"username\":\"\"}").build())
+			.build();
+		for (int start = 0; start < entries.size(); start += BATCH_SIZE) {
+			if (start > 0) {
+				Uninterruptibles.sleepUninterruptibly(BATCH_DELAY);
+			}
+			var batch = entries.subList(start, Math.min(start + BATCH_SIZE, entries.size()));
+			var response = client.sendBulkEmail(
+				SendBulkEmailRequest.builder()
+					.fromEmailAddress(FROM)
+					.defaultContent(content)
+					.bulkEmailEntries(batch)
+					.build()
+			);
+			var results = response.bulkEmailEntryResults();
+			for (int i = 0; i < results.size(); ++i) {
+				System.out.printf("%s: %s%n", batch.get(i).destination().toAddresses(), results.get(i).status());
+			}
 		}
 	}
 
