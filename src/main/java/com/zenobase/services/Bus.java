@@ -9,5 +9,9 @@ public interface Bus {
 
 	void setSchedulerDisabled(boolean schedulerDisabled);
 
+	boolean tryLock(String id);
+
+	void unlock(String id);
+
 	void close();
 }
