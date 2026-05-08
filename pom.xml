@@ -17,8 +17,23 @@
         <mainClass>com.zenobase.Main</mainClass>
         <maven.compiler.source>25</maven.compiler.source>
         <version.lib.junit>6.0.3</version.lib.junit>
-        <aws.sdk.version>2.42.35</aws.sdk.version>
+        <aws.sdk.version>2.44.4</aws.sdk.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Override netty version managed by the Helidon parent BOM
+                 to pick up fixes for CVE-2026-42580/42581/42584/42585/42587/41417.
+                 Remove once the Helidon parent ships netty >= 4.1.133.Final. -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>4.1.133.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- Helidon (versions managed by parent BOM) -->
