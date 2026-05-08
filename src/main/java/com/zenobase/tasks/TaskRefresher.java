@@ -5,6 +5,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.BucketRepository;
+import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
@@ -17,15 +18,35 @@ public class TaskRefresher {
 	private final TaskManagerRegistry registry;
 	private final BucketRepository buckets;
 	private final CommandDispatcher dispatcher;
+	private final Bus bus;
 
 	@Inject
-	public TaskRefresher(TaskManagerRegistry registry, BucketRepository buckets, CommandDispatcher dispatcher) {
+	public TaskRefresher(
+		TaskManagerRegistry registry,
+		BucketRepository buckets,
+		CommandDispatcher dispatcher,
+		Bus bus
+	) {
 		this.registry = registry;
 		this.buckets = buckets;
 		this.dispatcher = dispatcher;
+		this.bus = bus;
 	}
 
 	public void refresh(Task task) {
+		String lockId = "task:" + task.getId();
+		if (!bus.tryLock(lockId)) {
+			logger.info("Skipping refresh: already in flight for {}", task.getId());
+			return;
+		}
+		try {
+			doRefresh(task);
+		} finally {
+			bus.unlock(lockId);
+		}
+	}
+
+	private void doRefresh(Task task) {
 		logger.info("Refreshing: {}", task.getId());
 		Bucket bucket = buckets.find(task.getBucketId());
 		if (bucket == null) {
