@@ -22,8 +22,7 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- Override Jackson version managed by the Helidon parent BOM
-                 to pick fixes for CWE-770.
+            <!-- Override Jackson version managed by the Helidon parent BOM to pick fixes for CWE-770.
                  Remove once the Helidon parent ships jackson >= 2.21.3. -->
             <dependency>
                 <groupId>com.fasterxml.jackson</groupId>
@@ -33,8 +32,7 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- Override netty version managed by the Helidon parent BOM
-                 to pick up fixes for CVE-2026-42580/42581/42584/42585/42587/41417.
+            <!-- Override netty version managed by the Helidon parent BOM to pick up fixes for CVE-2026-42580/42581/42584/42585/42587/41417.
                  Remove once the Helidon parent ships netty >= 4.1.133.Final. -->
             <dependency>
                 <groupId>io.netty</groupId>
@@ -42,6 +40,14 @@
                 <version>4.1.133.Final</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- Override httpclient5 (transitive via opensearch-java) to pick up fixes for CWE-304.
+                 Remove once opensearch-java ships httpclient5 >= 5.6.1. -->
+            <dependency>
+                <groupId>org.apache.httpcomponents.client5</groupId>
+                <artifactId>httpclient5</artifactId>
+                <version>5.6.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
