@@ -22,6 +22,17 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Override Jackson version managed by the Helidon parent BOM
+                 to pick fixes for CWE-770.
+                 Remove once the Helidon parent ships jackson >= 2.21.3. -->
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>2.21.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <!-- Override netty version managed by the Helidon parent BOM
                  to pick up fixes for CVE-2026-42580/42581/42584/42585/42587/41417.
                  Remove once the Helidon parent ships netty >= 4.1.133.Final. -->
