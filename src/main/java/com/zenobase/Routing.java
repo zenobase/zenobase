@@ -182,11 +182,11 @@ class Routing {
 		var og = injector.getInstance(OpenGraphController.class);
 		routing.get("/og", og::get);
 
-		// Connected apps (third-party / MCP grants)
-		var connectedApps = injector.getInstance(ExternalClientController.class);
-		routing.get("/users/{userId}/connected-apps/", connectedApps::list);
-		routing.put("/users/{userId}/connected-apps/{clientId}", connectedApps::put);
-		routing.delete("/users/{userId}/connected-apps/{clientId}", connectedApps::revoke);
+		// External clients (third-party / MCP grants)
+		var externalClients = injector.getInstance(ExternalClientController.class);
+		routing.get("/users/{userId}/external-clients/", externalClients::list);
+		routing.put("/users/{userId}/external-clients/{clientId}", externalClients::put);
+		routing.delete("/users/{userId}/external-clients/{clientId}", externalClients::revoke);
 
 		// MCP
 		var mcp = injector.getInstance(McpController.class);

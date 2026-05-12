@@ -57,7 +57,7 @@ public class ConsentEnforcerTest {
 			.satisfies(e -> assertThat(((McpException) e).getCode()).isEqualTo(McpException.ACCESS_NOT_GRANTED))
 			.satisfies(e ->
 				assertThat(((McpException) e).getData().get("consent_url").asText()).isEqualTo(
-					WEB_HOSTNAME + "/settings/connected-apps"
+					WEB_HOSTNAME + "/settings/external-clients"
 				)
 			);
 	}
@@ -103,7 +103,7 @@ public class ConsentEnforcerTest {
 
 	@Test
 	public void testConsentUrl() {
-		assertThat(enforcer.consentUrl()).isEqualTo(WEB_HOSTNAME + "/settings/connected-apps");
+		assertThat(enforcer.consentUrl()).isEqualTo(WEB_HOSTNAME + "/settings/external-clients");
 	}
 
 	private ExternalClient connectedClient(String... readableBuckets) {

@@ -59,15 +59,15 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 	@Override
 	protected void routing(HttpRouting.Builder builder, Injector injector) {
 		ExternalClientController controller = injector.getInstance(ExternalClientController.class);
-		builder.get("/users/{userId}/connected-apps/", controller::list);
-		builder.put("/users/{userId}/connected-apps/{clientId}", controller::put);
-		builder.delete("/users/{userId}/connected-apps/{clientId}", controller::revoke);
+		builder.get("/users/{userId}/external-clients/", controller::list);
+		builder.put("/users/{userId}/external-clients/{clientId}", controller::put);
+		builder.delete("/users/{userId}/external-clients/{clientId}", controller::revoke);
 	}
 
 	@Test
 	public void testListUnauthorized() {
 		when(auth.current(any())).thenReturn(null);
-		try (Http1ClientResponse result = client.get("/users/" + user.getId() + "/connected-apps/").request()) {
+		try (Http1ClientResponse result = client.get("/users/" + user.getId() + "/external-clients/").request()) {
 			assertThat(result).hasStatus(401);
 		}
 	}
@@ -75,7 +75,7 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 	@Test
 	public void testListRejectsExternalToken() {
 		when(auth.current(any())).thenReturn(new Authorization(userIdentity, clientIdentity, "external"));
-		try (Http1ClientResponse result = client.get("/users/" + user.getId() + "/connected-apps/").request()) {
+		try (Http1ClientResponse result = client.get("/users/" + user.getId() + "/external-clients/").request()) {
 			assertThat(result).hasStatus(403);
 		}
 	}
@@ -89,16 +89,16 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 			new ExternalClientList(new NodeList(java.util.List.of(connected.toJson()), 1))
 		);
 
-		try (Http1ClientResponse result = client.get("/users/" + user.getId() + "/connected-apps/").request()) {
+		try (Http1ClientResponse result = client.get("/users/" + user.getId() + "/external-clients/").request()) {
 			ObjectNode body = result.entity().as(ObjectNode.class);
 			assertThat(result).hasStatus(200);
 			org.assertj.core.api.Assertions.assertThat(body.get("total").asInt()).isEqualTo(1);
-			org.assertj.core.api.Assertions.assertThat(body.get("connected_apps")).hasSize(1);
+			org.assertj.core.api.Assertions.assertThat(body.get("external_clients")).hasSize(1);
 			org.assertj.core.api.Assertions.assertThat(
-				body.get("connected_apps").get(0).get("client_id").asText()
+				body.get("external_clients").get(0).get("client_id").asText()
 			).isEqualTo("claude-desktop");
 			org.assertj.core.api.Assertions.assertThat(
-				body.get("connected_apps").get(0).get("readable_buckets")
+				body.get("external_clients").get(0).get("readable_buckets")
 			).hasSize(2);
 		}
 	}
@@ -116,7 +116,7 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 		body.putArray("readable_buckets").add("b1").add("b3");
 		try (
 			Http1ClientResponse result = client
-				.put("/users/" + user.getId() + "/connected-apps/claude-desktop")
+				.put("/users/" + user.getId() + "/external-clients/claude-desktop")
 				.submit(body)
 		) {
 			ObjectNode response = result.entity().as(ObjectNode.class);
@@ -135,7 +135,7 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 		body.putArray("readable_buckets").add("b1");
 		try (
 			Http1ClientResponse result = client
-				.put("/users/" + user.getId() + "/connected-apps/claude-desktop")
+				.put("/users/" + user.getId() + "/external-clients/claude-desktop")
 				.submit(body)
 		) {
 			assertThat(result).hasStatus(404);
@@ -149,7 +149,7 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 
 		try (
 			Http1ClientResponse result = client
-				.delete("/users/" + user.getId() + "/connected-apps/claude-desktop")
+				.delete("/users/" + user.getId() + "/external-clients/claude-desktop")
 				.request()
 		) {
 			assertThat(result).hasStatus(204);
@@ -163,7 +163,7 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 		when(auth.current(any())).thenReturn(new Authorization(userIdentity));
 		when(users.find("other")).thenReturn(new User("other"));
 
-		try (Http1ClientResponse result = client.get("/users/other/connected-apps/").request()) {
+		try (Http1ClientResponse result = client.get("/users/other/external-clients/").request()) {
 			assertThat(result).hasStatus(403);
 		}
 	}
@@ -178,7 +178,7 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 			new ExternalClientList(new NodeList(java.util.List.of(), 0))
 		);
 
-		try (Http1ClientResponse result = client.get("/users/other/connected-apps/").request()) {
+		try (Http1ClientResponse result = client.get("/users/other/external-clients/").request()) {
 			assertThat(result).hasStatus(200);
 		}
 	}

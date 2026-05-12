@@ -49,7 +49,7 @@ public class ExternalClientController extends ControllerSupport {
 		this.users = users;
 	}
 
-	/** {@code GET /users/{userId}/connected-apps/} — list connected clients with their readable bucket ids. */
+	/** {@code GET /users/{userId}/external-clients/} — list external clients with their readable bucket ids. */
 	public void list(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
 		Identity principal = check(auth, req, res);
@@ -63,7 +63,7 @@ public class ExternalClientController extends ControllerSupport {
 		);
 		ObjectNode result = Nodes.newObject();
 		PartialList.TOTAL.setValue(result, (int) connected.getTotal());
-		ArrayNode array = result.putArray("connected_apps");
+		ArrayNode array = result.putArray("external_clients");
 		for (ExternalClient client : connected) {
 			array.add(toJson(client));
 		}
@@ -71,7 +71,7 @@ public class ExternalClientController extends ControllerSupport {
 	}
 
 	/**
-	 * {@code PUT /users/{userId}/connected-apps/{clientId}} — replace the grant set for one client. Body:
+	 * {@code PUT /users/{userId}/external-clients/{clientId}} — replace the grant set for one client. Body:
 	 * {@code {"readable_buckets": [...]}}. Dispatches a single {@link UpdateExternalClientGrantsCommand} that snapshots
 	 * the new set.
 	 */
@@ -110,7 +110,7 @@ public class ExternalClientController extends ControllerSupport {
 		);
 	}
 
-	/** {@code DELETE /users/{userId}/connected-apps/{clientId}} — revoke this client entirely. */
+	/** {@code DELETE /users/{userId}/external-clients/{clientId}} — revoke this client entirely. */
 	public void revoke(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
 		Identity principal = check(auth, req, res);

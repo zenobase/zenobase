@@ -125,7 +125,11 @@ class Module extends AbstractModule {
 		}
 		bind(AuthorizationContext.class).in(Singleton.class);
 		bind(UserStateCache.class).in(Singleton.class);
-		bindMcp();
+		bind(ExternalClientRepository.class).in(Singleton.class);
+		bind(ConsentEnforcer.class).in(Singleton.class);
+		bind(BucketResourceProvider.class).in(Singleton.class);
+		bind(McpJsonRpcHandler.class).in(Singleton.class);
+		bindMcpTools();
 		bind(TaskRepository.class).in(Singleton.class);
 		bind(TaskRefresher.class).in(Singleton.class);
 		bind(CredentialsRepository.class).in(Singleton.class);
@@ -138,11 +142,7 @@ class Module extends AbstractModule {
 		}
 	}
 
-	private void bindMcp() {
-		bind(ExternalClientRepository.class).in(Singleton.class);
-		bind(ConsentEnforcer.class).in(Singleton.class);
-		bind(BucketResourceProvider.class).in(Singleton.class);
-		bind(McpJsonRpcHandler.class).in(Singleton.class);
+	private void bindMcpTools() {
 		var tools = Multibinder.newSetBinder(binder(), McpTool.class);
 		tools.addBinding().to(EventsTool.class);
 		tools.addBinding().to(StatsTool.class);
