@@ -52,6 +52,10 @@ public class TaskRefresher {
 		try {
 			doRefresh(task);
 			span.setStatus(SpanStatus.OK);
+		} catch (CredentialsException e) {
+			// User needs to re-authorize: a known soft condition, not an internal error.
+			span.setStatus(SpanStatus.UNAUTHENTICATED);
+			throw e;
 		} catch (RuntimeException e) {
 			span.setStatus(SpanStatus.INTERNAL_ERROR);
 			span.setThrowable(e);
