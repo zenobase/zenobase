@@ -1,6 +1,7 @@
 package com.zenobase;
 
 import com.google.inject.Injector;
+import com.zenobase.actions.ExternalGrantFilter;
 import com.zenobase.actions.GatekeeperFilter;
 import com.zenobase.actions.LogContextFilter;
 import com.zenobase.actions.MetricsFilter;
@@ -31,6 +32,7 @@ class Routing {
 		routing.addFilter(injector.getInstance(ScopeFilter.class));
 		routing.addFilter(new TracingFilter());
 		routing.addFilter(injector.getInstance(GatekeeperFilter.class));
+		routing.addFilter(injector.getInstance(ExternalGrantFilter.class));
 		routing.addFilter(injector.getInstance(QuotaExceptionFilter.class));
 
 		// Error handlers
