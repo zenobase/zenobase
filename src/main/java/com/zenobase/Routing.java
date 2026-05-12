@@ -9,6 +9,8 @@ import com.zenobase.actions.ScopeFilter;
 import com.zenobase.actions.SecurityHeadersFilter;
 import com.zenobase.actions.TracingFilter;
 import com.zenobase.controllers.*;
+import com.zenobase.mcp.McpController;
+import com.zenobase.mcp.ProtectedResourceMetadataController;
 import io.helidon.http.HeaderNames;
 import io.helidon.http.HttpException;
 import io.helidon.webserver.http.HttpRouting;
@@ -177,5 +179,18 @@ class Routing {
 
 		var og = injector.getInstance(OpenGraphController.class);
 		routing.get("/og", og::get);
+
+		// Connected apps (third-party / MCP grants)
+		var connectedApps = injector.getInstance(ConnectedAppsController.class);
+		routing.get("/users/{userId}/connected-apps/", connectedApps::list);
+		routing.put("/users/{userId}/connected-apps/{clientId}/grants", connectedApps::putGrants);
+		routing.delete("/users/{userId}/connected-apps/{clientId}", connectedApps::revoke);
+
+		// MCP
+		var mcp = injector.getInstance(McpController.class);
+		routing.post("/mcp", mcp::post);
+
+		var protectedResource = injector.getInstance(ProtectedResourceMetadataController.class);
+		routing.get("/.well-known/oauth-protected-resource", protectedResource::get);
 	}
 }

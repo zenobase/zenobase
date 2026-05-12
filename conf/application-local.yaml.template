@@ -8,6 +8,8 @@ auth0:
   domain: "http://localhost:3000"
   jwks_domain: "http://localauth0:3000"
   audience: "https://api.zenobase.com"
+  # Audience for third-party clients (MCP, REST integrations). Leave empty to disable external access.
+  external_audience: "https://api.zenobase.com/external"
 
 jwt:
   secret: "local-dev-secret"

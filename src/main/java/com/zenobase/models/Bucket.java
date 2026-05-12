@@ -111,14 +111,19 @@ public class Bucket extends DomainNode {
 
 	public boolean hasRole(@Nullable Authorization auth, Role role) {
 		ImmutableList<Entry<Identity, Role>> roles = getValues(ROLES);
-		if (auth != null && (auth.getScope() == null || auth.getScope().equals(getId()))) {
+		String scope = auth != null ? auth.getScope() : null;
+		// Authorization.scope can be: null (first-party token), a bucket id (legacy bucket-scoped token), or a
+		// sentinel like "external" indicating a third-party/MCP token. For role-check purposes only the bucket-scoped
+		// case constrains which bucket is reachable; "external" means "not bucket-scoped" and is treated like null.
+		boolean isBucketScoped = scope != null && !scope.equals(getId()) && !isSentinel(scope);
+		if (auth != null && !isBucketScoped) {
 			for (Map.Entry<Identity, Role> entry : roles) {
 				if (entry.getKey().equals(auth.getPrincipal())) {
 					return entry.getValue().implies(role);
 				}
 			}
 		}
-		if (auth == null || auth.getScope() == null) {
+		if (!isBucketScoped) {
 			for (Map.Entry<Identity, Role> entry : roles) {
 				if (entry.getKey().equals(Identity.PUBLIC)) {
 					return entry.getValue().implies(role);
@@ -126,6 +131,12 @@ public class Bucket extends DomainNode {
 			}
 		}
 		return false;
+	}
+
+	private static boolean isSentinel(String scope) {
+		// Keep in lockstep with Auth0TokenAuthorizer.EXTERNAL_SCOPE — duplicated as a literal here to avoid a dep
+		// from models/ onto auth/.
+		return "external".equals(scope);
 	}
 
 	public void addRole(Identity principal, Role role) {
