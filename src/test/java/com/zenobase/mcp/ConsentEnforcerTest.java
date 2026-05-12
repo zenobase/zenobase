@@ -6,12 +6,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.zenobase.models.Bucket;
-import com.zenobase.models.ExternalBucketGrant;
+import com.zenobase.models.ExternalClient;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.BucketRepository;
-import com.zenobase.repositories.ExternalBucketGrantRepository;
+import com.zenobase.repositories.ExternalClientRepository;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.Test;
 
 public class ConsentEnforcerTest {
@@ -19,8 +21,8 @@ public class ConsentEnforcerTest {
 	private static final String WEB_HOSTNAME = "https://zenobase.test";
 
 	private final BucketRepository buckets = mock(BucketRepository.class);
-	private final ExternalBucketGrantRepository grants = mock(ExternalBucketGrantRepository.class);
-	private final ConsentEnforcer enforcer = new ConsentEnforcer(buckets, grants, WEB_HOSTNAME);
+	private final ExternalClientRepository clients = mock(ExternalClientRepository.class);
+	private final ConsentEnforcer enforcer = new ConsentEnforcer(buckets, clients, WEB_HOSTNAME);
 
 	private final Identity user = new Identity("user-1");
 	private final Identity client = new Identity("client-1");
@@ -31,7 +33,7 @@ public class ConsentEnforcerTest {
 		Bucket bucket = new Bucket("b1");
 		bucket.addRole(user, Role.OWNER);
 		when(buckets.find("b1")).thenReturn(bucket);
-		when(grants.find(user, client, "b1")).thenReturn(new ExternalBucketGrant(user, client, "b1", "read"));
+		when(clients.find(user, client)).thenReturn(connectedClient("b1"));
 
 		assertThat(enforcer.requireRead(auth, "b1")).isSameAs(bucket);
 	}
@@ -39,7 +41,6 @@ public class ConsentEnforcerTest {
 	@Test
 	public void testBucketNotFoundRaisesInvalidParams() {
 		when(buckets.find("b1")).thenReturn(null);
-
 		assertThatThrownBy(() -> enforcer.requireRead(auth, "b1"))
 			.isInstanceOf(McpException.class)
 			.satisfies(e -> assertThat(((McpException) e).getCode()).isEqualTo(McpException.INVALID_PARAMS));
@@ -48,7 +49,6 @@ public class ConsentEnforcerTest {
 	@Test
 	public void testNoRoleRaisesAccessNotGranted() {
 		Bucket bucket = new Bucket("b1");
-		// owned by someone else
 		bucket.addRole(new Identity("someone-else"), Role.OWNER);
 		when(buckets.find("b1")).thenReturn(bucket);
 
@@ -63,11 +63,11 @@ public class ConsentEnforcerTest {
 	}
 
 	@Test
-	public void testNoGrantRaisesAccessNotGranted() {
+	public void testClientNotRegisteredRaisesAccessNotGranted() {
 		Bucket bucket = new Bucket("b1");
 		bucket.addRole(user, Role.OWNER);
 		when(buckets.find("b1")).thenReturn(bucket);
-		when(grants.find(user, client, "b1")).thenReturn(null);
+		when(clients.find(user, client)).thenReturn(null);
 
 		assertThatThrownBy(() -> enforcer.requireRead(auth, "b1"))
 			.isInstanceOf(McpException.class)
@@ -76,22 +76,26 @@ public class ConsentEnforcerTest {
 	}
 
 	@Test
-	public void testWrongRightsRaisesAccessNotGranted() {
+	public void testBucketNotReadableRaisesAccessNotGranted() {
 		Bucket bucket = new Bucket("b1");
 		bucket.addRole(user, Role.OWNER);
 		when(buckets.find("b1")).thenReturn(bucket);
-		when(grants.find(user, client, "b1")).thenReturn(new ExternalBucketGrant(user, client, "b1", "write"));
+		// client is registered but b1 isn't in readable_buckets
+		when(clients.find(user, client)).thenReturn(
+			connectedClient(
+				/* no buckets */
+			)
+		);
 
 		assertThatThrownBy(() -> enforcer.requireRead(auth, "b1"))
 			.isInstanceOf(McpException.class)
 			.satisfies(e -> assertThat(((McpException) e).getCode()).isEqualTo(McpException.ACCESS_NOT_GRANTED))
-			.hasMessageContaining("does not have read access");
+			.hasMessageContaining("has not been granted");
 	}
 
 	@Test
 	public void testTokenWithoutClientRaisesAccessNotGranted() {
 		Authorization authWithoutClient = new Authorization(user, null, "external");
-
 		assertThatThrownBy(() -> enforcer.requireRead(authWithoutClient, "b1"))
 			.isInstanceOf(McpException.class)
 			.satisfies(e -> assertThat(((McpException) e).getCode()).isEqualTo(McpException.ACCESS_NOT_GRANTED));
@@ -100,5 +104,11 @@ public class ConsentEnforcerTest {
 	@Test
 	public void testConsentUrl() {
 		assertThat(enforcer.consentUrl()).isEqualTo(WEB_HOSTNAME + "/settings/connected-apps");
+	}
+
+	private ExternalClient connectedClient(String... readableBuckets) {
+		ExternalClient c = new ExternalClient(user, client, null, new DateTime(2026, 5, 1, 0, 0, DateTimeZone.UTC));
+		c.setReadableBuckets(java.util.List.of(readableBuckets));
+		return c;
 	}
 }

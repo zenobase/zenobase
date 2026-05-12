@@ -3,17 +3,13 @@ package com.zenobase.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.ImmutableSet;
-import com.zenobase.commands.CreateExternalBucketGrantCommand;
-import com.zenobase.commands.DeleteExternalBucketGrantCommand;
+import com.zenobase.commands.UpdateExternalClientGrantsCommand;
 import com.zenobase.common.PartialList;
 import com.zenobase.json.Nodes;
-import com.zenobase.models.ExternalBucketGrant;
 import com.zenobase.models.ExternalClient;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.queries.ExternalClientQuery;
-import com.zenobase.repositories.ExternalBucketGrantRepository;
 import com.zenobase.repositories.ExternalClientRepository;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
@@ -21,7 +17,9 @@ import com.zenobase.services.UserLookup;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import org.jspecify.annotations.Nullable;
 
@@ -36,7 +34,6 @@ public class ConnectedAppsController extends ControllerSupport {
 
 	private final CommandDispatcher dispatcher;
 	private final ExternalClientRepository clients;
-	private final ExternalBucketGrantRepository grants;
 	private final UserRepository users;
 
 	@Inject
@@ -44,17 +41,15 @@ public class ConnectedAppsController extends ControllerSupport {
 		AuthorizationContext auth,
 		CommandDispatcher dispatcher,
 		ExternalClientRepository clients,
-		ExternalBucketGrantRepository grants,
 		UserRepository users
 	) {
 		super(auth);
 		this.dispatcher = dispatcher;
 		this.clients = clients;
-		this.grants = grants;
 		this.users = users;
 	}
 
-	/** {@code GET /users/{userId}/connected-apps/} — list connected clients with their granted bucket IDs. */
+	/** {@code GET /users/{userId}/connected-apps/} — list connected clients with their readable bucket ids. */
 	public void list(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
 		Identity principal = check(auth, req, res);
@@ -70,58 +65,52 @@ public class ConnectedAppsController extends ControllerSupport {
 		PartialList.TOTAL.setValue(result, (int) connected.getTotal());
 		ArrayNode array = result.putArray("connected_apps");
 		for (ExternalClient client : connected) {
-			array.add(toJson(client, grants.grantedBuckets(principal, client.getClient())));
+			array.add(toJson(client));
 		}
 		sendOk(res, result);
 	}
 
 	/**
-	 * {@code PUT /users/{userId}/connected-apps/{clientId}/grants} — replace the grant set for one client. Body is
-	 * {@code {"bucket_ids": ["..."], "rights": "read"}}. Diffs against the existing set and dispatches a
-	 * {@link CreateExternalBucketGrantCommand} or {@link DeleteExternalBucketGrantCommand} per change.
+	 * {@code PUT /users/{userId}/connected-apps/{clientId}} — replace the grant set for one client. Body:
+	 * {@code {"readable_buckets": [...]}}. Dispatches a single {@link UpdateExternalClientGrantsCommand} that snapshots
+	 * the new set.
 	 */
-	public void putGrants(ServerRequest req, ServerResponse res) {
+	public void put(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
 		Identity principal = check(auth, req, res);
 		if (principal == null || auth == null) {
 			return;
 		}
 		Identity client = new Identity(req.path().pathParameters().get("clientId"));
-		ObjectNode body = body(req);
-		String rights = textOr(body, "rights", ExternalBucketGrant.RIGHT_READ);
-		if (!ExternalBucketGrant.RIGHT_READ.equals(rights)) {
-			sendBadRequest(res, "Only 'read' rights are supported");
+		if (clients.find(principal, client) == null) {
+			sendNotFound(res, "connected app not found");
 			return;
 		}
 		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
-		Set<String> desired = parseBucketIds(body);
-		ImmutableSet<String> existing = grants.grantedBuckets(principal, client);
-
-		for (String bucketId : desired) {
-			if (!existing.contains(bucketId)) {
-				ExternalBucketGrant grant = new ExternalBucketGrant(principal, client, bucketId, rights);
-				dispatcher.dispatch(new CreateExternalBucketGrantCommand(auth.getPrincipal(), grant));
-			}
-		}
-		for (String bucketId : existing) {
-			if (!desired.contains(bucketId)) {
-				ExternalBucketGrant grant = grants.find(principal, client, bucketId);
-				if (grant != null) {
-					dispatcher.dispatch(new DeleteExternalBucketGrantCommand(auth.getPrincipal(), grant));
-				}
-			}
-		}
-		ExternalClient existingClient = clients.find(principal, client);
-		ImmutableSet<String> nowGranted = grants.grantedBuckets(principal, client);
+		ObjectNode body = body(req);
+		List<String> readableBuckets = parseBucketIds(body, "readable_buckets");
+		dispatcher.dispatch(
+			new UpdateExternalClientGrantsCommand(auth.getPrincipal(), principal, client, readableBuckets)
+		);
+		ExternalClient updated = clients.find(principal, client);
 		sendOk(
 			res,
-			toJson(existingClient != null ? existingClient : new ExternalClient(principal, client), nowGranted)
+			toJson(
+				updated != null
+					? updated
+					: new ExternalClient(
+							principal,
+							client,
+							null,
+							org.joda.time.DateTime.now(org.joda.time.DateTimeZone.UTC)
+						)
+			)
 		);
 	}
 
-	/** {@code DELETE /users/{userId}/connected-apps/{clientId}} — revoke every grant for this client. */
+	/** {@code DELETE /users/{userId}/connected-apps/{clientId}} — revoke this client entirely. */
 	public void revoke(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
 		Identity principal = check(auth, req, res);
@@ -132,12 +121,8 @@ public class ConnectedAppsController extends ControllerSupport {
 		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
-		for (String bucketId : grants.grantedBuckets(principal, client)) {
-			ExternalBucketGrant grant = grants.find(principal, client, bucketId);
-			if (grant != null) {
-				dispatcher.dispatch(new DeleteExternalBucketGrantCommand(auth.getPrincipal(), grant));
-			}
-		}
+		// Snapshot to empty (audited) and then delete the row.
+		dispatcher.dispatch(new UpdateExternalClientGrantsCommand(auth.getPrincipal(), principal, client, List.of()));
 		clients.delete(principal, client);
 		sendNoContent(res);
 	}
@@ -165,24 +150,24 @@ public class ConnectedAppsController extends ControllerSupport {
 		return principal;
 	}
 
-	private static ObjectNode toJson(ExternalClient client, Set<String> bucketIds) {
+	private static ObjectNode toJson(ExternalClient client) {
 		ObjectNode node = Nodes.newObject();
 		node.put("client_id", client.getClient().id());
 		if (client.getName() != null) {
 			node.put("client_name", client.getName());
 		}
 		node.put("first_seen_at", client.getFirstSeen().toString());
-		node.put("last_used_at", client.getLastUsed().toString());
-		ArrayNode array = node.putArray("granted_bucket_ids");
-		for (String bucketId : bucketIds) {
-			array.add(bucketId);
+		ArrayNode readable = node.putArray("readable_buckets");
+		for (String bucketId : client.getReadableBuckets()) {
+			readable.add(bucketId);
 		}
 		return node;
 	}
 
-	private static Set<String> parseBucketIds(ObjectNode body) {
-		Set<String> result = new HashSet<>();
-		JsonNode array = body.get("bucket_ids");
+	private static List<String> parseBucketIds(ObjectNode body, String field) {
+		// LinkedHashSet preserves the order from the body while deduping
+		Set<String> result = new LinkedHashSet<>();
+		JsonNode array = body.get(field);
 		if (array != null && array.isArray()) {
 			for (JsonNode value : array) {
 				if (value.isTextual() && !value.asText().isBlank()) {
@@ -190,11 +175,6 @@ public class ConnectedAppsController extends ControllerSupport {
 				}
 			}
 		}
-		return result;
-	}
-
-	private static String textOr(ObjectNode body, String key, String defaultValue) {
-		JsonNode value = body.get(key);
-		return value != null && value.isTextual() ? value.asText() : defaultValue;
+		return new ArrayList<>(result);
 	}
 }

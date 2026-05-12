@@ -10,12 +10,13 @@ import com.zenobase.mcp.ConsentEnforcer;
 import com.zenobase.mcp.McpException;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
+import com.zenobase.models.ExternalClient;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.queries.BucketQuery;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.EventRepository;
-import com.zenobase.repositories.ExternalBucketGrantRepository;
+import com.zenobase.repositories.ExternalClientRepository;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,19 +36,19 @@ public class BucketResourceProvider {
 
 	private final BucketRepository buckets;
 	private final EventRepository events;
-	private final ExternalBucketGrantRepository grants;
+	private final ExternalClientRepository clients;
 	private final ConsentEnforcer enforcer;
 
 	@Inject
 	public BucketResourceProvider(
 		BucketRepository buckets,
 		EventRepository events,
-		ExternalBucketGrantRepository grants,
+		ExternalClientRepository clients,
 		ConsentEnforcer enforcer
 	) {
 		this.buckets = buckets;
 		this.events = events;
-		this.grants = grants;
+		this.clients = clients;
 		this.enforcer = enforcer;
 	}
 
@@ -55,13 +56,15 @@ public class BucketResourceProvider {
 	public ObjectNode list(Authorization auth) {
 		ObjectNode result = Nodes.newObject();
 		ArrayNode array = result.putArray("resources");
-		Identity client = auth.getClient();
-		if (client == null) {
+		Identity clientId = auth.getClient();
+		if (clientId == null) {
 			// No client_id on the token — nothing we can match against grants. Return empty plus a consent URL hint.
 			result.putObject("_meta").put("consent_url", enforcer.consentUrl());
 			return result;
 		}
-		ImmutableSet<String> grantedBucketIds = grants.grantedBuckets(auth.getPrincipal(), client);
+		ExternalClient client = clients.find(auth.getPrincipal(), clientId);
+		ImmutableSet<String> readable =
+			client != null ? ImmutableSet.copyOf(client.getReadableBuckets()) : ImmutableSet.of();
 		PartialList<Bucket> userBuckets = buckets.find(
 			new BucketQuery().principalEqualTo(auth.getPrincipal()).includeArchived(true),
 			BucketQuery.DEFAULT_ORDER,
@@ -69,7 +72,7 @@ public class BucketResourceProvider {
 			LIST_LIMIT
 		);
 		for (Bucket bucket : userBuckets) {
-			if (!grantedBucketIds.contains(bucket.getId())) {
+			if (!readable.contains(bucket.getId())) {
 				continue;
 			}
 			array.add(toResource(bucket));

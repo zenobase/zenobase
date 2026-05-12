@@ -16,20 +16,24 @@ import com.google.inject.name.Names;
 import com.zenobase.auth.UserStateCache;
 import com.zenobase.auth.auth0.Auth0TokenAuthorizer;
 import com.zenobase.auth.auth0.Auth0TokenValidator;
+import com.zenobase.commands.CreateExternalClientCommand;
 import com.zenobase.controllers.AuthorizationContext;
 import com.zenobase.controllers.ControllerTestSupport;
 import com.zenobase.json.Nodes;
+import com.zenobase.models.ExternalClient;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.ExternalClientRepository;
+import com.zenobase.services.CommandDispatcher;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import io.helidon.webserver.http.HttpRouting;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.Test;
 
 /**
  * HTTP-level test for the {@code POST /mcp} entry controller — auth gating, RFC 9728 challenge, suspended-user
- * handling, and successful dispatch into {@link McpJsonRpcHandler}. The handler itself is exercised by
- * {@link McpJsonRpcHandlerTest}; here we just confirm the McpController plumbing.
+ * handling, first-observation registration, and successful dispatch into {@link McpJsonRpcHandler}.
  */
 public class McpControllerTest extends ControllerTestSupport {
 
@@ -38,6 +42,7 @@ public class McpControllerTest extends ControllerTestSupport {
 	private final AuthorizationContext authContext = mock(AuthorizationContext.class);
 	private final McpJsonRpcHandler handler = mock(McpJsonRpcHandler.class);
 	private final ExternalClientRepository clients = mock(ExternalClientRepository.class);
+	private final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
 	private final Auth0TokenValidator validator = Auth0Fixture.makeValidator(
 		"https://api.zenobase.com",
 		"https://api.zenobase.com/external"
@@ -54,6 +59,7 @@ public class McpControllerTest extends ControllerTestSupport {
 				bind(AuthorizationContext.class).toInstance(authContext);
 				bind(McpJsonRpcHandler.class).toInstance(handler);
 				bind(ExternalClientRepository.class).toInstance(clients);
+				bind(CommandDispatcher.class).toInstance(dispatcher);
 				bind(Auth0TokenValidator.class).toInstance(validator);
 				bindConstant().annotatedWith(Names.named("api.hostname")).to(API_HOSTNAME);
 				bind(McpController.class).in(Singleton.class);
@@ -79,15 +85,17 @@ public class McpControllerTest extends ControllerTestSupport {
 				);
 		}
 		verify(handler, never()).handle(any(), any());
+		verify(dispatcher, never()).dispatch(any());
 	}
 
 	@Test
 	public void testFirstPartyTokenForbidden() {
-		when(authContext.current(any())).thenReturn(new Authorization(user)); // scope=null, first-party
+		when(authContext.current(any())).thenReturn(new Authorization(user));
 		try (Http1ClientResponse result = client.post("/mcp").submit(Nodes.newObject())) {
 			assertThat(result).hasStatus(403);
 		}
 		verify(handler, never()).handle(any(), any());
+		verify(dispatcher, never()).dispatch(any());
 	}
 
 	@Test
@@ -100,29 +108,47 @@ public class McpControllerTest extends ControllerTestSupport {
 			assertThat(result).hasStatus(403);
 		}
 		verify(handler, never()).handle(any(), any());
+		verify(dispatcher, never()).dispatch(any());
 	}
 
 	@Test
-	public void testExternalTokenDispatchesToHandler() {
+	public void testFirstObservationDispatchesCreateCommand() {
 		when(authContext.current(any())).thenReturn(
 			new Authorization(user, clientId, Auth0TokenAuthorizer.EXTERNAL_SCOPE)
 		);
 		when(authContext.userState(user)).thenReturn(UserStateCache.UserState.ACTIVE);
+		when(clients.find(user, clientId)).thenReturn(null);
 		ObjectNode handlerResponse = Nodes.newObject("jsonrpc", "2.0");
 		handlerResponse.put("id", 1);
 		handlerResponse.set("result", Nodes.newObject());
 		when(handler.handle(any(), any())).thenReturn(handlerResponse);
 
-		ObjectNode request = Nodes.newObject();
-		request.put("jsonrpc", "2.0");
-		request.put("id", 1);
-		request.put("method", "ping");
-
-		try (Http1ClientResponse result = client.post("/mcp").submit(request)) {
+		try (Http1ClientResponse result = client.post("/mcp").submit(ping())) {
 			assertThat(result).hasStatus(200);
 		}
+		verify(dispatcher).dispatch(any(CreateExternalClientCommand.class));
 		verify(handler).handle(any(), any());
-		verify(clients).touch(user, clientId, null);
+	}
+
+	@Test
+	public void testSubsequentObservationSkipsCommand() {
+		when(authContext.current(any())).thenReturn(
+			new Authorization(user, clientId, Auth0TokenAuthorizer.EXTERNAL_SCOPE)
+		);
+		when(authContext.userState(user)).thenReturn(UserStateCache.UserState.ACTIVE);
+		when(clients.find(user, clientId)).thenReturn(
+			new ExternalClient(user, clientId, null, new DateTime(2026, 5, 1, 0, 0, DateTimeZone.UTC))
+		);
+		ObjectNode handlerResponse = Nodes.newObject("jsonrpc", "2.0");
+		handlerResponse.put("id", 1);
+		handlerResponse.set("result", Nodes.newObject());
+		when(handler.handle(any(), any())).thenReturn(handlerResponse);
+
+		try (Http1ClientResponse result = client.post("/mcp").submit(ping())) {
+			assertThat(result).hasStatus(200);
+		}
+		verify(dispatcher, never()).dispatch(any());
+		verify(handler).handle(any(), any());
 	}
 
 	@Test
@@ -147,5 +173,14 @@ public class McpControllerTest extends ControllerTestSupport {
 			assertThat(result).hasStatus(401);
 		}
 		verify(handler, never()).handle(any(), any());
+		verify(dispatcher, never()).dispatch(any());
+	}
+
+	private static ObjectNode ping() {
+		ObjectNode req = Nodes.newObject();
+		req.put("jsonrpc", "2.0");
+		req.put("id", 1);
+		req.put("method", "ping");
+		return req;
 	}
 }

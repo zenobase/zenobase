@@ -125,7 +125,6 @@ class Module extends AbstractModule {
 		}
 		bind(AuthorizationContext.class).in(Singleton.class);
 		bind(UserStateCache.class).in(Singleton.class);
-		bind(ExternalBucketGrantRepository.class).in(Singleton.class);
 		bind(ExternalClientRepository.class).in(Singleton.class);
 		bind(ConsentEnforcer.class).in(Singleton.class);
 		bind(BucketResourceProvider.class).in(Singleton.class);
@@ -175,8 +174,8 @@ class Module extends AbstractModule {
 		parsers.addBinding().to(CreateCredentialsCommand.Parser.class);
 		parsers.addBinding().to(UpdateCredentialsCommand.Parser.class);
 		parsers.addBinding().to(DeleteCredentialsCommand.Parser.class);
-		parsers.addBinding().to(CreateExternalBucketGrantCommand.Parser.class);
-		parsers.addBinding().to(DeleteExternalBucketGrantCommand.Parser.class);
+		parsers.addBinding().to(CreateExternalClientCommand.Parser.class);
+		parsers.addBinding().to(UpdateExternalClientGrantsCommand.Parser.class);
 		parsers.addBinding().to(CompoundCommand.Parser.class);
 	}
 
@@ -207,8 +206,8 @@ class Module extends AbstractModule {
 		handlers.addBinding().to(CreateCredentialsCommand.Handler.class);
 		handlers.addBinding().to(UpdateCredentialsCommand.Handler.class);
 		handlers.addBinding().to(DeleteCredentialsCommand.Handler.class);
-		handlers.addBinding().to(CreateExternalBucketGrantCommand.Handler.class);
-		handlers.addBinding().to(DeleteExternalBucketGrantCommand.Handler.class);
+		handlers.addBinding().to(CreateExternalClientCommand.Handler.class);
+		handlers.addBinding().to(UpdateExternalClientGrantsCommand.Handler.class);
 	}
 
 	private void bindCredentialsManagers() {

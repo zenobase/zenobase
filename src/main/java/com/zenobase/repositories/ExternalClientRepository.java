@@ -30,6 +30,18 @@ public class ExternalClientRepository extends RepositorySupport<ExternalClient> 
 		}
 	}
 
+	public void store(ExternalClient client) {
+		index.store(client, true);
+	}
+
+	public void update(ExternalClient client) {
+		index.update(client, true);
+	}
+
+	public boolean delete(Identity user, Identity client) {
+		return index.delete(ExternalClient.id(user, client), true);
+	}
+
 	public @Nullable ExternalClient find(String id) {
 		ObjectNode node = index.get(id);
 		return node != null ? toObject(node) : null;
@@ -50,28 +62,6 @@ public class ExternalClientRepository extends RepositorySupport<ExternalClient> 
 			.trackTotalHits(t -> t.enabled(true));
 		ExternalClientQuery.DEFAULT_ORDER.apply(builder);
 		return new ExternalClientList(index.find(builder.build()));
-	}
-
-	/** Records that a token was observed for {@code (user, client)} — opportunistic upsert, no command audit. */
-	public void touch(Identity user, Identity client, @Nullable String name) {
-		ExternalClient existing = find(user, client);
-		if (existing == null) {
-			ExternalClient created = new ExternalClient(user, client);
-			if (name != null) {
-				created.setName(name);
-			}
-			index.store(created, false);
-		} else {
-			existing.touch();
-			if (name != null && existing.getName() == null) {
-				existing.setName(name);
-			}
-			index.update(existing, false);
-		}
-	}
-
-	public boolean delete(Identity user, Identity client) {
-		return index.delete(ExternalClient.id(user, client), true);
 	}
 
 	@Override
