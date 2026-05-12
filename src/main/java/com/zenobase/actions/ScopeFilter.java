@@ -11,12 +11,12 @@ import io.sentry.protocol.Request;
 import io.sentry.protocol.User;
 import jakarta.inject.Inject;
 
-public class SentryFilter implements Filter {
+public class ScopeFilter implements Filter {
 
 	private final AuthorizationContext authContext;
 
 	@Inject
-	public SentryFilter(AuthorizationContext authContext) {
+	public ScopeFilter(AuthorizationContext authContext) {
 		this.authContext = authContext;
 	}
 

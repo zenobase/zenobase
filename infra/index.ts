@@ -15,6 +15,7 @@ const opensearchVersion = config.get("opensearchVersion") || "OpenSearch_3.3";
 const webHostname = config.get("webHostname") || "http://localhost:5173";
 const apiHostname = config.get("apiHostname") || "http://localhost:9000";
 const sentryDsn = config.get("sentryDsn") || "";
+const sentryTracesSampleRate = config.get("sentryTracesSampleRate") || "1.0";
 const bastionEnabled = config.get("bastionEnabled") === "true";
 const fargateCpu = config.get("fargateCpu") || "1024";
 const fargateMemory = config.get("fargateMemory") || "2048";
@@ -735,6 +736,7 @@ const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
                 { name: "API_HOSTNAME", value: apiHostname },
                 { name: "SENTRY_DSN", value: sentryDsn },
                 { name: "SENTRY_RELEASE", value: imageTag },
+                { name: "SENTRY_TRACES_SAMPLE_RATE", value: sentryTracesSampleRate },
             ],
             secrets: [
                 { name: "APPLICATION_CONF", valueFrom: secretArn },

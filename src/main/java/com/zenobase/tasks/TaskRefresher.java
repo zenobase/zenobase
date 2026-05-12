@@ -7,6 +7,9 @@ import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
+import io.sentry.ISpan;
+import io.sentry.Sentry;
+import io.sentry.SpanStatus;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +42,26 @@ public class TaskRefresher {
 			logger.info("Skipping refresh: already in flight for {}", task.getId());
 			return;
 		}
+		ISpan parent = Sentry.getSpan();
+		ISpan span =
+			parent != null
+				? parent.startChild("task.refresh", task.getType())
+				: Sentry.startTransaction("task.refresh", "task.refresh");
+		span.setData("task.id", task.getId());
+		span.setData("task.type", task.getType());
 		try {
 			doRefresh(task);
+			span.setStatus(SpanStatus.OK);
+		} catch (CredentialsException e) {
+			// User needs to re-authorize: a known soft condition, not an internal error.
+			span.setStatus(SpanStatus.UNAUTHENTICATED);
+			throw e;
+		} catch (RuntimeException e) {
+			span.setStatus(SpanStatus.INTERNAL_ERROR);
+			span.setThrowable(e);
+			throw e;
 		} finally {
+			span.finish();
 			bus.unlock(lockId);
 		}
 	}

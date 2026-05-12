@@ -2,6 +2,10 @@ package com.zenobase.jobs;
 
 import com.google.common.collect.ImmutableList;
 import com.zenobase.services.Bus;
+import io.sentry.ISentryLifecycleToken;
+import io.sentry.ITransaction;
+import io.sentry.Sentry;
+import io.sentry.SpanStatus;
 import jakarta.inject.Inject;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -40,10 +44,16 @@ public class Scheduler {
 	private void schedule(Job job) {
 		schedule(job.getBegin(), job.getPeriod(), () -> {
 			if (!bus.isReadOnly() && !bus.isSchedulerDisabled()) {
-				try {
+				ITransaction txn = Sentry.startTransaction(job.getLabel(), "task.job");
+				try (ISentryLifecycleToken ignored = txn.makeCurrent()) {
 					job.run();
+					txn.setStatus(SpanStatus.OK);
 				} catch (Exception e) {
+					txn.setStatus(SpanStatus.INTERNAL_ERROR);
+					txn.setThrowable(e);
 					logger.error("Could not run job: {}", job.getLabel(), e);
+				} finally {
+					txn.finish();
 				}
 			}
 		});
