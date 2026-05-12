@@ -28,7 +28,7 @@ import org.jspecify.annotations.Nullable;
  * of their buckets. First-party auth only — rejects external-audience tokens via the {@code auth.getScope() != null}
  * check used elsewhere in the codebase.
  */
-public class ConnectedAppsController extends ControllerSupport {
+public class ExternalClientController extends ControllerSupport {
 
 	private static final int LIMIT = 100;
 
@@ -37,7 +37,7 @@ public class ConnectedAppsController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-	public ConnectedAppsController(
+	public ExternalClientController(
 		AuthorizationContext auth,
 		CommandDispatcher dispatcher,
 		ExternalClientRepository clients,

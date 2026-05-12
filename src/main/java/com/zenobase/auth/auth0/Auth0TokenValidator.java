@@ -38,14 +38,14 @@ public class Auth0TokenValidator {
 	) {}
 
 	private final String issuer;
-	private final String firstPartyAudience;
+	private final String internalAudience;
 	private final @Nullable String externalAudience;
 	private final JWTVerifier verifier;
 
 	@Inject
 	public Auth0TokenValidator(
 		@Named("auth0.domain") String domain,
-		@Named("auth0.audience") String audience,
+		@Named("auth0.audience") String internalAudience,
 		@Named("auth0.external_audience") String externalAudience,
 		@Named("auth0.jwks_domain") String jwksDomain
 	) {
@@ -81,10 +81,10 @@ public class Auth0TokenValidator {
 		};
 		Algorithm algorithm = Algorithm.RSA256(keyProvider);
 		this.issuer = domain.startsWith("http") ? domain + "/" : "https://" + domain + "/";
-		this.firstPartyAudience = audience;
+		this.internalAudience = internalAudience;
 		this.externalAudience = externalAudience.isEmpty() ? null : externalAudience;
 		List<String> audiences = new ArrayList<>();
-		audiences.add(audience);
+		audiences.add(internalAudience);
 		if (this.externalAudience != null) {
 			audiences.add(this.externalAudience);
 		}
@@ -98,8 +98,8 @@ public class Auth0TokenValidator {
 		return issuer;
 	}
 
-	public String firstPartyAudience() {
-		return firstPartyAudience;
+	public String internalAudience() {
+		return internalAudience;
 	}
 
 	public @Nullable String externalAudience() {
@@ -136,7 +136,7 @@ public class Auth0TokenValidator {
 			return null;
 		}
 		for (String value : aud) {
-			if (value.equals(firstPartyAudience) || value.equals(externalAudience)) {
+			if (value.equals(internalAudience) || value.equals(externalAudience)) {
 				return value;
 			}
 		}

@@ -31,7 +31,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.Test;
 
-public class ConnectedAppsControllerTest extends ControllerTestSupport {
+public class ExternalClientControllerTest extends ControllerTestSupport {
 
 	private final AuthorizationContext auth = mock(AuthorizationContext.class);
 	private final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
@@ -51,14 +51,14 @@ public class ConnectedAppsControllerTest extends ControllerTestSupport {
 				bind(CommandDispatcher.class).toInstance(dispatcher);
 				bind(ExternalClientRepository.class).toInstance(clients);
 				bind(UserRepository.class).toInstance(users);
-				bind(ConnectedAppsController.class).in(Singleton.class);
+				bind(ExternalClientController.class).in(Singleton.class);
 			}
 		};
 	}
 
 	@Override
 	protected void routing(HttpRouting.Builder builder, Injector injector) {
-		ConnectedAppsController controller = injector.getInstance(ConnectedAppsController.class);
+		ExternalClientController controller = injector.getInstance(ExternalClientController.class);
 		builder.get("/users/{userId}/connected-apps/", controller::list);
 		builder.put("/users/{userId}/connected-apps/{clientId}", controller::put);
 		builder.delete("/users/{userId}/connected-apps/{clientId}", controller::revoke);

@@ -183,7 +183,7 @@ class Routing {
 		routing.get("/og", og::get);
 
 		// Connected apps (third-party / MCP grants)
-		var connectedApps = injector.getInstance(ConnectedAppsController.class);
+		var connectedApps = injector.getInstance(ExternalClientController.class);
 		routing.get("/users/{userId}/connected-apps/", connectedApps::list);
 		routing.put("/users/{userId}/connected-apps/{clientId}", connectedApps::put);
 		routing.delete("/users/{userId}/connected-apps/{clientId}", connectedApps::revoke);

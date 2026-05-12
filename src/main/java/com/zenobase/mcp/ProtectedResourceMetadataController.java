@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.auth.auth0.Auth0TokenAuthorizer;
 import com.zenobase.auth.auth0.Auth0TokenValidator;
 import com.zenobase.json.Nodes;
+import io.helidon.http.Status;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
@@ -26,7 +27,7 @@ public class ProtectedResourceMetadataController {
 	public void get(ServerRequest req, ServerResponse res) {
 		String externalAudience = validator.externalAudience();
 		if (externalAudience == null) {
-			res.status(io.helidon.http.Status.NOT_FOUND_404).send();
+			res.status(Status.NOT_FOUND_404).send();
 			return;
 		}
 		ObjectNode node = Nodes.newObject();

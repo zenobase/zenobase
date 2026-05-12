@@ -125,16 +125,7 @@ class Module extends AbstractModule {
 		}
 		bind(AuthorizationContext.class).in(Singleton.class);
 		bind(UserStateCache.class).in(Singleton.class);
-		bind(ExternalClientRepository.class).in(Singleton.class);
-		bind(ConsentEnforcer.class).in(Singleton.class);
-		bind(BucketResourceProvider.class).in(Singleton.class);
-		bind(McpJsonRpcHandler.class).in(Singleton.class);
-		var mcpTools = Multibinder.newSetBinder(binder(), McpTool.class);
-		mcpTools.addBinding().to(EventsTool.class);
-		mcpTools.addBinding().to(StatsTool.class);
-		mcpTools.addBinding().to(HistogramTool.class);
-		mcpTools.addBinding().to(TimelineTool.class);
-		mcpTools.addBinding().to(TermsTool.class);
+		bindMcp();
 		bind(TaskRepository.class).in(Singleton.class);
 		bind(TaskRefresher.class).in(Singleton.class);
 		bind(CredentialsRepository.class).in(Singleton.class);
@@ -145,6 +136,19 @@ class Module extends AbstractModule {
 		if (isConfigured("foursquare")) {
 			bind(FoursquareVenues.class).in(Singleton.class);
 		}
+	}
+
+	private void bindMcp() {
+		bind(ExternalClientRepository.class).in(Singleton.class);
+		bind(ConsentEnforcer.class).in(Singleton.class);
+		bind(BucketResourceProvider.class).in(Singleton.class);
+		bind(McpJsonRpcHandler.class).in(Singleton.class);
+		var tools = Multibinder.newSetBinder(binder(), McpTool.class);
+		tools.addBinding().to(EventsTool.class);
+		tools.addBinding().to(StatsTool.class);
+		tools.addBinding().to(HistogramTool.class);
+		tools.addBinding().to(TimelineTool.class);
+		tools.addBinding().to(TermsTool.class);
 	}
 
 	private void bindCommandParsers() {
@@ -301,7 +305,7 @@ class Module extends AbstractModule {
 		bind(RedirectController.class).in(Singleton.class);
 		bind(OpenGraphController.class).in(Singleton.class);
 		bind(QuotaController.class).in(Singleton.class);
-		bind(ConnectedAppsController.class).in(Singleton.class);
+		bind(ExternalClientController.class).in(Singleton.class);
 		bind(McpController.class).in(Singleton.class);
 		bind(ProtectedResourceMetadataController.class).in(Singleton.class);
 	}

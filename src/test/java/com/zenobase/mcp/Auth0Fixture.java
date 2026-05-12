@@ -45,8 +45,8 @@ final class Auth0Fixture {
 
 	private Auth0Fixture() {}
 
-	static Auth0TokenValidator makeValidator(String firstPartyAudience, String externalAudience) {
-		return new Auth0TokenValidator("http://localhost:" + PORT, firstPartyAudience, externalAudience, "");
+	static Auth0TokenValidator makeValidator(String internalAudience, String externalAudience) {
+		return new Auth0TokenValidator("http://localhost:" + PORT, internalAudience, externalAudience, "");
 	}
 
 	private static String jwksJson(RSAPublicKey key) {
