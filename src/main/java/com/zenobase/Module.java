@@ -5,7 +5,7 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
-import com.zenobase.actions.SentryFilter;
+import com.zenobase.actions.ScopeFilter;
 import com.zenobase.auth.TokenValidator;
 import com.zenobase.auth.UserDirectory;
 import com.zenobase.auth.UserStateCache;
@@ -253,7 +253,7 @@ class Module extends AbstractModule {
 	}
 
 	private void bindControllers() {
-		bind(SentryFilter.class).in(Singleton.class);
+		bind(ScopeFilter.class).in(Singleton.class);
 
 		bind(AccountController.class).in(Singleton.class);
 		bind(BucketController.class).in(Singleton.class);

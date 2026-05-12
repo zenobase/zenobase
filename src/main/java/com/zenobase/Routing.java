@@ -5,8 +5,9 @@ import com.zenobase.actions.GatekeeperFilter;
 import com.zenobase.actions.LogContextFilter;
 import com.zenobase.actions.MetricsFilter;
 import com.zenobase.actions.QuotaExceptionFilter;
+import com.zenobase.actions.ScopeFilter;
 import com.zenobase.actions.SecurityHeadersFilter;
-import com.zenobase.actions.SentryFilter;
+import com.zenobase.actions.TracingFilter;
 import com.zenobase.controllers.*;
 import io.helidon.http.HeaderNames;
 import io.helidon.http.HttpException;
@@ -25,7 +26,8 @@ class Routing {
 		routing.addFilter(new SecurityHeadersFilter());
 		routing.addFilter(injector.getInstance(LogContextFilter.class));
 		routing.addFilter(new MetricsFilter());
-		routing.addFilter(injector.getInstance(SentryFilter.class));
+		routing.addFilter(injector.getInstance(ScopeFilter.class));
+		routing.addFilter(new TracingFilter());
 		routing.addFilter(injector.getInstance(GatekeeperFilter.class));
 		routing.addFilter(injector.getInstance(QuotaExceptionFilter.class));
 
