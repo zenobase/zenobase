@@ -127,8 +127,11 @@ public class Auth0TokenValidator {
 	}
 
 	/**
-	 * Picks the audience from the token's {@code aud} claim that matches one of our configured audiences.
-	 * Tokens with multiple audiences are unusual; the verifier already required at least one to match.
+	 * Picks the audience from the token's {@code aud} claim that matches one of our configured audiences. Auth0 should
+	 * not issue a token whose {@code aud} contains both the internal and external audiences, but if a misconfiguration
+	 * or future change ever produced one, we prefer the external audience — external tokens are the more restrictive
+	 * treatment (scope is "external", which blocks cross-user PUBLIC access and is gated by ExternalGrantFilter on
+	 * sensitive REST routes), so picking it is the fail-closed direction.
 	 */
 	private @Nullable String pickAudience(DecodedJWT jwt) {
 		List<String> aud = jwt.getAudience();
@@ -136,7 +139,12 @@ public class Auth0TokenValidator {
 			return null;
 		}
 		for (String value : aud) {
-			if (value.equals(internalAudience) || value.equals(externalAudience)) {
+			if (value.equals(externalAudience)) {
+				return value;
+			}
+		}
+		for (String value : aud) {
+			if (value.equals(internalAudience)) {
 				return value;
 			}
 		}

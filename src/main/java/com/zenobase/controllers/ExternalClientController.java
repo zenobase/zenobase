@@ -6,10 +6,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.commands.UpdateExternalClientGrantsCommand;
 import com.zenobase.common.PartialList;
 import com.zenobase.json.Nodes;
+import com.zenobase.models.Bucket;
 import com.zenobase.models.ExternalClient;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.queries.ExternalClientQuery;
+import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.ExternalClientRepository;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
@@ -34,6 +37,7 @@ public class ExternalClientController extends ControllerSupport {
 
 	private final CommandDispatcher dispatcher;
 	private final ExternalClientRepository clients;
+	private final BucketRepository buckets;
 	private final UserRepository users;
 
 	@Inject
@@ -41,11 +45,13 @@ public class ExternalClientController extends ControllerSupport {
 		AuthorizationContext auth,
 		CommandDispatcher dispatcher,
 		ExternalClientRepository clients,
+		BucketRepository buckets,
 		UserRepository users
 	) {
 		super(auth);
 		this.dispatcher = dispatcher;
 		this.clients = clients;
+		this.buckets = buckets;
 		this.users = users;
 	}
 
@@ -91,6 +97,16 @@ public class ExternalClientController extends ControllerSupport {
 		}
 		ObjectNode body = body(req);
 		List<String> readableBuckets = parseBucketIds(body, "readable_buckets");
+		// Validate that each requested bucket is one the user actually owns. Without this, the user could persist
+		// arbitrary bucket ids on their grant record — currently inert because Bucket.hasRole gates reads, but it would
+		// pollute the audit trail and become exploitable if the role check ever loosened.
+		for (String bucketId : readableBuckets) {
+			Bucket bucket = buckets.find(bucketId);
+			if (bucket == null || !bucket.hasRole(new Authorization(principal), Role.OWNER)) {
+				sendBadRequest(res, "not the owner of bucket: " + bucketId);
+				return;
+			}
+		}
 		dispatcher.dispatch(
 			new UpdateExternalClientGrantsCommand(auth.getPrincipal(), principal, client, readableBuckets)
 		);
