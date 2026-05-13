@@ -17,7 +17,7 @@ import jakarta.inject.Named;
  * <ol>
  *   <li>Zenobase's existing role check ({@code bucket.hasRole(auth, Role.VIEWER)}) — same as REST controllers.</li>
  *   <li>An entry in the requesting client's {@code readable_buckets} list — the per-bucket consent the user issues via
- *       the Connected Apps page.</li>
+ *       the API clients section of Settings.</li>
  * </ol>
  *
  * Anything not satisfying both raises an {@link McpException} that the JSON-RPC layer serializes appropriately.
