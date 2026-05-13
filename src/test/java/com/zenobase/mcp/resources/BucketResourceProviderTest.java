@@ -68,14 +68,12 @@ public class BucketResourceProviderTest {
 				/* none */
 			)
 		);
-		when(enforcer.consentUrl()).thenReturn("https://zenobase.test/settings/external-clients");
+		when(enforcer.consentUrl()).thenReturn("https://zenobase.test/#/settings");
 
 		ObjectNode result = provider.list(auth);
 
 		assertThat(result.get("resources")).isEmpty();
-		assertThat(result.get("_meta").get("consent_url").asText()).isEqualTo(
-			"https://zenobase.test/settings/external-clients"
-		);
+		assertThat(result.get("_meta").get("consent_url").asText()).isEqualTo("https://zenobase.test/#/settings");
 	}
 
 	@Test
@@ -84,14 +82,12 @@ public class BucketResourceProviderTest {
 			bucketList(bucket("b1", "Weight"))
 		);
 		when(clients.find(user, clientId)).thenReturn(null);
-		when(enforcer.consentUrl()).thenReturn("https://zenobase.test/settings/external-clients");
+		when(enforcer.consentUrl()).thenReturn("https://zenobase.test/#/settings");
 
 		ObjectNode result = provider.list(auth);
 
 		assertThat(result.get("resources")).isEmpty();
-		assertThat(result.get("_meta").get("consent_url").asText()).isEqualTo(
-			"https://zenobase.test/settings/external-clients"
-		);
+		assertThat(result.get("_meta").get("consent_url").asText()).isEqualTo("https://zenobase.test/#/settings");
 	}
 
 	@Test
@@ -111,7 +107,7 @@ public class BucketResourceProviderTest {
 	@Test
 	public void testListEmptyWhenTokenHasNoClient() {
 		Authorization withoutClient = new Authorization(user, null, "external");
-		when(enforcer.consentUrl()).thenReturn("https://zenobase.test/settings/external-clients");
+		when(enforcer.consentUrl()).thenReturn("https://zenobase.test/#/settings");
 
 		ObjectNode result = provider.list(withoutClient);
 

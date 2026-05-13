@@ -69,7 +69,7 @@ public class ConsentEnforcer {
 	}
 
 	public String consentUrl() {
-		return webHostname + "/settings/external-clients";
+		return webHostname + "/#/settings";
 	}
 
 	private com.fasterxml.jackson.databind.node.ObjectNode consentData() {

@@ -102,7 +102,7 @@ public class ExternalGrantFilter implements Filter {
 	private void sendForbidden(RoutingResponse res, String message) {
 		ObjectNode body = Nodes.newObject();
 		body.put("message", message);
-		body.put("consent_url", webHostname + "/settings/external-clients");
+		body.put("consent_url", webHostname + "/#/settings");
 		res.status(Status.FORBIDDEN_403);
 		res.header(HeaderNames.CONTENT_TYPE, "application/json");
 		res.send(body.toString());
