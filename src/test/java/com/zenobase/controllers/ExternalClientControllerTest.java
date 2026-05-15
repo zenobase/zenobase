@@ -1,6 +1,7 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
@@ -97,14 +98,10 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 		try (Http1ClientResponse result = client.get("/users/" + user.getId() + "/external-clients/").request()) {
 			ObjectNode body = result.entity().as(ObjectNode.class);
 			assertThat(result).hasStatus(200);
-			org.assertj.core.api.Assertions.assertThat(body.get("total").asInt()).isEqualTo(1);
-			org.assertj.core.api.Assertions.assertThat(body.get("external_clients")).hasSize(1);
-			org.assertj.core.api.Assertions.assertThat(
-				body.get("external_clients").get(0).get("client_id").asText()
-			).isEqualTo("claude-desktop");
-			org.assertj.core.api.Assertions.assertThat(
-				body.get("external_clients").get(0).get("readable_buckets")
-			).hasSize(2);
+			assertThat(body.get("total").asInt()).isEqualTo(1);
+			assertThat(body.get("external_clients")).hasSize(1);
+			assertThat(body.get("external_clients").get(0).get("client_id").asText()).isEqualTo("claude-desktop");
+			assertThat(body.get("external_clients").get(0).get("readable_buckets")).hasSize(2);
 		}
 	}
 
@@ -128,7 +125,7 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 		) {
 			ObjectNode response = result.entity().as(ObjectNode.class);
 			assertThat(result).hasStatus(200);
-			org.assertj.core.api.Assertions.assertThat(response.get("readable_buckets")).hasSize(2);
+			assertThat(response.get("readable_buckets")).hasSize(2);
 		}
 		verify(dispatcher).dispatch(any(UpdateExternalClientGrantsCommand.class));
 	}
