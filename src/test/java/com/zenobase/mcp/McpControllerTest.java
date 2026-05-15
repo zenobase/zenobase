@@ -70,6 +70,7 @@ public class McpControllerTest extends ControllerTestSupport {
 	@Override
 	protected void routing(HttpRouting.Builder builder, Injector injector) {
 		McpController controller = injector.getInstance(McpController.class);
+		builder.get("/mcp", controller::get);
 		builder.post("/mcp", controller::post);
 	}
 
@@ -161,6 +162,37 @@ public class McpControllerTest extends ControllerTestSupport {
 
 		try (Http1ClientResponse result = client.post("/mcp").submit(Nodes.newObject())) {
 			assertThat(result).hasStatus(204);
+		}
+	}
+
+	@Test
+	public void testGetUnauthenticatedReturns401WithRfc9728Challenge() {
+		when(authContext.current(any())).thenReturn(null);
+		try (Http1ClientResponse result = client.get("/mcp").request()) {
+			assertThat(result)
+				.hasStatus(401)
+				.hasHeader(
+					"WWW-Authenticate",
+					"Bearer resource_metadata=\"" + API_HOSTNAME + "/.well-known/oauth-protected-resource\""
+				);
+		}
+	}
+
+	@Test
+	public void testGetExternalTokenReturns405WithAllowPost() {
+		when(authContext.current(any())).thenReturn(
+			new Authorization(user, clientId, Auth0TokenAuthorizer.EXTERNAL_SCOPE)
+		);
+		try (Http1ClientResponse result = client.get("/mcp").request()) {
+			assertThat(result).hasStatus(405).hasHeader("Allow", "POST");
+		}
+	}
+
+	@Test
+	public void testGetFirstPartyTokenForbidden() {
+		when(authContext.current(any())).thenReturn(new Authorization(user));
+		try (Http1ClientResponse result = client.get("/mcp").request()) {
+			assertThat(result).hasStatus(403);
 		}
 	}
 

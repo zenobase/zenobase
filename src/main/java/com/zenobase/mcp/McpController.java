@@ -60,6 +60,26 @@ public class McpController extends ControllerSupport {
 		this.apiHostname = apiHostname;
 	}
 
+	/**
+	 * Streamable HTTP transport opens a GET stream for server→client SSE messages. We don't push anything, so the
+	 * spec-conformant response is {@code 405 Method Not Allowed} with {@code Allow: POST}. Unauthenticated GETs reuse
+	 * the same RFC 9728 challenge as POST so Claude's connector registration probe can discover the Authorization
+	 * Server before it has a token to try.
+	 */
+	public void get(ServerRequest req, ServerResponse res) {
+		Authorization auth = getCurrentAuthorization(req);
+		if (auth == null) {
+			challenge(res);
+			return;
+		}
+		if (!Auth0TokenAuthorizer.EXTERNAL_SCOPE.equals(auth.getScope())) {
+			res.status(Status.FORBIDDEN_403).send();
+			return;
+		}
+		res.header(HeaderNames.ALLOW, "POST");
+		res.status(Status.METHOD_NOT_ALLOWED_405).send();
+	}
+
 	public void post(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
 		if (auth == null) {

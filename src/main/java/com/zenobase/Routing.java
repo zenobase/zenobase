@@ -191,6 +191,7 @@ class Routing {
 
 		// MCP
 		var mcp = injector.getInstance(McpController.class);
+		routing.get("/mcp", mcp::get);
 		routing.post("/mcp", mcp::post);
 
 		var protectedResource = injector.getInstance(ProtectedResourceMetadataController.class);
