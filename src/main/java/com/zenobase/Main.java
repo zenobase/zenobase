@@ -112,6 +112,33 @@ public class Main {
 			config.get("cors.allowed.origins").asList(String.class).orElse(List.of("https://zenobase.com"))
 		);
 		return CorsFeature.builder()
+			// MCP discovery + RPC: open to any origin so browser-based MCP clients (Claude's connector flow on
+			// claude.ai, etc.) can complete the OAuth handshake without a per-origin allowlist. CORS spec forbids
+			// `Allow-Origin: *` together with credentials, but MCP uses bearer tokens in the Authorization header,
+			// not cookies, so credentials aren't needed. `WWW-Authenticate` is exposed so clients can read the RFC
+			// 9728 challenge and discover the protected-resource metadata URL.
+			.addPath(
+				CorsPathConfig.builder()
+					.pathPattern("/mcp")
+					.allowOrigins(Set.of("*"))
+					.allowMethods(Set.of("GET", "POST", "OPTIONS"))
+					.allowHeaders(Set.of("*"))
+					.exposeHeaders(Set.of("WWW-Authenticate"))
+					.allowCredentials(false)
+					.maxAge(Duration.ofHours(1))
+					.build()
+			)
+			.addPath(
+				CorsPathConfig.builder()
+					.pathPattern("/.well-known/oauth-protected-resource")
+					.allowOrigins(Set.of("*"))
+					.allowMethods(Set.of("GET", "OPTIONS"))
+					.allowHeaders(Set.of("*"))
+					.exposeHeaders(Set.of("WWW-Authenticate"))
+					.allowCredentials(false)
+					.maxAge(Duration.ofHours(1))
+					.build()
+			)
 			.addPath(
 				CorsPathConfig.builder()
 					.pathPattern("/{+}")
