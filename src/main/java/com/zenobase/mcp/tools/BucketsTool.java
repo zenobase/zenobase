@@ -38,7 +38,9 @@ public class BucketsTool implements McpTool {
 		return (
 			"Lists the Zenobase buckets the user has granted this client access to. Returns id, label, description, " +
 			"and archived flag for each. Call this first when the user references Zenobase data without specifying a " +
-			"particular bucket, so subsequent calls to events/histogram/stats/terms/timeline can pass the right bucket_id."
+			"particular bucket, so subsequent calls to events/histogram/stats/terms/timeline can pass the right bucket_id. " +
+			"To see which fields each bucket has (including synthesized timestamp sub-fields usable in constraints), " +
+			"call the `schema` tool with the bucket's id."
 		);
 	}
 

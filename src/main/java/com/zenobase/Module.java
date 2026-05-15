@@ -27,6 +27,7 @@ import com.zenobase.mcp.tools.BucketsTool;
 import com.zenobase.mcp.tools.EventsTool;
 import com.zenobase.mcp.tools.HistogramTool;
 import com.zenobase.mcp.tools.McpTool;
+import com.zenobase.mcp.tools.SchemaTool;
 import com.zenobase.mcp.tools.StatsTool;
 import com.zenobase.mcp.tools.TermsTool;
 import com.zenobase.mcp.tools.TimelineTool;
@@ -148,6 +149,7 @@ class Module extends AbstractModule {
 	private void bindMcpTools() {
 		var tools = Multibinder.newSetBinder(binder(), McpTool.class);
 		tools.addBinding().to(BucketsTool.class);
+		tools.addBinding().to(SchemaTool.class);
 		tools.addBinding().to(EventsTool.class);
 		tools.addBinding().to(StatsTool.class);
 		tools.addBinding().to(HistogramTool.class);
