@@ -184,6 +184,7 @@ class Routing {
 
 		// External clients (third-party / MCP grants)
 		var externalClients = injector.getInstance(ExternalClientController.class);
+		routing.get("/external-clients/", externalClients::listAll);
 		routing.get("/users/{userId}/external-clients/", externalClients::list);
 		routing.put("/users/{userId}/external-clients/{clientId}", externalClients::put);
 		routing.delete("/users/{userId}/external-clients/{clientId}", externalClients::revoke);

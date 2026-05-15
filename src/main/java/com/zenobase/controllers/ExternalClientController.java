@@ -55,6 +55,38 @@ public class ExternalClientController extends ControllerSupport {
 		this.users = users;
 	}
 
+	/**
+	 * {@code GET /external-clients/} — superuser-only paginated view across all users. Each row includes a
+	 * {@code principal} field so the admin can see which user owns the client.
+	 */
+	public void listAll(ServerRequest req, ServerResponse res) {
+		Authorization auth = getCurrentAuthorization(req);
+		if (auth == null) {
+			sendUnauthorized(res);
+			return;
+		}
+		if (auth.getScope() != null) {
+			sendForbidden(res);
+			return;
+		}
+		if (!users.isSuperuser(auth.getPrincipal())) {
+			sendForbidden(res);
+			return;
+		}
+		int offset = Integer.parseInt(req.query().first("offset").orElse("0"));
+		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
+		PartialList<ExternalClient> all = clients.find(new ExternalClientQuery(), offset, limit);
+		ObjectNode result = Nodes.newObject();
+		PartialList.TOTAL.setValue(result, (int) all.getTotal());
+		ArrayNode array = result.putArray("external_clients");
+		for (ExternalClient client : all) {
+			ObjectNode node = toJson(client);
+			node.put("principal", client.getUser().id());
+			array.add(node);
+		}
+		sendOk(res, result);
+	}
+
 	/** {@code GET /users/{userId}/external-clients/} — list external clients with their readable bucket ids. */
 	public void list(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
