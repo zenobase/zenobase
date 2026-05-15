@@ -50,4 +50,11 @@ public class WildcardConstraintBuilderTest extends ConstraintBuilderTestSupport 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
 	}
+
+	@Test
+	public void testCaseInsensitive() {
+		addConstraint("%s:%s", Event.TAG, "*UN*");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
+	}
 }
