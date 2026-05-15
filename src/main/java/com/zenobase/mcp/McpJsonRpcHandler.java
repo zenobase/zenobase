@@ -104,6 +104,17 @@ public class McpJsonRpcHandler {
 		ObjectNode serverInfo = result.putObject("serverInfo");
 		serverInfo.put("name", SERVER_NAME);
 		serverInfo.put("version", SERVER_VERSION);
+		// Server-supplied system prompt addendum (per MCP spec). Teaches the model the consent model so it can guide
+		// the user through the first-run flow (call `buckets`, then point at the consent URL if empty) without relying
+		// on the user knowing to look at `_meta.consent_url` themselves.
+		result.put(
+			"instructions",
+			"Zenobase is the user's personal data tracker. Call the `buckets` tool first to see what data the user " +
+				"has granted you access to. If `buckets` returns an empty list with a `_meta.consent_url`, tell the user " +
+				"they need to grant bucket access at that URL (the \"Access you've granted others\" section of Settings) " +
+				"before you can read any data. When the user asks about specific data, use the appropriate tool " +
+				"(events/histogram/stats/terms/timeline) with a bucket_id from the `buckets` listing."
+		);
 		return result;
 	}
 

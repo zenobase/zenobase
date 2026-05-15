@@ -35,6 +35,7 @@ public class McpJsonRpcHandlerTest {
 		assertThat(result.get("serverInfo").get("name").asText()).isEqualTo("zenobase");
 		assertThat(result.get("capabilities").has("tools")).isTrue();
 		assertThat(result.get("capabilities").has("resources")).isTrue();
+		assertThat(result.get("instructions").asText()).contains("buckets").contains("consent");
 	}
 
 	@Test
