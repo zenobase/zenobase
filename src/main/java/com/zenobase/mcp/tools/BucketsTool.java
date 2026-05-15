@@ -3,17 +3,10 @@ package com.zenobase.mcp.tools;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.ImmutableSet;
-import com.zenobase.common.PartialList;
 import com.zenobase.json.Nodes;
-import com.zenobase.mcp.ConsentEnforcer;
+import com.zenobase.mcp.GrantedBuckets;
 import com.zenobase.models.Bucket;
-import com.zenobase.models.ExternalClient;
-import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.queries.BucketQuery;
-import com.zenobase.repositories.BucketRepository;
-import com.zenobase.repositories.ExternalClientRepository;
 import jakarta.inject.Inject;
 
 /**
@@ -24,21 +17,15 @@ import jakarta.inject.Inject;
  * call it when the user says something like "use Zenobase" without first knowing a {@code bucket_id}.
  *
  * <p>Same security boundary as the resource provider: filters to buckets in the calling client's {@code readable_buckets}
- * grant. No extra surface area to harden.
+ * grant via {@link GrantedBuckets}.
  */
 public class BucketsTool implements McpTool {
 
-	private static final int LIST_LIMIT = 500;
-
-	private final BucketRepository buckets;
-	private final ExternalClientRepository clients;
-	private final ConsentEnforcer enforcer;
+	private final GrantedBuckets granted;
 
 	@Inject
-	public BucketsTool(BucketRepository buckets, ExternalClientRepository clients, ConsentEnforcer enforcer) {
-		this.buckets = buckets;
-		this.clients = clients;
-		this.enforcer = enforcer;
+	public BucketsTool(GrantedBuckets granted) {
+		this.granted = granted;
 	}
 
 	@Override
@@ -65,34 +52,16 @@ public class BucketsTool implements McpTool {
 
 	@Override
 	public JsonNode call(Authorization auth, JsonNode args) {
-		ObjectNode result = Nodes.newObject();
-		ArrayNode array = result.putArray("buckets");
-		Identity clientId = auth.getClient();
-		if (clientId == null) {
-			// No client_id on the token — nothing we can match against grants. Mirror BucketResourceProvider.list's
-			// shape: empty list + consent_url hint so the model can guide the user toward Settings.
-			result.putObject("_meta").put("consent_url", enforcer.consentUrl());
-			return result;
-		}
-		ExternalClient client = clients.find(auth.getPrincipal(), clientId);
-		ImmutableSet<String> readable =
-			client != null ? ImmutableSet.copyOf(client.getReadableBuckets()) : ImmutableSet.of();
-		PartialList<Bucket> userBuckets = buckets.find(
-			new BucketQuery().principalEqualTo(auth.getPrincipal()).includeArchived(true),
-			BucketQuery.DEFAULT_ORDER,
-			0,
-			LIST_LIMIT
-		);
-		for (Bucket bucket : userBuckets) {
-			if (!readable.contains(bucket.getId())) {
-				continue;
-			}
+		GrantedBuckets.Result result = granted.list(auth);
+		ObjectNode node = Nodes.newObject();
+		ArrayNode array = node.putArray("buckets");
+		for (Bucket bucket : result.buckets()) {
 			array.add(toJson(bucket));
 		}
-		if (array.isEmpty()) {
-			result.putObject("_meta").put("consent_url", enforcer.consentUrl());
+		if (result.consentUrl() != null) {
+			node.putObject("_meta").put("consent_url", result.consentUrl());
 		}
-		return result;
+		return node;
 	}
 
 	private static ObjectNode toJson(Bucket bucket) {

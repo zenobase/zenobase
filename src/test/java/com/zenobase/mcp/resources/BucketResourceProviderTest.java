@@ -2,116 +2,68 @@ package com.zenobase.mcp.resources;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.zenobase.json.NodeList;
 import com.zenobase.mcp.ConsentEnforcer;
+import com.zenobase.mcp.GrantedBuckets;
 import com.zenobase.mcp.McpException;
 import com.zenobase.models.Bucket;
-import com.zenobase.models.BucketList;
-import com.zenobase.models.ExternalClient;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.queries.BucketQuery;
-import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.EventRepository;
-import com.zenobase.repositories.ExternalClientRepository;
-import com.zenobase.services.SearchOrder;
 import java.util.List;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.Test;
 
+/**
+ * The shared {@code resources/list} pipeline (readable-set filter, consent-hint emission, unregistered client
+ * handling) lives in {@link GrantedBuckets} and is tested by {@link com.zenobase.mcp.GrantedBucketsTest}. This
+ * test covers the resource-specific concerns: the URI / description / archived-suffix formatter for
+ * {@code resources/list}, and the {@code resources/read} flow (URI parsing, consent enforcement, schema payload).
+ */
 public class BucketResourceProviderTest {
 
 	private final Identity user = new Identity("user-1");
-	private final Identity clientId = new Identity("client-1");
-	private final Authorization auth = new Authorization(user, clientId, "external");
+	private final Authorization auth = new Authorization(user, new Identity("client-1"), "external");
 
-	private final BucketRepository buckets = mock(BucketRepository.class);
 	private final EventRepository events = mock(EventRepository.class);
-	private final ExternalClientRepository clients = mock(ExternalClientRepository.class);
 	private final ConsentEnforcer enforcer = mock(ConsentEnforcer.class);
+	private final GrantedBuckets granted = mock(GrantedBuckets.class);
 
-	private final BucketResourceProvider provider = new BucketResourceProvider(buckets, events, clients, enforcer);
-
-	@Test
-	public void testListReturnsOnlyReadableBuckets() {
-		Bucket b1 = bucket("b1", "Weight");
-		Bucket b2 = bucket("b2", "Sleep");
-		Bucket b3 = bucket("b3", "Steps");
-		when(buckets.find(any(BucketQuery.class), any(SearchOrder.class), anyInt(), anyInt())).thenReturn(
-			bucketList(b1, b2, b3)
-		);
-		when(clients.find(user, clientId)).thenReturn(connectedClient("b1", "b3"));
-
-		ObjectNode result = provider.list(auth);
-
-		assertThat(result.get("resources")).hasSize(2);
-		assertThat(result.get("resources").get(0).get("uri").asText()).isEqualTo("zenobase://bucket/b1");
-		assertThat(result.get("resources").get(0).get("name").asText()).isEqualTo("Weight");
-		assertThat(result.get("resources").get(1).get("uri").asText()).isEqualTo("zenobase://bucket/b3");
-	}
+	private final BucketResourceProvider provider = new BucketResourceProvider(events, enforcer, granted);
 
 	@Test
-	public void testListIncludesConsentMetaWhenNoGrants() {
-		when(buckets.find(any(BucketQuery.class), any(SearchOrder.class), anyInt(), anyInt())).thenReturn(
-			bucketList(bucket("b1", "Weight"))
-		);
-		when(clients.find(user, clientId)).thenReturn(
-			connectedClient(
-				/* none */
-			)
-		);
-		when(enforcer.consentUrl()).thenReturn("https://zenobase.test/#/settings");
-
-		ObjectNode result = provider.list(auth);
-
-		assertThat(result.get("resources")).isEmpty();
-		assertThat(result.get("_meta").get("consent_url").asText()).isEqualTo("https://zenobase.test/#/settings");
-	}
-
-	@Test
-	public void testListIncludesConsentMetaWhenClientUnregistered() {
-		when(buckets.find(any(BucketQuery.class), any(SearchOrder.class), anyInt(), anyInt())).thenReturn(
-			bucketList(bucket("b1", "Weight"))
-		);
-		when(clients.find(user, clientId)).thenReturn(null);
-		when(enforcer.consentUrl()).thenReturn("https://zenobase.test/#/settings");
-
-		ObjectNode result = provider.list(auth);
-
-		assertThat(result.get("resources")).isEmpty();
-		assertThat(result.get("_meta").get("consent_url").asText()).isEqualTo("https://zenobase.test/#/settings");
-	}
-
-	@Test
-	public void testListMarksArchivedBuckets() {
-		Bucket archived = bucket("b1", "Old Weight");
+	public void testListFormatsGrantedBucketsAsResources() {
+		Bucket weight = bucket("b1", "Weight");
+		Bucket archived = bucket("b2", null);
+		archived.setDescription("step counts");
 		archived.setArchived(true);
-		when(buckets.find(any(BucketQuery.class), any(SearchOrder.class), anyInt(), anyInt())).thenReturn(
-			bucketList(archived)
-		);
-		when(clients.find(user, clientId)).thenReturn(connectedClient("b1"));
+		when(granted.list(auth)).thenReturn(new GrantedBuckets.Result(List.of(weight, archived), null));
 
 		ObjectNode result = provider.list(auth);
 
-		assertThat(result.get("resources").get(0).get("description").asText()).contains("(archived)");
+		assertThat(result.has("_meta")).isFalse();
+		assertThat(result.get("resources")).hasSize(2);
+		var first = result.get("resources").get(0);
+		assertThat(first.get("uri").asText()).isEqualTo("zenobase://bucket/b1");
+		assertThat(first.get("name").asText()).isEqualTo("Weight");
+		assertThat(first.get("mimeType").asText()).isEqualTo("application/json");
+		var second = result.get("resources").get(1);
+		// Falls back to id when label is null; archived appends "(archived)" to description.
+		assertThat(second.get("name").asText()).isEqualTo("b2");
+		assertThat(second.get("description").asText()).isEqualTo("step counts (archived)");
 	}
 
 	@Test
-	public void testListEmptyWhenTokenHasNoClient() {
-		Authorization withoutClient = new Authorization(user, null, "external");
-		when(enforcer.consentUrl()).thenReturn("https://zenobase.test/#/settings");
+	public void testListEmitsConsentHintWhenGrantedReturnsConsentUrl() {
+		when(granted.list(auth)).thenReturn(new GrantedBuckets.Result(List.of(), "https://zenobase.test/#/settings"));
 
-		ObjectNode result = provider.list(withoutClient);
+		ObjectNode result = provider.list(auth);
 
 		assertThat(result.get("resources")).isEmpty();
+		assertThat(result.get("_meta").get("consent_url").asText()).isEqualTo("https://zenobase.test/#/settings");
 	}
 
 	@Test
@@ -150,19 +102,10 @@ public class BucketResourceProviderTest {
 
 	private Bucket bucket(String id, String label) {
 		Bucket b = new Bucket(id);
-		b.setLabel(label);
+		if (label != null) {
+			b.setLabel(label);
+		}
 		b.addRole(user, Role.OWNER);
 		return b;
-	}
-
-	private ExternalClient connectedClient(String... readableBuckets) {
-		ExternalClient c = new ExternalClient(user, clientId, null, new DateTime(2026, 5, 1, 0, 0, DateTimeZone.UTC));
-		c.setReadableBuckets(java.util.List.of(readableBuckets));
-		return c;
-	}
-
-	private static BucketList bucketList(Bucket... values) {
-		List<ObjectNode> nodes = java.util.Arrays.stream(values).map(Bucket::toJson).toList();
-		return new BucketList(new NodeList(nodes, values.length));
 	}
 }

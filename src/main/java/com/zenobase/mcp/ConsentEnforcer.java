@@ -1,5 +1,6 @@
 package com.zenobase.mcp;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.ExternalClient;
@@ -72,7 +73,7 @@ public class ConsentEnforcer {
 		return webHostname + "/#/settings";
 	}
 
-	private com.fasterxml.jackson.databind.node.ObjectNode consentData() {
+	private ObjectNode consentData() {
 		return Nodes.newObject("consent_url", consentUrl());
 	}
 }

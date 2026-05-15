@@ -2,21 +2,15 @@ package com.zenobase.mcp.resources;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.ImmutableSet;
-import com.zenobase.common.PartialList;
 import com.zenobase.json.JsonSchema;
 import com.zenobase.json.Nodes;
 import com.zenobase.mcp.ConsentEnforcer;
+import com.zenobase.mcp.GrantedBuckets;
 import com.zenobase.mcp.McpException;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
-import com.zenobase.models.ExternalClient;
-import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.queries.BucketQuery;
-import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.EventRepository;
-import com.zenobase.repositories.ExternalClientRepository;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,55 +26,29 @@ public class BucketResourceProvider {
 
 	public static final String URI_PREFIX = "zenobase://bucket/";
 
-	private static final int LIST_LIMIT = 500;
-
-	private final BucketRepository buckets;
 	private final EventRepository events;
-	private final ExternalClientRepository clients;
 	private final ConsentEnforcer enforcer;
+	private final GrantedBuckets granted;
 
 	@Inject
-	public BucketResourceProvider(
-		BucketRepository buckets,
-		EventRepository events,
-		ExternalClientRepository clients,
-		ConsentEnforcer enforcer
-	) {
-		this.buckets = buckets;
+	public BucketResourceProvider(EventRepository events, ConsentEnforcer enforcer, GrantedBuckets granted) {
 		this.events = events;
-		this.clients = clients;
 		this.enforcer = enforcer;
+		this.granted = granted;
 	}
 
 	/** Returns the JSON-RPC {@code result} payload for {@code resources/list}. */
 	public ObjectNode list(Authorization auth) {
-		ObjectNode result = Nodes.newObject();
-		ArrayNode array = result.putArray("resources");
-		Identity clientId = auth.getClient();
-		if (clientId == null) {
-			// No client_id on the token — nothing we can match against grants. Return empty plus a consent URL hint.
-			result.putObject("_meta").put("consent_url", enforcer.consentUrl());
-			return result;
-		}
-		ExternalClient client = clients.find(auth.getPrincipal(), clientId);
-		ImmutableSet<String> readable =
-			client != null ? ImmutableSet.copyOf(client.getReadableBuckets()) : ImmutableSet.of();
-		PartialList<Bucket> userBuckets = buckets.find(
-			new BucketQuery().principalEqualTo(auth.getPrincipal()).includeArchived(true),
-			BucketQuery.DEFAULT_ORDER,
-			0,
-			LIST_LIMIT
-		);
-		for (Bucket bucket : userBuckets) {
-			if (!readable.contains(bucket.getId())) {
-				continue;
-			}
+		GrantedBuckets.Result result = granted.list(auth);
+		ObjectNode node = Nodes.newObject();
+		ArrayNode array = node.putArray("resources");
+		for (Bucket bucket : result.buckets()) {
 			array.add(toResource(bucket));
 		}
-		if (array.isEmpty()) {
-			result.putObject("_meta").put("consent_url", enforcer.consentUrl());
+		if (result.consentUrl() != null) {
+			node.putObject("_meta").put("consent_url", result.consentUrl());
 		}
-		return result;
+		return node;
 	}
 
 	/** Returns the JSON-RPC {@code result} payload for {@code resources/read}. */

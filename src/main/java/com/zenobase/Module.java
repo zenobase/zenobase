@@ -18,6 +18,7 @@ import com.zenobase.commands.*;
 import com.zenobase.controllers.*;
 import com.zenobase.jobs.*;
 import com.zenobase.mcp.ConsentEnforcer;
+import com.zenobase.mcp.GrantedBuckets;
 import com.zenobase.mcp.McpController;
 import com.zenobase.mcp.McpJsonRpcHandler;
 import com.zenobase.mcp.ProtectedResourceMetadataController;
@@ -128,6 +129,7 @@ class Module extends AbstractModule {
 		bind(UserStateCache.class).in(Singleton.class);
 		bind(ExternalClientRepository.class).in(Singleton.class);
 		bind(ConsentEnforcer.class).in(Singleton.class);
+		bind(GrantedBuckets.class).in(Singleton.class);
 		bind(BucketResourceProvider.class).in(Singleton.class);
 		bind(McpJsonRpcHandler.class).in(Singleton.class);
 		bindMcpTools();

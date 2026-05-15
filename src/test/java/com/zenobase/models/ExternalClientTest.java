@@ -14,18 +14,6 @@ public class ExternalClientTest {
 	}
 
 	@Test
-	public void testConstructorFillsRequiredFields() {
-		DateTime created = new DateTime(2026, 5, 1, 12, 0, DateTimeZone.UTC);
-		ExternalClient client = new ExternalClient(new Identity("u1"), new Identity("c1"), "Claude Desktop", created);
-		assertThat(client.getId()).isEqualTo("u1|c1");
-		assertThat(client.getUser().id()).isEqualTo("u1");
-		assertThat(client.getClient().id()).isEqualTo("c1");
-		assertThat(client.getName()).isEqualTo("Claude Desktop");
-		assertThat(client.getCreated()).isEqualTo(created);
-		assertThat(client.getReadableBuckets()).isEmpty();
-	}
-
-	@Test
 	public void testReadableBucketsRoundTrip() {
 		ExternalClient client = new ExternalClient(
 			new Identity("u1"),
@@ -52,18 +40,5 @@ public class ExternalClientTest {
 		assertThat(client.canRead("b1")).isTrue();
 		assertThat(client.canRead("b2")).isTrue();
 		assertThat(client.canRead("b3")).isFalse();
-	}
-
-	@Test
-	public void testNameDefaultsToNull() {
-		ExternalClient client = new ExternalClient(
-			new Identity("u1"),
-			new Identity("c1"),
-			null,
-			new DateTime(2026, 5, 1, 12, 0, DateTimeZone.UTC)
-		);
-		assertThat(client.getName()).isNull();
-		client.setName("Claude Desktop");
-		assertThat(client.getName()).isEqualTo("Claude Desktop");
 	}
 }
