@@ -6,6 +6,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import com.zenobase.auth.auth0.Auth0TokenValidator;
 import com.zenobase.controllers.ControllerTestSupport;
 import com.zenobase.json.Nodes;
@@ -15,12 +16,14 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Verifies that the {@code /.well-known/oauth-protected-resource} endpoint returns the RFC 9728 metadata payload
- * pointing at the configured external audience + Auth0 issuer, and 404s when external audience isn't configured.
+ * with {@code resource} pointing at the canonical MCP endpoint URL (not the Auth0 API audience identifier) plus the
+ * configured Auth0 issuer, and 404s when external audience isn't configured.
  *
  * <p>Uses a real (non-Mockito) test JWKS so the {@link Auth0TokenValidator} construction succeeds.
  */
 public class ProtectedResourceMetadataControllerTest extends ControllerTestSupport {
 
+	private static final String API_HOSTNAME = "https://api.zenobase.test";
 	private static final String AUDIENCE = "https://api.zenobase.com";
 	private static final String EXTERNAL = "https://api.zenobase.com/external";
 
@@ -34,6 +37,7 @@ public class ProtectedResourceMetadataControllerTest extends ControllerTestSuppo
 			@Override
 			protected void configure() {
 				bind(Auth0TokenValidator.class).toInstance(validator);
+				bindConstant().annotatedWith(Names.named("api.hostname")).to(API_HOSTNAME);
 				bind(ProtectedResourceMetadataController.class).in(Singleton.class);
 			}
 		};
@@ -55,10 +59,10 @@ public class ProtectedResourceMetadataControllerTest extends ControllerTestSuppo
 				.hasContent(
 					Nodes.readObject(
 						"""
-						{"resource":"https://api.zenobase.com/external",\
+						{"resource":"%s/mcp",\
 						"authorization_servers":["%s"],\
 						"scopes_supported":["external"],\
-						"bearer_methods_supported":["header"]}""".formatted(validator.issuer())
+						"bearer_methods_supported":["header"]}""".formatted(API_HOSTNAME, validator.issuer())
 					)
 				);
 		}
