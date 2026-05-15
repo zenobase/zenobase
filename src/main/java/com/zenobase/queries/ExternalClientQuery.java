@@ -7,7 +7,7 @@ import com.zenobase.services.SearchOrder;
 
 public class ExternalClientQuery extends QuerySupport {
 
-	public static final SearchOrder DEFAULT_ORDER = new SearchOrder(ExternalClient.FIRST_SEEN.getName(), false);
+	public static final SearchOrder DEFAULT_ORDER = new SearchOrder(ExternalClient.CREATED.getName(), false);
 
 	public ExternalClientQuery userEqualTo(Identity user) {
 		equalTo(ExternalClient.USER, user.id());

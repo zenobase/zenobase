@@ -19,7 +19,7 @@ import org.jspecify.annotations.Nullable;
  *
  * <p>All state is reflected in {@code CreateExternalClientCommand} (first observation) and
  * {@code UpdateExternalClientGrantsCommand} (grant changes), so the index can be rebuilt from the command log.
- * {@code first_seen_at} comes from the creation command's timestamp; there is no {@code last_used_at} because tracking
+ * {@code created} comes from the creation command's timestamp; there is no {@code last_used} because tracking
  * it would either flood the command journal or get lost on rebuild.
  *
  * <p>{@link #READABLE_BUCKETS} is a multi-valued keyword field carrying the bucket ids the user has granted this
@@ -33,7 +33,7 @@ public class ExternalClient extends DomainNode {
 	public static final IdentityField USER = new IdentityField("user");
 	public static final IdentityField CLIENT = new IdentityField("client");
 	public static final TextField NAME = new TextField("name");
-	public static final DateTimeField FIRST_SEEN = new DateTimeField("first_seen");
+	public static final DateTimeField CREATED = new DateTimeField("created");
 	public static final TokenField READABLE_BUCKETS = new TokenField("readable_buckets");
 
 	public static final Schema SCHEMA = new SchemaBuilder(TYPE_NAME)
@@ -42,7 +42,7 @@ public class ExternalClient extends DomainNode {
 		.add(USER)
 		.add(CLIENT)
 		.add(NAME)
-		.add(FIRST_SEEN)
+		.add(CREATED)
 		.add(READABLE_BUCKETS)
 		.build();
 
@@ -50,12 +50,12 @@ public class ExternalClient extends DomainNode {
 		super(node);
 	}
 
-	public ExternalClient(Identity user, Identity client, @Nullable String name, DateTime firstSeen) {
+	public ExternalClient(Identity user, Identity client, @Nullable String name, DateTime created) {
 		setValue(ID, id(user, client));
 		setValue(USER, user);
 		setValue(CLIENT, client);
 		setValue(NAME, name);
-		setValue(FIRST_SEEN, firstSeen);
+		setValue(CREATED, created);
 	}
 
 	public static String id(Identity user, Identity client) {
@@ -83,8 +83,8 @@ public class ExternalClient extends DomainNode {
 		setValue(NAME, name);
 	}
 
-	public DateTime getFirstSeen() {
-		return Objects.requireNonNull(getValue(FIRST_SEEN));
+	public DateTime getCreated() {
+		return Objects.requireNonNull(getValue(CREATED));
 	}
 
 	public ImmutableList<String> getReadableBuckets() {

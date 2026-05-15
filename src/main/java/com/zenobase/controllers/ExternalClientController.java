@@ -204,7 +204,7 @@ public class ExternalClientController extends ControllerSupport {
 		if (client.getName() != null) {
 			node.put("client_name", client.getName());
 		}
-		node.put("first_seen_at", client.getFirstSeen().toString());
+		node.put("created", client.getCreated().toString());
 		ArrayNode readable = node.putArray("readable_buckets");
 		for (String bucketId : client.getReadableBuckets()) {
 			readable.add(bucketId);

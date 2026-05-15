@@ -15,13 +15,13 @@ public class ExternalClientTest {
 
 	@Test
 	public void testConstructorFillsRequiredFields() {
-		DateTime firstSeen = new DateTime(2026, 5, 1, 12, 0, DateTimeZone.UTC);
-		ExternalClient client = new ExternalClient(new Identity("u1"), new Identity("c1"), "Claude Desktop", firstSeen);
+		DateTime created = new DateTime(2026, 5, 1, 12, 0, DateTimeZone.UTC);
+		ExternalClient client = new ExternalClient(new Identity("u1"), new Identity("c1"), "Claude Desktop", created);
 		assertThat(client.getId()).isEqualTo("u1|c1");
 		assertThat(client.getUser().id()).isEqualTo("u1");
 		assertThat(client.getClient().id()).isEqualTo("c1");
 		assertThat(client.getName()).isEqualTo("Claude Desktop");
-		assertThat(client.getFirstSeen()).isEqualTo(firstSeen);
+		assertThat(client.getCreated()).isEqualTo(created);
 		assertThat(client.getReadableBuckets()).isEmpty();
 	}
 

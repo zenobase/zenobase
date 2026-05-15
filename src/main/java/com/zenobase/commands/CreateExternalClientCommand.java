@@ -11,7 +11,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Records that a user has been observed connecting via a given third-party client for the first time. The command's
- * timestamp is the client's {@code first_seen_at}. Subsequent observations of the same {@code (user, client_id)} pair
+ * timestamp is the client's {@code created}. Subsequent observations of the same {@code (user, client_id)} pair
  * do not produce additional commands (the handler is idempotent).
  */
 public class CreateExternalClientCommand extends Command {
@@ -25,7 +25,7 @@ public class CreateExternalClientCommand extends Command {
 	}
 
 	public CreateExternalClientCommand(Identity principal, ExternalClient client) {
-		super(TYPE, principal, client.getFirstSeen());
+		super(TYPE, principal, client.getCreated());
 		setParameter(CLIENT, client.toJson());
 	}
 
