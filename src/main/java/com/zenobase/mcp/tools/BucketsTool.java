@@ -26,7 +26,7 @@ import jakarta.inject.Inject;
  * <p>Same security boundary as the resource provider: filters to buckets in the calling client's {@code readable_buckets}
  * grant. No extra surface area to harden.
  */
-public class ListBucketsTool implements McpTool {
+public class BucketsTool implements McpTool {
 
 	private static final int LIST_LIMIT = 500;
 
@@ -35,7 +35,7 @@ public class ListBucketsTool implements McpTool {
 	private final ConsentEnforcer enforcer;
 
 	@Inject
-	public ListBucketsTool(BucketRepository buckets, ExternalClientRepository clients, ConsentEnforcer enforcer) {
+	public BucketsTool(BucketRepository buckets, ExternalClientRepository clients, ConsentEnforcer enforcer) {
 		this.buckets = buckets;
 		this.clients = clients;
 		this.enforcer = enforcer;
@@ -43,7 +43,7 @@ public class ListBucketsTool implements McpTool {
 
 	@Override
 	public String name() {
-		return "list_buckets";
+		return "buckets";
 	}
 
 	@Override

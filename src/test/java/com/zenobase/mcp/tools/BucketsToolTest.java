@@ -24,7 +24,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.Test;
 
-public class ListBucketsToolTest {
+public class BucketsToolTest {
 
 	private final Identity user = new Identity("user-1");
 	private final Identity clientId = new Identity("client-1");
@@ -34,11 +34,11 @@ public class ListBucketsToolTest {
 	private final ExternalClientRepository clients = mock(ExternalClientRepository.class);
 	private final ConsentEnforcer enforcer = mock(ConsentEnforcer.class);
 
-	private final ListBucketsTool tool = new ListBucketsTool(buckets, clients, enforcer);
+	private final BucketsTool tool = new BucketsTool(buckets, clients, enforcer);
 
 	@Test
 	public void testMetadata() {
-		assertThat(tool.name()).isEqualTo("list_buckets");
+		assertThat(tool.name()).isEqualTo("buckets");
 		assertThat(tool.description()).contains("Zenobase buckets").contains("granted");
 		assertThat(tool.inputSchema().get("type").asText()).isEqualTo("object");
 	}
