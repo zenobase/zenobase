@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -146,14 +148,7 @@ public class ExternalClientController extends ControllerSupport {
 		sendOk(
 			res,
 			toJson(
-				updated != null
-					? updated
-					: new ExternalClient(
-							principal,
-							client,
-							null,
-							org.joda.time.DateTime.now(org.joda.time.DateTimeZone.UTC)
-						)
+				updated != null ? updated : new ExternalClient(principal, client, null, DateTime.now(DateTimeZone.UTC))
 			)
 		);
 	}

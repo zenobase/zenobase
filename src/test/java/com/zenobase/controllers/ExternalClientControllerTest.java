@@ -31,6 +31,7 @@ import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import io.helidon.webserver.http.HttpRouting;
+import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.Test;
@@ -90,9 +91,9 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 	public void testListReturnsConnectedClients() {
 		when(auth.current(any())).thenReturn(new Authorization(userIdentity));
 		ExternalClient connected = client();
-		connected.setReadableBuckets(java.util.List.of("b1", "b2"));
+		connected.setReadableBuckets(List.of("b1", "b2"));
 		when(clients.find(any(ExternalClientQuery.class), anyInt(), anyInt())).thenReturn(
-			new ExternalClientList(new NodeList(java.util.List.of(connected.toJson()), 1))
+			new ExternalClientList(new NodeList(List.of(connected.toJson()), 1))
 		);
 
 		try (Http1ClientResponse result = client.get("/users/" + user.getId() + "/external-clients/").request()) {
@@ -109,9 +110,9 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 	public void testPutDispatchesUpdateCommand() {
 		when(auth.current(any())).thenReturn(new Authorization(userIdentity));
 		ExternalClient connected = client();
-		connected.setReadableBuckets(java.util.List.of("b1", "b2"));
+		connected.setReadableBuckets(List.of("b1", "b2"));
 		ExternalClient updated = client();
-		updated.setReadableBuckets(java.util.List.of("b1", "b3"));
+		updated.setReadableBuckets(List.of("b1", "b3"));
 		when(clients.find(userIdentity, clientIdentity)).thenReturn(connected).thenReturn(updated);
 		when(buckets.find("b1")).thenReturn(ownedBucket("b1"));
 		when(buckets.find("b3")).thenReturn(ownedBucket("b3"));
@@ -219,7 +220,7 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 		when(users.isSuperuser(superuser)).thenReturn(true);
 		when(users.find("other")).thenReturn(new User("other"));
 		when(clients.find(any(ExternalClientQuery.class), anyInt(), anyInt())).thenReturn(
-			new ExternalClientList(new NodeList(java.util.List.of(), 0))
+			new ExternalClientList(new NodeList(List.of(), 0))
 		);
 
 		try (Http1ClientResponse result = client.get("/users/other/external-clients/").request()) {

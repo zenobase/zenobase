@@ -2,11 +2,13 @@ package com.zenobase.mcp.tools;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.mcp.McpException;
+import com.zenobase.mcp.McpJsonRpcHandler;
 import com.zenobase.oauth.Authorization;
 
 /**
  * One MCP tool. Tools are invoked by {@code tools/call} with structured JSON arguments and return a JSON result that
- * {@link com.zenobase.mcp.McpJsonRpcHandler} wraps in the MCP response envelope.
+ * {@link McpJsonRpcHandler} wraps in the MCP response envelope.
  */
 public interface McpTool {
 	/** Tool name as exposed to the LLM. Noun-only by convention (e.g. {@code events}, {@code stats}). */
@@ -18,6 +20,6 @@ public interface McpTool {
 	/** JSON Schema for the tool's input arguments. */
 	ObjectNode inputSchema();
 
-	/** Executes the tool. Implementations throw {@link com.zenobase.mcp.McpException} for client-correctable errors. */
+	/** Executes the tool. Implementations throw {@link McpException} for client-correctable errors. */
 	JsonNode call(Authorization auth, JsonNode args);
 }

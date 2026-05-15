@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,12 +15,14 @@ import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.ExternalClientRepository;
 import io.helidon.common.uri.UriPath;
+import io.helidon.http.HeaderName;
 import io.helidon.http.HttpPrologue;
 import io.helidon.http.Method;
 import io.helidon.http.Status;
 import io.helidon.webserver.http.FilterChain;
 import io.helidon.webserver.http.RoutingRequest;
 import io.helidon.webserver.http.RoutingResponse;
+import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.Test;
@@ -88,7 +91,7 @@ public class ExternalGrantFilterTest {
 		filter.filter(chain, request("GET", "/who"), mock(RoutingResponse.class));
 		filter.filter(chain, request("GET", "/users/u1/buckets/"), mock(RoutingResponse.class));
 
-		verify(chain, org.mockito.Mockito.times(3)).proceed();
+		verify(chain, times(3)).proceed();
 	}
 
 	@Test
@@ -100,7 +103,7 @@ public class ExternalGrantFilterTest {
 		filter.filter(chain, request("GET", "/buckets/b1/"), mock(RoutingResponse.class));
 		filter.filter(chain, request("GET", "/buckets/b2/schema"), mock(RoutingResponse.class));
 
-		verify(chain, org.mockito.Mockito.times(2)).proceed();
+		verify(chain, times(2)).proceed();
 	}
 
 	@Test
@@ -108,7 +111,7 @@ public class ExternalGrantFilterTest {
 		FilterChain chain = mock(FilterChain.class);
 		RoutingResponse res = mock(RoutingResponse.class);
 		when(res.status(any(Status.class))).thenReturn(res);
-		when(res.header(any(io.helidon.http.HeaderName.class), any(String[].class))).thenReturn(res);
+		when(res.header(any(HeaderName.class), any(String[].class))).thenReturn(res);
 		when(authContext.current(any())).thenReturn(externalAuth());
 		when(clients.find(user, clientId)).thenReturn(connectedClient("b1"));
 
@@ -123,7 +126,7 @@ public class ExternalGrantFilterTest {
 		FilterChain chain = mock(FilterChain.class);
 		RoutingResponse res = mock(RoutingResponse.class);
 		when(res.status(any(Status.class))).thenReturn(res);
-		when(res.header(any(io.helidon.http.HeaderName.class), any(String[].class))).thenReturn(res);
+		when(res.header(any(HeaderName.class), any(String[].class))).thenReturn(res);
 		when(authContext.current(any())).thenReturn(externalAuth());
 		when(clients.find(user, clientId)).thenReturn(null);
 
@@ -138,7 +141,7 @@ public class ExternalGrantFilterTest {
 		FilterChain chain = mock(FilterChain.class);
 		RoutingResponse res = mock(RoutingResponse.class);
 		when(res.status(any(Status.class))).thenReturn(res);
-		when(res.header(any(io.helidon.http.HeaderName.class), any(String[].class))).thenReturn(res);
+		when(res.header(any(HeaderName.class), any(String[].class))).thenReturn(res);
 		when(authContext.current(any())).thenReturn(externalAuth());
 		// readable_buckets contains b1, but writes are still forbidden
 		when(clients.find(user, clientId)).thenReturn(connectedClient("b1"));
@@ -148,7 +151,7 @@ public class ExternalGrantFilterTest {
 		filter.filter(chain, request("DELETE", "/buckets/b1/e9"), res);
 
 		verify(chain, never()).proceed();
-		verify(res, org.mockito.Mockito.times(3)).status(Status.FORBIDDEN_403);
+		verify(res, times(3)).status(Status.FORBIDDEN_403);
 	}
 
 	@Test
@@ -156,7 +159,7 @@ public class ExternalGrantFilterTest {
 		FilterChain chain = mock(FilterChain.class);
 		RoutingResponse res = mock(RoutingResponse.class);
 		when(res.status(any(Status.class))).thenReturn(res);
-		when(res.header(any(io.helidon.http.HeaderName.class), any(String[].class))).thenReturn(res);
+		when(res.header(any(HeaderName.class), any(String[].class))).thenReturn(res);
 		when(authContext.current(any())).thenReturn(new Authorization(user, null, Auth0TokenAuthorizer.EXTERNAL_SCOPE));
 
 		filter.filter(chain, request("GET", "/buckets/b1"), res);
@@ -173,7 +176,7 @@ public class ExternalGrantFilterTest {
 
 	private ExternalClient connectedClient(String... readableBuckets) {
 		ExternalClient c = new ExternalClient(user, clientId, null, new DateTime(2026, 5, 1, 0, 0, DateTimeZone.UTC));
-		c.setReadableBuckets(java.util.List.of(readableBuckets));
+		c.setReadableBuckets(List.of(readableBuckets));
 		return c;
 	}
 

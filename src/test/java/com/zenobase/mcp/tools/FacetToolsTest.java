@@ -19,6 +19,8 @@ import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.EventRepository;
 import com.zenobase.search.Search;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -196,8 +198,8 @@ public class FacetToolsTest {
 			.contains("month", "day", "year");
 	}
 
-	private static java.util.List<String> requiredFields(ObjectNode schema) {
-		java.util.List<String> required = new java.util.ArrayList<>();
+	private static List<String> requiredFields(ObjectNode schema) {
+		List<String> required = new ArrayList<>();
 		schema.get("required").forEach(node -> required.add(node.asText()));
 		return required;
 	}

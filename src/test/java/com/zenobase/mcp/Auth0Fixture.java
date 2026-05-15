@@ -3,6 +3,7 @@ package com.zenobase.mcp;
 import com.sun.net.httpserver.HttpServer;
 import com.zenobase.auth.auth0.Auth0TokenValidator;
 import java.math.BigInteger;
+import java.net.InetSocketAddress;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPublicKey;
@@ -27,7 +28,7 @@ final class Auth0Fixture {
 			PUBLIC_KEY = (RSAPublicKey) keyPair.getPublic();
 
 			String jwksJson = jwksJson(PUBLIC_KEY);
-			SERVER = HttpServer.create(new java.net.InetSocketAddress(0), 0);
+			SERVER = HttpServer.create(new InetSocketAddress(0), 0);
 			PORT = SERVER.getAddress().getPort();
 			SERVER.createContext("/.well-known/jwks.json", exchange -> {
 				byte[] response = jwksJson.getBytes();

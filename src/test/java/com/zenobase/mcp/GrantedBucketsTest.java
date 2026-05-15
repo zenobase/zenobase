@@ -18,6 +18,7 @@ import com.zenobase.queries.BucketQuery;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.ExternalClientRepository;
 import com.zenobase.services.SearchOrder;
+import java.util.Arrays;
 import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -115,7 +116,7 @@ public class GrantedBucketsTest {
 	}
 
 	private static BucketList bucketList(Bucket... values) {
-		List<ObjectNode> nodes = java.util.Arrays.stream(values).map(Bucket::toJson).toList();
+		List<ObjectNode> nodes = Arrays.stream(values).map(Bucket::toJson).toList();
 		return new BucketList(new NodeList(nodes, values.length));
 	}
 }

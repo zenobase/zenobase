@@ -12,6 +12,7 @@ import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.ExternalClientRepository;
+import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.Test;
@@ -108,7 +109,7 @@ public class ConsentEnforcerTest {
 
 	private ExternalClient connectedClient(String... readableBuckets) {
 		ExternalClient c = new ExternalClient(user, client, null, new DateTime(2026, 5, 1, 0, 0, DateTimeZone.UTC));
-		c.setReadableBuckets(java.util.List.of(readableBuckets));
+		c.setReadableBuckets(List.of(readableBuckets));
 		return c;
 	}
 }
