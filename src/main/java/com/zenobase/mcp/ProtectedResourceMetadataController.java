@@ -5,10 +5,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.auth.auth0.Auth0TokenAuthorizer;
 import com.zenobase.auth.auth0.Auth0TokenValidator;
 import com.zenobase.json.Nodes;
+import io.helidon.http.HeaderNames;
 import io.helidon.http.Status;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Serves <a href="https://datatracker.ietf.org/doc/html/rfc9728">RFC 9728</a> OAuth Protected Resource Metadata at
@@ -16,6 +19,8 @@ import jakarta.inject.Inject;
  * for the {@code /mcp} endpoint.
  */
 public class ProtectedResourceMetadataController {
+
+	private static final Logger logger = LoggerFactory.getLogger(ProtectedResourceMetadataController.class);
 
 	private final Auth0TokenValidator validator;
 
@@ -25,6 +30,11 @@ public class ProtectedResourceMetadataController {
 	}
 
 	public void get(ServerRequest req, ServerResponse res) {
+		logger.info(
+			"GET /.well-known/oauth-protected-resource origin={} ua={}",
+			req.headers().value(HeaderNames.ORIGIN).orElse(null),
+			req.headers().value(HeaderNames.USER_AGENT).orElse(null)
+		);
 		String externalAudience = validator.externalAudience();
 		if (externalAudience == null) {
 			res.status(Status.NOT_FOUND_404).send();

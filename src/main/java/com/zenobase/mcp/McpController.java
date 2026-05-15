@@ -68,6 +68,12 @@ public class McpController extends ControllerSupport {
 	 */
 	public void get(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
+		logger.info(
+			"GET /mcp origin={} ua={} authenticated={}",
+			req.headers().value(HeaderNames.ORIGIN).orElse(null),
+			req.headers().value(HeaderNames.USER_AGENT).orElse(null),
+			auth != null
+		);
 		if (auth == null) {
 			challenge(res);
 			return;
@@ -82,6 +88,13 @@ public class McpController extends ControllerSupport {
 
 	public void post(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
+		logger.info(
+			"POST /mcp origin={} ua={} authenticated={} scope={}",
+			req.headers().value(HeaderNames.ORIGIN).orElse(null),
+			req.headers().value(HeaderNames.USER_AGENT).orElse(null),
+			auth != null,
+			auth != null ? auth.getScope() : null
+		);
 		if (auth == null) {
 			challenge(res);
 			return;
