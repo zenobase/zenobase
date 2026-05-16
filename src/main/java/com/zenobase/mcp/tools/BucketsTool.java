@@ -1,12 +1,16 @@
 package com.zenobase.mcp.tools;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.json.Nodes;
 import com.zenobase.mcp.GrantedBuckets;
+import com.zenobase.mcp.McpAuth;
 import com.zenobase.models.Bucket;
 import com.zenobase.oauth.Authorization;
+import io.helidon.extensions.mcp.server.McpTool;
+import io.helidon.extensions.mcp.server.McpToolRequest;
+import io.helidon.extensions.mcp.server.McpToolResult;
+import io.helidon.json.schema.Schema;
 import jakarta.inject.Inject;
 
 /**
@@ -15,9 +19,6 @@ import jakarta.inject.Inject;
  * surfaces) do not autonomously invoke {@code resources/list} from conversational context — they treat resources as
  * user-attached items rather than model-discoverable catalogs. Exposing the same data as a tool means the model can
  * call it when the user says something like "use Zenobase" without first knowing a {@code bucket_id}.
- *
- * <p>Same security boundary as the resource provider: filters to buckets in the calling client's {@code readable_buckets}
- * grant via {@link GrantedBuckets}.
  */
 public class BucketsTool implements McpTool {
 
@@ -45,15 +46,16 @@ public class BucketsTool implements McpTool {
 	}
 
 	@Override
-	public ObjectNode inputSchema() {
-		ObjectNode schema = Nodes.newObject();
-		schema.put("type", "object");
-		schema.putObject("properties");
-		return schema;
+	public String schema() {
+		return Schema.builder()
+			.rootObject(root -> {})
+			.build()
+			.generate();
 	}
 
 	@Override
-	public JsonNode call(Authorization auth, JsonNode args) {
+	public McpToolResult tool(McpToolRequest request) {
+		Authorization auth = McpAuth.require(request);
 		GrantedBuckets.Result result = granted.list(auth);
 		ObjectNode node = Nodes.newObject();
 		ArrayNode array = node.putArray("buckets");
@@ -63,7 +65,7 @@ public class BucketsTool implements McpTool {
 		if (result.consentUrl() != null) {
 			node.putObject("_meta").put("consent_url", result.consentUrl());
 		}
-		return node;
+		return McpToolResult.create(node.toString());
 	}
 
 	private static ObjectNode toJson(Bucket bucket) {

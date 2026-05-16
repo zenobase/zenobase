@@ -19,14 +19,12 @@ import com.zenobase.filters.ScopeFilter;
 import com.zenobase.jobs.*;
 import com.zenobase.mcp.ConsentEnforcer;
 import com.zenobase.mcp.GrantedBuckets;
-import com.zenobase.mcp.McpController;
-import com.zenobase.mcp.McpJsonRpcHandler;
+import com.zenobase.mcp.McpAuthFilter;
 import com.zenobase.mcp.ProtectedResourceMetadataController;
 import com.zenobase.mcp.resources.BucketResourceProvider;
 import com.zenobase.mcp.tools.BucketsTool;
 import com.zenobase.mcp.tools.EventsTool;
 import com.zenobase.mcp.tools.HistogramTool;
-import com.zenobase.mcp.tools.McpTool;
 import com.zenobase.mcp.tools.SchemaTool;
 import com.zenobase.mcp.tools.StatsTool;
 import com.zenobase.mcp.tools.TermsTool;
@@ -132,8 +130,14 @@ class Module extends AbstractModule {
 		bind(ConsentEnforcer.class).in(Singleton.class);
 		bind(GrantedBuckets.class).in(Singleton.class);
 		bind(BucketResourceProvider.class).in(Singleton.class);
-		bind(McpJsonRpcHandler.class).in(Singleton.class);
-		bindMcpTools();
+		bind(McpAuthFilter.class).in(Singleton.class);
+		bind(BucketsTool.class).in(Singleton.class);
+		bind(SchemaTool.class).in(Singleton.class);
+		bind(EventsTool.class).in(Singleton.class);
+		bind(StatsTool.class).in(Singleton.class);
+		bind(HistogramTool.class).in(Singleton.class);
+		bind(TimelineTool.class).in(Singleton.class);
+		bind(TermsTool.class).in(Singleton.class);
 		bind(TaskRepository.class).in(Singleton.class);
 		bind(TaskRefresher.class).in(Singleton.class);
 		bind(CredentialsRepository.class).in(Singleton.class);
@@ -144,17 +148,6 @@ class Module extends AbstractModule {
 		if (isConfigured("foursquare")) {
 			bind(FoursquareVenues.class).in(Singleton.class);
 		}
-	}
-
-	private void bindMcpTools() {
-		var tools = Multibinder.newSetBinder(binder(), McpTool.class);
-		tools.addBinding().to(BucketsTool.class);
-		tools.addBinding().to(SchemaTool.class);
-		tools.addBinding().to(EventsTool.class);
-		tools.addBinding().to(StatsTool.class);
-		tools.addBinding().to(HistogramTool.class);
-		tools.addBinding().to(TimelineTool.class);
-		tools.addBinding().to(TermsTool.class);
 	}
 
 	private void bindCommandParsers() {
@@ -314,7 +307,6 @@ class Module extends AbstractModule {
 		bind(OpenGraphController.class).in(Singleton.class);
 		bind(QuotaController.class).in(Singleton.class);
 		bind(ExternalClientController.class).in(Singleton.class);
-		bind(McpController.class).in(Singleton.class);
 		bind(ProtectedResourceMetadataController.class).in(Singleton.class);
 	}
 
