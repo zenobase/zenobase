@@ -3,7 +3,7 @@ package com.zenobase.auth;
 import com.zenobase.models.User;
 import java.util.List;
 
-public interface UserDirectory {
+public interface IdentityProvider {
 	void updateEmail(User user, String newEmail);
 
 	void deleteUser(User user);

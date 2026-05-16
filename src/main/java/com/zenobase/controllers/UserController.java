@@ -1,7 +1,7 @@
 package com.zenobase.controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.zenobase.auth.UserDirectory;
+import com.zenobase.auth.IdentityProvider;
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.Command;
@@ -25,19 +25,19 @@ public class UserController extends ControllerSupport {
 
 	private final UserRepository users;
 	private final CommandDispatcher dispatcher;
-	private final UserDirectory userDirectory;
+	private final IdentityProvider identityProvider;
 
 	@Inject
 	public UserController(
 		AuthorizationContext security,
 		UserRepository users,
 		CommandDispatcher dispatcher,
-		UserDirectory userDirectory
+		IdentityProvider identityProvider
 	) {
 		super(security);
 		this.users = users;
 		this.dispatcher = dispatcher;
-		this.userDirectory = userDirectory;
+		this.identityProvider = identityProvider;
 	}
 
 	public void get(ServerRequest req, ServerResponse res) {
@@ -118,7 +118,7 @@ public class UserController extends ControllerSupport {
 				false
 			)
 		);
-		userDirectory.updateEmail(user, email);
+		identityProvider.updateEmail(user, email);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}

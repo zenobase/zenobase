@@ -6,7 +6,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
-import com.zenobase.auth.UserDirectory;
+import com.zenobase.auth.IdentityProvider;
 import com.zenobase.models.User;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.Bus;
@@ -19,7 +19,7 @@ public abstract class UserControllerTestSupport extends ControllerTestSupport {
 	protected final AuthorizationContext auth = mock(AuthorizationContext.class);
 	protected final UserRepository users = mock(UserRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
-	protected final UserDirectory userDirectory = mock(UserDirectory.class);
+	protected final IdentityProvider identityProvider = mock(IdentityProvider.class);
 	protected final User user = newUser("tester");
 
 	private static User newUser(String name) {
@@ -37,7 +37,7 @@ public abstract class UserControllerTestSupport extends ControllerTestSupport {
 				bind(AuthorizationContext.class).toInstance(auth);
 				bind(UserRepository.class).toInstance(users);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
-				bind(UserDirectory.class).toInstance(userDirectory);
+				bind(IdentityProvider.class).toInstance(identityProvider);
 				bind(UserController.class).in(Singleton.class);
 			}
 		};

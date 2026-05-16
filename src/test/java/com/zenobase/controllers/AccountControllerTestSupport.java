@@ -5,7 +5,7 @@ import static org.mockito.Mockito.mock;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.zenobase.auth.UserDirectory;
+import com.zenobase.auth.IdentityProvider;
 import com.zenobase.models.User;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.CredentialsRepository;
@@ -25,7 +25,7 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 	protected final TaskRepository tasks = mock(TaskRepository.class);
 	protected final CredentialsRepository credentials = mock(CredentialsRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
-	protected final UserDirectory userDirectory = mock(UserDirectory.class);
+	protected final IdentityProvider identityProvider = mock(IdentityProvider.class);
 	protected final User user = new User("tester");
 
 	@Override
@@ -40,7 +40,7 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 				bind(TaskRepository.class).toInstance(tasks);
 				bind(CredentialsRepository.class).toInstance(credentials);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
-				bind(UserDirectory.class).toInstance(userDirectory);
+				bind(IdentityProvider.class).toInstance(identityProvider);
 			}
 		};
 	}

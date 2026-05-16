@@ -5,8 +5,8 @@ import com.auth0.client.mgmt.types.AuthenticationMethodTypeEnum;
 import com.auth0.client.mgmt.types.ListUsersRequestParameters;
 import com.auth0.client.mgmt.types.SearchEngineVersionsEnum;
 import com.auth0.client.mgmt.types.UpdateUserRequestContent;
+import com.zenobase.auth.IdentityProvider;
 import com.zenobase.auth.Passkey;
-import com.zenobase.auth.UserDirectory;
 import com.zenobase.models.User;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -17,7 +17,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Auth0ManagementService implements UserDirectory {
+public class Auth0ManagementService implements IdentityProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(Auth0ManagementService.class);
 

@@ -3,8 +3,8 @@ package com.zenobase.controllers;
 import com.auth0.client.mgmt.core.ManagementApiException;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.auth.IdentityProvider;
 import com.zenobase.auth.Passkey;
-import com.zenobase.auth.UserDirectory;
 import com.zenobase.commands.*;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
@@ -34,7 +34,7 @@ public class AccountController extends ControllerSupport {
 	private final TaskRepository tasks;
 	private final CredentialsRepository credentials;
 	private final CommandDispatcher dispatcher;
-	private final UserDirectory userDirectory;
+	private final IdentityProvider identityProvider;
 
 	@Inject
 	public AccountController(
@@ -44,7 +44,7 @@ public class AccountController extends ControllerSupport {
 		TaskRepository tasks,
 		CredentialsRepository credentials,
 		CommandDispatcher dispatcher,
-		UserDirectory userDirectory
+		IdentityProvider identityProvider
 	) {
 		super(security);
 		this.users = users;
@@ -52,7 +52,7 @@ public class AccountController extends ControllerSupport {
 		this.tasks = tasks;
 		this.credentials = credentials;
 		this.dispatcher = dispatcher;
-		this.userDirectory = userDirectory;
+		this.identityProvider = identityProvider;
 	}
 
 	public void close(ServerRequest req, ServerResponse res) {
@@ -76,7 +76,7 @@ public class AccountController extends ControllerSupport {
 		}
 		Command command = buildCloseAccountCommand(auth.getPrincipal(), user);
 		String commandId = dispatcher.dispatch(command);
-		userDirectory.deleteUser(user);
+		identityProvider.deleteUser(user);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}
@@ -120,7 +120,7 @@ public class AccountController extends ControllerSupport {
 			return;
 		}
 		ArrayNode passkeys = Nodes.newArray();
-		for (Passkey passkey : userDirectory.listPasskeys(user)) {
+		for (Passkey passkey : identityProvider.listPasskeys(user)) {
 			passkeys.add(toJson(passkey));
 		}
 		sendOk(res, passkeys);
@@ -144,7 +144,7 @@ public class AccountController extends ControllerSupport {
 			return;
 		}
 		try {
-			userDirectory.deletePasskey(user, passkeyId);
+			identityProvider.deletePasskey(user, passkeyId);
 		} catch (IllegalArgumentException e) {
 			sendNotFound(res);
 			return;
