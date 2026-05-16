@@ -1,6 +1,7 @@
 package com.zenobase.actions;
 
 import com.zenobase.controllers.AuthorizationContext;
+import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import io.helidon.webserver.http.Filter;
 import io.helidon.webserver.http.FilterChain;
@@ -12,6 +13,8 @@ import io.sentry.protocol.User;
 import jakarta.inject.Inject;
 
 public class ScopeFilter implements Filter {
+
+	private static final String CLIENT_ID_TAG = "auth.client_id";
 
 	private final AuthorizationContext authContext;
 
@@ -28,6 +31,10 @@ public class ScopeFilter implements Filter {
 				User user = new User();
 				user.setId(auth.getPrincipal().id());
 				Sentry.setUser(user);
+				Identity client = auth.getClient();
+				if (client != null) {
+					Sentry.configureScope(scope -> scope.setTag(CLIENT_ID_TAG, client.id()));
+				}
 			}
 			Sentry.configureScope(scope -> {
 				Request request = new Request();
@@ -40,6 +47,7 @@ public class ScopeFilter implements Filter {
 			Sentry.configureScope(scope -> {
 				scope.setUser(null);
 				scope.setRequest(null);
+				scope.removeTag(CLIENT_ID_TAG);
 			});
 		}
 	}
