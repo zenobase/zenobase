@@ -356,7 +356,6 @@ class Module extends AbstractModule {
 		bindString("auth0.m2m.domain");
 		bindString("auth0.m2m.client_id");
 		bindString("auth0.m2m.client_secret");
-		bindStringOrEmpty("auth0.protected_client_ids");
 
 		// Integration API keys (only when their prefix is configured)
 		for (String prefix : List.of(

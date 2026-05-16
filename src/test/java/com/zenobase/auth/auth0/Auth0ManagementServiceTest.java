@@ -2,57 +2,32 @@ package com.zenobase.auth.auth0;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 /**
- * Construction-only tests — the rest of {@link Auth0ManagementService} would require a real Auth0 tenant or a mock
- * Management API client. {@code protected_client_ids} parsing is pure and worth pinning down: a regression here is
- * how the SPA / M2M Application would get silently nuked.
+ * Unit tests for the pure decision logic in {@link Auth0ManagementService#isExternalApplication}. The rest of the
+ * service requires a live Auth0 tenant or a mock {@code ManagementApi} and is exercised end-to-end in staging.
+ *
+ * <p>A regression here is how the SPA, M2M, or manually-registered partner Auth0 Applications would get silently
+ * nuked, so the safe-default-when-absent behavior is pinned down explicitly.
  */
 public class Auth0ManagementServiceTest {
 
-	private static final String DOMAIN = "tenant.auth0.com";
-	private static final String M2M_DOMAIN = "";
-	private static final String M2M_CLIENT_ID = "m2m-client-id";
-	private static final String M2M_CLIENT_SECRET = "m2m-secret";
-
 	@Test
-	public void m2mClientIdIsAlwaysProtected() {
-		Auth0ManagementService service = new Auth0ManagementService(
-			DOMAIN,
-			M2M_DOMAIN,
-			M2M_CLIENT_ID,
-			M2M_CLIENT_SECRET,
-			""
-		);
-		assertThat(service.protectedClientIds()).containsExactly(M2M_CLIENT_ID);
+	public void thirdPartyApplicationsCanBeDeleted() {
+		assertThat(Auth0ManagementService.isExternalApplication(Optional.of(false))).isTrue();
 	}
 
 	@Test
-	public void configuredProtectedClientIdsAreAdded() {
-		Auth0ManagementService service = new Auth0ManagementService(
-			DOMAIN,
-			M2M_DOMAIN,
-			M2M_CLIENT_ID,
-			M2M_CLIENT_SECRET,
-			"spa-client-id, partner-app-id"
-		);
-		assertThat(service.protectedClientIds()).containsExactlyInAnyOrder(
-			M2M_CLIENT_ID,
-			"spa-client-id",
-			"partner-app-id"
-		);
+	public void firstPartyApplicationsAreRefused() {
+		assertThat(Auth0ManagementService.isExternalApplication(Optional.of(true))).isFalse();
 	}
 
 	@Test
-	public void emptyAndWhitespaceEntriesAreIgnored() {
-		Auth0ManagementService service = new Auth0ManagementService(
-			DOMAIN,
-			M2M_DOMAIN,
-			M2M_CLIENT_ID,
-			M2M_CLIENT_SECRET,
-			" , spa-client-id ,, , "
-		);
-		assertThat(service.protectedClientIds()).containsExactlyInAnyOrder(M2M_CLIENT_ID, "spa-client-id");
+	public void absentFlagIsTreatedAsFirstParty() {
+		// Fail safe: if Auth0 doesn't return is_first_party (SDK regression, unexpected response shape), refuse the
+		// delete rather than risk taking down a production Application.
+		assertThat(Auth0ManagementService.isExternalApplication(Optional.empty())).isFalse();
 	}
 }
