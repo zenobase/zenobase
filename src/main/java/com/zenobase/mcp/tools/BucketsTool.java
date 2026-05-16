@@ -1,8 +1,5 @@
 package com.zenobase.mcp.tools;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.zenobase.json.Nodes;
 import com.zenobase.mcp.GrantedBuckets;
 import com.zenobase.mcp.McpAuth;
 import com.zenobase.models.Bucket;
@@ -11,6 +8,10 @@ import io.helidon.extensions.mcp.server.McpTool;
 import io.helidon.extensions.mcp.server.McpToolRequest;
 import io.helidon.extensions.mcp.server.McpToolResult;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 
 /**
  * Lists the buckets the calling external client has been granted access to. Exists alongside the {@code resources/list}
@@ -53,29 +54,28 @@ public class BucketsTool implements McpTool {
 	public McpToolResult tool(McpToolRequest request) {
 		Authorization auth = McpAuth.require(request);
 		GrantedBuckets.Result result = granted.list(auth);
-		ObjectNode node = Nodes.newObject();
-		ArrayNode array = node.putArray("buckets");
+		JsonArrayBuilder array = Json.createArrayBuilder();
 		for (Bucket bucket : result.buckets()) {
 			array.add(toJson(bucket));
 		}
+		JsonObjectBuilder node = Json.createObjectBuilder().add("buckets", array);
 		if (result.consentUrl() != null) {
-			node.putObject("_meta").put("consent_url", result.consentUrl());
+			node.add("_meta", Json.createObjectBuilder().add("consent_url", result.consentUrl()));
 		}
-		return McpToolResult.create(node.toString());
+		return McpToolResult.create(node.build().toString());
 	}
 
-	private static ObjectNode toJson(Bucket bucket) {
-		ObjectNode node = Nodes.newObject();
-		node.put("id", bucket.getId());
+	private static JsonObject toJson(Bucket bucket) {
+		JsonObjectBuilder node = Json.createObjectBuilder().add("id", bucket.getId());
 		if (bucket.getLabel() != null) {
-			node.put("label", bucket.getLabel());
+			node.add("label", bucket.getLabel());
 		}
 		if (bucket.getDescription() != null) {
-			node.put("description", bucket.getDescription());
+			node.add("description", bucket.getDescription());
 		}
 		if (bucket.isArchived()) {
-			node.put("archived", true);
+			node.add("archived", true);
 		}
-		return node;
+		return node.build();
 	}
 }

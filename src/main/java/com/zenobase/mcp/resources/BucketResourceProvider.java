@@ -1,8 +1,6 @@
 package com.zenobase.mcp.resources;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.json.JsonSchema;
-import com.zenobase.json.Nodes;
 import com.zenobase.mcp.ConsentEnforcer;
 import com.zenobase.mcp.ConsentRequiredException;
 import com.zenobase.mcp.McpAuth;
@@ -18,6 +16,10 @@ import io.helidon.extensions.mcp.server.McpResourceRequest;
 import io.helidon.extensions.mcp.server.McpResourceResult;
 import io.helidon.jsonrpc.core.JsonRpcError;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonReader;
+import java.io.StringReader;
 import java.util.Optional;
 
 /**
@@ -79,17 +81,24 @@ public class BucketResourceProvider implements McpResource {
 			.orElseThrow(() -> new McpException(JsonRpcError.INVALID_PARAMS, "Missing bucket_id in URI"));
 		try {
 			Bucket bucket = enforcer.requireRead(auth, bucketId);
-			ObjectNode payload = Nodes.newObject();
-			payload.put("@id", bucket.getId());
+			JsonObjectBuilder payload = Json.createObjectBuilder().add("@id", bucket.getId());
 			if (bucket.getLabel() != null) {
-				payload.put("label", bucket.getLabel());
+				payload.add("label", bucket.getLabel());
 			}
 			if (bucket.getDescription() != null) {
-				payload.put("description", bucket.getDescription());
+				payload.add("description", bucket.getDescription());
 			}
-			payload.put("archived", bucket.isArchived());
-			payload.set("schema", JsonSchema.forFields(events.fields(bucket.getId()), Event.READ_ONLY_FIELDS).toJson());
-			return McpResourceResult.create(payload.toString());
+			payload.add("archived", bucket.isArchived());
+			// JsonSchema.forFields(...).toJson() returns a Jackson ObjectNode (the schema-generation pipeline pre-dates
+			// the jakarta.json migration). Round-trip the rendered string through Json.createReader so the surface here
+			// is jakarta.json end-to-end without naming Jackson types.
+			String schemaJson = JsonSchema.forFields(events.fields(bucket.getId()), Event.READ_ONLY_FIELDS)
+				.toJson()
+				.toString();
+			try (JsonReader reader = Json.createReader(new StringReader(schemaJson))) {
+				payload.add("schema", reader.readObject());
+			}
+			return McpResourceResult.create(payload.build().toString());
 		} catch (ConsentRequiredException e) {
 			// -32002 mirrors the application-defined "access not granted" code our previous JSON-RPC handler used and
 			// matches MCP convention for non-protocol auth failures. INVALID_PARAMS would imply a malformed URI, which

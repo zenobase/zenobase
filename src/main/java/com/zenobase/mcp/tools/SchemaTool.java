@@ -1,8 +1,6 @@
 package com.zenobase.mcp.tools;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.json.JsonSchema;
-import com.zenobase.json.Nodes;
 import com.zenobase.mcp.ConsentEnforcer;
 import com.zenobase.mcp.ConsentRequiredException;
 import com.zenobase.mcp.McpAuth;
@@ -16,6 +14,10 @@ import io.helidon.extensions.mcp.server.McpToolRequest;
 import io.helidon.extensions.mcp.server.McpToolResult;
 import io.helidon.jsonrpc.core.JsonRpcError;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonReader;
+import java.io.StringReader;
 
 /**
  * Returns the inferred field schema for a single bucket, including synthesized sub-fields like
@@ -66,19 +68,26 @@ public class SchemaTool implements McpTool {
 			.orElseThrow(() -> new McpException(JsonRpcError.INVALID_PARAMS, "Missing required parameter: bucket_id"));
 		try {
 			Bucket bucket = enforcer.requireRead(auth, bucketId);
-			ObjectNode payload = Nodes.newObject();
-			payload.put("id", bucket.getId());
+			JsonObjectBuilder payload = Json.createObjectBuilder().add("id", bucket.getId());
 			if (bucket.getLabel() != null) {
-				payload.put("label", bucket.getLabel());
+				payload.add("label", bucket.getLabel());
 			}
 			if (bucket.getDescription() != null) {
-				payload.put("description", bucket.getDescription());
+				payload.add("description", bucket.getDescription());
 			}
 			if (bucket.isArchived()) {
-				payload.put("archived", true);
+				payload.add("archived", true);
 			}
-			payload.set("schema", JsonSchema.forFields(events.fields(bucket.getId()), Event.READ_ONLY_FIELDS).toJson());
-			return McpToolResult.create(payload.toString());
+			// JsonSchema.forFields(...).toJson() returns a Jackson ObjectNode (the schema-generation pipeline pre-dates
+			// the jakarta.json migration). Round-trip the rendered string through Json.createReader so we keep all
+			// jakarta.json types on the surface here without naming Jackson.
+			String schemaJson = JsonSchema.forFields(events.fields(bucket.getId()), Event.READ_ONLY_FIELDS)
+				.toJson()
+				.toString();
+			try (JsonReader reader = Json.createReader(new StringReader(schemaJson))) {
+				payload.add("schema", reader.readObject());
+			}
+			return McpToolResult.create(payload.build().toString());
 		} catch (ConsentRequiredException e) {
 			return McpToolResult.builder().error(true).addTextContent(e.getMessage()).build();
 		}

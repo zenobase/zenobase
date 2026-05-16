@@ -1,6 +1,5 @@
 package com.zenobase.mcp.tools;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.mcp.ConsentEnforcer;
 import com.zenobase.mcp.ConsentRequiredException;
 import com.zenobase.mcp.McpAuth;
@@ -51,8 +50,7 @@ abstract class FacetToolSupport implements McpTool {
 				.addConstraints(constraints)
 				.addFacet(new FacetOptions(options))
 				.buildSearch();
-			ObjectNode result = events.find(bucket.getId(), search);
-			return McpToolResult.create(result.toString());
+			return McpToolResult.create(events.find(bucket.getId(), search).toString());
 		} catch (ConsentRequiredException e) {
 			return McpToolResult.builder().error(true).addTextContent(e.getMessage()).build();
 		} catch (IllegalArgumentException e) {
