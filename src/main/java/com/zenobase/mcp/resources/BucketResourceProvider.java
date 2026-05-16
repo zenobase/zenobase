@@ -3,6 +3,7 @@ package com.zenobase.mcp.resources;
 import com.zenobase.json.JsonSchema;
 import com.zenobase.mcp.ConsentEnforcer;
 import com.zenobase.mcp.ConsentRequiredException;
+import com.zenobase.mcp.JsonSchemas;
 import com.zenobase.mcp.McpAuth;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
@@ -18,8 +19,6 @@ import io.helidon.jsonrpc.core.JsonRpcError;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObjectBuilder;
-import jakarta.json.JsonReader;
-import java.io.StringReader;
 import java.util.Optional;
 
 /**
@@ -89,15 +88,10 @@ public class BucketResourceProvider implements McpResource {
 				payload.add("description", bucket.getDescription());
 			}
 			payload.add("archived", bucket.isArchived());
-			// JsonSchema.forFields(...).toJson() returns a Jackson ObjectNode (the schema-generation pipeline pre-dates
-			// the jakarta.json migration). Round-trip the rendered string through Json.createReader so the surface here
-			// is jakarta.json end-to-end without naming Jackson types.
-			String schemaJson = JsonSchema.forFields(events.fields(bucket.getId()), Event.READ_ONLY_FIELDS)
-				.toJson()
-				.toString();
-			try (JsonReader reader = Json.createReader(new StringReader(schemaJson))) {
-				payload.add("schema", reader.readObject());
-			}
+			payload.add(
+				"schema",
+				JsonSchemas.toJsonObject(JsonSchema.forFields(events.fields(bucket.getId()), Event.READ_ONLY_FIELDS))
+			);
 			return McpResourceResult.create(payload.build().toString());
 		} catch (ConsentRequiredException e) {
 			// -32002 mirrors the application-defined "access not granted" code our previous JSON-RPC handler used and

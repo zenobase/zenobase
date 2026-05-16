@@ -3,6 +3,7 @@ package com.zenobase.mcp.tools;
 import com.zenobase.json.JsonSchema;
 import com.zenobase.mcp.ConsentEnforcer;
 import com.zenobase.mcp.ConsentRequiredException;
+import com.zenobase.mcp.JsonSchemas;
 import com.zenobase.mcp.McpAuth;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
@@ -16,8 +17,6 @@ import io.helidon.jsonrpc.core.JsonRpcError;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObjectBuilder;
-import jakarta.json.JsonReader;
-import java.io.StringReader;
 
 /**
  * Returns the inferred field schema for a single bucket, including synthesized sub-fields like
@@ -78,15 +77,10 @@ public class SchemaTool implements McpTool {
 			if (bucket.isArchived()) {
 				payload.add("archived", true);
 			}
-			// JsonSchema.forFields(...).toJson() returns a Jackson ObjectNode (the schema-generation pipeline pre-dates
-			// the jakarta.json migration). Round-trip the rendered string through Json.createReader so we keep all
-			// jakarta.json types on the surface here without naming Jackson.
-			String schemaJson = JsonSchema.forFields(events.fields(bucket.getId()), Event.READ_ONLY_FIELDS)
-				.toJson()
-				.toString();
-			try (JsonReader reader = Json.createReader(new StringReader(schemaJson))) {
-				payload.add("schema", reader.readObject());
-			}
+			payload.add(
+				"schema",
+				JsonSchemas.toJsonObject(JsonSchema.forFields(events.fields(bucket.getId()), Event.READ_ONLY_FIELDS))
+			);
 			return McpToolResult.create(payload.build().toString());
 		} catch (ConsentRequiredException e) {
 			return McpToolResult.builder().error(true).addTextContent(e.getMessage()).build();
