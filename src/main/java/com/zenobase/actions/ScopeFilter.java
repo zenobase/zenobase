@@ -14,6 +14,8 @@ import jakarta.inject.Inject;
 
 public class ScopeFilter implements Filter {
 
+	private static final String CLIENT_ID_TAG = "auth.client_id";
+
 	private final AuthorizationContext authContext;
 
 	@Inject
@@ -31,7 +33,7 @@ public class ScopeFilter implements Filter {
 				Sentry.setUser(user);
 				Identity client = auth.getClient();
 				if (client != null) {
-					Sentry.configureScope(scope -> scope.setTag("auth.client_id", client.id()));
+					Sentry.configureScope(scope -> scope.setTag(CLIENT_ID_TAG, client.id()));
 				}
 			}
 			Sentry.configureScope(scope -> {
@@ -45,7 +47,7 @@ public class ScopeFilter implements Filter {
 			Sentry.configureScope(scope -> {
 				scope.setUser(null);
 				scope.setRequest(null);
-				scope.removeTag("auth.client_id");
+				scope.removeTag(CLIENT_ID_TAG);
 			});
 		}
 	}
