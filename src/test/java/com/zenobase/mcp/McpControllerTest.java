@@ -13,6 +13,7 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import com.zenobase.auth.IdentityProvider;
 import com.zenobase.auth.UserStateCache;
 import com.zenobase.auth.auth0.Auth0TokenAuthorizer;
 import com.zenobase.auth.auth0.Auth0TokenValidator;
@@ -27,9 +28,11 @@ import com.zenobase.repositories.ExternalClientRepository;
 import com.zenobase.services.CommandDispatcher;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import io.helidon.webserver.http.HttpRouting;
+import org.assertj.core.api.Assertions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 /**
  * HTTP-level test for the {@code POST /mcp} entry controller — auth gating, RFC 9728 challenge, suspended-user
@@ -43,6 +46,7 @@ public class McpControllerTest extends ControllerTestSupport {
 	private final McpJsonRpcHandler handler = mock(McpJsonRpcHandler.class);
 	private final ExternalClientRepository clients = mock(ExternalClientRepository.class);
 	private final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
+	private final IdentityProvider identityProvider = mock(IdentityProvider.class);
 	private final Auth0TokenValidator validator = Auth0Fixture.makeValidator(
 		"https://api.zenobase.com",
 		"https://api.zenobase.com/external"
@@ -60,6 +64,7 @@ public class McpControllerTest extends ControllerTestSupport {
 				bind(McpJsonRpcHandler.class).toInstance(handler);
 				bind(ExternalClientRepository.class).toInstance(clients);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
+				bind(IdentityProvider.class).toInstance(identityProvider);
 				bind(Auth0TokenValidator.class).toInstance(validator);
 				bindConstant().annotatedWith(Names.named("api.hostname")).to(API_HOSTNAME);
 				bind(McpController.class).in(Singleton.class);
@@ -119,6 +124,7 @@ public class McpControllerTest extends ControllerTestSupport {
 		);
 		when(authContext.userState(user)).thenReturn(UserStateCache.UserState.ACTIVE);
 		when(clients.find(user, clientId)).thenReturn(null);
+		when(identityProvider.getApplicationName(clientId)).thenReturn("Claude Desktop");
 		ObjectNode handlerResponse = Nodes.newObject("jsonrpc", "2.0");
 		handlerResponse.put("id", 1);
 		handlerResponse.set("result", Nodes.newObject());
@@ -127,8 +133,35 @@ public class McpControllerTest extends ControllerTestSupport {
 		try (Http1ClientResponse result = client.post("/mcp").submit(ping())) {
 			assertThat(result).hasStatus(200);
 		}
-		verify(dispatcher).dispatch(any(CreateExternalClientCommand.class));
+		ArgumentCaptor<CreateExternalClientCommand> command = ArgumentCaptor.forClass(
+			CreateExternalClientCommand.class
+		);
+		verify(dispatcher).dispatch(command.capture());
+		Assertions.assertThat(command.getValue().getClient().getName()).isEqualTo("Claude Desktop");
 		verify(handler).handle(any(), any());
+	}
+
+	@Test
+	public void testFirstObservationWithoutAuth0NameStillDispatches() {
+		when(authContext.current(any())).thenReturn(
+			new Authorization(user, clientId, Auth0TokenAuthorizer.EXTERNAL_SCOPE)
+		);
+		when(authContext.userState(user)).thenReturn(UserStateCache.UserState.ACTIVE);
+		when(clients.find(user, clientId)).thenReturn(null);
+		when(identityProvider.getApplicationName(clientId)).thenReturn(null);
+		ObjectNode handlerResponse = Nodes.newObject("jsonrpc", "2.0");
+		handlerResponse.put("id", 1);
+		handlerResponse.set("result", Nodes.newObject());
+		when(handler.handle(any(), any())).thenReturn(handlerResponse);
+
+		try (Http1ClientResponse result = client.post("/mcp").submit(ping())) {
+			assertThat(result).hasStatus(200);
+		}
+		ArgumentCaptor<CreateExternalClientCommand> command = ArgumentCaptor.forClass(
+			CreateExternalClientCommand.class
+		);
+		verify(dispatcher).dispatch(command.capture());
+		Assertions.assertThat(command.getValue().getClient().getName()).isNull();
 	}
 
 	@Test

@@ -2,6 +2,7 @@ package com.zenobase.mcp;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.auth.IdentityProvider;
 import com.zenobase.auth.auth0.Auth0TokenAuthorizer;
 import com.zenobase.auth.auth0.Auth0TokenValidator;
 import com.zenobase.commands.CreateExternalClientCommand;
@@ -41,6 +42,7 @@ public class McpController extends ControllerSupport {
 	private final ExternalClientRepository clients;
 	private final CommandDispatcher dispatcher;
 	private final Auth0TokenValidator validator;
+	private final IdentityProvider identityProvider;
 	private final String apiHostname;
 
 	@Inject
@@ -50,6 +52,7 @@ public class McpController extends ControllerSupport {
 		ExternalClientRepository clients,
 		CommandDispatcher dispatcher,
 		Auth0TokenValidator validator,
+		IdentityProvider identityProvider,
 		@Named("api.hostname") String apiHostname
 	) {
 		super(authContext);
@@ -57,6 +60,7 @@ public class McpController extends ControllerSupport {
 		this.clients = clients;
 		this.dispatcher = dispatcher;
 		this.validator = validator;
+		this.identityProvider = identityProvider;
 		this.apiHostname = apiHostname;
 	}
 
@@ -139,7 +143,8 @@ public class McpController extends ControllerSupport {
 	private void registerIfNew(Identity user, Identity client) {
 		try {
 			if (clients.find(user, client) == null) {
-				ExternalClient record = new ExternalClient(user, client, null, DateTime.now(DateTimeZone.UTC));
+				String name = identityProvider.getApplicationName(client);
+				ExternalClient record = new ExternalClient(user, client, name, DateTime.now(DateTimeZone.UTC));
 				dispatcher.dispatch(new CreateExternalClientCommand(user, record));
 			}
 		} catch (RuntimeException e) {
