@@ -17,6 +17,10 @@ auth0:
         domain: ""
         client_id: ""
         client_secret: ""
+    # Comma-separated Auth0 client_ids that must never be deleted by `IdentityProvider.deleteApplication`. The M2M
+    # client_id is always protected; list the SPA's client_id and any other first-party Auth0 Applications here so
+    # they can't be removed by a buggy or compromised revoke path. DCR-minted MCP client_ids do NOT belong here.
+    protected_client_ids: ""
 
 jwt:
     secret: ""

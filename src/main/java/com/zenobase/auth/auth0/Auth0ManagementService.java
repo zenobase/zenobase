@@ -5,6 +5,7 @@ import com.auth0.client.mgmt.types.AuthenticationMethodTypeEnum;
 import com.auth0.client.mgmt.types.ListUsersRequestParameters;
 import com.auth0.client.mgmt.types.SearchEngineVersionsEnum;
 import com.auth0.client.mgmt.types.UpdateUserRequestContent;
+import com.google.common.base.Splitter;
 import com.zenobase.auth.IdentityProvider;
 import com.zenobase.auth.Passkey;
 import com.zenobase.models.Identity;
@@ -13,7 +14,9 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +26,15 @@ public class Auth0ManagementService implements IdentityProvider {
 	private static final Logger logger = LoggerFactory.getLogger(Auth0ManagementService.class);
 
 	private final ManagementApi client;
+	private final Set<String> protectedClientIds;
 
 	@Inject
 	public Auth0ManagementService(
 		@Named("auth0.domain") String domain,
 		@Named("auth0.m2m.domain") String m2mDomain,
 		@Named("auth0.m2m.client_id") String clientId,
-		@Named("auth0.m2m.client_secret") String clientSecret
+		@Named("auth0.m2m.client_secret") String clientSecret,
+		@Named("auth0.protected_client_ids") String protectedClientIdsCsv
 	) {
 		// The Management API only accepts tokens whose audience is the *canonical* Auth0 tenant
 		// (https://<tenant>/api/v2/) — custom domains are not allowed for M2M-to-Management API.
@@ -38,6 +43,15 @@ public class Auth0ManagementService implements IdentityProvider {
 		// bare hostname and prepends https:// itself, so strip any scheme our config carries.
 		String host = (m2mDomain.isEmpty() ? domain : m2mDomain).replaceFirst("^https?://", "");
 		this.client = ManagementApi.builder().domain(host).clientCredentials(clientId, clientSecret).build();
+		// Defense-in-depth allowlist for {@link #deleteApplication}. Always includes the M2M client_id (deleting it
+		// would brick this service itself). Operators add the SPA client_id and any other manually-registered
+		// first-party Auth0 Applications via {@code auth0.protected_client_ids} (comma-separated).
+		Set<String> protectedIds = new HashSet<>();
+		protectedIds.add(clientId);
+		for (String id : Splitter.on(',').trimResults().omitEmptyStrings().split(protectedClientIdsCsv)) {
+			protectedIds.add(id);
+		}
+		this.protectedClientIds = Set.copyOf(protectedIds);
 	}
 
 	@Override
@@ -149,8 +163,19 @@ public class Auth0ManagementService implements IdentityProvider {
 		logger.info("Deleted Auth0 passkey {} for user {}", passkeyId, externalId);
 	}
 
+	/** Exposed for tests — the resolved set of Auth0 client_ids that {@link #deleteApplication} refuses to touch. */
+	Set<String> protectedClientIds() {
+		return protectedClientIds;
+	}
+
 	@Override
 	public void deleteApplication(Identity application) {
+		if (protectedClientIds.contains(application.id())) {
+			// A bug or compromised endpoint reached this method with a first-party client_id (the M2M client itself,
+			// the SPA, or another configured protected app). Refuse rather than nuke a production Application.
+			logger.error("Refusing to delete protected Auth0 application {}", application.id());
+			return;
+		}
 		try {
 			client.clients().delete(application.id());
 			logger.info("Deleted Auth0 application {}", application.id());
