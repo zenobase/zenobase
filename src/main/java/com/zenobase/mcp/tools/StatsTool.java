@@ -5,7 +5,6 @@ import com.zenobase.repositories.EventRepository;
 import com.zenobase.search.facets.StatsFacet;
 import io.helidon.extensions.mcp.server.McpToolRequest;
 import io.helidon.extensions.mcp.server.McpToolResult;
-import io.helidon.json.schema.Schema;
 import jakarta.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,25 +30,9 @@ public class StatsTool extends FacetToolSupport {
 
 	@Override
 	public String schema() {
-		return Schema.builder()
-			.rootObject(root ->
-				root
-					.addStringProperty("bucket_id", p -> p.description("ID of the bucket to query.").required(true))
-					.addStringProperty("field", p ->
-						p.description("Name of the numeric field to aggregate.").required(true)
-					)
-					.addArrayProperty("constraints", a ->
-						a
-							.description("Optional AND-combined predicates ({field, op, value}).")
-							.itemsObject(items ->
-								items
-									.addStringProperty("field", p -> p.description("Field name.").required(true))
-									.addStringProperty("op", p -> p.description("Comparison operator.").required(true))
-							)
-					)
-			)
-			.build()
-			.generate();
+		Map<String, jakarta.json.JsonObject> extras = new LinkedHashMap<>();
+		extras.put("field", ToolSchemas.stringProperty("Name of the numeric field to aggregate."));
+		return ToolSchemas.bucketIdAnd(extras, "field");
 	}
 
 	@Override

@@ -5,7 +5,6 @@ import com.zenobase.repositories.EventRepository;
 import com.zenobase.search.facets.TimelineFacet;
 import io.helidon.extensions.mcp.server.McpToolRequest;
 import io.helidon.extensions.mcp.server.McpToolResult;
-import io.helidon.json.schema.Schema;
 import jakarta.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,25 +30,20 @@ public class TimelineTool extends FacetToolSupport {
 
 	@Override
 	public String schema() {
-		return Schema.builder()
-			.rootObject(root ->
-				root
-					.addStringProperty("bucket_id", p -> p.description("ID of the bucket to query.").required(true))
-					.addStringProperty("interval", p ->
-						p.description("Time bucket size: hour/day/week/month/quarter/year. Defaults to month.")
-					)
-					.addArrayProperty("constraints", a ->
-						a
-							.description("Optional AND-combined predicates ({field, op, value}).")
-							.itemsObject(items ->
-								items
-									.addStringProperty("field", p -> p.description("Field name.").required(true))
-									.addStringProperty("op", p -> p.description("Comparison operator.").required(true))
-							)
-					)
+		Map<String, jakarta.json.JsonObject> extras = new LinkedHashMap<>();
+		extras.put(
+			"interval",
+			ToolSchemas.stringPropertyWithEnum(
+				"Time bucket size. Defaults to month.",
+				"hour",
+				"day",
+				"week",
+				"month",
+				"quarter",
+				"year"
 			)
-			.build()
-			.generate();
+		);
+		return ToolSchemas.bucketIdAnd(extras);
 	}
 
 	@Override

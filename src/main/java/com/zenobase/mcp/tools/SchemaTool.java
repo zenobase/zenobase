@@ -10,10 +10,11 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.EventRepository;
+import io.helidon.extensions.mcp.server.McpException;
 import io.helidon.extensions.mcp.server.McpTool;
 import io.helidon.extensions.mcp.server.McpToolRequest;
 import io.helidon.extensions.mcp.server.McpToolResult;
-import io.helidon.json.schema.Schema;
+import io.helidon.jsonrpc.core.JsonRpcError;
 import jakarta.inject.Inject;
 
 /**
@@ -52,18 +53,7 @@ public class SchemaTool implements McpTool {
 
 	@Override
 	public String schema() {
-		return Schema.builder()
-			.rootObject(root ->
-				root.addStringProperty("bucket_id", p ->
-					p
-						.description(
-							"ID of the bucket whose schema to return (the {id} from a zenobase://bucket/{id} URI)."
-						)
-						.required(true)
-				)
-			)
-			.build()
-			.generate();
+		return ToolSchemas.bucketIdOnly();
 	}
 
 	@Override
@@ -73,12 +63,7 @@ public class SchemaTool implements McpTool {
 			.arguments()
 			.get("bucket_id")
 			.asString()
-			.orElseThrow(() ->
-				new io.helidon.extensions.mcp.server.McpException(
-					io.helidon.jsonrpc.core.JsonRpcError.INVALID_PARAMS,
-					"Missing required parameter: bucket_id"
-				)
-			);
+			.orElseThrow(() -> new McpException(JsonRpcError.INVALID_PARAMS, "Missing required parameter: bucket_id"));
 		try {
 			Bucket bucket = enforcer.requireRead(auth, bucketId);
 			ObjectNode payload = Nodes.newObject();

@@ -73,10 +73,18 @@ public class McpAuthFilter implements Filter {
 
 	@Override
 	public void filter(FilterChain chain, RoutingRequest req, RoutingResponse res) {
+		// Helidon's `routing.addFilter(...)` registers globally — there is no path-scoped variant. Guard explicitly so
+		// this filter only runs on the MCP endpoint(s) and doesn't reject every first-party REST request.
+		String path = req.prologue().uriPath().rawPath();
+		if (!path.equals("/mcp") && !path.startsWith("/mcp/")) {
+			chain.proceed();
+			return;
+		}
 		Authorization auth = authContext.current(req);
 		logger.info(
-			"{} /mcp origin={} ua={} authenticated={} scope={}",
+			"{} {} origin={} ua={} authenticated={} scope={}",
 			req.prologue().method().text(),
+			path,
 			req.headers().value(HeaderNames.ORIGIN).orElse(null),
 			req.headers().value(HeaderNames.USER_AGENT).orElse(null),
 			auth != null,

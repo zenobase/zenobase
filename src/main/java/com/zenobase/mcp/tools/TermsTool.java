@@ -5,7 +5,6 @@ import com.zenobase.repositories.EventRepository;
 import com.zenobase.search.facets.CountFacet;
 import io.helidon.extensions.mcp.server.McpToolRequest;
 import io.helidon.extensions.mcp.server.McpToolResult;
-import io.helidon.json.schema.Schema;
 import jakarta.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,29 +32,17 @@ public class TermsTool extends FacetToolSupport {
 
 	@Override
 	public String schema() {
-		return Schema.builder()
-			.rootObject(root ->
-				root
-					.addStringProperty("bucket_id", p -> p.description("ID of the bucket to query.").required(true))
-					.addStringProperty("field", p -> p.description("Field to group by.").required(true))
-					.addIntegerProperty("limit", p ->
-						p
-							.description("Max distinct values to return (1-" + MAX_LIMIT + ", default 10).")
-							.minimum(1)
-							.maximum(MAX_LIMIT)
-					)
-					.addArrayProperty("constraints", a ->
-						a
-							.description("Optional AND-combined predicates ({field, op, value}).")
-							.itemsObject(items ->
-								items
-									.addStringProperty("field", p -> p.description("Field name.").required(true))
-									.addStringProperty("op", p -> p.description("Comparison operator.").required(true))
-							)
-					)
+		Map<String, jakarta.json.JsonObject> extras = new LinkedHashMap<>();
+		extras.put("field", ToolSchemas.stringProperty("Field to group by."));
+		extras.put(
+			"limit",
+			ToolSchemas.integerProperty(
+				"Max distinct values to return (1-" + MAX_LIMIT + ", default 10).",
+				1,
+				MAX_LIMIT
 			)
-			.build()
-			.generate();
+		);
+		return ToolSchemas.bucketIdAnd(extras, "field");
 	}
 
 	@Override

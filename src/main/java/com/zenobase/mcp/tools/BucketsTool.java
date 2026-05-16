@@ -10,7 +10,6 @@ import com.zenobase.oauth.Authorization;
 import io.helidon.extensions.mcp.server.McpTool;
 import io.helidon.extensions.mcp.server.McpToolRequest;
 import io.helidon.extensions.mcp.server.McpToolResult;
-import io.helidon.json.schema.Schema;
 import jakarta.inject.Inject;
 
 /**
@@ -47,10 +46,7 @@ public class BucketsTool implements McpTool {
 
 	@Override
 	public String schema() {
-		return Schema.builder()
-			.rootObject(root -> {})
-			.build()
-			.generate();
+		return ToolSchemas.empty();
 	}
 
 	@Override

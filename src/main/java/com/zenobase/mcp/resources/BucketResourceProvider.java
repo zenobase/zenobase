@@ -91,7 +91,10 @@ public class BucketResourceProvider implements McpResource {
 			payload.set("schema", JsonSchema.forFields(events.fields(bucket.getId()), Event.READ_ONLY_FIELDS).toJson());
 			return McpResourceResult.create(payload.toString());
 		} catch (ConsentRequiredException e) {
-			throw new McpException(JsonRpcError.INVALID_PARAMS, e.getMessage());
+			// -32002 mirrors the application-defined "access not granted" code our previous JSON-RPC handler used and
+			// matches MCP convention for non-protocol auth failures. INVALID_PARAMS would imply a malformed URI, which
+			// would mislead the client into re-formatting its request rather than prompting the user to grant access.
+			throw new McpException(-32002, e.getMessage());
 		}
 	}
 }

@@ -5,7 +5,6 @@ import com.zenobase.repositories.EventRepository;
 import com.zenobase.search.facets.HistogramFacet;
 import io.helidon.extensions.mcp.server.McpToolRequest;
 import io.helidon.extensions.mcp.server.McpToolResult;
-import io.helidon.json.schema.Schema;
 import jakarta.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,29 +30,10 @@ public class HistogramTool extends FacetToolSupport {
 
 	@Override
 	public String schema() {
-		return Schema.builder()
-			.rootObject(root ->
-				root
-					.addStringProperty("bucket_id", p -> p.description("ID of the bucket to query.").required(true))
-					.addStringProperty("field", p -> p.description("Numeric field to bin on.").required(true))
-					.addStringProperty("interval", p ->
-						p.description("Bin width (as a number, e.g. \"10\").").required(true)
-					)
-					.addArrayProperty("constraints", a ->
-						a
-							.description(
-								"Optional list of AND-combined predicates. Each: {field, op, value}. " +
-									"Ops: eq, ne, gt, gte, lt, lte, in (value=array), contains (substring)."
-							)
-							.itemsObject(items ->
-								items
-									.addStringProperty("field", p -> p.description("Field name.").required(true))
-									.addStringProperty("op", p -> p.description("Comparison operator.").required(true))
-							)
-					)
-			)
-			.build()
-			.generate();
+		Map<String, jakarta.json.JsonObject> extras = new LinkedHashMap<>();
+		extras.put("field", ToolSchemas.stringProperty("Numeric field to bin on."));
+		extras.put("interval", ToolSchemas.stringProperty("Bin width (as a number, e.g. \"10\")."));
+		return ToolSchemas.bucketIdAnd(extras, "field", "interval");
 	}
 
 	@Override
