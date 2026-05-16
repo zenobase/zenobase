@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.helidon.extensions.mcp.server.McpException;
 import io.helidon.extensions.mcp.server.McpParameters;
+import io.helidon.extensions.mcp.server.McpParametersTestAccess;
 import io.helidon.jsonrpc.core.JsonRpcParams;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -142,7 +143,7 @@ public class ConstraintParserTest {
 		try (var reader = Json.createReader(new StringReader("{\"constraints\":" + json + "}"))) {
 			JsonObject envelope = reader.readObject();
 			JsonRpcParams params = JsonRpcParams.create(envelope);
-			McpParameters root = new io.helidon.extensions.mcp.server.McpParametersTestAccess(params, envelope).build();
+			McpParameters root = new McpParametersTestAccess(params, envelope).build();
 			return root.get("constraints");
 		}
 	}

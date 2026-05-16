@@ -6,6 +6,7 @@ import com.zenobase.search.facets.ListFacet;
 import io.helidon.extensions.mcp.server.McpToolRequest;
 import io.helidon.extensions.mcp.server.McpToolResult;
 import jakarta.inject.Inject;
+import jakarta.json.JsonObject;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class EventsTool extends FacetToolSupport {
 
 	@Override
 	public String schema() {
-		Map<String, jakarta.json.JsonObject> extras = new LinkedHashMap<>();
+		Map<String, JsonObject> extras = new LinkedHashMap<>();
 		extras.put(
 			"limit",
 			ToolSchemas.integerProperty("Maximum events to return (1-" + MAX_LIMIT + "). Defaults to 50.", 1, MAX_LIMIT)

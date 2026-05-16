@@ -1,5 +1,7 @@
 package com.zenobase.mcp;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -83,7 +85,7 @@ public class McpAuthFilterTest extends ControllerTestSupport {
 		try (Http1ClientResponse result = client.post("/mcp").submit("{}")) {
 			ResultAssert.assertThat(result).hasStatus(401);
 			String wwwAuth = result.headers().first(HeaderNames.WWW_AUTHENTICATE).orElse(null);
-			org.assertj.core.api.Assertions.assertThat(wwwAuth)
+			assertThat(wwwAuth)
 				.contains("Bearer")
 				.contains("resource_metadata=")
 				.contains(API_HOSTNAME + "/.well-known/oauth-protected-resource");
@@ -96,7 +98,7 @@ public class McpAuthFilterTest extends ControllerTestSupport {
 		try (Http1ClientResponse result = client.post("/mcp/session/abc").submit("{}")) {
 			// Either 401 (challenge) or 404 (no route) — both prove the filter ran. The filter sends 401 first.
 			int status = result.status().code();
-			org.assertj.core.api.Assertions.assertThat(status).isIn(401, 404);
+			assertThat(status).isIn(401, 404);
 		}
 	}
 
@@ -104,8 +106,8 @@ public class McpAuthFilterTest extends ControllerTestSupport {
 	public void testMcpAdjacentPathNotGated() {
 		// /mcpsomething (no trailing slash, just a similar prefix) must NOT be gated — the guard is "/mcp" or "/mcp/".
 		// We can't easily route this without registering it, so just verify the underlying path-match logic.
-		org.assertj.core.api.Assertions.assertThat("/mcpsomething".equals("/mcp")).isFalse();
-		org.assertj.core.api.Assertions.assertThat("/mcpsomething".startsWith("/mcp/")).isFalse();
+		assertThat("/mcpsomething".equals("/mcp")).isFalse();
+		assertThat("/mcpsomething".startsWith("/mcp/")).isFalse();
 	}
 
 	@Test
@@ -117,6 +119,6 @@ public class McpAuthFilterTest extends ControllerTestSupport {
 			new Identity("client-1"),
 			Auth0TokenAuthorizer.EXTERNAL_SCOPE
 		);
-		org.assertj.core.api.Assertions.assertThat(authorization.getScope()).isEqualTo("external");
+		assertThat(authorization.getScope()).isEqualTo("external");
 	}
 }

@@ -1,6 +1,7 @@
 package com.zenobase.mcp;
 
 import com.zenobase.auth.IdentityProvider;
+import com.zenobase.auth.UserStateCache;
 import com.zenobase.auth.auth0.Auth0TokenAuthorizer;
 import com.zenobase.auth.auth0.Auth0TokenValidator;
 import com.zenobase.commands.CreateExternalClientCommand;
@@ -98,7 +99,7 @@ public class McpAuthFilter implements Filter {
 			res.status(Status.FORBIDDEN_403).send();
 			return;
 		}
-		if (authContext.userState(auth.getPrincipal()) == com.zenobase.auth.UserStateCache.UserState.SUSPENDED) {
+		if (authContext.userState(auth.getPrincipal()) == UserStateCache.UserState.SUSPENDED) {
 			res.status(Status.FORBIDDEN_403).send();
 			return;
 		}

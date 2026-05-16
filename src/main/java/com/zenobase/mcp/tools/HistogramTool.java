@@ -6,6 +6,7 @@ import com.zenobase.search.facets.HistogramFacet;
 import io.helidon.extensions.mcp.server.McpToolRequest;
 import io.helidon.extensions.mcp.server.McpToolResult;
 import jakarta.inject.Inject;
+import jakarta.json.JsonObject;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class HistogramTool extends FacetToolSupport {
 
 	@Override
 	public String schema() {
-		Map<String, jakarta.json.JsonObject> extras = new LinkedHashMap<>();
+		Map<String, JsonObject> extras = new LinkedHashMap<>();
 		extras.put("field", ToolSchemas.stringProperty("Numeric field to bin on."));
 		extras.put("interval", ToolSchemas.stringProperty("Bin width (as a number, e.g. \"10\")."));
 		return ToolSchemas.bucketIdAnd(extras, "field", "interval");

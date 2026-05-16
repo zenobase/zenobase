@@ -6,6 +6,7 @@ import com.zenobase.search.facets.CountFacet;
 import io.helidon.extensions.mcp.server.McpToolRequest;
 import io.helidon.extensions.mcp.server.McpToolResult;
 import jakarta.inject.Inject;
+import jakarta.json.JsonObject;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class TermsTool extends FacetToolSupport {
 
 	@Override
 	public String schema() {
-		Map<String, jakarta.json.JsonObject> extras = new LinkedHashMap<>();
+		Map<String, JsonObject> extras = new LinkedHashMap<>();
 		extras.put("field", ToolSchemas.stringProperty("Field to group by."));
 		extras.put(
 			"limit",
