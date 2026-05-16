@@ -5,6 +5,7 @@ import com.zenobase.auth.Passkey;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 public class LocalIdentityProvider implements IdentityProvider {
 
@@ -24,4 +25,9 @@ public class LocalIdentityProvider implements IdentityProvider {
 
 	@Override
 	public void deleteApplication(Identity application) {}
+
+	@Override
+	public @Nullable String getApplicationName(Identity application) {
+		return null;
+	}
 }

@@ -152,6 +152,16 @@ public class Auth0ManagementService implements IdentityProvider {
 	}
 
 	@Override
+	public @Nullable String getApplicationName(Identity application) {
+		try {
+			return client.clients().get(application.id()).getName().orElse(null);
+		} catch (Exception e) {
+			logger.warn("Failed to look up Auth0 application name for {}", application.id(), e);
+			return null;
+		}
+	}
+
+	@Override
 	public void deleteApplication(Identity application) {
 		// Defense-in-depth against {@link com.zenobase.controllers.ExternalClientController#revoke} or any future
 		// caller reaching us with a first-party {@code client_id} (the SPA, the M2M client itself, manually-registered
