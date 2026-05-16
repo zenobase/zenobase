@@ -11,6 +11,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.ExternalClientRepository;
 import com.zenobase.services.CommandDispatcher;
+import io.helidon.common.context.Contexts;
 import io.helidon.http.HeaderNames;
 import io.helidon.http.Status;
 import io.helidon.webserver.http.Filter;
@@ -77,14 +78,21 @@ public class McpAuthFilter implements Filter {
 		// Helidon's `routing.addFilter(...)` registers globally — there is no path-scoped variant. Guard explicitly so
 		// this filter only runs on the MCP endpoint(s) and doesn't reject every first-party REST request.
 		String path = req.prologue().uriPath().rawPath();
-		if (!path.equals("/mcp") && !path.startsWith("/mcp/")) {
+		String method = req.prologue().method().text();
+		boolean mcpPath = path.equals("/mcp") || path.startsWith("/mcp/");
+		// Unconditional debug log so we can confirm the filter is invoked for every /mcp request. If a tool reports
+		// "no authorization in request context", check the logs: either this line is absent (filter didn't run — path
+		// guard mismatch or routing bypass) or it's present with the auth captured (helidon-mcp didn't propagate the
+		// context to the tool callback).
+		logger.info("mcp-auth-filter: method={} path={} mcpPath={}", method, path, mcpPath);
+		if (!mcpPath) {
 			chain.proceed();
 			return;
 		}
 		Authorization auth = authContext.current(req);
 		logger.info(
 			"{} {} origin={} ua={} authenticated={} scope={}",
-			req.prologue().method().text(),
+			method,
 			path,
 			req.headers().value(HeaderNames.ORIGIN).orElse(null),
 			req.headers().value(HeaderNames.USER_AGENT).orElse(null),
@@ -110,7 +118,12 @@ public class McpAuthFilter implements Filter {
 		}
 		registerIfNew(auth.getPrincipal(), client);
 		req.context().register(Authorization.class, auth);
-		chain.proceed();
+		// Defensive: wrap the rest of the chain in an explicit Context activation so Contexts.context() inside the tool
+		// callback returns this same Context. The Helidon MCP 1.1.1 source threads req.context() into
+		// McpRequest.requestContext() with no thread switching, so request.requestContext().get(...) is the canonical
+		// path — but production reports the lookup failing, and this guarantees the thread-active context fallback in
+		// McpAuth.require() works regardless of any future helidon-mcp executor changes.
+		Contexts.runInContext(req.context(), chain::proceed);
 	}
 
 	/**
