@@ -9,6 +9,7 @@ import com.zenobase.auth.IdentityProvider;
 import com.zenobase.models.User;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.CredentialsRepository;
+import com.zenobase.repositories.ExternalClientRepository;
 import com.zenobase.repositories.TaskRepository;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.Bus;
@@ -24,6 +25,7 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 	protected final BucketRepository buckets = mock(BucketRepository.class);
 	protected final TaskRepository tasks = mock(TaskRepository.class);
 	protected final CredentialsRepository credentials = mock(CredentialsRepository.class);
+	protected final ExternalClientRepository externalClients = mock(ExternalClientRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
 	protected final IdentityProvider identityProvider = mock(IdentityProvider.class);
 	protected final User user = new User("tester");
@@ -39,6 +41,7 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 				bind(UserRepository.class).toInstance(users);
 				bind(TaskRepository.class).toInstance(tasks);
 				bind(CredentialsRepository.class).toInstance(credentials);
+				bind(ExternalClientRepository.class).toInstance(externalClients);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
 				bind(IdentityProvider.class).toInstance(identityProvider);
 			}

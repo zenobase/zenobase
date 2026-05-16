@@ -14,6 +14,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
+import com.zenobase.auth.IdentityProvider;
 import com.zenobase.commands.UpdateExternalClientGrantsCommand;
 import com.zenobase.json.NodeList;
 import com.zenobase.json.Nodes;
@@ -43,6 +44,7 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 	private final ExternalClientRepository clients = mock(ExternalClientRepository.class);
 	private final BucketRepository buckets = mock(BucketRepository.class);
 	private final UserRepository users = mock(UserRepository.class);
+	private final IdentityProvider identityProvider = mock(IdentityProvider.class);
 
 	private final User user = new User("tester");
 	private final Identity userIdentity = user.asIdentity();
@@ -58,6 +60,7 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 				bind(ExternalClientRepository.class).toInstance(clients);
 				bind(BucketRepository.class).toInstance(buckets);
 				bind(UserRepository.class).toInstance(users);
+				bind(IdentityProvider.class).toInstance(identityProvider);
 				bind(ExternalClientController.class).in(Singleton.class);
 			}
 		};
@@ -191,6 +194,10 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 	@Test
 	public void testRevokeDispatchesEmptySnapshotAndDeletes() {
 		when(auth.current(any())).thenReturn(new Authorization(userIdentity));
+		// No other user references this client_id — safety check returns 0.
+		when(clients.find(any(ExternalClientQuery.class), anyInt(), anyInt())).thenReturn(
+			new ExternalClientList(new NodeList(List.of(), 0))
+		);
 
 		try (
 			Http1ClientResponse result = client
@@ -201,6 +208,32 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 		}
 		verify(dispatcher).dispatch(any(UpdateExternalClientGrantsCommand.class));
 		verify(clients).delete(userIdentity, clientIdentity);
+		verify(identityProvider).deleteApplication(clientIdentity);
+	}
+
+	@Test
+	public void testRevokeSkipsAuth0DeleteWhenAnotherUserStillReferencesClient() {
+		when(auth.current(any())).thenReturn(new Authorization(userIdentity));
+		// Another user still has a row pointing at this client_id — safety check returns >0.
+		ExternalClient otherUserRow = new ExternalClient(
+			new Identity("someone-else"),
+			clientIdentity,
+			"Claude Desktop",
+			new DateTime(2026, 5, 1, 0, 0, DateTimeZone.UTC)
+		);
+		when(clients.find(any(ExternalClientQuery.class), anyInt(), anyInt())).thenReturn(
+			new ExternalClientList(new NodeList(List.of(otherUserRow.toJson()), 1))
+		);
+
+		try (
+			Http1ClientResponse result = client
+				.delete("/users/" + user.getId() + "/external-clients/claude-desktop")
+				.request()
+		) {
+			assertThat(result).hasStatus(204);
+		}
+		verify(clients).delete(userIdentity, clientIdentity);
+		verify(identityProvider, never()).deleteApplication(any());
 	}
 
 	@Test

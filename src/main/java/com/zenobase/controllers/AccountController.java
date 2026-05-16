@@ -12,9 +12,11 @@ import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.queries.BucketQuery;
 import com.zenobase.queries.CredentialsQuery;
+import com.zenobase.queries.ExternalClientQuery;
 import com.zenobase.queries.TaskQuery;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.CredentialsRepository;
+import com.zenobase.repositories.ExternalClientRepository;
 import com.zenobase.repositories.TaskRepository;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
@@ -22,6 +24,8 @@ import com.zenobase.services.UserLookup;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +37,7 @@ public class AccountController extends ControllerSupport {
 	private final BucketRepository buckets;
 	private final TaskRepository tasks;
 	private final CredentialsRepository credentials;
+	private final ExternalClientRepository externalClients;
 	private final CommandDispatcher dispatcher;
 	private final IdentityProvider identityProvider;
 
@@ -43,6 +48,7 @@ public class AccountController extends ControllerSupport {
 		BucketRepository buckets,
 		TaskRepository tasks,
 		CredentialsRepository credentials,
+		ExternalClientRepository externalClients,
 		CommandDispatcher dispatcher,
 		IdentityProvider identityProvider
 	) {
@@ -51,6 +57,7 @@ public class AccountController extends ControllerSupport {
 		this.buckets = buckets;
 		this.tasks = tasks;
 		this.credentials = credentials;
+		this.externalClients = externalClients;
 		this.dispatcher = dispatcher;
 		this.identityProvider = identityProvider;
 	}
@@ -74,9 +81,22 @@ public class AccountController extends ControllerSupport {
 		if (!user.is(auth.getPrincipal()) && sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
+		// Snapshot the client_ids this user has connected before dispatch — afterwards the rows are gone and we
+		// can't look them up. We need them to issue best-effort Auth0 Application deletes below.
+		List<Identity> connectedClientIds = new ArrayList<>();
+		externalClients.find(new ExternalClientQuery().userEqualTo(user.asIdentity()), client ->
+			connectedClientIds.add(client.getClient())
+		);
 		Command command = buildCloseAccountCommand(auth.getPrincipal(), user);
 		String commandId = dispatcher.dispatch(command);
 		identityProvider.deleteUser(user);
+		// For each external client this user had, drop the corresponding Auth0 Application — but only if no other
+		// user still references the same client_id. Same safety check as ExternalClientController.revoke.
+		for (Identity clientId : connectedClientIds) {
+			if (externalClients.find(new ExternalClientQuery().clientEqualTo(clientId), 0, 1).getTotal() == 0) {
+				identityProvider.deleteApplication(clientId);
+			}
+		}
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}
@@ -99,6 +119,9 @@ public class AccountController extends ControllerSupport {
 		);
 		credentials.find(new CredentialsQuery().principalEqualTo(user.asIdentity()), credentials ->
 			command.add(new DeleteCredentialsCommand(principal, credentials))
+		);
+		externalClients.find(new ExternalClientQuery().userEqualTo(user.asIdentity()), externalClient ->
+			command.add(new DeleteExternalClientCommand(principal, externalClient))
 		);
 		return command;
 	}

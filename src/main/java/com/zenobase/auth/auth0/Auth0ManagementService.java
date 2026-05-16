@@ -7,6 +7,7 @@ import com.auth0.client.mgmt.types.SearchEngineVersionsEnum;
 import com.auth0.client.mgmt.types.UpdateUserRequestContent;
 import com.zenobase.auth.IdentityProvider;
 import com.zenobase.auth.Passkey;
+import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -146,5 +147,15 @@ public class Auth0ManagementService implements IdentityProvider {
 		}
 		client.users().authenticationMethods().delete(externalId, passkeyId);
 		logger.info("Deleted Auth0 passkey {} for user {}", passkeyId, externalId);
+	}
+
+	@Override
+	public void deleteApplication(Identity application) {
+		try {
+			client.clients().delete(application.id());
+			logger.info("Deleted Auth0 application {}", application.id());
+		} catch (Exception e) {
+			logger.error("Failed to delete Auth0 application {}", application.id(), e);
+		}
 	}
 }

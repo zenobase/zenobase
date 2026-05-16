@@ -2,6 +2,7 @@ package com.zenobase.auth.local;
 
 import com.zenobase.auth.IdentityProvider;
 import com.zenobase.auth.Passkey;
+import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import java.util.List;
 
@@ -20,4 +21,7 @@ public class LocalIdentityProvider implements IdentityProvider {
 
 	@Override
 	public void deletePasskey(User user, String passkeyId) {}
+
+	@Override
+	public void deleteApplication(Identity application) {}
 }

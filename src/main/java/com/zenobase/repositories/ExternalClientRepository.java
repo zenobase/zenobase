@@ -1,6 +1,7 @@
 package com.zenobase.repositories;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
 import com.zenobase.models.ExternalClient;
 import com.zenobase.models.ExternalClientList;
@@ -49,6 +50,10 @@ public class ExternalClientRepository extends RepositorySupport<ExternalClient> 
 
 	public @Nullable ExternalClient find(Identity user, Identity client) {
 		return find(ExternalClient.id(user, client));
+	}
+
+	public void find(ExternalClientQuery query, Callback<ExternalClient> callback) {
+		super.find(query.build(), ExternalClientQuery.DEFAULT_ORDER, callback);
 	}
 
 	public PartialList<ExternalClient> find(ExternalClientQuery query, int offset, int limit) {

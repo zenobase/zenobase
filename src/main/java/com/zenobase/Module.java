@@ -185,6 +185,7 @@ class Module extends AbstractModule {
 		parsers.addBinding().to(UpdateCredentialsCommand.Parser.class);
 		parsers.addBinding().to(DeleteCredentialsCommand.Parser.class);
 		parsers.addBinding().to(CreateExternalClientCommand.Parser.class);
+		parsers.addBinding().to(DeleteExternalClientCommand.Parser.class);
 		parsers.addBinding().to(UpdateExternalClientGrantsCommand.Parser.class);
 		parsers.addBinding().to(CompoundCommand.Parser.class);
 	}
@@ -217,6 +218,7 @@ class Module extends AbstractModule {
 		handlers.addBinding().to(UpdateCredentialsCommand.Handler.class);
 		handlers.addBinding().to(DeleteCredentialsCommand.Handler.class);
 		handlers.addBinding().to(CreateExternalClientCommand.Handler.class);
+		handlers.addBinding().to(DeleteExternalClientCommand.Handler.class);
 		handlers.addBinding().to(UpdateExternalClientGrantsCommand.Handler.class);
 	}
 

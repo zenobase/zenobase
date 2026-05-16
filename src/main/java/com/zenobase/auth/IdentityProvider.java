@@ -1,5 +1,6 @@
 package com.zenobase.auth;
 
+import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import java.util.List;
 
@@ -11,4 +12,6 @@ public interface IdentityProvider {
 	List<Passkey> listPasskeys(User user);
 
 	void deletePasskey(User user, String passkeyId);
+
+	void deleteApplication(Identity client);
 }
