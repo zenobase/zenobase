@@ -87,6 +87,7 @@ class Module extends AbstractModule {
 		bindCredentialsManagers();
 		bindTaskManagers();
 		bindJobs();
+		bindMcp();
 		bindControllers();
 	}
 
@@ -127,6 +128,19 @@ class Module extends AbstractModule {
 		bind(AuthorizationContext.class).in(Singleton.class);
 		bind(UserStateCache.class).in(Singleton.class);
 		bind(ExternalClientRepository.class).in(Singleton.class);
+		bind(TaskRepository.class).in(Singleton.class);
+		bind(TaskRefresher.class).in(Singleton.class);
+		bind(CredentialsRepository.class).in(Singleton.class);
+		bind(QuotaManager.class).in(Singleton.class);
+		bind(Scheduler.class).asEagerSingleton();
+		bind(JvmMetricsEmfTask.class).in(Singleton.class);
+
+		if (isConfigured("foursquare")) {
+			bind(FoursquareVenues.class).in(Singleton.class);
+		}
+	}
+
+	private void bindMcp() {
 		bind(ConsentEnforcer.class).in(Singleton.class);
 		bind(GrantedBuckets.class).in(Singleton.class);
 		bind(BucketResourceProvider.class).in(Singleton.class);
@@ -138,16 +152,6 @@ class Module extends AbstractModule {
 		bind(HistogramTool.class).in(Singleton.class);
 		bind(TimelineTool.class).in(Singleton.class);
 		bind(TermsTool.class).in(Singleton.class);
-		bind(TaskRepository.class).in(Singleton.class);
-		bind(TaskRefresher.class).in(Singleton.class);
-		bind(CredentialsRepository.class).in(Singleton.class);
-		bind(QuotaManager.class).in(Singleton.class);
-		bind(Scheduler.class).asEagerSingleton();
-		bind(JvmMetricsEmfTask.class).in(Singleton.class);
-
-		if (isConfigured("foursquare")) {
-			bind(FoursquareVenues.class).in(Singleton.class);
-		}
 	}
 
 	private void bindCommandParsers() {
