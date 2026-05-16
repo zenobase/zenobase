@@ -194,6 +194,7 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 	@Test
 	public void testRevokeDispatchesEmptySnapshotAndDeletes() {
 		when(auth.current(any())).thenReturn(new Authorization(userIdentity));
+		when(clients.find(userIdentity, clientIdentity)).thenReturn(client());
 		// No other user references this client_id — safety check returns 0.
 		when(clients.find(any(ExternalClientQuery.class), anyInt(), anyInt())).thenReturn(
 			new ExternalClientList(new NodeList(List.of(), 0))
@@ -214,6 +215,7 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 	@Test
 	public void testRevokeSkipsAuth0DeleteWhenAnotherUserStillReferencesClient() {
 		when(auth.current(any())).thenReturn(new Authorization(userIdentity));
+		when(clients.find(userIdentity, clientIdentity)).thenReturn(client());
 		// Another user still has a row pointing at this client_id — safety check returns >0.
 		ExternalClient otherUserRow = new ExternalClient(
 			new Identity("someone-else"),
@@ -233,6 +235,26 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 			assertThat(result).hasStatus(204);
 		}
 		verify(clients).delete(userIdentity, clientIdentity);
+		verify(identityProvider, never()).deleteApplication(any());
+	}
+
+	@Test
+	public void testRevoke404WhenClientUnknown() {
+		// Regression guard: without the existence check at the top of revoke(), a logged-in user could pass any
+		// Auth0 client_id (e.g. the SPA's) in the URL and trigger an Auth0 Application delete, since the safety
+		// query would (correctly) report zero references for first-party client_ids.
+		when(auth.current(any())).thenReturn(new Authorization(userIdentity));
+		when(clients.find(userIdentity, clientIdentity)).thenReturn(null);
+
+		try (
+			Http1ClientResponse result = client
+				.delete("/users/" + user.getId() + "/external-clients/claude-desktop")
+				.request()
+		) {
+			assertThat(result).hasStatus(404);
+		}
+		verify(dispatcher, never()).dispatch(any());
+		verify(clients, never()).delete(any(), any());
 		verify(identityProvider, never()).deleteApplication(any());
 	}
 

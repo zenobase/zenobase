@@ -165,6 +165,15 @@ public class ExternalClientController extends ControllerSupport {
 			return;
 		}
 		Identity client = new Identity(req.path().pathParameters().get("clientId"));
+		// Existence check up front. Without this, an authenticated user could pass any Auth0 client_id in the URL
+		// (e.g. the SPA's or the M2M client_id) and trigger {@link IdentityProvider#deleteApplication} below, since
+		// the safety query would correctly see zero references for a first-party client_id (it never gets recorded
+		// in external_clients) and we'd happily delete a production Auth0 Application. Returning 404 here keeps the
+		// behavior in line with {@link #put}.
+		if (clients.find(principal, client) == null) {
+			sendNotFound(res, "connected app not found");
+			return;
+		}
 		if (sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
