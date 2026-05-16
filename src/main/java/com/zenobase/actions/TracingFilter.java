@@ -47,7 +47,13 @@ public class TracingFilter implements Filter {
 	}
 
 	private static String transactionName(RoutingRequest req, String method) {
-		return method + " " + req.matchingPattern().orElse("unknown");
+		String pattern = req.matchingPattern().orElse("");
+		if (pattern.isEmpty()) {
+			// No route matched. For "/" use it directly (low cardinality, more informative
+			// than "unknown"); for everything else stay anonymous to bound cardinality.
+			pattern = "/".equals(req.prologue().uriPath().rawPath()) ? "/" : "unknown";
+		}
+		return method + " " + pattern;
 	}
 
 	private static TransactionContext continueTrace(RoutingRequest req, String name) {
