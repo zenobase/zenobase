@@ -5,8 +5,9 @@ import com.auth0.client.mgmt.types.AuthenticationMethodTypeEnum;
 import com.auth0.client.mgmt.types.ListUsersRequestParameters;
 import com.auth0.client.mgmt.types.SearchEngineVersionsEnum;
 import com.auth0.client.mgmt.types.UpdateUserRequestContent;
+import com.zenobase.auth.IdentityProvider;
 import com.zenobase.auth.Passkey;
-import com.zenobase.auth.UserDirectory;
+import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -17,7 +18,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Auth0ManagementService implements UserDirectory {
+public class Auth0ManagementService implements IdentityProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(Auth0ManagementService.class);
 
@@ -146,5 +147,15 @@ public class Auth0ManagementService implements UserDirectory {
 		}
 		client.users().authenticationMethods().delete(externalId, passkeyId);
 		logger.info("Deleted Auth0 passkey {} for user {}", passkeyId, externalId);
+	}
+
+	@Override
+	public void deleteApplication(Identity application) {
+		try {
+			client.clients().delete(application.id());
+			logger.info("Deleted Auth0 application {}", application.id());
+		} catch (Exception e) {
+			logger.error("Failed to delete Auth0 application {}", application.id(), e);
+		}
 	}
 }

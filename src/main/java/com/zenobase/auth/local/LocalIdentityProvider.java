@@ -1,11 +1,12 @@
 package com.zenobase.auth.local;
 
+import com.zenobase.auth.IdentityProvider;
 import com.zenobase.auth.Passkey;
-import com.zenobase.auth.UserDirectory;
+import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import java.util.List;
 
-public class LocalUserDirectory implements UserDirectory {
+public class LocalIdentityProvider implements IdentityProvider {
 
 	@Override
 	public void updateEmail(User user, String newEmail) {}
@@ -20,4 +21,7 @@ public class LocalUserDirectory implements UserDirectory {
 
 	@Override
 	public void deletePasskey(User user, String passkeyId) {}
+
+	@Override
+	public void deleteApplication(Identity application) {}
 }

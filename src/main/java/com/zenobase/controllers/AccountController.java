@@ -3,8 +3,8 @@ package com.zenobase.controllers;
 import com.auth0.client.mgmt.core.ManagementApiException;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zenobase.auth.IdentityProvider;
 import com.zenobase.auth.Passkey;
-import com.zenobase.auth.UserDirectory;
 import com.zenobase.commands.*;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
@@ -12,9 +12,11 @@ import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.queries.BucketQuery;
 import com.zenobase.queries.CredentialsQuery;
+import com.zenobase.queries.ExternalClientQuery;
 import com.zenobase.queries.TaskQuery;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.CredentialsRepository;
+import com.zenobase.repositories.ExternalClientRepository;
 import com.zenobase.repositories.TaskRepository;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
@@ -22,6 +24,8 @@ import com.zenobase.services.UserLookup;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,8 +37,9 @@ public class AccountController extends ControllerSupport {
 	private final BucketRepository buckets;
 	private final TaskRepository tasks;
 	private final CredentialsRepository credentials;
+	private final ExternalClientRepository externalClients;
 	private final CommandDispatcher dispatcher;
-	private final UserDirectory userDirectory;
+	private final IdentityProvider identityProvider;
 
 	@Inject
 	public AccountController(
@@ -43,16 +48,18 @@ public class AccountController extends ControllerSupport {
 		BucketRepository buckets,
 		TaskRepository tasks,
 		CredentialsRepository credentials,
+		ExternalClientRepository externalClients,
 		CommandDispatcher dispatcher,
-		UserDirectory userDirectory
+		IdentityProvider identityProvider
 	) {
 		super(security);
 		this.users = users;
 		this.buckets = buckets;
 		this.tasks = tasks;
 		this.credentials = credentials;
+		this.externalClients = externalClients;
 		this.dispatcher = dispatcher;
-		this.userDirectory = userDirectory;
+		this.identityProvider = identityProvider;
 	}
 
 	public void close(ServerRequest req, ServerResponse res) {
@@ -74,9 +81,22 @@ public class AccountController extends ControllerSupport {
 		if (!user.is(auth.getPrincipal()) && sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
+		// Snapshot the client_ids this user has connected before dispatch — afterwards the rows are gone and we
+		// can't look them up. We need them to issue best-effort Auth0 Application deletes below.
+		List<Identity> connectedClientIds = new ArrayList<>();
+		externalClients.find(new ExternalClientQuery().userEqualTo(user.asIdentity()), client ->
+			connectedClientIds.add(client.getClient())
+		);
 		Command command = buildCloseAccountCommand(auth.getPrincipal(), user);
 		String commandId = dispatcher.dispatch(command);
-		userDirectory.deleteUser(user);
+		identityProvider.deleteUser(user);
+		// For each external client this user had, drop the corresponding Auth0 Application — but only if no other
+		// user still references the same client_id. Same safety check as ExternalClientController.revoke.
+		for (Identity clientId : connectedClientIds) {
+			if (externalClients.find(new ExternalClientQuery().clientEqualTo(clientId), 0, 1).getTotal() == 0) {
+				identityProvider.deleteApplication(clientId);
+			}
+		}
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}
@@ -100,6 +120,9 @@ public class AccountController extends ControllerSupport {
 		credentials.find(new CredentialsQuery().principalEqualTo(user.asIdentity()), credentials ->
 			command.add(new DeleteCredentialsCommand(principal, credentials))
 		);
+		externalClients.find(new ExternalClientQuery().userEqualTo(user.asIdentity()), externalClient ->
+			command.add(new DeleteExternalClientCommand(principal, externalClient))
+		);
 		return command;
 	}
 
@@ -120,7 +143,7 @@ public class AccountController extends ControllerSupport {
 			return;
 		}
 		ArrayNode passkeys = Nodes.newArray();
-		for (Passkey passkey : userDirectory.listPasskeys(user)) {
+		for (Passkey passkey : identityProvider.listPasskeys(user)) {
 			passkeys.add(toJson(passkey));
 		}
 		sendOk(res, passkeys);
@@ -144,7 +167,7 @@ public class AccountController extends ControllerSupport {
 			return;
 		}
 		try {
-			userDirectory.deletePasskey(user, passkeyId);
+			identityProvider.deletePasskey(user, passkeyId);
 		} catch (IllegalArgumentException e) {
 			sendNotFound(res);
 			return;

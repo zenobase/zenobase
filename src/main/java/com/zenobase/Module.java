@@ -6,14 +6,14 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import com.zenobase.actions.ScopeFilter;
+import com.zenobase.auth.IdentityProvider;
 import com.zenobase.auth.TokenValidator;
-import com.zenobase.auth.UserDirectory;
 import com.zenobase.auth.UserStateCache;
 import com.zenobase.auth.auth0.Auth0ManagementService;
 import com.zenobase.auth.auth0.Auth0TokenAuthorizer;
 import com.zenobase.auth.auth0.Auth0TokenValidator;
 import com.zenobase.auth.auth0.Auth0UserSynchronizer;
-import com.zenobase.auth.local.LocalUserDirectory;
+import com.zenobase.auth.local.LocalIdentityProvider;
 import com.zenobase.commands.*;
 import com.zenobase.controllers.*;
 import com.zenobase.jobs.*;
@@ -122,9 +122,9 @@ class Module extends AbstractModule {
 		}
 		if (isConfigured("auth0.m2m.client_id")) {
 			bind(Auth0ManagementService.class).in(Singleton.class);
-			bind(UserDirectory.class).to(Auth0ManagementService.class).in(Singleton.class);
+			bind(IdentityProvider.class).to(Auth0ManagementService.class).in(Singleton.class);
 		} else {
-			bind(UserDirectory.class).to(LocalUserDirectory.class).in(Singleton.class);
+			bind(IdentityProvider.class).to(LocalIdentityProvider.class).in(Singleton.class);
 		}
 		bind(AuthorizationContext.class).in(Singleton.class);
 		bind(UserStateCache.class).in(Singleton.class);
@@ -185,6 +185,7 @@ class Module extends AbstractModule {
 		parsers.addBinding().to(UpdateCredentialsCommand.Parser.class);
 		parsers.addBinding().to(DeleteCredentialsCommand.Parser.class);
 		parsers.addBinding().to(CreateExternalClientCommand.Parser.class);
+		parsers.addBinding().to(DeleteExternalClientCommand.Parser.class);
 		parsers.addBinding().to(UpdateExternalClientGrantsCommand.Parser.class);
 		parsers.addBinding().to(CompoundCommand.Parser.class);
 	}
@@ -217,6 +218,7 @@ class Module extends AbstractModule {
 		handlers.addBinding().to(UpdateCredentialsCommand.Handler.class);
 		handlers.addBinding().to(DeleteCredentialsCommand.Handler.class);
 		handlers.addBinding().to(CreateExternalClientCommand.Handler.class);
+		handlers.addBinding().to(DeleteExternalClientCommand.Handler.class);
 		handlers.addBinding().to(UpdateExternalClientGrantsCommand.Handler.class);
 	}
 
