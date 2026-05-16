@@ -12,6 +12,8 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.net.URI;
 import java.security.interfaces.RSAPublicKey;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -24,21 +26,27 @@ public class Auth0TokenValidator {
 	static final String USERNAME_CLAIM = "https://zenobase.com/username";
 	static final String EMAIL_CLAIM = "https://zenobase.com/email";
 	static final String EMAIL_VERIFIED_CLAIM = "https://zenobase.com/email_verified";
+	static final String AZP_CLAIM = "azp";
 
 	public record Auth0Claims(
 		String externalId,
 		@Nullable String username,
 		@Nullable String email,
-		boolean emailVerified
+		boolean emailVerified,
+		@Nullable String audience,
+		@Nullable String clientId
 	) {}
 
 	private final String issuer;
+	private final String internalAudience;
+	private final @Nullable String externalAudience;
 	private final JWTVerifier verifier;
 
 	@Inject
 	public Auth0TokenValidator(
 		@Named("auth0.domain") String domain,
-		@Named("auth0.audience") String audience,
+		@Named("auth0.audience") String internalAudience,
+		@Named("auth0.external_audience") String externalAudience,
 		@Named("auth0.jwks_domain") String jwksDomain
 	) {
 		String jwksUrl = (jwksDomain.isEmpty() ? domain : jwksDomain) + "/.well-known/jwks.json";
@@ -73,11 +81,29 @@ public class Auth0TokenValidator {
 		};
 		Algorithm algorithm = Algorithm.RSA256(keyProvider);
 		this.issuer = domain.startsWith("http") ? domain + "/" : "https://" + domain + "/";
-		this.verifier = JWT.require(algorithm).withIssuer(issuer).withAudience(audience).build();
+		this.internalAudience = internalAudience;
+		this.externalAudience = externalAudience.isEmpty() ? null : externalAudience;
+		List<String> audiences = new ArrayList<>();
+		audiences.add(internalAudience);
+		if (this.externalAudience != null) {
+			audiences.add(this.externalAudience);
+		}
+		this.verifier = JWT.require(algorithm)
+			.withIssuer(issuer)
+			.withAnyOfAudience(audiences.toArray(new String[0]))
+			.build();
 	}
 
 	public String issuer() {
 		return issuer;
+	}
+
+	public String internalAudience() {
+		return internalAudience;
+	}
+
+	public @Nullable String externalAudience() {
+		return externalAudience;
 	}
 
 	public @Nullable Auth0Claims validate(String token) {
@@ -91,11 +117,38 @@ public class Auth0TokenValidator {
 			String username = jwt.getClaim(USERNAME_CLAIM).asString();
 			String email = jwt.getClaim(EMAIL_CLAIM).asString();
 			boolean emailVerified = parseBoolean(jwt.getClaim(EMAIL_VERIFIED_CLAIM));
-			return new Auth0Claims(subject, username, email, emailVerified);
+			String audience = pickAudience(jwt);
+			String clientId = jwt.getClaim(AZP_CLAIM).asString();
+			return new Auth0Claims(subject, username, email, emailVerified, audience, clientId);
 		} catch (Exception e) {
 			logger.debug("Auth0 JWT validation failed: {}", e.getMessage());
 			return null;
 		}
+	}
+
+	/**
+	 * Picks the audience from the token's {@code aud} claim that matches one of our configured audiences. Auth0 should
+	 * not issue a token whose {@code aud} contains both the internal and external audiences, but if a misconfiguration
+	 * or future change ever produced one, we prefer the external audience — external tokens are the more restrictive
+	 * treatment (scope is "external", which blocks cross-user PUBLIC access and is gated by ExternalGrantFilter on
+	 * sensitive REST routes), so picking it is the fail-closed direction.
+	 */
+	private @Nullable String pickAudience(DecodedJWT jwt) {
+		List<String> aud = jwt.getAudience();
+		if (aud == null) {
+			return null;
+		}
+		for (String value : aud) {
+			if (value.equals(externalAudience)) {
+				return value;
+			}
+		}
+		for (String value : aud) {
+			if (value.equals(internalAudience)) {
+				return value;
+			}
+		}
+		return null;
 	}
 
 	private static boolean parseBoolean(com.auth0.jwt.interfaces.Claim claim) {

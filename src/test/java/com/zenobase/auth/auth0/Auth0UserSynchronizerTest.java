@@ -22,7 +22,7 @@ public class Auth0UserSynchronizerTest {
 	private final Auth0UserSynchronizer synchronizer = new Auth0UserSynchronizer(users, dispatcher);
 
 	private static Auth0Claims claims(String username, String email, boolean emailVerified, String sub) {
-		return new Auth0Claims(sub, username, email, emailVerified);
+		return new Auth0Claims(sub, username, email, emailVerified, null, null);
 	}
 
 	@Test

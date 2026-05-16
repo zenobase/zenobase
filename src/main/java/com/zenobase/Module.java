@@ -17,6 +17,20 @@ import com.zenobase.auth.local.LocalUserDirectory;
 import com.zenobase.commands.*;
 import com.zenobase.controllers.*;
 import com.zenobase.jobs.*;
+import com.zenobase.mcp.ConsentEnforcer;
+import com.zenobase.mcp.GrantedBuckets;
+import com.zenobase.mcp.McpController;
+import com.zenobase.mcp.McpJsonRpcHandler;
+import com.zenobase.mcp.ProtectedResourceMetadataController;
+import com.zenobase.mcp.resources.BucketResourceProvider;
+import com.zenobase.mcp.tools.BucketsTool;
+import com.zenobase.mcp.tools.EventsTool;
+import com.zenobase.mcp.tools.HistogramTool;
+import com.zenobase.mcp.tools.McpTool;
+import com.zenobase.mcp.tools.SchemaTool;
+import com.zenobase.mcp.tools.StatsTool;
+import com.zenobase.mcp.tools.TermsTool;
+import com.zenobase.mcp.tools.TimelineTool;
 import com.zenobase.metrics.JvmMetricsEmfTask;
 import com.zenobase.repositories.*;
 import com.zenobase.services.*;
@@ -114,6 +128,12 @@ class Module extends AbstractModule {
 		}
 		bind(AuthorizationContext.class).in(Singleton.class);
 		bind(UserStateCache.class).in(Singleton.class);
+		bind(ExternalClientRepository.class).in(Singleton.class);
+		bind(ConsentEnforcer.class).in(Singleton.class);
+		bind(GrantedBuckets.class).in(Singleton.class);
+		bind(BucketResourceProvider.class).in(Singleton.class);
+		bind(McpJsonRpcHandler.class).in(Singleton.class);
+		bindMcpTools();
 		bind(TaskRepository.class).in(Singleton.class);
 		bind(TaskRefresher.class).in(Singleton.class);
 		bind(CredentialsRepository.class).in(Singleton.class);
@@ -124,6 +144,17 @@ class Module extends AbstractModule {
 		if (isConfigured("foursquare")) {
 			bind(FoursquareVenues.class).in(Singleton.class);
 		}
+	}
+
+	private void bindMcpTools() {
+		var tools = Multibinder.newSetBinder(binder(), McpTool.class);
+		tools.addBinding().to(BucketsTool.class);
+		tools.addBinding().to(SchemaTool.class);
+		tools.addBinding().to(EventsTool.class);
+		tools.addBinding().to(StatsTool.class);
+		tools.addBinding().to(HistogramTool.class);
+		tools.addBinding().to(TimelineTool.class);
+		tools.addBinding().to(TermsTool.class);
 	}
 
 	private void bindCommandParsers() {
@@ -153,6 +184,8 @@ class Module extends AbstractModule {
 		parsers.addBinding().to(CreateCredentialsCommand.Parser.class);
 		parsers.addBinding().to(UpdateCredentialsCommand.Parser.class);
 		parsers.addBinding().to(DeleteCredentialsCommand.Parser.class);
+		parsers.addBinding().to(CreateExternalClientCommand.Parser.class);
+		parsers.addBinding().to(UpdateExternalClientGrantsCommand.Parser.class);
 		parsers.addBinding().to(CompoundCommand.Parser.class);
 	}
 
@@ -183,6 +216,8 @@ class Module extends AbstractModule {
 		handlers.addBinding().to(CreateCredentialsCommand.Handler.class);
 		handlers.addBinding().to(UpdateCredentialsCommand.Handler.class);
 		handlers.addBinding().to(DeleteCredentialsCommand.Handler.class);
+		handlers.addBinding().to(CreateExternalClientCommand.Handler.class);
+		handlers.addBinding().to(UpdateExternalClientGrantsCommand.Handler.class);
 	}
 
 	private void bindCredentialsManagers() {
@@ -276,6 +311,9 @@ class Module extends AbstractModule {
 		bind(RedirectController.class).in(Singleton.class);
 		bind(OpenGraphController.class).in(Singleton.class);
 		bind(QuotaController.class).in(Singleton.class);
+		bind(ExternalClientController.class).in(Singleton.class);
+		bind(McpController.class).in(Singleton.class);
+		bind(ProtectedResourceMetadataController.class).in(Singleton.class);
 	}
 
 	private <T> void bindIfConfigured(String prefix, Class<? extends T> type, Multibinder<T> binder) {
@@ -311,6 +349,7 @@ class Module extends AbstractModule {
 		// Auth0 / JWT
 		bindString("auth0.domain");
 		bindString("auth0.audience");
+		bindStringOrEmpty("auth0.external_audience");
 		bindString("auth0.jwks_domain");
 		bindString("auth0.m2m.domain");
 		bindString("auth0.m2m.client_id");
@@ -344,6 +383,14 @@ class Module extends AbstractModule {
 			.get(key)
 			.asString()
 			.ifPresent(value -> bindConstant().annotatedWith(Names.named(key)).to(value));
+	}
+
+	/**
+	 * Like {@link #bindString(String)} but binds an empty string when the key is absent, so consumers can rely on
+	 * the {@code @Named} injection succeeding and detect "not configured" via {@code .isEmpty()}.
+	 */
+	private void bindStringOrEmpty(String key) {
+		bindConstant().annotatedWith(Names.named(key)).to(config.get(key).asString().orElse(""));
 	}
 
 	private void bindAllLeaves(Config node) {

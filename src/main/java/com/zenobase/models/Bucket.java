@@ -109,16 +109,33 @@ public class Bucket extends DomainNode {
 		return principals.build();
 	}
 
+	/**
+	 * Authorization.scope can be one of:
+	 * <ul>
+	 *   <li>{@code null} — first-party token (web UI, personal API token). Reaches the principal's own roles and any
+	 *       PUBLIC role.</li>
+	 *   <li>A bucket id — legacy bucket-scoped token. Constrains the principal's role check to that bucket. No PUBLIC.
+	 *       (Pre-Auth0 concept; not issued anymore but commands carrying it may still replay.)</li>
+	 *   <li>The sentinel {@code "external"} — a third-party / MCP token. Reaches the principal's own roles only. The
+	 *       PUBLIC branch is deliberately skipped so an external client cannot reach a public bucket owned by another
+	 *       user via a unilaterally-issued grant — the per-bucket grant table is intended to scope access to buckets
+	 *       the user themselves owns.</li>
+	 * </ul>
+	 */
 	public boolean hasRole(@Nullable Authorization auth, Role role) {
 		ImmutableList<Entry<Identity, Role>> roles = getValues(ROLES);
-		if (auth != null && (auth.getScope() == null || auth.getScope().equals(getId()))) {
+		String scope = auth != null ? auth.getScope() : null;
+		boolean isBucketScoped = scope != null && !scope.equals(getId()) && !isExternalScope(scope);
+		if (auth != null && !isBucketScoped) {
 			for (Map.Entry<Identity, Role> entry : roles) {
 				if (entry.getKey().equals(auth.getPrincipal())) {
 					return entry.getValue().implies(role);
 				}
 			}
 		}
-		if (auth == null || auth.getScope() == null) {
+		// PUBLIC branch is only reachable for anonymous or first-party requests. Bucket-scoped legacy tokens and
+		// external/MCP tokens never see PUBLIC roles via this method.
+		if (auth == null || scope == null) {
 			for (Map.Entry<Identity, Role> entry : roles) {
 				if (entry.getKey().equals(Identity.PUBLIC)) {
 					return entry.getValue().implies(role);
@@ -126,6 +143,12 @@ public class Bucket extends DomainNode {
 			}
 		}
 		return false;
+	}
+
+	private static boolean isExternalScope(String scope) {
+		// Keep in lockstep with Auth0TokenAuthorizer.EXTERNAL_SCOPE — duplicated as a literal here to avoid a dep
+		// from models/ onto auth/. BucketTest.testExternalScope pins the value.
+		return "external".equals(scope);
 	}
 
 	public void addRole(Identity principal, Role role) {

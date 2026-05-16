@@ -20,6 +20,7 @@ public class Auth0TokenValidatorTest {
 
 	private static final String KID = "test-key-1";
 	private static final String AUDIENCE = "https://api.zenobase.com";
+	private static final String EXTERNAL_AUDIENCE = "https://api.zenobase.com/external";
 
 	private static HttpServer jwksServer;
 	private static int jwksPort;
@@ -48,7 +49,7 @@ public class Auth0TokenValidatorTest {
 		jwksServer.start();
 
 		String domain = "http://localhost:" + jwksPort;
-		validator = new Auth0TokenValidator(domain, AUDIENCE, "");
+		validator = new Auth0TokenValidator(domain, AUDIENCE, EXTERNAL_AUDIENCE, "");
 	}
 
 	@AfterAll
@@ -68,6 +69,46 @@ public class Auth0TokenValidatorTest {
 		assertThat(claims.externalId()).isEqualTo("auth0|user-123");
 		assertThat(claims.email()).isEqualTo("user@example.com");
 		assertThat(claims.emailVerified()).isTrue();
+		assertThat(claims.audience()).isEqualTo(AUDIENCE);
+	}
+
+	@Test
+	public void testValidTokenForExternalAudience() {
+		String token = JWT.create()
+			.withKeyId(KID)
+			.withIssuer("http://localhost:" + jwksPort + "/")
+			.withAudience(EXTERNAL_AUDIENCE)
+			.withSubject("auth0|user-123")
+			.withClaim(Auth0TokenValidator.AZP_CLAIM, "client-xyz")
+			.withIssuedAt(Instant.now())
+			.withExpiresAt(Instant.now().plusSeconds(3600))
+			.sign(Algorithm.RSA256(publicKey, privateKey));
+
+		Auth0TokenValidator.Auth0Claims claims = validator.validate(token);
+
+		assertThat(claims).isNotNull();
+		assertThat(claims.externalId()).isEqualTo("auth0|user-123");
+		assertThat(claims.audience()).isEqualTo(EXTERNAL_AUDIENCE);
+		assertThat(claims.clientId()).isEqualTo("client-xyz");
+	}
+
+	@Test
+	public void testPicksExternalAudienceWhenBothAudiencesPresent() {
+		// Defense-in-depth: Auth0 shouldn't issue a token with both audiences, but if it ever did we want the more
+		// restrictive treatment (external scope, gated by ExternalGrantFilter), not first-party privileges.
+		String token = JWT.create()
+			.withKeyId(KID)
+			.withIssuer("http://localhost:" + jwksPort + "/")
+			.withAudience(AUDIENCE, EXTERNAL_AUDIENCE)
+			.withSubject("auth0|user-123")
+			.withIssuedAt(Instant.now())
+			.withExpiresAt(Instant.now().plusSeconds(3600))
+			.sign(Algorithm.RSA256(publicKey, privateKey));
+
+		Auth0TokenValidator.Auth0Claims claims = validator.validate(token);
+
+		assertThat(claims).isNotNull();
+		assertThat(claims.audience()).isEqualTo(EXTERNAL_AUDIENCE);
 	}
 
 	@Test

@@ -3,6 +3,7 @@ package com.zenobase.models;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.testing.EqualsTester;
+import com.zenobase.auth.auth0.Auth0TokenAuthorizer;
 import com.zenobase.common.Generator;
 import com.zenobase.oauth.Authorization;
 import org.junit.jupiter.api.Test;
@@ -75,6 +76,51 @@ public class BucketTest {
 		assertThat(bucket.getPrincipals())
 			.as("principals who can access the bucket")
 			.containsOnly(owner, friend, Identity.PUBLIC);
+	}
+
+	@Test
+	public void testExternalScope() {
+		// Bucket.hasRole pattern-matches the external scope as a literal "external" to avoid a dependency from
+		// models/ onto auth/. This test pins the lockstep so a future rename of EXTERNAL_SCOPE doesn't silently
+		// break the role check.
+		assertThat(Auth0TokenAuthorizer.EXTERNAL_SCOPE).isEqualTo("external");
+
+		Identity owner = new Identity();
+		Identity client = new Identity();
+		Identity stranger = new Identity();
+		String external = Auth0TokenAuthorizer.EXTERNAL_SCOPE;
+
+		// Owner's own bucket: external token grants principal-role access.
+		Bucket owned = new Bucket();
+		owned.addRole(owner, Role.OWNER);
+		assertThat(owned.hasRole(new Authorization(owner, client, external), Role.VIEWER))
+			.as("external token reaches the principal's own bucket")
+			.isTrue();
+		assertThat(owned.hasRole(new Authorization(owner, client, external), Role.OWNER))
+			.as("external token gets the principal's full role on their own bucket")
+			.isTrue();
+
+		// Another user's public bucket: external token must NOT reach via the PUBLIC branch. This is the security
+		// boundary that distinguishes external clients from first-party tokens (which would pass).
+		Bucket publicOther = new Bucket();
+		publicOther.addRole(stranger, Role.OWNER);
+		publicOther.addRole(Identity.PUBLIC, Role.VIEWER);
+		assertThat(publicOther.hasRole(new Authorization(owner, client, external), Role.VIEWER))
+			.as("external token does NOT reach another user's public bucket via the PUBLIC role")
+			.isFalse();
+		// Sanity: a first-party token from the same user CAN reach the same public bucket.
+		assertThat(publicOther.hasRole(new Authorization(owner), Role.VIEWER))
+			.as("first-party token still reaches another user's public bucket")
+			.isTrue();
+		// Sanity: an anonymous request still reaches it.
+		assertThat(publicOther.hasRole(null, Role.VIEWER)).as("anonymous still reaches public bucket").isTrue();
+
+		// Private bucket of another user: external token does not reach it.
+		Bucket privateOther = new Bucket();
+		privateOther.addRole(stranger, Role.OWNER);
+		assertThat(privateOther.hasRole(new Authorization(owner, client, external), Role.VIEWER))
+			.as("external token does not reach another user's private bucket")
+			.isFalse();
 	}
 
 	@Test

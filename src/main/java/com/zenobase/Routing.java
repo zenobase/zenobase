@@ -1,6 +1,7 @@
 package com.zenobase;
 
 import com.google.inject.Injector;
+import com.zenobase.actions.ExternalGrantFilter;
 import com.zenobase.actions.GatekeeperFilter;
 import com.zenobase.actions.LogContextFilter;
 import com.zenobase.actions.MetricsFilter;
@@ -9,6 +10,8 @@ import com.zenobase.actions.ScopeFilter;
 import com.zenobase.actions.SecurityHeadersFilter;
 import com.zenobase.actions.TracingFilter;
 import com.zenobase.controllers.*;
+import com.zenobase.mcp.McpController;
+import com.zenobase.mcp.ProtectedResourceMetadataController;
 import io.helidon.http.HeaderNames;
 import io.helidon.http.HttpException;
 import io.helidon.webserver.http.HttpRouting;
@@ -29,6 +32,7 @@ class Routing {
 		routing.addFilter(injector.getInstance(ScopeFilter.class));
 		routing.addFilter(new TracingFilter());
 		routing.addFilter(injector.getInstance(GatekeeperFilter.class));
+		routing.addFilter(injector.getInstance(ExternalGrantFilter.class));
 		routing.addFilter(injector.getInstance(QuotaExceptionFilter.class));
 
 		// Error handlers
@@ -177,5 +181,20 @@ class Routing {
 
 		var og = injector.getInstance(OpenGraphController.class);
 		routing.get("/og", og::get);
+
+		// External clients (third-party / MCP grants)
+		var externalClients = injector.getInstance(ExternalClientController.class);
+		routing.get("/external-clients/", externalClients::listAll);
+		routing.get("/users/{userId}/external-clients/", externalClients::list);
+		routing.put("/users/{userId}/external-clients/{clientId}", externalClients::put);
+		routing.delete("/users/{userId}/external-clients/{clientId}", externalClients::revoke);
+
+		// MCP
+		var mcp = injector.getInstance(McpController.class);
+		routing.get("/mcp", mcp::get);
+		routing.post("/mcp", mcp::post);
+
+		var protectedResource = injector.getInstance(ProtectedResourceMetadataController.class);
+		routing.get("/.well-known/oauth-protected-resource", protectedResource::get);
 	}
 }
