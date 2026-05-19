@@ -1,4 +1,4 @@
-package com.zenobase.actions;
+package com.zenobase.filters;
 
 import com.zenobase.controllers.AuthorizationContext;
 import com.zenobase.oauth.Authorization;

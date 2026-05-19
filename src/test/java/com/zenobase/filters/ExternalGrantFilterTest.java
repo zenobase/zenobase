@@ -1,4 +1,4 @@
-package com.zenobase.actions;
+package com.zenobase.filters;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

@@ -1,4 +1,4 @@
-package com.zenobase.actions;
+package com.zenobase.filters;
 
 import io.helidon.http.HeaderNames;
 import io.helidon.webserver.http.Filter;

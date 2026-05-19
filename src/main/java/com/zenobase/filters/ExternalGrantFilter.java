@@ -1,4 +1,4 @@
-package com.zenobase.actions;
+package com.zenobase.filters;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.auth.auth0.Auth0TokenAuthorizer;

@@ -1,15 +1,15 @@
 package com.zenobase;
 
 import com.google.inject.Injector;
-import com.zenobase.actions.ExternalGrantFilter;
-import com.zenobase.actions.GatekeeperFilter;
-import com.zenobase.actions.LogContextFilter;
-import com.zenobase.actions.MetricsFilter;
-import com.zenobase.actions.QuotaExceptionFilter;
-import com.zenobase.actions.ScopeFilter;
-import com.zenobase.actions.SecurityHeadersFilter;
-import com.zenobase.actions.TracingFilter;
 import com.zenobase.controllers.*;
+import com.zenobase.filters.ExternalGrantFilter;
+import com.zenobase.filters.GatekeeperFilter;
+import com.zenobase.filters.LogContextFilter;
+import com.zenobase.filters.MetricsFilter;
+import com.zenobase.filters.QuotaExceptionFilter;
+import com.zenobase.filters.ScopeFilter;
+import com.zenobase.filters.SecurityHeadersFilter;
+import com.zenobase.filters.TracingFilter;
 import com.zenobase.mcp.McpController;
 import com.zenobase.mcp.ProtectedResourceMetadataController;
 import io.helidon.http.HeaderNames;
