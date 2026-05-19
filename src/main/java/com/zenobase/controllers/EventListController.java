@@ -84,12 +84,16 @@ public class EventListController extends ControllerSupport {
 			}
 			return;
 		}
-		List<String> constraints = getConstraints(req);
-		List<FacetOptions> facets = getFacets(req);
-		if (!facets.isEmpty()) {
-			getWithFacets(res, bucketId, constraints, facets);
-		} else {
-			getStreaming(req, res, bucketId, constraints);
+		try {
+			List<String> constraints = getConstraints(req);
+			List<FacetOptions> facets = getFacets(req);
+			if (!facets.isEmpty()) {
+				getWithFacets(res, bucketId, constraints, facets);
+			} else {
+				getStreaming(req, res, bucketId, constraints);
+			}
+		} catch (IllegalArgumentException e) {
+			sendBadRequest(res, "Invalid parameters");
 		}
 	}
 
@@ -142,8 +146,6 @@ public class EventListController extends ControllerSupport {
 		try {
 			Search search = new EventSearchBuilder().addConstraints(constraints).addFacets(facets).buildSearch();
 			sendOk(res, events.find(bucketId, search));
-		} catch (IllegalArgumentException e) {
-			sendBadRequest(res, "Invalid parameters");
 		} catch (OpenSearchException e) {
 			if (Search.hasCauseOfType(e, "too_many_buckets")) {
 				logger.warn("Search failed due to too many buckets in <{}>", bucketId, e);
@@ -157,12 +159,10 @@ public class EventListController extends ControllerSupport {
 	private void getStreaming(ServerRequest req, ServerResponse res, String bucketId, List<String> constraints) {
 		String accept = MoreObjects.firstNonNull(req.query().first("accept").orElse(null), "application/json");
 		if (accept.equals("text/plain")) {
-			setHeader(res, "Content-Type", accept);
 			streamEventRows(res, bucketId, constraints);
 			return;
 		}
 		if (accept.equals("application/json")) {
-			setHeader(res, "Content-Type", accept);
 			streamEventChunks(res, bucketId, constraints);
 			return;
 		}
@@ -170,10 +170,12 @@ public class EventListController extends ControllerSupport {
 	}
 
 	private void streamEventChunks(ServerResponse res, String bucketId, Iterable<String> constraints) {
+		Search search = new EventSearchBuilder().addConstraints(constraints).buildSearch();
+		setHeader(res, "Content-Type", "application/json");
 		try (var out = res.outputStream()) {
 			JsonStream stream = new JsonStream(out);
 			stream.writeArrayFieldStart(EVENTS.getName());
-			events.find(bucketId, new EventSearchBuilder().addConstraints(constraints).buildSearch(), node -> {
+			events.find(bucketId, search, node -> {
 				try {
 					stream.write(node);
 				} catch (IOException e) {
@@ -188,8 +190,10 @@ public class EventListController extends ControllerSupport {
 	}
 
 	private void streamEventRows(ServerResponse res, String bucketId, Iterable<String> constraints) {
+		Search search = createExportSearch(constraints, 0);
+		setHeader(res, "Content-Type", "text/plain");
 		try (var out = res.outputStream()) {
-			ObjectNode result = events.find(bucketId, createExportSearch(constraints, 0));
+			ObjectNode result = events.find(bucketId, search);
 			OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
 			new SpreadsheetPrinter(writer).print((ArrayNode) result.get(EVENTS.getName()));
 			writer.flush();
