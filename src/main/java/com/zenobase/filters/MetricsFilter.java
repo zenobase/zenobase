@@ -1,4 +1,4 @@
-package com.zenobase.actions;
+package com.zenobase.filters;
 
 import io.helidon.webserver.http.Filter;
 import io.helidon.webserver.http.FilterChain;

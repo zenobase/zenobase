@@ -1,17 +1,11 @@
 package com.zenobase;
 
 import com.google.inject.Injector;
-import com.zenobase.actions.ExternalGrantFilter;
-import com.zenobase.actions.GatekeeperFilter;
-import com.zenobase.actions.LogContextFilter;
-import com.zenobase.actions.MetricsFilter;
-import com.zenobase.actions.QuotaExceptionFilter;
-import com.zenobase.actions.ScopeFilter;
-import com.zenobase.actions.SecurityHeadersFilter;
-import com.zenobase.actions.TracingFilter;
 import com.zenobase.controllers.*;
+import com.zenobase.filters.*;
 import com.zenobase.mcp.McpController;
 import com.zenobase.mcp.ProtectedResourceMetadataController;
+import com.zenobase.services.QuotaException;
 import io.helidon.http.HeaderNames;
 import io.helidon.http.HttpException;
 import io.helidon.webserver.http.HttpRouting;
@@ -33,11 +27,13 @@ class Routing {
 		routing.addFilter(new TracingFilter());
 		routing.addFilter(injector.getInstance(GatekeeperFilter.class));
 		routing.addFilter(injector.getInstance(ExternalGrantFilter.class));
-		routing.addFilter(injector.getInstance(QuotaExceptionFilter.class));
 
 		// Error handlers
 		routing.error(HttpException.class, (req, res, e) -> {
 			ControllerSupport.sendError(res, e.status(), String.valueOf(e.getMessage()));
+		});
+		routing.error(QuotaException.class, (req, res, e) -> {
+			ControllerSupport.sendForbidden(res, String.valueOf(e.getMessage()));
 		});
 		routing.error(OpenSearchException.class, (req, res, e) -> {
 			logger.warn("Unhandled OpenSearch exception", e);
