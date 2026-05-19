@@ -399,6 +399,12 @@
                             <excludeArtifactIds>picocli</excludeArtifactIds>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>get-test-classpath-properties</id>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -410,6 +416,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <!-- Mockito 5.18+ requires explicit -javaagent on JDK 21+ since self-attach is restricted. -->
+                    <argLine>-javaagent:${org.mockito:mockito-core:jar}</argLine>
                     <excludedGroups>integration,manual</excludedGroups>
                 </configuration>
             </plugin>
