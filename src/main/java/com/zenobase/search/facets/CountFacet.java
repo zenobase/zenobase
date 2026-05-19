@@ -3,6 +3,7 @@ package com.zenobase.search.facets;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
 import com.zenobase.json.Nodes;
 import com.zenobase.search.constraints.FilterParser;
 import java.util.Collections;
@@ -12,6 +13,7 @@ import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.aggregations.StringTermsBucket;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
@@ -59,14 +61,15 @@ public class CountFacet extends FilteredFacet {
 		if (aggregate == null) {
 			return result;
 		}
-		List<TermsBuckets.Bucket> entries = TermsBuckets.buckets(aggregate);
+		Preconditions.checkArgument(aggregate.isSterms(), "Can't count by non-keyword field: %s", field);
+		List<StringTermsBucket> entries = aggregate.sterms().buckets().array();
 		if (offset < entries.size()) {
-			for (TermsBuckets.Bucket entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {
+			for (StringTermsBucket entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", entry.key());
 				entryNode.put("count", entry.docCount());
 			}
-			Long sumOther = TermsBuckets.sumOtherDocCount(aggregate);
+			Long sumOther = aggregate.sterms().sumOtherDocCount();
 			if (sumOther != null && sumOther > 0) {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", LABEL_MORE);

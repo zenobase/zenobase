@@ -3,6 +3,7 @@ package com.zenobase.search.facets;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
 import com.zenobase.json.DecimalMeasureField;
@@ -17,6 +18,7 @@ import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.ExtendedStatsAggregate;
+import org.opensearch.client.opensearch._types.aggregations.StringTermsBucket;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
@@ -83,7 +85,8 @@ public class ScoreboardFacet extends FilteredFacet {
 		if (aggregate == null) {
 			return result;
 		}
-		for (TermsBuckets.Bucket bucket : TermsBuckets.buckets(aggregate)) {
+		Preconditions.checkArgument(aggregate.isSterms(), "Can't aggregate by non-keyword field: %s", termField);
+		for (StringTermsBucket bucket : aggregate.sterms().buckets().array()) {
 			Aggregate bucketAggregate = bucket.aggregations().get(getId());
 			if (bucketAggregate == null) {
 				continue;

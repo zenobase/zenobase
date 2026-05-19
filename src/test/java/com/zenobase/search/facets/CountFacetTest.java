@@ -1,6 +1,7 @@
 package com.zenobase.search.facets;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.models.Event;
@@ -119,24 +120,14 @@ public class CountFacetTest extends FacetTestSupport {
 	}
 
 	@Test
-	public void testNumericField() {
+	public void testRejectsNumericField() {
 		Event a = new Event();
 		a.setValue(Event.COUNT, 5);
-		Event b = new Event();
-		b.setValue(Event.COUNT, 5);
-		Event c = new Event();
-		c.setValue(Event.COUNT, 7);
 		addEvent(a);
-		addEvent(b);
-		addEvent(c);
 		addFacet("id:%s,type:%s,field:%s", FACET_ID, CountFacet.TYPE, Event.COUNT);
 
-		ObjectNode result = execute();
-		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
-		node.path(0).path("label").isEqualTo("5");
-		node.path(0).path("count").isEqualTo(2);
-		node.path(1).path("label").isEqualTo("7");
-		node.path(1).path("count").isEqualTo(1);
+		assertThatThrownBy(this::execute)
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining(Event.COUNT.getName());
 	}
 }
