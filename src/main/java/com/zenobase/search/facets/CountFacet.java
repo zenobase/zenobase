@@ -12,7 +12,6 @@ import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
-import org.opensearch.client.opensearch._types.aggregations.StringTermsBucket;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
@@ -60,14 +59,14 @@ public class CountFacet extends FilteredFacet {
 		if (aggregate == null) {
 			return result;
 		}
-		List<StringTermsBucket> entries = aggregate.sterms().buckets().array();
+		List<TermsBuckets.Bucket> entries = TermsBuckets.buckets(aggregate);
 		if (offset < entries.size()) {
-			for (StringTermsBucket entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {
+			for (TermsBuckets.Bucket entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", entry.key());
 				entryNode.put("count", entry.docCount());
 			}
-			Long sumOther = aggregate.sterms().sumOtherDocCount();
+			Long sumOther = TermsBuckets.sumOtherDocCount(aggregate);
 			if (sumOther != null && sumOther > 0) {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", LABEL_MORE);

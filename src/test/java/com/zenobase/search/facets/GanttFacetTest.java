@@ -84,4 +84,29 @@ public class GanttFacetTest extends FacetTestSupport {
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
 		assertThat(result).path(FACET_ID).hasSize(0);
 	}
+
+	@Test
+	public void testNumericField() {
+		Event a = new Event();
+		a.setValue(Event.COUNT, 5);
+		a.setValue(Event.TIMESTAMP, DateTime.parse("2012-01-01T00:00:00Z"));
+		Event b = new Event();
+		b.setValue(Event.COUNT, 5);
+		b.setValue(Event.TIMESTAMP, DateTime.parse("2012-06-01T00:00:00Z"));
+		Event c = new Event();
+		c.setValue(Event.COUNT, 7);
+		c.setValue(Event.TIMESTAMP, DateTime.parse("2012-03-01T00:00:00Z"));
+		addEvent(a);
+		addEvent(b);
+		addEvent(c);
+		addFacet("id:%s,type:%s,field:%s", FACET_ID, GanttFacet.TYPE, Event.COUNT);
+
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
+		node.path(0).path("label").isEqualTo("5");
+		node.path(0).path("count").isEqualTo(2);
+		node.path(1).path("label").isEqualTo("7");
+		node.path(1).path("count").isEqualTo(1);
+	}
 }

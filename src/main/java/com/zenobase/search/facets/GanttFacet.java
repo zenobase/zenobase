@@ -18,7 +18,6 @@ import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.StatsAggregate;
-import org.opensearch.client.opensearch._types.aggregations.StringTermsBucket;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
@@ -84,7 +83,7 @@ public class GanttFacet extends FilteredFacet {
 		if (aggregate == null) {
 			return result;
 		}
-		for (StringTermsBucket bucket : aggregate.sterms().buckets().array()) {
+		for (TermsBuckets.Bucket bucket : TermsBuckets.buckets(aggregate)) {
 			Aggregate bucketAggregate = bucket.aggregations().get(getId());
 			if (bucketAggregate == null) {
 				continue;
