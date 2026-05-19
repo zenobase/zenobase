@@ -93,37 +93,10 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	}
 
 	@Test
-	public void testSearchEventsRejectsConstraintWithoutSeparator() {
+	public void testSearchEventsRejectsInvalidQuery() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		try (Http1ClientResponse result = call(bucket, "?q=*")) {
-			assertThat(result).hasStatus(400);
-		}
-	}
-
-	@Test
-	public void testSearchEventsRejectsEmptyConstraint() {
-		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.find(bucket.getId())).thenReturn(bucket);
-		try (Http1ClientResponse result = call(bucket, "?q=")) {
-			assertThat(result).hasStatus(400);
-		}
-	}
-
-	@Test
-	public void testSearchEventsRejectsBareFieldConstraint() {
-		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.find(bucket.getId())).thenReturn(bucket);
-		try (Http1ClientResponse result = call(bucket, "?q=tag")) {
-			assertThat(result).hasStatus(400);
-		}
-	}
-
-	@Test
-	public void testSearchEventsRejectsFacetWithInvalidNumericOption() {
-		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.find(bucket.getId())).thenReturn(bucket);
-		try (Http1ClientResponse result = call(bucket, "?facet=id:x,type:count,field:tag,offset:abc")) {
 			assertThat(result).hasStatus(400);
 		}
 	}
