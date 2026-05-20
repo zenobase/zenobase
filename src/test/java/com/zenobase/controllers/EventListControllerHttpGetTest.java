@@ -93,6 +93,15 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	}
 
 	@Test
+	public void testSearchEventsRejectsInvalidQuery() {
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		try (Http1ClientResponse result = call(bucket, "?q=*")) {
+			assertThat(result).hasStatus(400);
+		}
+	}
+
+	@Test
 	public void testSearchEventsBucketNotFound() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(null);
