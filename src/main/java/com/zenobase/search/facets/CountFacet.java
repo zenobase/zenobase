@@ -3,6 +3,7 @@ package com.zenobase.search.facets;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
 import com.zenobase.json.Nodes;
 import com.zenobase.search.constraints.FilterParser;
 import java.util.Collections;
@@ -60,6 +61,7 @@ public class CountFacet extends FilteredFacet {
 		if (aggregate == null) {
 			return result;
 		}
+		Preconditions.checkArgument(aggregate.isSterms(), "Can't count by non-keyword field: %s", field);
 		List<StringTermsBucket> entries = aggregate.sterms().buckets().array();
 		if (offset < entries.size()) {
 			for (StringTermsBucket entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {

@@ -3,6 +3,7 @@ package com.zenobase.search.facets;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
 import com.zenobase.json.DecimalMeasureField;
@@ -84,6 +85,7 @@ public class ScoreboardFacet extends FilteredFacet {
 		if (aggregate == null) {
 			return result;
 		}
+		Preconditions.checkArgument(aggregate.isSterms(), "Can't aggregate by non-keyword field: %s", termField);
 		for (StringTermsBucket bucket : aggregate.sterms().buckets().array()) {
 			Aggregate bucketAggregate = bucket.aggregations().get(getId());
 			if (bucketAggregate == null) {

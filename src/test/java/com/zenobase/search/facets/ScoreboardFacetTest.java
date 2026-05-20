@@ -1,6 +1,7 @@
 package com.zenobase.search.facets;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.models.Event;
@@ -118,6 +119,16 @@ public class ScoreboardFacetTest extends FacetTestSupport {
 		node.path(0).path("max").isEqualTo(2500.0);
 		node.path(0).path("avg").isEqualTo(2500.0);
 		node.path(0).path("sum").isEqualTo(2500.0);
+	}
+
+	@Test
+	public void testRejectsNumericKeyField() {
+		addEvent(e1);
+		addFacet("id:%s,type:%s,key_field:%s,value_field:%s", FACET_ID, ScoreboardFacet.TYPE, Event.COUNT, Event.COUNT);
+
+		assertThatThrownBy(this::execute)
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining(Event.COUNT.getName());
 	}
 
 	@Test
