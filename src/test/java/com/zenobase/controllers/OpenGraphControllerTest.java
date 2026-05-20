@@ -25,8 +25,8 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 
 	@BeforeAll
 	public static void startServer() throws Exception {
-		server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
-		origin = "http://127.0.0.1:" + server.getAddress().getPort();
+		server = HttpServer.create(new InetSocketAddress(0), 0);
+		origin = "http://localhost:" + server.getAddress().getPort();
 		server.createContext("/ogp", exchange -> {
 			byte[] body = (
 				"<html><head>" +
