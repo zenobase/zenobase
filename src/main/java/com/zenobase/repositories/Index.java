@@ -186,27 +186,30 @@ public class Index {
 				operations.add(opBuilder.build());
 			}
 			final int batchBegin = begin;
-			List<BulkResponseItem> items = withSpan("bulk", () ->
-				client.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh))).items()
-			);
-			String failureMessage = getFailureMessage(items);
-			if (failureMessage != null) {
-				List<String> failed = new ArrayList<>();
-				for (int i = 0; i < items.size(); ++i) {
-					if (items.get(i).error() == null) {
-						failed.add(nodes.get(batchBegin + i).getId());
+			withSpan("bulk", () -> {
+				List<BulkResponseItem> items = client
+					.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh)))
+					.items();
+				String failureMessage = getFailureMessage(items);
+				if (failureMessage != null) {
+					List<String> failed = new ArrayList<>();
+					for (int i = 0; i < items.size(); ++i) {
+						if (items.get(i).error() == null) {
+							failed.add(nodes.get(batchBegin + i).getId());
+						}
 					}
+					if (!failed.isEmpty()) {
+						delete(failed, refresh);
+					}
+					throw new RuntimeException("Couldn't store an item: " + failureMessage);
 				}
-				if (!failed.isEmpty()) {
-					delete(failed, refresh);
+				for (int i = 0; i < items.size(); ++i) {
+					DomainNode node = nodes.get(batchBegin + i);
+					node.setVersion(items.get(i).version());
+					node.setOptimisticLock(new OptimisticLock(items.get(i).seqNo(), items.get(i).primaryTerm()));
 				}
-				throw new RuntimeException("Couldn't store an item: " + failureMessage);
-			}
-			for (int i = 0; i < items.size(); ++i) {
-				DomainNode node = nodes.get(batchBegin + i);
-				node.setVersion(items.get(i).version());
-				node.setOptimisticLock(new OptimisticLock(items.get(i).seqNo(), items.get(i).primaryTerm()));
-			}
+				return null;
+			});
 		}
 	}
 
