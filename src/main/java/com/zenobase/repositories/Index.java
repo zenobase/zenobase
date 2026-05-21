@@ -11,9 +11,13 @@ import com.zenobase.json.OptimisticLock;
 import com.zenobase.json.Schema;
 import com.zenobase.services.Cluster;
 import com.zenobase.services.SearchOrder;
+import io.sentry.ISpan;
+import io.sentry.Sentry;
+import io.sentry.SpanStatus;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 import org.opensearch.client.opensearch.OpenSearchClient;
@@ -117,43 +121,41 @@ public class Index {
 	}
 
 	private void index(String id, ObjectNode node, boolean refresh) {
-		try {
-			IndexRequest.Builder<ObjectNode> builder = new IndexRequest.Builder<ObjectNode>()
-				.index(indexName)
-				.id(id)
-				.document(stripMetadata(node))
-				.opType(OpType.Create)
-				.refresh(refreshPolicy(refresh));
+		IndexRequest.Builder<ObjectNode> builder = new IndexRequest.Builder<ObjectNode>()
+			.index(indexName)
+			.id(id)
+			.document(stripMetadata(node))
+			.opType(OpType.Create)
+			.refresh(refreshPolicy(refresh));
+		withSpan("index", () -> {
 			IndexResponse response = client.index(builder.build());
 			DomainNode.VERSION.setValue(node, response.version());
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+			return null;
+		});
 	}
 
 	private void index(String id, DomainNode node, OpType operation, boolean refresh) {
-		try {
-			IndexRequest.Builder<ObjectNode> builder = new IndexRequest.Builder<ObjectNode>()
-				.index(indexName)
-				.id(id)
-				.document(stripMetadata(node.toJson()))
-				.opType(operation)
-				.refresh(refreshPolicy(refresh));
-			if (operation == OpType.Index) {
-				OptimisticLock lock = Preconditions.checkNotNull(
-					node.getOptimisticLock(),
-					"Missing optimistic lock: %s",
-					node.toJson()
-				);
-				builder.ifSeqNo(lock.seqNo());
-				builder.ifPrimaryTerm(lock.primaryTerm());
-			}
+		IndexRequest.Builder<ObjectNode> builder = new IndexRequest.Builder<ObjectNode>()
+			.index(indexName)
+			.id(id)
+			.document(stripMetadata(node.toJson()))
+			.opType(operation)
+			.refresh(refreshPolicy(refresh));
+		if (operation == OpType.Index) {
+			OptimisticLock lock = Preconditions.checkNotNull(
+				node.getOptimisticLock(),
+				"Missing optimistic lock: %s",
+				node.toJson()
+			);
+			builder.ifSeqNo(lock.seqNo());
+			builder.ifPrimaryTerm(lock.primaryTerm());
+		}
+		withSpan("index", () -> {
 			IndexResponse response = client.index(builder.build());
 			node.setVersion(response.version());
 			node.setOptimisticLock(new OptimisticLock(response.seqNo(), response.primaryTerm()));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+			return null;
+		});
 	}
 
 	private void index(List<? extends DomainNode> nodes, OpType operation, boolean refresh) {
@@ -183,29 +185,27 @@ public class Index {
 				}
 				operations.add(opBuilder.build());
 			}
-			try {
-				BulkResponse bulkResponse = client.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh)));
-				List<BulkResponseItem> items = bulkResponse.items();
-				String failureMessage = getFailureMessage(items);
-				if (failureMessage != null) {
-					List<String> failed = new ArrayList<>();
-					for (int i = 0; i < items.size(); ++i) {
-						if (items.get(i).error() == null) {
-							failed.add(nodes.get(begin + i).getId());
-						}
-					}
-					if (!failed.isEmpty()) {
-						delete(failed, refresh);
-					}
-					throw new RuntimeException("Couldn't store an item: " + failureMessage);
-				}
+			final int batchBegin = begin;
+			List<BulkResponseItem> items = withSpan("bulk", () ->
+				client.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh))).items()
+			);
+			String failureMessage = getFailureMessage(items);
+			if (failureMessage != null) {
+				List<String> failed = new ArrayList<>();
 				for (int i = 0; i < items.size(); ++i) {
-					DomainNode node = nodes.get(begin + i);
-					node.setVersion(items.get(i).version());
-					node.setOptimisticLock(new OptimisticLock(items.get(i).seqNo(), items.get(i).primaryTerm()));
+					if (items.get(i).error() == null) {
+						failed.add(nodes.get(batchBegin + i).getId());
+					}
 				}
-			} catch (IOException e) {
-				throw new RuntimeException(e);
+				if (!failed.isEmpty()) {
+					delete(failed, refresh);
+				}
+				throw new RuntimeException("Couldn't store an item: " + failureMessage);
+			}
+			for (int i = 0; i < items.size(); ++i) {
+				DomainNode node = nodes.get(batchBegin + i);
+				node.setVersion(items.get(i).version());
+				node.setOptimisticLock(new OptimisticLock(items.get(i).seqNo(), items.get(i).primaryTerm()));
 			}
 		}
 	}
@@ -228,15 +228,13 @@ public class Index {
 	}
 
 	public boolean delete(String id, boolean refresh) {
-		try {
-			return client
+		return withSpan("delete", () ->
+			client
 				.delete(d -> d.index(indexName).id(id).refresh(refreshPolicy(refresh)))
 				.result()
 				.jsonValue()
-				.equals("deleted");
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+				.equals("deleted")
+		);
 	}
 
 	public boolean delete(List<String> ids, boolean refresh) {
@@ -244,15 +242,14 @@ public class Index {
 		for (String id : ids) {
 			operations.add(BulkOperation.of(op -> op.delete(d -> d.index(indexName).id(id))));
 		}
-		try {
+		withSpan("bulk_delete", () -> {
 			BulkResponse bulkResponse = client.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh)));
 			String failureMessage = getFailureMessage(bulkResponse.items());
 			if (failureMessage != null) {
 				throw new RuntimeException("Couldn't delete an item: " + failureMessage);
 			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+			return null;
+		});
 		return true;
 	}
 
@@ -299,11 +296,7 @@ public class Index {
 	}
 
 	public SearchResponse<ObjectNode> search(SearchRequest request) {
-		try {
-			return client.search(request, ObjectNode.class);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		return withSpan("search", () -> client.search(request, ObjectNode.class));
 	}
 
 	public void find(Query query, SearchOrder order, Callback<ObjectNode> callback, int pageSize) {
@@ -323,30 +316,29 @@ public class Index {
 	}
 
 	public void find(Supplier<SearchRequest.Builder> requestBuilder, Callback<ObjectNode> callback) {
-		try {
-			List<FieldValue> searchAfter = null;
-			while (true) {
-				SearchRequest.Builder builder = requestBuilder.get();
-				if (searchAfter != null) {
-					builder.searchAfter(searchAfter);
-				}
-				SearchResponse<ObjectNode> response = client.search(builder.build(), ObjectNode.class);
-				var hits = response.hits().hits();
-				if (hits.isEmpty()) {
-					break;
-				}
-				for (Hit<ObjectNode> hit : hits) {
-					callback.call(read(hit));
-				}
-				searchAfter = hits.getLast().sort();
+		List<FieldValue> searchAfter = null;
+		while (true) {
+			final List<FieldValue> currentSearchAfter = searchAfter;
+			SearchRequest.Builder builder = requestBuilder.get();
+			if (currentSearchAfter != null) {
+				builder.searchAfter(currentSearchAfter);
 			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+			SearchResponse<ObjectNode> response = withSpan("search", () ->
+				client.search(builder.build(), ObjectNode.class)
+			);
+			var hits = response.hits().hits();
+			if (hits.isEmpty()) {
+				break;
+			}
+			for (Hit<ObjectNode> hit : hits) {
+				callback.call(read(hit));
+			}
+			searchAfter = hits.getLast().sort();
 		}
 	}
 
 	public @Nullable ObjectNode get(String id) {
-		try {
+		return withSpan("get", () -> {
 			GetResponse<ObjectNode> response = client.get(g -> g.index(indexName).id(id), ObjectNode.class);
 			if (!response.found()) return null;
 			ObjectNode node = response.source();
@@ -354,9 +346,7 @@ public class Index {
 			node.put(DomainNode.SEQ_NO_FIELD, response.seqNo());
 			node.put(DomainNode.PRIMARY_TERM_FIELD, response.primaryTerm());
 			return node;
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		});
 	}
 
 	private static ObjectNode read(Hit<ObjectNode> hit) {
@@ -442,6 +432,33 @@ public class Index {
 				.acknowledged();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	private <T> T withSpan(String operation, Callable<T> action) {
+		ISpan parent = Sentry.getSpan();
+		if (parent == null) {
+			try {
+				return action.call();
+			} catch (RuntimeException e) {
+				throw e;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+		ISpan span = parent.startChild("db.opensearch", indexName + " " + operation);
+		try {
+			T result = action.call();
+			span.setStatus(SpanStatus.OK);
+			return result;
+		} catch (RuntimeException e) {
+			span.setStatus(SpanStatus.INTERNAL_ERROR);
+			throw e;
+		} catch (Exception e) {
+			span.setStatus(SpanStatus.INTERNAL_ERROR);
+			throw new RuntimeException(e);
+		} finally {
+			span.finish();
 		}
 	}
 }
