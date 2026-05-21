@@ -161,56 +161,59 @@ public class Index {
 	private void index(List<? extends DomainNode> nodes, OpType operation, boolean refresh) {
 		int BATCH_SIZE = 5000;
 		for (int begin = 0; begin < nodes.size(); begin += BATCH_SIZE) {
-			List<BulkOperation> operations = new ArrayList<>();
-			for (int i = 0; i < BATCH_SIZE && begin + i < nodes.size(); ++i) {
-				DomainNode node = nodes.get(begin + i);
-				ObjectNode doc = stripMetadata(node.toJson());
-				BulkOperation.Builder opBuilder = new BulkOperation.Builder();
-				if (operation == OpType.Create) {
-					opBuilder.create(c -> c.index(indexName).id(node.getId()).document(doc));
-				} else {
-					OptimisticLock lock = Preconditions.checkNotNull(
-						node.getOptimisticLock(),
-						"Missing optimistic lock: %s",
-						node.toJson()
-					);
-					opBuilder.index(idx ->
-						idx
-							.index(indexName)
-							.id(node.getId())
-							.document(doc)
-							.ifSeqNo(lock.seqNo())
-							.ifPrimaryTerm(lock.primaryTerm())
-					);
-				}
-				operations.add(opBuilder.build());
-			}
-			final int batchBegin = begin;
-			withSpan("bulk", () -> {
-				List<BulkResponseItem> items = client
-					.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh)))
-					.items();
-				String failureMessage = getFailureMessage(items);
-				if (failureMessage != null) {
-					List<String> failed = new ArrayList<>();
-					for (int i = 0; i < items.size(); ++i) {
-						if (items.get(i).error() == null) {
-							failed.add(nodes.get(batchBegin + i).getId());
-						}
-					}
-					if (!failed.isEmpty()) {
-						delete(failed, refresh);
-					}
-					throw new RuntimeException("Couldn't store an item: " + failureMessage);
-				}
-				for (int i = 0; i < items.size(); ++i) {
-					DomainNode node = nodes.get(batchBegin + i);
-					node.setVersion(items.get(i).version());
-					node.setOptimisticLock(new OptimisticLock(items.get(i).seqNo(), items.get(i).primaryTerm()));
-				}
-				return null;
-			});
+			int end = Math.min(begin + BATCH_SIZE, nodes.size());
+			indexBatch(nodes.subList(begin, end), operation, refresh);
 		}
+	}
+
+	private void indexBatch(List<? extends DomainNode> nodes, OpType operation, boolean refresh) {
+		List<BulkOperation> operations = new ArrayList<>(nodes.size());
+		for (DomainNode node : nodes) {
+			ObjectNode doc = stripMetadata(node.toJson());
+			BulkOperation.Builder opBuilder = new BulkOperation.Builder();
+			if (operation == OpType.Create) {
+				opBuilder.create(c -> c.index(indexName).id(node.getId()).document(doc));
+			} else {
+				OptimisticLock lock = Preconditions.checkNotNull(
+					node.getOptimisticLock(),
+					"Missing optimistic lock: %s",
+					node.toJson()
+				);
+				opBuilder.index(idx ->
+					idx
+						.index(indexName)
+						.id(node.getId())
+						.document(doc)
+						.ifSeqNo(lock.seqNo())
+						.ifPrimaryTerm(lock.primaryTerm())
+				);
+			}
+			operations.add(opBuilder.build());
+		}
+		withSpan("bulk", () -> {
+			List<BulkResponseItem> items = client
+				.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh)))
+				.items();
+			String failureMessage = getFailureMessage(items);
+			if (failureMessage != null) {
+				List<String> failed = new ArrayList<>();
+				for (int i = 0; i < items.size(); ++i) {
+					if (items.get(i).error() == null) {
+						failed.add(nodes.get(i).getId());
+					}
+				}
+				if (!failed.isEmpty()) {
+					delete(failed, refresh);
+				}
+				throw new RuntimeException("Couldn't store an item: " + failureMessage);
+			}
+			for (int i = 0; i < items.size(); ++i) {
+				DomainNode node = nodes.get(i);
+				node.setVersion(items.get(i).version());
+				node.setOptimisticLock(new OptimisticLock(items.get(i).seqNo(), items.get(i).primaryTerm()));
+			}
+			return null;
+		});
 	}
 
 	private static @Nullable String getFailureMessage(List<BulkResponseItem> items) {
