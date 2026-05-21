@@ -281,15 +281,7 @@ public class Index {
 	}
 
 	public NodeList find(Query query) {
-		SearchRequest request = SearchRequest.of(s ->
-			s.index(indexName).query(query).version(true).seqNoPrimaryTerm(true)
-		);
-		SearchResponse<ObjectNode> response = search(request);
-		List<ObjectNode> nodes = new ArrayList<>(response.hits().hits().size());
-		for (Hit<ObjectNode> hit : response.hits().hits()) {
-			nodes.add(read(hit));
-		}
-		return new NodeList(nodes, response.hits().total().value());
+		return find(SearchRequest.of(s -> s.index(indexName).query(query).version(true).seqNoPrimaryTerm(true)));
 	}
 
 	public NodeList find(SearchRequest request) {
