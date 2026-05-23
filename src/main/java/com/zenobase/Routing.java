@@ -21,10 +21,10 @@ class Routing {
 	static void buildRouting(HttpRouting.Builder routing, Injector injector) {
 		// Filters
 		routing.addFilter(new SecurityHeadersFilter());
+		routing.addFilter(new TracingFilter());
 		routing.addFilter(injector.getInstance(LogContextFilter.class));
 		routing.addFilter(new MetricsFilter());
 		routing.addFilter(injector.getInstance(ScopeFilter.class));
-		routing.addFilter(new TracingFilter());
 		routing.addFilter(injector.getInstance(GatekeeperFilter.class));
 		routing.addFilter(injector.getInstance(ExternalGrantFilter.class));
 
