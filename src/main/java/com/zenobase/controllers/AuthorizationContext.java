@@ -10,6 +10,7 @@ import io.helidon.http.HeaderNames;
 import io.helidon.webserver.http.ServerRequest;
 import jakarta.inject.Inject;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
@@ -35,7 +36,19 @@ public class AuthorizationContext {
 		return userState.lookup(principal);
 	}
 
+	@SuppressWarnings("ReferenceEquality") // Authorization.NONE is a sentinel, compared by reference
 	public @Nullable Authorization current(ServerRequest request) {
+		Optional<Authorization> cached = request.context().get(Authorization.class);
+		if (cached.isPresent()) {
+			Authorization auth = cached.get();
+			return auth == Authorization.NONE ? null : auth;
+		}
+		Authorization auth = resolve(request);
+		request.context().register(auth != null ? auth : Authorization.NONE);
+		return auth;
+	}
+
+	private @Nullable Authorization resolve(ServerRequest request) {
 		String token = extractToken(request.headers().first(HeaderNames.AUTHORIZATION).orElse(null));
 		if (token == null) {
 			return null;

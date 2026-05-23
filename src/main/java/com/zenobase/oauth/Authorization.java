@@ -2,12 +2,7 @@ package com.zenobase.oauth;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.common.Generator;
-import com.zenobase.json.DateTimeField;
-import com.zenobase.json.DomainNode;
-import com.zenobase.json.IdentityField;
-import com.zenobase.json.Schema;
-import com.zenobase.json.SchemaBuilder;
-import com.zenobase.json.TokenField;
+import com.zenobase.json.*;
 import com.zenobase.models.Identity;
 import java.util.Objects;
 import org.joda.time.DateTime;
@@ -23,6 +18,8 @@ public class Authorization extends DomainNode {
 	public static final IdentityField PRINCIPAL = new IdentityField("principal");
 	public static final IdentityField CLIENT = new IdentityField("client");
 	public static final TokenField SCOPE = new TokenField("scope");
+
+	public static final Authorization NONE = new Authorization(Identity.PUBLIC);
 
 	public Authorization(ObjectNode node) {
 		super(node);
