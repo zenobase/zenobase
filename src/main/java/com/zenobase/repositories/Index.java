@@ -38,11 +38,21 @@ import org.opensearch.client.opensearch.core.search.Hit;
 public class Index {
 
 	private final String indexName;
+	private final String canonicalName;
 	private final OpenSearchClient client;
 	private boolean disableRefresh;
 
 	public Index(String indexName, OpenSearchClient client) {
+		this(indexName, indexName, client);
+	}
+
+	/**
+	 * Use this when {@code indexName} is an alias (e.g. a bucket id pointing at the {@code events} index) so OpenSearch
+	 * operations target the alias but spans are labeled with the underlying {@code canonicalName}.
+	 */
+	public Index(String indexName, String canonicalName, OpenSearchClient client) {
 		this.indexName = indexName;
+		this.canonicalName = canonicalName;
 		this.client = client;
 	}
 
@@ -444,7 +454,7 @@ public class Index {
 				throw new RuntimeException(e);
 			}
 		}
-		ISpan span = parent.startChild("db.opensearch", indexName + " " + operation);
+		ISpan span = parent.startChild("db.opensearch", canonicalName + " " + operation);
 		try {
 			T result = action.call();
 			span.setStatus(SpanStatus.OK);

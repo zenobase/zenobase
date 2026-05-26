@@ -69,6 +69,14 @@ public class IndexManager implements Closeable {
 		return new Index(indexName, client);
 	}
 
+	/**
+	 * Use this when {@code indexName} is an alias (e.g. a bucket id aliasing the {@code events} index) so spans get
+	 * labeled with the underlying {@code canonicalName} rather than the alias.
+	 */
+	public Index getIndex(String indexName, String canonicalName) {
+		return new Index(indexName, canonicalName, client);
+	}
+
 	public Cluster getCluster() {
 		return new Cluster(client);
 	}

@@ -176,6 +176,6 @@ public class EventRepository {
 	}
 
 	private Index getIndex(String bucketId) {
-		return manager.getIndex(bucketId);
+		return manager.getIndex(bucketId, INDEX_NAME);
 	}
 }
