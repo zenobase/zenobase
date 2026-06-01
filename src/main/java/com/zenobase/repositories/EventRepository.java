@@ -171,6 +171,32 @@ public class EventRepository {
 		return getIndex(bucketId).count();
 	}
 
+	public Map<String, Long> sizes(List<String> bucketIds) {
+		if (bucketIds.isEmpty()) {
+			return Map.of();
+		}
+		String aggName = "sizes";
+		SearchRequest request = SearchRequest.of(s ->
+			s
+				.index(INDEX_NAME)
+				.routing(String.join(",", bucketIds))
+				.size(0)
+				.aggregations(
+					aggName,
+					Aggregation.of(a -> a.terms(t -> t.field(Event.BUCKET.getName()).size(bucketIds.size())))
+				)
+		);
+		SearchResponse<ObjectNode> response = index.search(request);
+		Map<String, Long> result = new HashMap<>();
+		var agg = response.aggregations().get(aggName);
+		if (agg != null) {
+			for (StringTermsBucket bucket : agg.sterms().buckets().array()) {
+				result.put(bucket.key(), bucket.docCount());
+			}
+		}
+		return result;
+	}
+
 	public void refresh(String bucketId) {
 		getIndex(bucketId).refresh();
 	}

@@ -17,6 +17,7 @@ import com.zenobase.search.Search;
 import com.zenobase.testing.NodeAssert;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.BeforeEach;
@@ -212,6 +213,35 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 				Event.SOURCE,
 				Event.LOCATION
 			);
+	}
+
+	@Test
+	public void testSizes() {
+		BucketRepository bucketRepository = new BucketRepository(getManager());
+		Bucket bucket1 = new Bucket();
+		bucketRepository.store(bucket1);
+		Bucket bucket2 = new Bucket();
+		bucketRepository.store(bucket2);
+
+		Event e1 = new Event();
+		e1.setValue(Event.AUTHOR, me);
+		e1.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
+		Event e2 = new Event();
+		e2.setValue(Event.AUTHOR, me);
+		e2.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
+		Event e3 = new Event();
+		e3.setValue(Event.AUTHOR, me);
+		e3.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
+
+		repository.add(bucket1.getId(), Lists.newArrayList(e1, e2));
+		repository.add(bucket2.getId(), Lists.newArrayList(e3));
+		repository.refresh(bucket1.getId());
+		repository.refresh(bucket2.getId());
+
+		Map<String, Long> sizes = repository.sizes(List.of(bucket1.getId(), bucket2.getId()));
+		assertThat(sizes.get(bucket1.getId())).as("bucket1 size").isEqualTo(2L);
+		assertThat(sizes.get(bucket2.getId())).as("bucket2 size").isEqualTo(1L);
+		assertThat(sizes.getOrDefault("unknown", 0L)).as("unknown bucket size").isZero();
 	}
 
 	@Test
