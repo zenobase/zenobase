@@ -22,6 +22,9 @@ import com.zenobase.services.UserLookup;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BucketListController extends ControllerSupport {
 
@@ -114,9 +117,11 @@ public class BucketListController extends ControllerSupport {
 		ObjectNode resultNode = Nodes.newObject();
 		PartialList.TOTAL.setValue(resultNode, Ints.checkedCast(list.getTotal()));
 		ArrayNode bucketsNode = resultNode.putArray("buckets");
+		List<String> bucketIds = list.stream().map(Bucket::getId).collect(Collectors.toList());
+		Map<String, Long> sizes = events.sizes(bucketIds);
 		for (Bucket bucket : list) {
 			ObjectNode bucketNode = bucket.toJson();
-			SIZE.setValue(bucketNode, events.size(bucket.getId()));
+			SIZE.setValue(bucketNode, sizes.getOrDefault(bucket.getId(), 0L));
 			bucketsNode.add(bucketNode);
 		}
 		return resultNode;
