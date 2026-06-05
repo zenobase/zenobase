@@ -179,8 +179,18 @@ public class EventRepository {
 		SearchRequest request = SearchRequest.of(s ->
 			s
 				.index(INDEX_NAME)
-				.routing(String.join(",", bucketIds))
 				.size(0)
+				.query(
+					Query.of(q ->
+						q.terms(tq ->
+							tq
+								.field(Event.BUCKET.getName())
+								.terms(tv ->
+									tv.value(bucketIds.stream().map(FieldValue::of).collect(Collectors.toList()))
+								)
+						)
+					)
+				)
 				.aggregations(
 					aggName,
 					Aggregation.of(a -> a.terms(t -> t.field(Event.BUCKET.getName()).size(bucketIds.size())))
