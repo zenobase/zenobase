@@ -52,10 +52,8 @@ public class UserController extends ControllerSupport {
 	}
 
 	private ObjectNode toJson(User user, @Nullable Authorization auth) {
-		return (
-				auth != null &&
-				((auth.getScope() == null && user.is(auth.getPrincipal())) || users.isSuperuser(auth.getPrincipal()))
-			)
+		return (auth != null &&
+			((auth.getScope() == null && user.is(auth.getPrincipal())) || users.isSuperuser(auth.getPrincipal())))
 			? new UserProfile(user).toJson()
 			: new UserInfo(user).toJson();
 	}

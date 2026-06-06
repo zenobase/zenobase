@@ -64,11 +64,7 @@ public class GrantedBucketsTest {
 	@Test
 	public void testEmptyGrantsReturnsConsentUrl() {
 		stubUserBuckets(bucket("b1"));
-		when(clients.find(user, clientId)).thenReturn(
-			connectedClient(
-				/* none */
-			)
-		);
+		when(clients.find(user, clientId)).thenReturn(connectedClient(/* none */));
 
 		GrantedBuckets.Result result = granted.list(auth);
 

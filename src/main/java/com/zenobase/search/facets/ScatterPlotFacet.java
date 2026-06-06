@@ -37,9 +37,9 @@ public class ScatterPlotFacet extends Facet {
 	public static final String TYPE = "scatterplot";
 
 	private static final ImmutableMap<String, DurationFieldType> PERIODS = ImmutableMap.<
-			String,
-			DurationFieldType
-		>builder()
+		String,
+		DurationFieldType
+	>builder()
 		.put("year", DurationFieldType.years())
 		.put("month", DurationFieldType.months())
 		.put("week", DurationFieldType.weeks())

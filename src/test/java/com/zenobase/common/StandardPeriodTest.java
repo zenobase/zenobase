@@ -12,15 +12,13 @@ import org.junit.jupiter.params.provider.CsvSource;
 public class StandardPeriodTest {
 
 	@ParameterizedTest
-	@CsvSource(
-		{
-			"+1y, 0, 0, 0, 1, 0, 0, 0",
-			"-1y, 0, 0, 0, -1, 0, 0, 0",
-			"+12M, 0, 0, 12, 0, 0, 0, 0",
-			"+4w, 0, 4, 0, 0, 0, 0, 0",
-			"+7d, 7, 0, 0, 0, 0, 0, 0",
-		}
-	)
+	@CsvSource({
+		"+1y, 0, 0, 0, 1, 0, 0, 0",
+		"-1y, 0, 0, 0, -1, 0, 0, 0",
+		"+12M, 0, 0, 12, 0, 0, 0, 0",
+		"+4w, 0, 4, 0, 0, 0, 0, 0",
+		"+7d, 7, 0, 0, 0, 0, 0, 0",
+	})
 	public void testParseToString(
 		String s,
 		int days,
@@ -69,9 +67,15 @@ public class StandardPeriodTest {
 	}
 
 	@ParameterizedTest
-	@CsvSource(
-		{ "+1y, +1y, 0", "+1y, +2y, -1", "+2y, +1y, 1", "-1y, +1y, -1", "+1y, -1y, 1", "+1M, +1y, -1", "+1y, +1M, 1" }
-	)
+	@CsvSource({
+		"+1y, +1y, 0",
+		"+1y, +2y, -1",
+		"+2y, +1y, 1",
+		"-1y, +1y, -1",
+		"+1y, -1y, 1",
+		"+1M, +1y, -1",
+		"+1y, +1M, 1",
+	})
 	public void testCompareTo(String a, String b, int expected) {
 		assertThat(StandardPeriod.valueOf(a).compareTo(StandardPeriod.valueOf(b))).isEqualTo(expected);
 	}

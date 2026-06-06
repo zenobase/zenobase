@@ -399,13 +399,11 @@ class Module extends AbstractModule {
 		if (node.isLeaf()) {
 			bindString(node.key().toString());
 		} else {
-			node
-				.asNodeList()
-				.ifPresent(children -> {
-					for (Config child : children) {
-						bindAllLeaves(child);
-					}
-				});
+			node.asNodeList().ifPresent(children -> {
+				for (Config child : children) {
+					bindAllLeaves(child);
+				}
+			});
 		}
 	}
 }

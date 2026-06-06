@@ -50,11 +50,15 @@ public class BucketTest {
 		assertThat(bucket.hasRole(new Authorization(friend), Role.CONTRIBUTOR))
 			.as("friend can contribute to the bucket")
 			.isTrue();
-		assertThat(bucket.hasRole(new Authorization(friend), Role.VIEWER)).as("friend can use the bucket").isTrue();
+		assertThat(bucket.hasRole(new Authorization(friend), Role.VIEWER))
+			.as("friend can use the bucket")
+			.isTrue();
 		assertThat(bucket.hasRole(new Authorization(friend), Role.OWNER))
 			.as("friend does not have full access to the bucket")
 			.isFalse();
-		assertThat(bucket.hasRole(new Authorization(other), Role.VIEWER)).as("other can not use the bucket").isFalse();
+		assertThat(bucket.hasRole(new Authorization(other), Role.VIEWER))
+			.as("other can not use the bucket")
+			.isFalse();
 
 		bucket.addRole(Identity.PUBLIC, Role.VIEWER);
 		assertThat(bucket.hasRole(new Authorization(other), Role.VIEWER))

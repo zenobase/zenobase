@@ -35,13 +35,11 @@ public class Schema {
 
 	public ObjectNode sanitize(ObjectNode node) {
 		ObjectNode result = Nodes.newObject();
-		node
-			.properties()
-			.forEach(entry -> {
-				if (fields.containsKey(entry.getKey())) {
-					result.set(entry.getKey(), entry.getValue());
-				}
-			});
+		node.properties().forEach(entry -> {
+			if (fields.containsKey(entry.getKey())) {
+				result.set(entry.getKey(), entry.getValue());
+			}
+		});
 		return result;
 	}
 
