@@ -56,9 +56,15 @@ public class UserRepositoryTest extends OpenSearchTestSupport {
 	@Test
 	public void testFindWithPaging() {
 		List<User> users = fill(11);
-		assertThat(repository.find(new UserQuery(), 0, 10)).hasTotal(users.size()).isEqualTo(users.subList(0, 10));
-		assertThat(repository.find(new UserQuery(), 10, 10)).hasTotal(users.size()).isEqualTo(users.subList(10, 11));
-		assertThat(repository.find(new UserQuery(), 20, 10)).hasTotal(users.size()).isEmpty();
+		assertThat(repository.find(new UserQuery(), 0, 10))
+			.hasTotal(users.size())
+			.isEqualTo(users.subList(0, 10));
+		assertThat(repository.find(new UserQuery(), 10, 10))
+			.hasTotal(users.size())
+			.isEqualTo(users.subList(10, 11));
+		assertThat(repository.find(new UserQuery(), 20, 10))
+			.hasTotal(users.size())
+			.isEmpty();
 	}
 
 	@Test

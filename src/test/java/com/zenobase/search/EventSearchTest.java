@@ -32,7 +32,10 @@ public class EventSearchTest {
 			.addFacets(new String[] { "id:c1,type:list", "id:c2,type:count,field:tag" })
 			.buildSearch();
 		Search e = new EventSearchBuilder().buildSearch();
-		Search f = new EventSearchBuilder().addConstraints(Lists.newArrayList()).addFacets(new String[0]).buildSearch();
+		Search f = new EventSearchBuilder()
+			.addConstraints(Lists.newArrayList())
+			.addFacets(new String[0])
+			.buildSearch();
 		Search g = new EventSearchBuilder().addConstraint("tag:a").addFacet("id:c2,type:count,field:tag").buildSearch();
 		new EqualsTester()
 			.addEqualityGroup(a, b)

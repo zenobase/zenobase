@@ -25,7 +25,9 @@ public class NodeAssert extends AbstractAssert<NodeAssert, JsonNode> {
 	}
 
 	public NodeAssert isArray() {
-		Assertions.assertThat(actual.isArray()).overridingErrorMessage("expected array but found " + actual).isTrue();
+		Assertions.assertThat(actual.isArray())
+			.overridingErrorMessage("expected array but found " + actual)
+			.isTrue();
 		return this;
 	}
 

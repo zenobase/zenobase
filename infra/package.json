@@ -2,12 +2,12 @@
     "name": "zenobase-infra",
     "main": "index.ts",
     "devDependencies": {
-        "@types/node": "^24",
-        "typescript": "^5"
+        "@types/node": "^24.13.1",
+        "typescript": "^5.9.3"
     },
     "dependencies": {
-        "@pulumi/aws": "^7.29.0",
-        "@pulumi/pulumi": "^3.237.0"
+        "@pulumi/aws": "^7.32.0",
+        "@pulumi/pulumi": "^3.245.0"
     },
     "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319",
     "engines": {
@@ -15,6 +15,8 @@
         "pnpm": "10.33.0"
     },
     "pnpm": {
-        "ignoredBuiltDependencies": ["protobufjs"]
+        "ignoredBuiltDependencies": [
+            "protobufjs"
+        ]
     }
 }

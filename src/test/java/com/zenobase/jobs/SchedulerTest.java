@@ -36,14 +36,12 @@ public class SchedulerTest {
 
 	// Clock frozen at 17:50:00 UTC.
 	@ParameterizedTest
-	@CsvSource(
-		{
-			"00:00, PT5M,  PT0S,  PT5M",
-			"00:01, PT5M,  PT1M,  PT5M",
-			"18:00, PT12H, PT10M, PT12H",
-			"17:50, P1D,   PT0S,  P1D",
-		}
-	)
+	@CsvSource({
+		"00:00, PT5M,  PT0S,  PT5M",
+		"00:01, PT5M,  PT1M,  PT5M",
+		"18:00, PT12H, PT10M, PT12H",
+		"17:50, P1D,   PT0S,  P1D",
+	})
 	public void testInitialDelayAndPeriod(
 		String begin,
 		String period,

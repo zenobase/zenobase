@@ -18,7 +18,9 @@ public class DateTimeFieldInternalsTest {
 		field.setValue(node, timestamp);
 		field.prePersist(node);
 
-		NodeAssert internal = NodeAssert.assertThat(node).path("$" + fieldName).path(0);
+		NodeAssert internal = NodeAssert.assertThat(node)
+			.path("$" + fieldName)
+			.path(0);
 		internal.isObject();
 		internal.path("time").isEqualTo("2013-10-06T11:59:00.000Z");
 		internal.path("month_of_year").isEqualTo(10);

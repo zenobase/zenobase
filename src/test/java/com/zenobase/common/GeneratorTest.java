@@ -13,11 +13,16 @@ public class GeneratorTest {
 		Multiset<Character> freq = TreeMultiset.create();
 		for (int i = 0; i < 10000; ++i) {
 			String id = Generator.id();
-			assertThat(id.length()).as("length of identifier " + id).isEqualTo(10);
+			assertThat(id.length())
+				.as("length of identifier " + id)
+				.isEqualTo(10);
 			freq.add(id.charAt(0));
 		}
 		for (Multiset.Entry<Character> entry : freq.entrySet()) {
-			assertThat(entry.getCount()).as("frequency of " + entry.getElement()).isGreaterThan(200).isLessThan(400);
+			assertThat(entry.getCount())
+				.as("frequency of " + entry.getElement())
+				.isGreaterThan(200)
+				.isLessThan(400);
 		}
 	}
 }

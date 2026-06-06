@@ -99,7 +99,9 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 		assertThat(repository.find(new BucketQuery(), order, 10, 10))
 			.hasTotal(expected.size())
 			.isEqualTo(expected.subList(10, 11));
-		assertThat(repository.find(new BucketQuery(), order, 20, 10)).hasTotal(expected.size()).isEmpty();
+		assertThat(repository.find(new BucketQuery(), order, 20, 10))
+			.hasTotal(expected.size())
+			.isEmpty();
 	}
 
 	@Test

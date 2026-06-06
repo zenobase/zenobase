@@ -18,7 +18,9 @@ public class LazyListTest {
 		LazyList<Thneed> actual = new TestableList(
 			new NodeList(Iterables.transform(expected, TO_JSON), expected.getTotal())
 		);
-		assertThat(actual).hasTotal(expected.getTotal()).isEqualTo((List<?>) expected);
+		assertThat(actual)
+			.hasTotal(expected.getTotal())
+			.isEqualTo((List<?>) expected);
 	}
 
 	private static Function<DomainNode, ObjectNode> TO_JSON = DomainNode::toJson;

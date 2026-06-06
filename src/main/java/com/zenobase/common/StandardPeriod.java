@@ -16,9 +16,9 @@ public class StandardPeriod implements Comparable<StandardPeriod> {
 	private static final Pattern PATTERN = Pattern.compile("([+-])(\\d+)([yMwdhms])");
 
 	private static final ImmutableMap<Character, DurationFieldType> FIELDS = ImmutableMap.<
-			Character,
-			DurationFieldType
-		>builder()
+		Character,
+		DurationFieldType
+	>builder()
 		.put('y', DurationFieldType.years())
 		.put('M', DurationFieldType.months())
 		.put('w', DurationFieldType.weeks())
@@ -75,7 +75,9 @@ public class StandardPeriod implements Comparable<StandardPeriod> {
 	private void append(DurationFieldType field, char symbol, StringBuilder s) {
 		int value = period.get(field);
 		if (value != 0) {
-			s.append(value > 0 ? '+' : '-').append(Math.abs(value)).append(symbol);
+			s.append(value > 0 ? '+' : '-')
+				.append(Math.abs(value))
+				.append(symbol);
 		}
 	}
 

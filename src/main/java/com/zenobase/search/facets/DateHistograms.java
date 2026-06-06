@@ -7,9 +7,9 @@ import org.opensearch.client.opensearch._types.aggregations.CalendarInterval;
 public class DateHistograms {
 
 	private static final ImmutableMap<String, CalendarInterval> INTERVALS = ImmutableMap.<
-			String,
-			CalendarInterval
-		>builder()
+		String,
+		CalendarInterval
+	>builder()
 		.put("year", CalendarInterval.Year)
 		.put("month", CalendarInterval.Month)
 		.put("week", CalendarInterval.Week)

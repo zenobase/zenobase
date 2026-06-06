@@ -308,19 +308,16 @@ public class Index {
 	}
 
 	public void find(Query query, SearchOrder order, Callback<ObjectNode> callback, int pageSize) {
-		find(
-			() -> {
-				var builder = new SearchRequest.Builder()
-					.index(indexName)
-					.query(query)
-					.size(pageSize)
-					.version(true)
-					.seqNoPrimaryTerm(true);
-				order.apply(builder);
-				return builder;
-			},
-			callback
-		);
+		find(() -> {
+			var builder = new SearchRequest.Builder()
+				.index(indexName)
+				.query(query)
+				.size(pageSize)
+				.version(true)
+				.seqNoPrimaryTerm(true);
+			order.apply(builder);
+			return builder;
+		}, callback);
 	}
 
 	public void find(Supplier<SearchRequest.Builder> requestBuilder, Callback<ObjectNode> callback) {

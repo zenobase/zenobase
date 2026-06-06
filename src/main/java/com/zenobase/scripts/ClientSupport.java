@@ -26,8 +26,9 @@ public abstract class ClientSupport implements Callable<Integer> {
 	private String token;
 
 	protected ObjectNode execute(ClassicHttpRequest request) throws IOException {
-		return execute(request, response ->
-			(ObjectNode) MAPPER.readTree(EntityUtils.toByteArray(response.getEntity()))
+		return execute(
+			request,
+			response -> (ObjectNode) MAPPER.readTree(EntityUtils.toByteArray(response.getEntity()))
 		);
 	}
 

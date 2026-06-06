@@ -36,7 +36,9 @@ public class CommandRepositoryTest extends OpenSearchTestSupport {
 	@Test
 	public void test() {
 		assertThat(repository.size()).as("stored commands").isZero();
-		assertThat(repository.getTotalCost(principal, DateTime.now().minusHours(1))).as("cost").isZero();
+		assertThat(repository.getTotalCost(principal, DateTime.now().minusHours(1)))
+			.as("cost")
+			.isZero();
 
 		Command command1 = new TestCommand(principal, "some work");
 		assertThat(repository.find(command1.getId())).isNull();
@@ -44,7 +46,9 @@ public class CommandRepositoryTest extends OpenSearchTestSupport {
 		assertThat(repository.find(command1.getId()).toJson()).isEqualTo(command1.toJson());
 		repository.refresh();
 		assertThat(repository.size()).as("stored commands").isEqualTo(1);
-		assertThat(repository.getTotalCost(principal, DateTime.now().minusHours(1))).as("cost").isEqualTo(1);
+		assertThat(repository.getTotalCost(principal, DateTime.now().minusHours(1)))
+			.as("cost")
+			.isEqualTo(1);
 
 		Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS); // to ensure correct sort order
 		Command command2 = new TestCommand(principal, "more work");
@@ -53,11 +57,15 @@ public class CommandRepositoryTest extends OpenSearchTestSupport {
 		assertThat(repository.find(command2.getId()).toJson()).isEqualTo(command2.toJson());
 		repository.refresh();
 		assertThat(repository.size()).as("stored commands").isEqualTo(2);
-		assertThat(repository.getTotalCost(principal, DateTime.now().minusHours(1))).as("cost").isEqualTo(2);
+		assertThat(repository.getTotalCost(principal, DateTime.now().minusHours(1)))
+			.as("cost")
+			.isEqualTo(2);
 		assertThat(repository.getTotalCost(new Identity(), DateTime.now().minusHours(1)))
 			.as("cost for different user")
 			.isZero();
-		assertThat(repository.getTotalCost(principal, DateTime.now().plus(1L))).as("cost since now").isZero();
+		assertThat(repository.getTotalCost(principal, DateTime.now().plus(1L)))
+			.as("cost since now")
+			.isZero();
 
 		PartialListAssert.assertThat(repository.find(new CommandQuery(), CommandQuery.DEFAULT_ORDER, 0, 10))
 			.hasTotal(2)
@@ -74,7 +82,9 @@ public class CommandRepositoryTest extends OpenSearchTestSupport {
 		assertThat(repository.find(new CommandQuery(), order, 10, 10))
 			.hasTotal(expected.size())
 			.isEqualTo(expected.subList(10, 11));
-		assertThat(repository.find(new CommandQuery(), order, 20, 10)).hasTotal(expected.size()).isEmpty();
+		assertThat(repository.find(new CommandQuery(), order, 20, 10))
+			.hasTotal(expected.size())
+			.isEmpty();
 	}
 
 	@Test
@@ -87,7 +97,9 @@ public class CommandRepositoryTest extends OpenSearchTestSupport {
 		assertThat(repository.find(new CommandQuery(), order, 10, 10))
 			.hasTotal(expected.size())
 			.isEqualTo(expected.subList(10, 11));
-		assertThat(repository.find(new CommandQuery(), order, 20, 10)).hasTotal(expected.size()).isEmpty();
+		assertThat(repository.find(new CommandQuery(), order, 20, 10))
+			.hasTotal(expected.size())
+			.isEmpty();
 	}
 
 	@Test

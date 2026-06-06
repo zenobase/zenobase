@@ -82,11 +82,7 @@ public class ConsentEnforcerTest {
 		bucket.addRole(user, Role.OWNER);
 		when(buckets.find("b1")).thenReturn(bucket);
 		// client is registered but b1 isn't in readable_buckets
-		when(clients.find(user, client)).thenReturn(
-			connectedClient(
-				/* no buckets */
-			)
-		);
+		when(clients.find(user, client)).thenReturn(connectedClient(/* no buckets */));
 
 		assertThatThrownBy(() -> enforcer.requireRead(auth, "b1"))
 			.isInstanceOf(McpException.class)

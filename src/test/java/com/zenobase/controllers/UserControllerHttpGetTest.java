@@ -41,7 +41,9 @@ public class UserControllerHttpGetTest extends UserControllerTestSupport {
 	@Test
 	public void testNotFound() {
 		try (Http1ClientResponse result = call(user.getId())) {
-			assertThat(result).hasStatus(200).hasContent(new UserInfo(new User(user.getId(), null)).toJson());
+			assertThat(result)
+				.hasStatus(200)
+				.hasContent(new UserInfo(new User(user.getId(), null)).toJson());
 		}
 	}
 
