@@ -8,7 +8,7 @@ config:
     zenobase:opensearchSnapshotBucket: zeno-snapshots
     zenobase:opensearchVersion: "OpenSearch_3.5"
     #  zenobase:opensearchInstanceType: "m8g.large.search"
-    zenobase:opensearchDomain: "zeno-opensearch-126"
+    zenobase:opensearchDomain: "zeno-opensearch-127"
     zenobase:opensearchReplayDomain: ""
     zenobase:opensearchRebuildDomain: ""
     #  zenobase:fargateCpu: "2048"

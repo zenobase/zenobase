@@ -46,6 +46,7 @@ Use this procedure to rebuild the database by replaying the entire command histo
     cd infra
     pulumi config set zenobase:opensearchDomain <new-domain-name>
     pulumi config set zenobase:opensearchReplayDomain <old-domain-name>
+    pulumi config set zenobase:zenobase:imageTag <current-image-tag>
     pulumi up
     ```
 
@@ -76,6 +77,7 @@ Same pattern as Replay but uses `opensearchRebuildDomain`.
     cd infra
     pulumi config set zenobase:opensearchDomain <new-domain-name>
     pulumi config set zenobase:opensearchRebuildDomain <old-domain-name>
+    pulumi config set zenobase:zenobase:imageTag <current-image-tag>
     pulumi up
     ```
 
