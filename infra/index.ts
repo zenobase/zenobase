@@ -119,10 +119,10 @@ const albSg = new aws.ec2.SecurityGroup("zenobase-alb-sg", {
     vpcId: vpc.id,
     description: "ALB - HTTPS from internet",
     ingress: [
-        { protocol: "tcp", fromPort: 443, toPort: 443, cidrBlocks: ["0.0.0.0/0"] },
+        { protocol: "tcp", fromPort: 443, toPort: 443, cidrBlocks: ["0.0.0.0/0"], description: "HTTPS from internet" },
     ],
     egress: [
-        { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"] },
+        { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"], description: "All outbound" },
     ],
     tags: { Name: "zenobase-alb" },
 });
@@ -131,10 +131,10 @@ const ecsSg = new aws.ec2.SecurityGroup("zenobase-ecs-sg", {
     vpcId: vpc.id,
     description: "ECS - app traffic from ALB",
     ingress: [
-        { protocol: "tcp", fromPort: 9000, toPort: 9000, securityGroups: [albSg.id] },
+        { protocol: "tcp", fromPort: 9000, toPort: 9000, securityGroups: [albSg.id], description: "App traffic from ALB" },
     ],
     egress: [
-        { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"] },
+        { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"], description: "All outbound" },
     ],
     tags: { Name: "zenobase-ecs" },
 });
@@ -143,10 +143,10 @@ const osSg = new aws.ec2.SecurityGroup("zenobase-os-sg", {
     vpcId: vpc.id,
     description: "OpenSearch - HTTPS from ECS",
     ingress: [
-        { protocol: "tcp", fromPort: 443, toPort: 443, securityGroups: [ecsSg.id] },
+        { protocol: "tcp", fromPort: 443, toPort: 443, securityGroups: [ecsSg.id], description: "HTTPS from ECS" },
     ],
     egress: [
-        { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"] },
+        { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"], description: "All outbound" },
     ],
     tags: { Name: "zenobase-opensearch" },
 });
@@ -181,7 +181,7 @@ if (bastionEnabled) {
         vpcId: vpc.id,
         description: "Bastion - SSM only, no SSH",
         egress: [
-            { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"] },
+            { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"], description: "All outbound" },
         ],
         tags: { Name: "zenobase-bastion" },
     });
@@ -193,6 +193,7 @@ if (bastionEnabled) {
         fromPort: 443,
         toPort: 443,
         sourceSecurityGroupId: bastionSg.id,
+        description: "HTTPS from bastion",
     });
 
     const al2023Ami = aws.ec2.getAmi({
