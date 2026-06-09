@@ -17,5 +17,5 @@ Java 25 / Helidon SE backend for [zenobase/zenobase-web](https://github.com/zeno
 - Run unit tests with `./mvnw test`, and integration tests with `./mvnw verify`
 - Pushing to `main` triggers a GitHub Actions workflow that runs all checks, and builds and pushes an image to ECR
 - Running the "Deploy" workflow deploys the image to ECS Fargate
-- Changes to [infra/](./infra/) must be deployed first by running `pulumi up` locally (`imageTag` can be left blank)
+- Changes to [infra/](./infra/) must be deployed first by running `./deploy.sh` locally, which runs `pulumi up` with the compliance [policy pack](./infra/policy/) enforced (`imageTag` can be left blank)
 - For instructions on updating secrets, rolling back deployments, performing migrations, or restoring from backups, see [RUNBOOK.md](RUNBOOK.md)

@@ -1,0 +1,30 @@
+{
+    "aws-ecr-repository-disallow-mutable-image": {
+        "reason": "zenobase-api tags must stay MUTABLE: Snyk scans a fixed `latest` tag re-pointed on every release.",
+        "excludeFor": ["^zenobase-api$"]
+    },
+    "aws-ecr-repository-configure-image-scan": {
+        "reason": "zenobase-api images are scanned out-of-band by Snyk, not ECR scan-on-push, to avoid duplicate triage.",
+        "excludeFor": ["^zenobase-api$"]
+    },
+    "aws-ecr-repository-configure-customer-managed-key": {
+        "reason": "zenobase-api uses explicit AES256 (always encrypted); a CMK would force repo replacement = image loss.",
+        "excludeFor": ["^zenobase-api$"]
+    },
+    "aws-ec2-securitygroup-disallow-public-internet-ingress": {
+        "reason": "The internet-facing ALB SG must allow 443 from 0.0.0.0/0 by design.",
+        "excludeFor": ["^zenobase-alb-sg$"]
+    },
+    "aws-secretsmanager-secret-configure-customer-managed-key": {
+        "reason": "The single ARN-scoped secret is acceptably protected by the AWS-managed key; a CMK isn't justified.",
+        "excludeFor": ["^zenobase-prod-api-config$"]
+    },
+    "aws-s3-bucket-enable-replication-configuration": {
+        "reason": "zenobase-lb-logs holds disposable ALB access logs (90-day expiry); cross-region replication is unwarranted.",
+        "excludeFor": ["^zenobase-lb-logs$"]
+    },
+    "aws-s3-bucket-enable-server-side-encryption": {
+        "reason": "zenobase-lb-logs already uses S3 default SSE-S3 (AES256); KMS/CMK unjustified for a log bucket, and declaring inline SSE would surface 3 KMS/bucket-key/CMK findings.",
+        "excludeFor": ["^zenobase-lb-logs$"]
+    }
+}
