@@ -18,6 +18,12 @@ decisions on any major-version bumps, follow-up notes.
   `package.json`; keep in sync with the matching `<devDependencies>` block
   inside `spotless-maven-plugin` in `pom.xml`; include any spotless reformats
 - **Infra packages** in `infra/package.json`
+- **Compliance policy pack** — `@pulumi/aws-compliance-policies` and
+  `@pulumi/compliance-policy-manager` in `infra/policy/package.json`; after
+  bumping, re-run the policy check (`pulumi preview --stack prod --policy-pack
+./policy --policy-pack-config ./policy/config.json` from `infra/`) and triage
+  any new findings — new pack versions add rules, and the pack is mandatory so
+  new violations block `./deploy.sh`
 - **GitHub Actions** in `.github/workflows/`
 - **Java version** — when a new LTS is available, update `maven.compiler.source`
   in `pom.xml`, the `eclipse-temurin` tag in `docker/Dockerfile`, and

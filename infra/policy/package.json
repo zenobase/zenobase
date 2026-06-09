@@ -1,0 +1,21 @@
+{
+    "name": "zenobase-compliance-policies",
+    "version": "0.0.1",
+    "main": "index.ts",
+    "files": [
+        "index.ts",
+        "package.json",
+        "PulumiPolicy.yaml",
+        "tsconfig.json"
+    ],
+    "dependencies": {
+        "@pulumi/aws-compliance-policies": "0.0.23",
+        "@pulumi/compliance-policy-manager": "0.1.6",
+        "@pulumi/policy": "^1.13.0",
+        "@pulumi/pulumi": "^3.150.0"
+    },
+    "devDependencies": {
+        "@types/node": "^24.13.1",
+        "typescript": "^5.9.3"
+    }
+}
