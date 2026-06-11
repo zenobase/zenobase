@@ -32,12 +32,12 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- Override netty version managed by the Helidon parent BOM to pick up fixes for CVE-2026-42580/42581/42584/42585/42587/41417.
-                 Remove once the Helidon parent ships netty >= 4.1.133.Final. -->
+            <!-- Override netty version managed by the Helidon parent BOM to pick up fixes for CVE-2026-42580/42581/42584/42585/42587/41417/44249.
+                 Remove once the Helidon parent ships netty >= 4.1.135.Final. -->
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-bom</artifactId>
-                <version>4.1.133.Final</version>
+                <version>4.1.135.Final</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
