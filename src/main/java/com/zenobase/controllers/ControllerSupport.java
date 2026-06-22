@@ -76,16 +76,6 @@ public abstract class ControllerSupport implements CustomHeaders {
 		res.status(Status.FORBIDDEN_403).send();
 	}
 
-	protected static void sendRedirect(ServerResponse res, String url) {
-		res.status(Status.FOUND_302);
-		res.header(HeaderNames.LOCATION, url);
-		res.send();
-	}
-
-	protected static void sendStatus(ServerResponse res, int statusCode, JsonNode json) {
-		res.status(Status.create(statusCode)).send(json);
-	}
-
 	// Error response helpers (also used by filters)
 
 	public static void sendBadRequest(ServerResponse res, String message) {

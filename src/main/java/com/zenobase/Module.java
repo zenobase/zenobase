@@ -310,7 +310,6 @@ class Module extends AbstractModule {
 		bind(CredentialsCallbackController.class).in(Singleton.class);
 		bind(SnapshotController.class).in(Singleton.class);
 		bind(SchedulerController.class).in(Singleton.class);
-		bind(RedirectController.class).in(Singleton.class);
 		bind(OpenGraphController.class).in(Singleton.class);
 		bind(QuotaController.class).in(Singleton.class);
 		bind(ExternalClientController.class).in(Singleton.class);
