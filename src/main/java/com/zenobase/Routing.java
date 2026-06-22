@@ -172,9 +172,6 @@ class Routing {
 		routing.get("/jobs/", scheduler::findAll);
 
 		// Utility
-		var redirect = injector.getInstance(RedirectController.class);
-		routing.get("/to", redirect::get);
-
 		var og = injector.getInstance(OpenGraphController.class);
 		routing.get("/og", og::get);
 
