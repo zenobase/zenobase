@@ -11,11 +11,11 @@
     "dependencies": {
         "@pulumi/aws-compliance-policies": "0.0.23",
         "@pulumi/compliance-policy-manager": "0.1.6",
-        "@pulumi/policy": "^1.13.0",
-        "@pulumi/pulumi": "^3.150.0"
+        "@pulumi/policy": "^1.21.0",
+        "@pulumi/pulumi": "^3.248.0"
     },
     "devDependencies": {
-        "@types/node": "^24.13.1",
-        "typescript": "^5.9.3"
+        "@types/node": "^24.13.2",
+        "typescript": "^6.0.3"
     }
 }
