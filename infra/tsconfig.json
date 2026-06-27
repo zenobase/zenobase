@@ -5,6 +5,7 @@
         "target": "es2020",
         "module": "commonjs",
         "moduleResolution": "node",
+        "ignoreDeprecations": "6.0",
         "sourceMap": true,
         "esModuleInterop": true,
         "skipLibCheck": true
