@@ -25,7 +25,9 @@ public class UnverifiedEmailSuspensionJobTest {
 	public void test() {
 		User user = new User("stale-tester");
 
-		doCallback(user).when(users).find(any(UserQuery.class), any());
+		doCallback(user)
+			.when(users)
+			.find(any(UserQuery.class), any());
 
 		job.run();
 

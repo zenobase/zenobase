@@ -68,7 +68,9 @@ public class TaskControllerHttpGetTest extends TaskControllerTestSupport {
 	public void testGetStaleTaskWithMissingCredentials() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(task.getId())).thenReturn(task.copy());
-		doThrow(new MissingCredentialsException("test")).when(refresher).refresh(any(Task.class));
+		doThrow(new MissingCredentialsException("test"))
+			.when(refresher)
+			.refresh(any(Task.class));
 		try (Http1ClientResponse result = call(task.getId())) {
 			assertThat(result).hasStatus(200).hasContent(task.toJson());
 			assertThat(result).hasHeader("X-Credentials", "test");
@@ -82,7 +84,9 @@ public class TaskControllerHttpGetTest extends TaskControllerTestSupport {
 		when(tasks.find(task.getId())).thenReturn(task.copy());
 		OAuthCredentials credentials = new OAuthCredentials("test", user.asIdentity());
 		credentials.setAuthorizationUrl("http://localhost/authorize");
-		doThrow(new IncompleteCredentialsException(credentials)).when(refresher).refresh(any(Task.class));
+		doThrow(new IncompleteCredentialsException(credentials))
+			.when(refresher)
+			.refresh(any(Task.class));
 		try (Http1ClientResponse result = call(task.getId())) {
 			assertThat(result).hasStatus(200).hasContent(task.toJson());
 			assertThat(result).hasHeader("Link", "<" + credentials.getAuthorizationUrl() + ">");
@@ -94,7 +98,9 @@ public class TaskControllerHttpGetTest extends TaskControllerTestSupport {
 	public void testGetStaleTaskFailedRefresh() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(task.getId())).thenReturn(task.copy());
-		doThrow(new RuntimeException()).when(refresher).refresh(any(Task.class));
+		doThrow(new RuntimeException())
+			.when(refresher)
+			.refresh(any(Task.class));
 		try (Http1ClientResponse result = call(task.getId())) {
 			assertThat(result).hasStatus(500);
 		}

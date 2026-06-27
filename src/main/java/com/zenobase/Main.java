@@ -109,7 +109,10 @@ public class Main {
 
 	private CorsFeature createCorsFeature(Config config) {
 		var allowedOrigins = Set.copyOf(
-			config.get("cors.allowed.origins").asList(String.class).orElse(List.of("https://zenobase.com"))
+			config
+				.get("cors.allowed.origins")
+				.asList(String.class)
+				.orElse(List.of("https://zenobase.com"))
 		);
 		return CorsFeature.builder()
 			// MCP discovery + RPC: open to any origin so browser-based MCP clients (Claude's connector flow on
