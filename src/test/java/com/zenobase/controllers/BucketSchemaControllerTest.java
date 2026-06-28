@@ -67,16 +67,18 @@ public class BucketSchemaControllerTest extends ControllerTestSupport {
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(events.fields(bucket.getId())).thenReturn(List.<Field<?>>of(Event.ID, Event.TAG));
 		try (Http1ClientResponse result = call(bucket.getId())) {
-			assertThat(result).hasStatus(200).hasContent(
-				Nodes.readObject(
-					"""
-					{"type":"object","properties":{\
-					"@id":{"type":"string","readOnly":true},\
-					"tag":{"oneOf":[\
-					{"type":"string"},\
-					{"type":"array","items":{"type":"string"}}]}}}"""
-				)
-			);
+			assertThat(result)
+				.hasStatus(200)
+				.hasContent(
+					Nodes.readObject(
+						"""
+						{"type":"object","properties":{\
+						"@id":{"type":"string","readOnly":true},\
+						"tag":{"oneOf":[\
+						{"type":"string"},\
+						{"type":"array","items":{"type":"string"}}]}}}"""
+					)
+				);
 		}
 	}
 

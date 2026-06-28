@@ -18,7 +18,7 @@ jobs:
         runs-on: ubuntu-latest
         services:
             opensearch:
-                image: opensearchproject/opensearch:3.3.0
+                image: opensearchproject/opensearch:3.5.0
                 ports:
                     - 9200:9200
                 env:
@@ -32,7 +32,7 @@ jobs:
                     --health-retries 10
                     --health-start-period 30s
         steps:
-            - uses: actions/checkout@v6
+            - uses: actions/checkout@v7
 
             - uses: actions/setup-java@v5
               with:

@@ -61,7 +61,7 @@ public class Index {
 	}
 
 	private Refresh refreshPolicy(boolean refresh) {
-		return (refresh && !disableRefresh) ? Refresh.True : Refresh.False;
+		return refresh && !disableRefresh ? Refresh.True : Refresh.False;
 	}
 
 	public String getIndexName() {

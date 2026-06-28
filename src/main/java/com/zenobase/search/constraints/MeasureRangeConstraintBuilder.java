@@ -30,6 +30,6 @@ public class MeasureRangeConstraintBuilder extends RangeConstraintBuilderSupport
 
 	@Override
 	protected Number getValue(Measurable<Quantity> value) {
-		return Measures.toStandard(((DecimalMeasure<Quantity>) value)).getValue();
+		return Measures.toStandard((DecimalMeasure<Quantity>) value).getValue();
 	}
 }

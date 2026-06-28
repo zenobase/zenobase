@@ -61,7 +61,10 @@ public class UpdateEventCommandTest {
 				r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))
 			)
 		);
-		doThrow(e).doNothing().when(repository).update(eq(bucketId), any(Event.class), any(Event.class));
+		doThrow(e)
+			.doNothing()
+			.when(repository)
+			.update(eq(bucketId), any(Event.class), any(Event.class));
 		Event current = from.copy();
 		current.setVersion(1);
 		current.setOptimisticLock(new OptimisticLock(1, 1));
@@ -78,7 +81,9 @@ public class UpdateEventCommandTest {
 				r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))
 			)
 		);
-		doThrow(e).when(repository).update(eq(bucketId), any(Event.class), any(Event.class));
+		doThrow(e)
+			.when(repository)
+			.update(eq(bucketId), any(Event.class), any(Event.class));
 		Event current = from.copy();
 		current.setVersion(3);
 		when(repository.find(bucketId, to.getId())).thenReturn(current);
@@ -93,7 +98,9 @@ public class UpdateEventCommandTest {
 				r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))
 			)
 		);
-		doThrow(e).when(repository).update(eq(bucketId), any(Event.class), any(Event.class));
+		doThrow(e)
+			.when(repository)
+			.update(eq(bucketId), any(Event.class), any(Event.class));
 		when(repository.find(bucketId, to.getId())).thenReturn(null);
 		registry.execute(command);
 		verify(repository).add(bucketId, to);

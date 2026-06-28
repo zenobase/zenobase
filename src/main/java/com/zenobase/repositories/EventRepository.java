@@ -129,7 +129,7 @@ public class EventRepository {
 		Map<String, Field<?>> fieldsByAggName = new LinkedHashMap<>();
 		int i = 0;
 		for (Field<?> field : Event.FIELDS) {
-			if (field == Event.BUCKET || field == DomainNode.VERSION) {
+			if (Event.BUCKET.equals(field) || DomainNode.VERSION.equals(field)) {
 				continue;
 			}
 			String aggName = "f" + i++;

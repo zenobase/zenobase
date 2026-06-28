@@ -105,7 +105,7 @@ public abstract class Field<T> {
 			ArrayNode arrayNode = node.putArray(name);
 			arrayNode.add(toJson(value));
 		} else if (fieldNode.isArray()) {
-			ArrayNode arrayNode = ((ArrayNode) fieldNode);
+			ArrayNode arrayNode = (ArrayNode) fieldNode;
 			arrayNode.add(toJson(value));
 		} else {
 			ArrayNode arrayNode = node.putArray(name);
@@ -120,7 +120,7 @@ public abstract class Field<T> {
 			ArrayNode arrayNode = node.putArray(name);
 			addValues(arrayNode, values);
 		} else if (fieldNode.isArray()) {
-			ArrayNode arrayNode = ((ArrayNode) fieldNode);
+			ArrayNode arrayNode = (ArrayNode) fieldNode;
 			addValues(arrayNode, values);
 		} else {
 			ArrayNode arrayNode = node.putArray(name);
