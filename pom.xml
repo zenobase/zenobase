@@ -22,8 +22,11 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- Pin Jackson ahead of the Helidon parent BOM (which ships 2.21.3) to stay on the latest
-                 release; originally added for CWE-770. Drop once the parent catches up to this version. -->
+            <!-- Override Jackson ahead of the Helidon parent BOM, which ships jackson-databind 2.21.3.
+                 That version still carries several open advisories fixed in 2.22.0 (PolymorphicTypeValidator
+                 bypasses GHSA-j3rv-43j4-c7qm / GHSA-rmj7-2vxq-3g9f, InetSocketAddress SSRF GHSA-hgj6-7826-r7m5,
+                 and @JsonView / @JsonIgnoreProperties deserialization bypasses). Originally added for CWE-770.
+                 Remove once the Helidon parent ships jackson-databind >= 2.22.0. -->
             <dependency>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
