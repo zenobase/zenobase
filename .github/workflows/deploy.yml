@@ -39,6 +39,14 @@ jobs:
               run: pnpm install --frozen-lockfile
               working-directory: infra
 
+            - name: Cache Pulumi plugins
+              uses: actions/cache@v6
+              with:
+                  path: ~/.pulumi/plugins
+                  key: pulumi-plugins-${{ runner.os }}-${{ hashFiles('infra/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      pulumi-plugins-${{ runner.os }}-
+
             - uses: pulumi/actions@8e5e406f4007fca908480587cb9893c07090f58d # v7.0.0
               env:
                   PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
