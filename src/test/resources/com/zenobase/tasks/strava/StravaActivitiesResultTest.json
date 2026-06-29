@@ -64,7 +64,7 @@
 		"start_date": "2014-11-06T18:28:07Z",
 		"start_date_local": "2014-11-06T10:28:07Z",
 		"timezone": "(GMT-08:00) America/Los_Angeles",
-		"start_latlng": null,
+		"start_latlng": [],
 		"end_latlng": null,
 		"location_city": null,
 		"location_state": null,

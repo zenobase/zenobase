@@ -81,7 +81,7 @@ class StravaActivitiesResult {
 	}
 
 	private @Nullable Location locationValue(JsonNode node) {
-		if (node.isMissingNode() || node.isNull()) {
+		if (node.isMissingNode() || node.isNull() || node.isEmpty()) {
 			return null;
 		}
 		Preconditions.checkState(node.size() == 2, "expected a node with a latitude and a longitude: <%s>", node);
