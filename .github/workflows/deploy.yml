@@ -29,10 +29,15 @@ jobs:
               env:
                   IMAGE_TAG: ${{ github.sha }}
               run: |
-                  aws ecr describe-images \
+                  found=$(aws ecr batch-get-image \
                       --repository-name zenobase-api \
                       --image-ids imageTag="$IMAGE_TAG" \
-                      || { echo "::error::No zenobase-api image tagged $IMAGE_TAG in ECR - build workflow may not have run for this commit"; exit 1; }
+                      --query 'images[0].imageId.imageTag' \
+                      --output text)
+                  if [ "$found" != "$IMAGE_TAG" ]; then
+                      echo "::error::No zenobase-api image tagged $IMAGE_TAG in ECR - build workflow may not have run for this commit"
+                      exit 1
+                  fi
 
             - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
               with:
