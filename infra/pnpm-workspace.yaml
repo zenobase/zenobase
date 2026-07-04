@@ -1,2 +1,9 @@
+packages:
+  - policy
+catalog:
+  '@pulumi/pulumi': ^3.248.0
+  '@types/node': ^24.13.2
+  typescript: ^6.0.3
 allowBuilds:
+  '@pulumi/aws-native': false
   protobufjs: false
