@@ -98,10 +98,6 @@ public class Auth0TokenValidator {
 		return issuer;
 	}
 
-	public String internalAudience() {
-		return internalAudience;
-	}
-
 	public @Nullable String externalAudience() {
 		return externalAudience;
 	}
