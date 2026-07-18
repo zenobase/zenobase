@@ -1,11 +1,8 @@
 package com.zenobase.auth.auth0;
 
 import com.auth0.client.mgmt.ManagementApi;
-import com.auth0.client.mgmt.types.AuthenticationMethodTypeEnum;
-import com.auth0.client.mgmt.types.GetClientResponseContent;
-import com.auth0.client.mgmt.types.ListUsersRequestParameters;
-import com.auth0.client.mgmt.types.SearchEngineVersionsEnum;
-import com.auth0.client.mgmt.types.UpdateUserRequestContent;
+import com.auth0.client.mgmt.types.*;
+import com.google.common.annotations.VisibleForTesting;
 import com.zenobase.auth.IdentityProvider;
 import com.zenobase.auth.Passkey;
 import com.zenobase.models.Identity;
@@ -40,6 +37,11 @@ public class Auth0ManagementService implements IdentityProvider {
 		// bare hostname and prepends https:// itself, so strip any scheme our config carries.
 		String host = (m2mDomain.isEmpty() ? domain : m2mDomain).replaceFirst("^https?://", "");
 		this.client = ManagementApi.builder().domain(host).clientCredentials(clientId, clientSecret).build();
+	}
+
+	@VisibleForTesting
+	Auth0ManagementService(ManagementApi client) {
+		this.client = client;
 	}
 
 	@Override
@@ -186,11 +188,11 @@ public class Auth0ManagementService implements IdentityProvider {
 	}
 
 	/**
-	 * Pure, package-private for testing. Returns true only when {@code is_first_party} is explicitly {@code false} —
-	 * an absent flag is treated as first-party so an SDK regression or unexpected response shape can't lead us to
-	 * delete a production Application.
+	 * Returns true only when {@code is_first_party} is explicitly {@code false} — an absent flag is treated as
+	 * first-party so an SDK regression or unexpected response shape can't lead us to delete a production Application.
+	 * Behavior is covered via {@link #deleteApplication}.
 	 */
-	static boolean isExternalApplication(Optional<Boolean> firstPartyFlag) {
+	private static boolean isExternalApplication(Optional<Boolean> firstPartyFlag) {
 		return firstPartyFlag.equals(Optional.of(false));
 	}
 }
