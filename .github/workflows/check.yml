@@ -16,6 +16,8 @@ on:
 jobs:
     check:
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
         services:
             opensearch:
                 image: opensearchproject/opensearch:3.5.0
