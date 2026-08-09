@@ -280,8 +280,8 @@
                     <java>
                         <prettier>
                             <devDependencies>
-                                <prettier>3.8.3</prettier>
-                                <prettier-plugin-java>2.10.1</prettier-plugin-java>
+                                <prettier>3.9.6</prettier>
+                                <prettier-plugin-java>2.10.3</prettier-plugin-java>
                             </devDependencies>
                             <configFile>${project.basedir}/.prettierrc.json</configFile>
                             <config>
@@ -305,8 +305,8 @@
                             </excludes>
                             <prettier>
                                 <devDependencies>
-                                    <prettier>3.8.3</prettier>
-                                    <prettier-plugin-java>2.10.1</prettier-plugin-java>
+                                    <prettier>3.9.6</prettier>
+                                    <prettier-plugin-java>2.10.3</prettier-plugin-java>
                                 </devDependencies>
                                 <configFile>${project.basedir}/.prettierrc.json</configFile>
                             </prettier>
