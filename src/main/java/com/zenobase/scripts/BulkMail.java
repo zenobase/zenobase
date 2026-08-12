@@ -22,12 +22,12 @@ public class BulkMail implements Callable<Integer> {
 	private static final String TEMPLATE_NAME = "test";
 	private static final String TEMPLATE_SUBJECT = "Test Message";
 	private static final String TEMPLATE_TEXT = """
-		Hello {{username}},
+	Hello {{username}},
 
-		This is a test message.
+	This is a test message.
 
-		Thanks!
-		""";
+	Thanks!
+	""";
 
 	record Recipient(String username, String email) {
 		Recipient {

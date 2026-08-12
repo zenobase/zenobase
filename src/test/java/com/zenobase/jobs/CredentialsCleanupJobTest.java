@@ -28,9 +28,7 @@ public class CredentialsCleanupJobTest {
 		var principal = new Identity();
 		var stale = new Credentials("foo", principal, DateTime.now().minusHours(1));
 
-		doCallback(stale)
-			.when(credentials)
-			.find(any(CredentialsQuery.class), any());
+		doCallback(stale).when(credentials).find(any(CredentialsQuery.class), any());
 
 		job.run();
 

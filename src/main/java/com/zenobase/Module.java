@@ -97,9 +97,7 @@ class Module extends AbstractModule {
 		bus.setReadOnly(true);
 		bind(Bus.class).toInstance(bus);
 
-		bind(ClientFactory.class)
-			.to(OpenSearchClientFactory.class)
-			.in(Singleton.class);
+		bind(ClientFactory.class).to(OpenSearchClientFactory.class).in(Singleton.class);
 		bind(IndexManager.class).in(Singleton.class);
 		bind(BucketRepository.class).in(Singleton.class);
 		bind(EventRepository.class).in(Singleton.class);
@@ -124,13 +122,9 @@ class Module extends AbstractModule {
 		}
 		if (isConfigured("auth0.m2m.client_id")) {
 			bind(Auth0ManagementService.class).in(Singleton.class);
-			bind(IdentityProvider.class)
-				.to(Auth0ManagementService.class)
-				.in(Singleton.class);
+			bind(IdentityProvider.class).to(Auth0ManagementService.class).in(Singleton.class);
 		} else {
-			bind(IdentityProvider.class)
-				.to(LocalIdentityProvider.class)
-				.in(Singleton.class);
+			bind(IdentityProvider.class).to(LocalIdentityProvider.class).in(Singleton.class);
 		}
 		bind(AuthorizationContext.class).in(Singleton.class);
 		bind(UserStateCache.class).in(Singleton.class);
@@ -325,10 +319,7 @@ class Module extends AbstractModule {
 
 	private <T> void bindIfConfigured(String prefix, Class<? extends T> type, Multibinder<T> binder) {
 		if (isConfigured(prefix)) {
-			binder
-				.addBinding()
-				.to(type)
-				.in(Singleton.class);
+			binder.addBinding().to(type).in(Singleton.class);
 		}
 	}
 
