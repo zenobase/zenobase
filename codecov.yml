@@ -1,0 +1,19 @@
+# Coverage is reported but never blocks a build. Marking both status checks
+# "informational" means they still post the coverage delta and show up on the
+# PR, but always resolve as passing. Without this, Codecov's defaults make
+# project and patch blocking, and formatting-only diffs that touch untested
+# glue code (bootstrap, DI wiring, scripts) fail the patch check.
+coverage:
+    status:
+        project:
+            default:
+                informational: true
+        patch:
+            default:
+                informational: true
+
+# require_changes: false keeps the report comment posting even when coverage
+# is unchanged.
+comment:
+    layout: "reach, diff, flags, files"
+    require_changes: false
