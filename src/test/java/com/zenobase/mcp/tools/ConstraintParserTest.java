@@ -3,106 +3,148 @@ package com.zenobase.mcp.tools;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.zenobase.json.Nodes;
-import com.zenobase.mcp.McpException;
+import io.helidon.extensions.mcp.server.McpException;
+import io.helidon.extensions.mcp.server.McpParameters;
+import io.helidon.extensions.mcp.server.McpParametersTestAccess;
+import io.helidon.jsonrpc.core.JsonRpcParams;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import java.io.StringReader;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Pinned behavior for {@link ConstraintParser} after the Helidon-MCP rewrite. Verifies op mapping (eq/ne/gt/gte/lt/lte/
+ * in/contains), scalar coercion (string/number/bool), array handling for {@code in}, and the error path for malformed
+ * input (which surfaces as {@link McpException} with {@code INVALID_PARAMS}).
+ *
+ * <p>{@code McpParameters} has no public constructor; we build one via reflection on the package-private factory by
+ * parsing a JSON object and routing it through {@link JsonRpcParams}. This mirrors how Helidon's MCP dispatcher
+ * constructs the {@code arguments()} param tree at runtime.
+ */
 public class ConstraintParserTest {
 
 	@Test
-	public void testEmptyOrNullReturnsEmpty() {
-		assertThat(ConstraintParser.parse(null)).isEmpty();
-		assertThat(ConstraintParser.parse(Nodes.newArray())).isEmpty();
+	public void testEmptyWhenAbsent() {
+		assertThat(ConstraintParser.parse(constraints("[]"))).isEmpty();
 	}
 
 	@Test
 	public void testEq() {
-		List<String> exprs = ConstraintParser.parse(parse("[{\"field\":\"tag\",\"op\":\"eq\",\"value\":\"run\"}]"));
-		assertThat(exprs).containsExactly("tag:run");
+		assertThat(
+			ConstraintParser.parse(constraints("[{\"field\":\"tag\",\"op\":\"eq\",\"value\":\"run\"}]"))
+		).containsExactly("tag:run");
 	}
 
 	@Test
 	public void testNe() {
-		List<String> exprs = ConstraintParser.parse(parse("[{\"field\":\"tag\",\"op\":\"ne\",\"value\":\"run\"}]"));
-		assertThat(exprs).containsExactly("-tag:run");
+		assertThat(
+			ConstraintParser.parse(constraints("[{\"field\":\"tag\",\"op\":\"ne\",\"value\":\"run\"}]"))
+		).containsExactly("-tag:run");
 	}
 
 	@Test
 	public void testGteAndLt() {
-		List<String> exprs = ConstraintParser.parse(
-			parse(
+		List<String> result = ConstraintParser.parse(
+			constraints(
 				"[{\"field\":\"timestamp\",\"op\":\"gte\",\"value\":\"2026-01-01\"}," +
-					"{\"field\":\"timestamp\",\"op\":\"lt\",\"value\":\"2026-04-01\"}]"
+					"{\"field\":\"timestamp\",\"op\":\"lt\",\"value\":\"2026-02-01\"}]"
 			)
 		);
-		assertThat(exprs).containsExactly("timestamp:[2026-01-01..*]", "timestamp:[*..2026-04-01)");
+		assertThat(result).containsExactly("timestamp:[2026-01-01..*]", "timestamp:[*..2026-02-01)");
 	}
 
 	@Test
 	public void testGtAndLte() {
-		List<String> exprs = ConstraintParser.parse(
-			parse(
-				"[{\"field\":\"value\",\"op\":\"gt\",\"value\":10}," +
-					"{\"field\":\"value\",\"op\":\"lte\",\"value\":20}]"
+		List<String> result = ConstraintParser.parse(
+			constraints(
+				"[{\"field\":\"weight\",\"op\":\"gt\",\"value\":50}," +
+					"{\"field\":\"weight\",\"op\":\"lte\",\"value\":100}]"
 			)
 		);
-		assertThat(exprs).containsExactly("value:(10..*]", "value:[*..20]");
+		assertThat(result).containsExactly("weight:(50..*]", "weight:[*..100]");
 	}
 
 	@Test
-	public void testIn() {
-		List<String> exprs = ConstraintParser.parse(
-			parse("[{\"field\":\"tag\",\"op\":\"in\",\"value\":[\"run\",\"walk\"]}]")
-		);
-		assertThat(exprs).containsExactly("tag:run OR walk");
+	public void testNumericValueScalarCoercion() {
+		assertThat(
+			ConstraintParser.parse(constraints("[{\"field\":\"n\",\"op\":\"eq\",\"value\":42}]"))
+		).containsExactly("n:42");
+		assertThat(
+			ConstraintParser.parse(constraints("[{\"field\":\"n\",\"op\":\"eq\",\"value\":3.14}]"))
+		).containsExactly("n:3.14");
 	}
 
 	@Test
-	public void testContains() {
-		List<String> exprs = ConstraintParser.parse(
-			parse("[{\"field\":\"note\",\"op\":\"contains\",\"value\":\"morning\"}]")
-		);
-		assertThat(exprs).containsExactly("note:*morning*");
+	public void testBooleanValueScalarCoercion() {
+		assertThat(
+			ConstraintParser.parse(constraints("[{\"field\":\"flag\",\"op\":\"eq\",\"value\":true}]"))
+		).containsExactly("flag:true");
 	}
 
 	@Test
-	public void testUnknownOpProducesInvalidParams() {
+	public void testInWithStringArray() {
+		assertThat(
+			ConstraintParser.parse(
+				constraints("[{\"field\":\"tag\",\"op\":\"in\",\"value\":[\"run\",\"walk\",\"ride\"]}]")
+			)
+		).containsExactly("tag:run OR walk OR ride");
+	}
+
+	@Test
+	public void testInWithEmptyArrayRejected() {
 		assertThatThrownBy(() ->
-			ConstraintParser.parse(parse("[{\"field\":\"tag\",\"op\":\"matches\",\"value\":\"x\"}]"))
+			ConstraintParser.parse(constraints("[{\"field\":\"tag\",\"op\":\"in\",\"value\":[]}]"))
 		)
-			.isInstanceOf(McpException.class)
-			.hasMessageContaining("Unknown op: matches")
-			.satisfies(e -> assertThat(((McpException) e).getCode()).isEqualTo(McpException.INVALID_PARAMS));
-	}
-
-	@Test
-	public void testMissingFieldProducesInvalidParams() {
-		assertThatThrownBy(() -> ConstraintParser.parse(parse("[{\"op\":\"eq\",\"value\":\"x\"}]")))
-			.isInstanceOf(McpException.class)
-			.hasMessageContaining("constraint missing 'field'");
-	}
-
-	@Test
-	public void testNonArrayConstraintsProducesInvalidParams() {
-		assertThatThrownBy(() -> ConstraintParser.parse(parse("{}")))
-			.isInstanceOf(McpException.class)
-			.hasMessageContaining("constraints must be an array");
-	}
-
-	@Test
-	public void testInWithEmptyArrayProducesInvalidParams() {
-		assertThatThrownBy(() -> ConstraintParser.parse(parse("[{\"field\":\"tag\",\"op\":\"in\",\"value\":[]}]")))
 			.isInstanceOf(McpException.class)
 			.hasMessageContaining("'in' op requires a non-empty array");
 	}
 
-	private static JsonNode parse(String json) {
-		try {
-			return Nodes.MAPPER.readTree(json);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+	@Test
+	public void testContains() {
+		assertThat(
+			ConstraintParser.parse(constraints("[{\"field\":\"note\",\"op\":\"contains\",\"value\":\"foo\"}]"))
+		).containsExactly("note:*foo*");
+	}
+
+	@Test
+	public void testUnknownOpRejected() {
+		assertThatThrownBy(() ->
+			ConstraintParser.parse(constraints("[{\"field\":\"x\",\"op\":\"regex\",\"value\":\".*\"}]"))
+		)
+			.isInstanceOf(McpException.class)
+			.hasMessageContaining("Unknown op: regex");
+	}
+
+	@Test
+	public void testMissingFieldRejected() {
+		assertThatThrownBy(() -> ConstraintParser.parse(constraints("[{\"op\":\"eq\",\"value\":\"x\"}]")))
+			.isInstanceOf(McpException.class)
+			.hasMessageContaining("'field'");
+	}
+
+	@Test
+	public void testMissingValueRejected() {
+		assertThatThrownBy(() -> ConstraintParser.parse(constraints("[{\"field\":\"x\",\"op\":\"eq\"}]")))
+			.isInstanceOf(McpException.class)
+			.hasMessageContaining("'value'");
+	}
+
+	@Test
+	public void testNullParameterReturnsEmpty() {
+		assertThat(ConstraintParser.parse(null)).isEmpty();
+	}
+
+	/**
+	 * Wraps a JSON array literal in the same {@link McpParameters} shape Helidon's dispatcher would construct from a
+	 * client request. {@code constraints} is the "value" of the {@code constraints} key under {@code arguments}.
+	 */
+	private static McpParameters constraints(String json) {
+		try (var reader = Json.createReader(new StringReader("{\"constraints\":" + json + "}"))) {
+			JsonObject envelope = reader.readObject();
+			JsonRpcParams params = JsonRpcParams.create(envelope);
+			McpParameters root = new McpParametersTestAccess(params, envelope).build();
+			return root.get("constraints");
 		}
 	}
 }

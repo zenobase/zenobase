@@ -1,7 +1,5 @@
 package com.zenobase.mcp;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.ExternalClient;
 import com.zenobase.models.Identity;
@@ -9,6 +7,8 @@ import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.ExternalClientRepository;
+import io.helidon.extensions.mcp.server.McpException;
+import io.helidon.jsonrpc.core.JsonRpcError;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -21,7 +21,13 @@ import jakarta.inject.Named;
  *       the API clients section of Settings.</li>
  * </ol>
  *
- * Anything not satisfying both raises an {@link McpException} that the JSON-RPC layer serializes appropriately.
+ * <p>Failure modes:
+ * <ul>
+ *   <li>Bucket missing → {@link McpException} with {@link JsonRpcError#INVALID_PARAMS} (surfaces as a JSON-RPC error,
+ *       since this is a protocol-level "bad input").</li>
+ *   <li>Role denied / grant missing / client missing → {@link ConsentRequiredException} (tools turn this into an
+ *       {@code McpToolResult} with {@code isError=true} so the model can prompt the user).</li>
+ * </ul>
  */
 public class ConsentEnforcer {
 
@@ -42,28 +48,31 @@ public class ConsentEnforcer {
 
 	/**
 	 * Loads the bucket, asserts the authorized user can view it, and asserts the requesting external client has been
-	 * granted read access to it. Returns the loaded {@link Bucket} for the caller to use. Throws {@link McpException}
-	 * with {@link McpException#ACCESS_NOT_GRANTED} (carrying a consent URL) or {@link McpException#INVALID_PARAMS}
-	 * (bucket not found / wrong owner).
+	 * granted read access to it. Returns the loaded {@link Bucket} for the caller to use.
 	 */
 	public Bucket requireRead(Authorization auth, String bucketId) {
 		Identity clientId = auth.getClient();
 		if (clientId == null) {
-			throw new McpException(McpException.ACCESS_NOT_GRANTED, "Token has no client identifier", consentData());
+			throw new ConsentRequiredException(
+				"Token has no client identifier. Consent URL: " + consentUrl(),
+				consentUrl()
+			);
 		}
 		Bucket bucket = buckets.find(bucketId);
 		if (bucket == null) {
-			throw new McpException(McpException.INVALID_PARAMS, "Bucket not found: " + bucketId);
+			throw new McpException(JsonRpcError.INVALID_PARAMS, "Bucket not found: " + bucketId);
 		}
 		if (!bucket.hasRole(auth, Role.VIEWER)) {
-			throw new McpException(McpException.ACCESS_NOT_GRANTED, "No access to bucket: " + bucketId, consentData());
+			throw new ConsentRequiredException(
+				"No access to bucket: " + bucketId + ". Consent URL: " + consentUrl(),
+				consentUrl()
+			);
 		}
 		ExternalClient client = clients.find(auth.getPrincipal(), clientId);
 		if (client == null || !client.canRead(bucketId)) {
-			throw new McpException(
-				McpException.ACCESS_NOT_GRANTED,
-				"This bucket has not been granted to this client",
-				consentData()
+			throw new ConsentRequiredException(
+				"This bucket has not been granted to this client. Consent URL: " + consentUrl(),
+				consentUrl()
 			);
 		}
 		return bucket;
@@ -71,9 +80,5 @@ public class ConsentEnforcer {
 
 	public String consentUrl() {
 		return webHostname + "/#/settings";
-	}
-
-	private ObjectNode consentData() {
-		return Nodes.newObject("consent_url", consentUrl());
 	}
 }

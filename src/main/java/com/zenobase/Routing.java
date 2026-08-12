@@ -3,9 +3,18 @@ package com.zenobase;
 import com.google.inject.Injector;
 import com.zenobase.controllers.*;
 import com.zenobase.filters.*;
-import com.zenobase.mcp.McpController;
+import com.zenobase.mcp.McpAuthFilter;
 import com.zenobase.mcp.ProtectedResourceMetadataController;
+import com.zenobase.mcp.resources.BucketResourceProvider;
+import com.zenobase.mcp.tools.BucketsTool;
+import com.zenobase.mcp.tools.EventsTool;
+import com.zenobase.mcp.tools.HistogramTool;
+import com.zenobase.mcp.tools.SchemaTool;
+import com.zenobase.mcp.tools.StatsTool;
+import com.zenobase.mcp.tools.TermsTool;
+import com.zenobase.mcp.tools.TimelineTool;
 import com.zenobase.services.QuotaException;
+import io.helidon.extensions.mcp.server.McpServerConfig;
 import io.helidon.http.HeaderNames;
 import io.helidon.http.HttpException;
 import io.helidon.webserver.http.HttpRouting;
@@ -182,10 +191,26 @@ class Routing {
 		routing.put("/users/{userId}/external-clients/{clientId}", externalClients::put);
 		routing.delete("/users/{userId}/external-clients/{clientId}", externalClients::revoke);
 
-		// MCP
-		var mcp = injector.getInstance(McpController.class);
-		routing.get("/mcp", mcp::get);
-		routing.post("/mcp", mcp::post);
+		// MCP — Helidon's McpServerFeature handles JSON-RPC envelope, dispatch, capabilities, notifications.
+		// McpAuthFilter runs first on /mcp paths to enforce Auth0 external-scope tokens, attach the Authorization
+		// to the request context for tools/resources to consume, and surface the RFC 9728 challenge on 401.
+		routing.addFilter(injector.getInstance(McpAuthFilter.class));
+		routing.addFeature(
+			McpServerConfig.builder()
+				.path("/mcp")
+				.name("zenobase")
+				.version("1")
+				.stateless(true)
+				.addTool(injector.getInstance(BucketsTool.class))
+				.addTool(injector.getInstance(SchemaTool.class))
+				.addTool(injector.getInstance(EventsTool.class))
+				.addTool(injector.getInstance(StatsTool.class))
+				.addTool(injector.getInstance(HistogramTool.class))
+				.addTool(injector.getInstance(TimelineTool.class))
+				.addTool(injector.getInstance(TermsTool.class))
+				.addResource(injector.getInstance(BucketResourceProvider.class))
+				.build()
+		);
 
 		var protectedResource = injector.getInstance(ProtectedResourceMetadataController.class);
 		routing.get("/.well-known/oauth-protected-resource", protectedResource::get);

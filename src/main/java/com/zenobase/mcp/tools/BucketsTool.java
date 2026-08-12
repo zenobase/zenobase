@@ -1,13 +1,17 @@
 package com.zenobase.mcp.tools;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.zenobase.json.Nodes;
 import com.zenobase.mcp.GrantedBuckets;
+import com.zenobase.mcp.McpAuth;
 import com.zenobase.models.Bucket;
 import com.zenobase.oauth.Authorization;
+import io.helidon.extensions.mcp.server.McpTool;
+import io.helidon.extensions.mcp.server.McpToolRequest;
+import io.helidon.extensions.mcp.server.McpToolResult;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 
 /**
  * Lists the buckets the calling external client has been granted access to. Exists alongside the {@code resources/list}
@@ -15,9 +19,6 @@ import jakarta.inject.Inject;
  * surfaces) do not autonomously invoke {@code resources/list} from conversational context — they treat resources as
  * user-attached items rather than model-discoverable catalogs. Exposing the same data as a tool means the model can
  * call it when the user says something like "use Zenobase" without first knowing a {@code bucket_id}.
- *
- * <p>Same security boundary as the resource provider: filters to buckets in the calling client's {@code readable_buckets}
- * grant via {@link GrantedBuckets}.
  */
 public class BucketsTool implements McpTool {
 
@@ -45,39 +46,36 @@ public class BucketsTool implements McpTool {
 	}
 
 	@Override
-	public ObjectNode inputSchema() {
-		ObjectNode schema = Nodes.newObject();
-		schema.put("type", "object");
-		schema.putObject("properties");
-		return schema;
+	public String schema() {
+		return ToolSchemas.empty();
 	}
 
 	@Override
-	public JsonNode call(Authorization auth, JsonNode args) {
+	public McpToolResult tool(McpToolRequest request) {
+		Authorization auth = McpAuth.require(request);
 		GrantedBuckets.Result result = granted.list(auth);
-		ObjectNode node = Nodes.newObject();
-		ArrayNode array = node.putArray("buckets");
+		JsonArrayBuilder array = Json.createArrayBuilder();
 		for (Bucket bucket : result.buckets()) {
 			array.add(toJson(bucket));
 		}
+		JsonObjectBuilder node = Json.createObjectBuilder().add("buckets", array);
 		if (result.consentUrl() != null) {
-			node.putObject("_meta").put("consent_url", result.consentUrl());
+			node.add("_meta", Json.createObjectBuilder().add("consent_url", result.consentUrl()));
 		}
-		return node;
+		return McpToolResult.create(node.build().toString());
 	}
 
-	private static ObjectNode toJson(Bucket bucket) {
-		ObjectNode node = Nodes.newObject();
-		node.put("id", bucket.getId());
+	private static JsonObject toJson(Bucket bucket) {
+		JsonObjectBuilder node = Json.createObjectBuilder().add("id", bucket.getId());
 		if (bucket.getLabel() != null) {
-			node.put("label", bucket.getLabel());
+			node.add("label", bucket.getLabel());
 		}
 		if (bucket.getDescription() != null) {
-			node.put("description", bucket.getDescription());
+			node.add("description", bucket.getDescription());
 		}
 		if (bucket.isArchived()) {
-			node.put("archived", true);
+			node.add("archived", true);
 		}
-		return node;
+		return node.build();
 	}
 }

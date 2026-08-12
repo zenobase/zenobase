@@ -1,12 +1,12 @@
 package com.zenobase.mcp.tools;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.mcp.ConsentEnforcer;
-import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.EventRepository;
 import com.zenobase.search.facets.StatsFacet;
+import io.helidon.extensions.mcp.server.McpToolRequest;
+import io.helidon.extensions.mcp.server.McpToolResult;
 import jakarta.inject.Inject;
+import jakarta.json.JsonObject;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,21 +30,21 @@ public class StatsTool extends FacetToolSupport {
 	}
 
 	@Override
-	public ObjectNode inputSchema() {
-		Map<String, ObjectNode> extra = new LinkedHashMap<>();
-		extra.put("field", ToolSchemas.stringProperty("Name of the numeric field to aggregate."));
-		return ToolSchemas.bucketIdAnd(extra, "field");
+	public String schema() {
+		Map<String, JsonObject> extras = new LinkedHashMap<>();
+		extras.put("field", ToolSchemas.stringProperty("Name of the numeric field to aggregate."));
+		return ToolSchemas.bucketIdAnd(extras, "field");
 	}
 
 	@Override
-	public JsonNode call(Authorization auth, JsonNode args) {
-		String bucketId = ToolArgs.requireString(args, "bucket_id");
-		String field = ToolArgs.requireString(args, "field");
-		List<String> constraints = ConstraintParser.parse(args != null ? args.get("constraints") : null);
+	public McpToolResult tool(McpToolRequest request) {
+		String bucketId = requireString(request, "bucket_id");
+		String field = requireString(request, "field");
+		List<String> constraints = ConstraintParser.parse(request.arguments().get("constraints"));
 		Map<String, String> options = new LinkedHashMap<>();
 		options.put("id", "stats");
 		options.put("type", StatsFacet.TYPE);
 		options.put("field", field);
-		return runFacet(auth, bucketId, constraints, options);
+		return runFacet(request, bucketId, constraints, options);
 	}
 }
