@@ -1,0 +1,32 @@
+{
+	"stepsRollupValues": [
+		{
+			"startTime": "2026-04-18T00:00:00-07:00",
+			"endTime": "2026-04-19T00:00:00-07:00",
+			"count": 8123,
+			"origin": {
+				"applicationName": "Fitbit",
+				"device": {
+					"model": "Charge 6"
+				}
+			}
+		},
+		{
+			"startTime": "2026-04-19T00:00:00-07:00",
+			"endTime": "2026-04-20T00:00:00-07:00",
+			"count": 12057,
+			"origin": {
+				"applicationName": "Fitbit",
+				"device": {
+					"model": "Charge 6"
+				}
+			}
+		},
+		{
+			"startTime": "2026-04-20T00:00:00-07:00",
+			"endTime": "2026-04-21T00:00:00-07:00",
+			"count": 0
+		}
+	],
+	"nextPageToken": ""
+}

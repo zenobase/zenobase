@@ -47,6 +47,11 @@ google:
   service:
     key: ""
 
+google-health:
+  api:
+    key: ""
+    secret: ""
+
 hexoskin:
   api:
     key: ""
