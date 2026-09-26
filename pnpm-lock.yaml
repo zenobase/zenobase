@@ -8,41 +8,41 @@ importers:
     .:
         devDependencies:
             prettier:
-                specifier: 3.8.3
-                version: 3.8.3
+                specifier: 3.9.9
+                version: 3.9.9
             prettier-plugin-java:
-                specifier: 2.10.1
-                version: 2.10.1(prettier@3.8.3)
+                specifier: 2.10.4
+                version: 2.10.4(prettier@3.9.9)
 
 packages:
-    prettier-plugin-java@2.10.1:
+    prettier-plugin-java@2.10.4:
         resolution:
             {
-                integrity: sha512-iz3o44Fx7F4S5gO+m8yU/aErGguSjMBXgDopkBpIMoz4XlD/PZt2naooUfqaru/1pU9Z94owpRnqXMe3P40peA==,
+                integrity: sha512-Hinkucn49lx848MnWEktfGozLPp9dMYtdKPG+Z3pridBv71PJIVibe4jp0Lzb+rcA3eMZfU5+oWtJoI2oQ2XTg==,
             }
         peerDependencies:
             prettier: ^3.0.0
 
-    prettier@3.8.3:
+    prettier@3.9.9:
         resolution:
             {
-                integrity: sha512-7igPTM53cGHMW8xWuVTydi2KO233VFiTNyF5hLJqpilHfmn8C8gPf+PS7dUT64YcXFbiMGZxS9pCSxL/Dxm/Jw==,
+                integrity: sha512-Z/CJHIkdujO/OtN7nXUii0Rf3VT5SRuhjBA82Xvu2XhBUgX3nhP67T0LHceBdQLex7OOFGTox+Q5Yg8Jk2Qivg==,
             }
         engines: { node: ">=14" }
         hasBin: true
 
-    web-tree-sitter@0.26.9:
+    web-tree-sitter@0.27.0:
         resolution:
             {
-                integrity: sha512-YJwSHANl6XFgeEjB8nitgj0qZYt5gkIesJ4w2srS2wcLB4GUa4xcOkM0YaMsU6WNR53YVIkDSY7Ej4pf3IXtCA==,
+                integrity: sha512-XK08gj6RwTMQatAG7uVRP8MunqotL/XC19vHgkSPKmELgbGPBj4ECvB8haHOUnyj6ls2B8t42UTro14zxGgAHg==,
             }
 
 snapshots:
-    prettier-plugin-java@2.10.1(prettier@3.8.3):
+    prettier-plugin-java@2.10.4(prettier@3.9.9):
         dependencies:
-            prettier: 3.8.3
-            web-tree-sitter: 0.26.9
+            prettier: 3.9.9
+            web-tree-sitter: 0.27.0
 
-    prettier@3.8.3: {}
+    prettier@3.9.9: {}
 
-    web-tree-sitter@0.26.9: {}
+    web-tree-sitter@0.27.0: {}
