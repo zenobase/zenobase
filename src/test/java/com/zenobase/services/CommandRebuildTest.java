@@ -57,7 +57,7 @@ public class CommandRebuildTest extends OpenSearchTestSupport {
 		tasks.store(task);
 		tasks.refresh();
 
-		new CommandRebuild("", 1, dispatcher, users, credentials, buckets, tasks, events).rebuild(getManager());
+		new CommandRebuild("", 1, dispatcher, users, credentials, buckets, tasks, getManager()).rebuild(getManager());
 
 		InOrder ordered = Mockito.inOrder(dispatcher);
 		ordered.verify(dispatcher).dispatch(isA(CreateUserCommand.class));

@@ -35,6 +35,7 @@ import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.bulk.BulkOperation;
 import org.opensearch.client.opensearch.core.bulk.BulkResponseItem;
 import org.opensearch.client.opensearch.core.search.Hit;
+import org.opensearch.client.opensearch.generic.Requests;
 
 public class Index {
 
@@ -95,7 +96,7 @@ public class Index {
 			client
 				.generic()
 				.execute(
-					org.opensearch.client.opensearch.generic.Requests.builder()
+					Requests.builder()
 						.endpoint(indexName + "/_mapping")
 						.method("PUT")
 						.json(json)
@@ -116,7 +117,7 @@ public class Index {
 		settings.putObject("index").put("refresh_interval", interval);
 		try (
 			var response = client.generic().execute(
-				org.opensearch.client.opensearch.generic.Requests.builder()
+				Requests.builder()
 					.endpoint(indexName + "/_settings")
 					.method("PUT")
 					.json(settings.toString())

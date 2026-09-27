@@ -51,7 +51,7 @@ public class CommandRebuild {
 	private final CredentialsRepository targetCredentials;
 	private final BucketRepository targetBuckets;
 	private final TaskRepository targetTasks;
-	private final EventRepository targetEvents;
+	private final IndexManager target;
 
 	@Inject
 	public CommandRebuild(
@@ -62,7 +62,7 @@ public class CommandRebuild {
 		CredentialsRepository targetCredentials,
 		BucketRepository targetBuckets,
 		TaskRepository targetTasks,
-		EventRepository targetEvents
+		IndexManager target
 	) {
 		this.sourceHost = sourceHost;
 		this.parallelism = parallelism;
@@ -71,7 +71,7 @@ public class CommandRebuild {
 		this.targetCredentials = targetCredentials;
 		this.targetBuckets = targetBuckets;
 		this.targetTasks = targetTasks;
-		this.targetEvents = targetEvents;
+		this.target = target;
 	}
 
 	public void rebuild() {
@@ -86,14 +86,14 @@ public class CommandRebuild {
 	void rebuild(IndexManager indexManager) {
 		logger.info("Rebuilding history from {}...", sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
-		targetEvents.pauseRefresh();
+		target.pauseRefresh();
 		try {
 			rebuild(indexManager, targetUsers, "users", this::rebuildUsers);
 			rebuild(indexManager, targetCredentials, "credentials", this::rebuildCredentials);
 			rebuild(indexManager, targetBuckets, "buckets", this::rebuildBuckets);
 			rebuild(indexManager, targetTasks, "tasks", this::rebuildTasks);
 		} finally {
-			targetEvents.resumeRefresh();
+			target.resumeRefresh();
 		}
 		logger.warn("Rebuilt history in {} s", timer.elapsed(TimeUnit.SECONDS));
 	}

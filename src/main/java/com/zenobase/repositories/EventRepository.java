@@ -211,19 +211,6 @@ public class EventRepository {
 		getIndex(bucketId).refresh();
 	}
 
-	/**
-	 * Suspends periodic refreshes of the event index, to reduce segment and merge churn (and heap pressure) during
-	 * bulk loads. Writes and get-by-id remain realtime, but searches won't see new events until {@link #resumeRefresh()}.
-	 */
-	public void pauseRefresh() {
-		index.setRefreshInterval("-1");
-	}
-
-	public void resumeRefresh() {
-		index.setRefreshInterval(null);
-		index.refresh();
-	}
-
 	private Index getIndex(String bucketId) {
 		return manager.getIndex(bucketId, INDEX_NAME);
 	}

@@ -7,7 +7,6 @@ import com.zenobase.commands.NonExistentUserException;
 import com.zenobase.queries.CommandQuery;
 import com.zenobase.queries.UserQuery;
 import com.zenobase.repositories.CommandRepository;
-import com.zenobase.repositories.EventRepository;
 import com.zenobase.repositories.IndexManager;
 import com.zenobase.repositories.UserRepository;
 import jakarta.inject.Inject;
@@ -29,7 +28,7 @@ public class CommandReplay {
 	private final String sourceHost;
 	private final CommandParserRegistry parsers;
 	private final CommandDispatcher dispatcher;
-	private final EventRepository targetEvents;
+	private final IndexManager target;
 	private final AtomicInteger count = new AtomicInteger();
 	private final AtomicInteger replayed = new AtomicInteger();
 	private final AtomicInteger failures = new AtomicInteger();
@@ -39,12 +38,12 @@ public class CommandReplay {
 		@Named("opensearch.replay") String sourceHost,
 		CommandParserRegistry parsers,
 		CommandDispatcher dispatcher,
-		EventRepository targetEvents
+		IndexManager target
 	) {
 		this.sourceHost = sourceHost;
 		this.parsers = parsers;
 		this.dispatcher = dispatcher;
-		this.targetEvents = targetEvents;
+		this.target = target;
 	}
 
 	public void replay() {
@@ -61,7 +60,7 @@ public class CommandReplay {
 		Set<String> identities = loadIdentities(indexManager);
 		logger.info("Replaying {} commands from {}...", repository.size(), sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
-		targetEvents.pauseRefresh();
+		target.pauseRefresh();
 		try {
 			repository.find(new CommandQuery(), SearchOrder.asc(Command.TIMESTAMP, Command.ID), command -> {
 				if (failures.get() >= MAX_FAILURES) {
@@ -75,7 +74,7 @@ public class CommandReplay {
 				count.incrementAndGet();
 			});
 		} finally {
-			targetEvents.resumeRefresh();
+			target.resumeRefresh();
 		}
 		logger.warn(
 			"Replayed {} and discarded {} commands out of {} with {} failures in {} s",

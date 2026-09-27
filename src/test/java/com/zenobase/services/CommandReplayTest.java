@@ -10,7 +10,6 @@ import com.zenobase.commands.TestCommand;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.repositories.CommandRepository;
-import com.zenobase.repositories.EventRepository;
 import com.zenobase.repositories.OpenSearchTestSupport;
 import com.zenobase.repositories.UserRepository;
 import java.util.List;
@@ -35,7 +34,7 @@ public class CommandReplayTest extends OpenSearchTestSupport {
 
 		UserRepository users = new UserRepository(getManager());
 		users.store(user);
-		new CommandReplay("", parsers, dispatcher, new EventRepository(getManager())).replay(getManager());
+		new CommandReplay("", parsers, dispatcher, getManager()).replay(getManager());
 
 		InOrder dispatchOrder = Mockito.inOrder(dispatcher);
 		for (Command command : commandsToReplay) {
