@@ -1,5 +1,6 @@
 package com.zenobase.repositories;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -101,6 +102,33 @@ public class Index {
 						.build()
 				)
 				.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Sets the index-level {@code refresh_interval}, e.g. {@code "-1"} to suspend periodic refreshes during bulk
+	 * loads; {@code null} restores the default.
+	 */
+	public void setRefreshInterval(@Nullable String interval) {
+		ObjectNode settings = JsonNodeFactory.instance.objectNode();
+		settings.putObject("index").put("refresh_interval", interval);
+		try (
+			var response = client.generic().execute(
+				org.opensearch.client.opensearch.generic.Requests.builder()
+					.endpoint(indexName + "/_settings")
+					.method("PUT")
+					.json(settings.toString())
+					.build()
+			)
+		) {
+			Preconditions.checkState(
+				response.getStatus() == 200,
+				"Couldn't set refresh_interval on %s: HTTP %s",
+				indexName,
+				response.getStatus()
+			);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

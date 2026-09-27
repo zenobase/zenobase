@@ -7,6 +7,7 @@ import com.zenobase.commands.NonExistentUserException;
 import com.zenobase.queries.CommandQuery;
 import com.zenobase.queries.UserQuery;
 import com.zenobase.repositories.CommandRepository;
+import com.zenobase.repositories.EventRepository;
 import com.zenobase.repositories.IndexManager;
 import com.zenobase.repositories.UserRepository;
 import jakarta.inject.Inject;
@@ -28,6 +29,7 @@ public class CommandReplay {
 	private final String sourceHost;
 	private final CommandParserRegistry parsers;
 	private final CommandDispatcher dispatcher;
+	private final EventRepository targetEvents;
 	private final AtomicInteger count = new AtomicInteger();
 	private final AtomicInteger replayed = new AtomicInteger();
 	private final AtomicInteger failures = new AtomicInteger();
@@ -36,11 +38,13 @@ public class CommandReplay {
 	public CommandReplay(
 		@Named("opensearch.replay") String sourceHost,
 		CommandParserRegistry parsers,
-		CommandDispatcher dispatcher
+		CommandDispatcher dispatcher,
+		EventRepository targetEvents
 	) {
 		this.sourceHost = sourceHost;
 		this.parsers = parsers;
 		this.dispatcher = dispatcher;
+		this.targetEvents = targetEvents;
 	}
 
 	public void replay() {
@@ -57,17 +61,22 @@ public class CommandReplay {
 		Set<String> identities = loadIdentities(indexManager);
 		logger.info("Replaying {} commands from {}...", repository.size(), sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
-		repository.find(new CommandQuery(), SearchOrder.asc(Command.TIMESTAMP, Command.ID), command -> {
-			if (failures.get() >= MAX_FAILURES) {
-				throw new IllegalStateException("Aborting replay after " + failures.get() + " failures");
-			}
-			if (!identities.contains(command.getPrincipal().id())) {
-				dispatcher.discard(command);
-			} else {
-				dispatchWithRetry(command);
-			}
-			count.incrementAndGet();
-		});
+		targetEvents.pauseRefresh();
+		try {
+			repository.find(new CommandQuery(), SearchOrder.asc(Command.TIMESTAMP, Command.ID), command -> {
+				if (failures.get() >= MAX_FAILURES) {
+					throw new IllegalStateException("Aborting replay after " + failures.get() + " failures");
+				}
+				if (!identities.contains(command.getPrincipal().id())) {
+					dispatcher.discard(command);
+				} else {
+					dispatchWithRetry(command);
+				}
+				count.incrementAndGet();
+			});
+		} finally {
+			targetEvents.resumeRefresh();
+		}
 		logger.warn(
 			"Replayed {} and discarded {} commands out of {} with {} failures in {} s",
 			replayed.get(),

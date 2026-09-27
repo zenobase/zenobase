@@ -51,6 +51,7 @@ public class CommandRebuild {
 	private final CredentialsRepository targetCredentials;
 	private final BucketRepository targetBuckets;
 	private final TaskRepository targetTasks;
+	private final EventRepository targetEvents;
 
 	@Inject
 	public CommandRebuild(
@@ -60,7 +61,8 @@ public class CommandRebuild {
 		UserRepository targetUsers,
 		CredentialsRepository targetCredentials,
 		BucketRepository targetBuckets,
-		TaskRepository targetTasks
+		TaskRepository targetTasks,
+		EventRepository targetEvents
 	) {
 		this.sourceHost = sourceHost;
 		this.parallelism = parallelism;
@@ -69,6 +71,7 @@ public class CommandRebuild {
 		this.targetCredentials = targetCredentials;
 		this.targetBuckets = targetBuckets;
 		this.targetTasks = targetTasks;
+		this.targetEvents = targetEvents;
 	}
 
 	public void rebuild() {
@@ -83,10 +86,15 @@ public class CommandRebuild {
 	void rebuild(IndexManager indexManager) {
 		logger.info("Rebuilding history from {}...", sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
-		rebuild(indexManager, targetUsers, "users", this::rebuildUsers);
-		rebuild(indexManager, targetCredentials, "credentials", this::rebuildCredentials);
-		rebuild(indexManager, targetBuckets, "buckets", this::rebuildBuckets);
-		rebuild(indexManager, targetTasks, "tasks", this::rebuildTasks);
+		targetEvents.pauseRefresh();
+		try {
+			rebuild(indexManager, targetUsers, "users", this::rebuildUsers);
+			rebuild(indexManager, targetCredentials, "credentials", this::rebuildCredentials);
+			rebuild(indexManager, targetBuckets, "buckets", this::rebuildBuckets);
+			rebuild(indexManager, targetTasks, "tasks", this::rebuildTasks);
+		} finally {
+			targetEvents.resumeRefresh();
+		}
 		logger.warn("Rebuilt history in {} s", timer.elapsed(TimeUnit.SECONDS));
 	}
 
