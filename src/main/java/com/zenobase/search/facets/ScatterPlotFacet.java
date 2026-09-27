@@ -54,7 +54,7 @@ public class ScatterPlotFacet extends Facet {
 	private final @Nullable DateTimeZone timezone;
 	private final int lag;
 
-	public ScatterPlotFacet(
+	private ScatterPlotFacet(
 		String id,
 		Series x,
 		Series y,

@@ -15,7 +15,7 @@ import org.scribe.model.Token;
 
 public class OAuthCredentials extends Credentials {
 
-	public static final OAuthTokenField TOKEN = new OAuthTokenField("token");
+	public static final Field<Token> TOKEN = new OAuthTokenField("token");
 	public static final TokenField SCOPE = new TokenField("scope", false);
 
 	public OAuthCredentials(ObjectNode node) {
