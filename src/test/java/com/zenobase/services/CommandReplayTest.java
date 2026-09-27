@@ -34,7 +34,7 @@ public class CommandReplayTest extends OpenSearchTestSupport {
 
 		UserRepository users = new UserRepository(getManager());
 		users.store(user);
-		new CommandReplay("", parsers, dispatcher).replay(getManager());
+		new CommandReplay("", parsers, dispatcher, getManager()).replay(getManager());
 
 		InOrder dispatchOrder = Mockito.inOrder(dispatcher);
 		for (Command command : commandsToReplay) {

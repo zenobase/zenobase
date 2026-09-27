@@ -1,5 +1,6 @@
 package com.zenobase.repositories;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -34,6 +35,7 @@ import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.bulk.BulkOperation;
 import org.opensearch.client.opensearch.core.bulk.BulkResponseItem;
 import org.opensearch.client.opensearch.core.search.Hit;
+import org.opensearch.client.opensearch.generic.Requests;
 
 public class Index {
 
@@ -94,13 +96,40 @@ public class Index {
 			client
 				.generic()
 				.execute(
-					org.opensearch.client.opensearch.generic.Requests.builder()
+					Requests.builder()
 						.endpoint(indexName + "/_mapping")
 						.method("PUT")
 						.json(json)
 						.build()
 				)
 				.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Sets the index-level {@code refresh_interval}, e.g. {@code "-1"} to suspend periodic refreshes during bulk
+	 * loads; {@code null} restores the default.
+	 */
+	public void setRefreshInterval(@Nullable String interval) {
+		ObjectNode settings = JsonNodeFactory.instance.objectNode();
+		settings.putObject("index").put("refresh_interval", interval);
+		try (
+			var response = client.generic().execute(
+				Requests.builder()
+					.endpoint(indexName + "/_settings")
+					.method("PUT")
+					.json(settings.toString())
+					.build()
+			)
+		) {
+			Preconditions.checkState(
+				response.getStatus() == 200,
+				"Couldn't set refresh_interval on %s: HTTP %s",
+				indexName,
+				response.getStatus()
+			);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

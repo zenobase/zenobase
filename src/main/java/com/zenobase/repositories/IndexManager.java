@@ -30,6 +30,8 @@ public class IndexManager implements Closeable {
 
 	private static final Logger logger = LoggerFactory.getLogger(IndexManager.class);
 
+	private static final String ALL_INDICES = "*,-.*";
+
 	private final OpenSearchClient client;
 	private final String snapshotRepository;
 
@@ -208,6 +210,21 @@ public class IndexManager implements Closeable {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * Suspends periodic refreshes of all (non-system) indices, to reduce segment and merge churn (and heap pressure)
+	 * during bulk loads. Writes, get-by-id and explicit refreshes still work, but searches won't see new documents
+	 * until {@link #resumeRefresh()}.
+	 */
+	public void pauseRefresh() {
+		getIndex(ALL_INDICES).setRefreshInterval("-1");
+	}
+
+	public void resumeRefresh() {
+		Index index = getIndex(ALL_INDICES);
+		index.setRefreshInterval(null);
+		index.refresh();
 	}
 
 	public void flushAll() {
