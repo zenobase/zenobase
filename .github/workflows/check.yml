@@ -20,7 +20,7 @@ jobs:
             contents: read
         services:
             opensearch:
-                image: opensearchproject/opensearch:3.5.0
+                image: opensearchproject/opensearch:3.7.0
                 ports:
                     - 9200:9200
                 env:
@@ -36,7 +36,7 @@ jobs:
         steps:
             - uses: actions/checkout@v7
 
-            - uses: actions/setup-java@v5
+            - uses: actions/setup-java@v6
               with:
                   distribution: temurin
                   java-version: 25
@@ -49,7 +49,7 @@ jobs:
               run: ./mvnw -B verify
 
             - name: Upload coverage to Codecov
-              uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+              uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   files: target/site/jacoco/jacoco.xml

@@ -6,12 +6,12 @@
         "typescript": "catalog:"
     },
     "dependencies": {
-        "@pulumi/aws": "^7.41.0",
+        "@pulumi/aws": "^7.48.0",
         "@pulumi/pulumi": "catalog:"
     },
-    "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee",
+    "packageManager": "pnpm@11.28.0+sha512.8ed239371de82244b6cccf9e2023c18ea8439961f2ec3fe898913b9f7ee2e76ca0a45717580aca3c7997c135f6d4f5de4524cbeee1a2ccac430c03d134e2a48c",
     "engines": {
-        "node": "24.19.0",
-        "pnpm": "11.20.0"
+        "node": "24.21.0",
+        "pnpm": "11.28.0"
     }
 }
