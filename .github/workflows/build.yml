@@ -41,7 +41,7 @@ jobs:
         steps:
             - uses: actions/checkout@v7
 
-            - uses: actions/setup-java@v5
+            - uses: actions/setup-java@v6
               with:
                   distribution: temurin
                   java-version: 25
@@ -54,7 +54,7 @@ jobs:
               run: ./mvnw -B verify
 
             - name: Upload coverage to Codecov
-              uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+              uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   files: target/site/jacoco/jacoco.xml
@@ -64,20 +64,20 @@ jobs:
               run: ./mvnw -B package -DskipTests
 
             - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+              uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
               with:
                   role-to-assume: ${{ vars.AWS_ROLE_ARN }}
                   aws-region: ${{ env.AWS_REGION }}
 
             - name: Login to ECR
               id: ecr-login
-              uses: aws-actions/amazon-ecr-login@b040164c4934333d597f3f9c67502ff28f814e9c # v2.1.6
+              uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2.1.7
 
             - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+              uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
             - name: Build and push image
-              uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+              uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
               with:
                   context: .
                   file: docker/Dockerfile
