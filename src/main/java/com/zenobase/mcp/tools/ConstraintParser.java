@@ -1,10 +1,10 @@
 package com.zenobase.mcp.tools;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.zenobase.mcp.McpException;
+import io.helidon.extensions.mcp.server.McpException;
+import io.helidon.extensions.mcp.server.McpParameters;
+import io.helidon.jsonrpc.core.JsonRpcError;
 import java.util.ArrayList;
 import java.util.List;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Translates the structured MCP tool constraint shape — a flat list of {@code {field, op, value}} objects, all
@@ -19,34 +19,34 @@ public final class ConstraintParser {
 	private ConstraintParser() {}
 
 	/**
-	 * Parses a JSON node carrying a constraints array and returns the corresponding list of expression strings.
-	 * The node may be {@code null} or missing, in which case an empty list is returned. Unknown ops raise an
-	 * {@link McpException} with {@link McpException#INVALID_PARAMS} so the LLM can self-correct.
+	 * Parses the {@code constraints} entry of an MCP tool's arguments and returns the corresponding list of expression
+	 * strings. Missing / null arguments map to an empty list. Unknown ops or malformed entries raise an
+	 * {@link McpException} with {@link JsonRpcError#INVALID_PARAMS} so the LLM can self-correct.
 	 */
-	public static List<String> parse(@Nullable JsonNode constraintsNode) {
+	public static List<String> parse(McpParameters constraints) {
 		List<String> expressions = new ArrayList<>();
-		if (constraintsNode == null || constraintsNode.isNull() || constraintsNode.isMissingNode()) {
+		if (constraints == null || constraints.isEmpty()) {
 			return expressions;
 		}
-		if (!constraintsNode.isArray()) {
-			throw new McpException(McpException.INVALID_PARAMS, "constraints must be an array");
+		List<McpParameters> entries;
+		try {
+			entries = constraints.asList().orElse(List.of());
+		} catch (IllegalStateException e) {
+			throw new McpException(JsonRpcError.INVALID_PARAMS, "constraints must be an array");
 		}
-		for (JsonNode entry : constraintsNode) {
-			if (!entry.isObject()) {
-				throw new McpException(McpException.INVALID_PARAMS, "each constraint must be an object");
-			}
-			String field = textRequired(entry, "field");
-			String op = textRequired(entry, "op");
-			JsonNode value = entry.get("value");
-			if (value == null || value.isNull()) {
-				throw new McpException(McpException.INVALID_PARAMS, "constraint missing 'value'");
+		for (McpParameters entry : entries) {
+			String field = requireString(entry, "field");
+			String op = requireString(entry, "op");
+			McpParameters value = entry.get("value");
+			if (value.isEmpty()) {
+				throw new McpException(JsonRpcError.INVALID_PARAMS, "constraint missing 'value'");
 			}
 			expressions.add(toExpression(field, op, value));
 		}
 		return expressions;
 	}
 
-	private static String toExpression(String field, String op, JsonNode value) {
+	private static String toExpression(String field, String op, McpParameters value) {
 		return switch (op) {
 			case "eq" -> field + ":" + scalar(value);
 			case "ne" -> "-" + field + ":" + scalar(value);
@@ -57,28 +57,45 @@ public final class ConstraintParser {
 			case "in" -> field + ":" + joinForIn(value);
 			case "contains" -> field + ":*" + scalar(value) + "*";
 			default -> throw new McpException(
-				McpException.INVALID_PARAMS,
+				JsonRpcError.INVALID_PARAMS,
 				"Unknown op: " + op + " (expected eq, ne, gt, gte, lt, lte, in, contains)"
 			);
 		};
 	}
 
-	private static String scalar(JsonNode value) {
-		if (value.isTextual()) {
-			return value.asText();
+	private static String scalar(McpParameters value) {
+		if (value.isString()) {
+			return value.asString().orElseThrow();
 		}
-		if (value.isNumber() || value.isBoolean()) {
-			return value.asText();
+		if (value.isNumber()) {
+			double d = value.asDouble().orElseThrow();
+			if (d == Math.floor(d) && !Double.isInfinite(d) && d >= Long.MIN_VALUE && d <= Long.MAX_VALUE) {
+				return Long.toString((long) d);
+			}
+			return Double.toString(d);
 		}
-		throw new McpException(McpException.INVALID_PARAMS, "constraint value must be a scalar (string/number/bool)");
+		try {
+			return Boolean.toString(value.asBoolean().orElseThrow());
+		} catch (IllegalStateException e) {
+			throw new McpException(
+				JsonRpcError.INVALID_PARAMS,
+				"constraint value must be a scalar (string/number/bool)"
+			);
+		}
 	}
 
-	private static String joinForIn(JsonNode value) {
-		if (!value.isArray() || value.isEmpty()) {
-			throw new McpException(McpException.INVALID_PARAMS, "'in' op requires a non-empty array value");
+	private static String joinForIn(McpParameters value) {
+		List<McpParameters> items;
+		try {
+			items = value.asList().orElse(List.of());
+		} catch (IllegalStateException e) {
+			throw new McpException(JsonRpcError.INVALID_PARAMS, "'in' op requires a non-empty array value");
+		}
+		if (items.isEmpty()) {
+			throw new McpException(JsonRpcError.INVALID_PARAMS, "'in' op requires a non-empty array value");
 		}
 		StringBuilder sb = new StringBuilder();
-		for (JsonNode element : value) {
+		for (McpParameters element : items) {
 			if (sb.length() > 0) {
 				sb.append(" OR ");
 			}
@@ -87,11 +104,19 @@ public final class ConstraintParser {
 		return sb.toString();
 	}
 
-	private static String textRequired(JsonNode entry, String key) {
-		JsonNode node = entry.get(key);
-		if (node == null || !node.isTextual() || node.asText().isBlank()) {
-			throw new McpException(McpException.INVALID_PARAMS, "constraint missing '" + key + "'");
+	private static String requireString(McpParameters params, String key) {
+		String value;
+		try {
+			value = params
+				.get(key)
+				.asString()
+				.orElseThrow(() -> new McpException(JsonRpcError.INVALID_PARAMS, "constraint missing '" + key + "'"));
+		} catch (IllegalStateException e) {
+			throw new McpException(JsonRpcError.INVALID_PARAMS, "constraint '" + key + "' must be a string");
 		}
-		return node.asText();
+		if (value.isBlank()) {
+			throw new McpException(JsonRpcError.INVALID_PARAMS, "constraint missing '" + key + "'");
+		}
+		return value;
 	}
 }

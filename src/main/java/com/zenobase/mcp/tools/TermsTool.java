@@ -1,12 +1,12 @@
 package com.zenobase.mcp.tools;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.mcp.ConsentEnforcer;
-import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.EventRepository;
 import com.zenobase.search.facets.CountFacet;
+import io.helidon.extensions.mcp.server.McpToolRequest;
+import io.helidon.extensions.mcp.server.McpToolResult;
 import jakarta.inject.Inject;
+import jakarta.json.JsonObject;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +32,10 @@ public class TermsTool extends FacetToolSupport {
 	}
 
 	@Override
-	public ObjectNode inputSchema() {
-		Map<String, ObjectNode> extra = new LinkedHashMap<>();
-		extra.put("field", ToolSchemas.stringProperty("Field to group by."));
-		extra.put(
+	public String schema() {
+		Map<String, JsonObject> extras = new LinkedHashMap<>();
+		extras.put("field", ToolSchemas.stringProperty("Field to group by."));
+		extras.put(
 			"limit",
 			ToolSchemas.integerProperty(
 				"Max distinct values to return (1-" + MAX_LIMIT + ", default 10).",
@@ -43,20 +43,20 @@ public class TermsTool extends FacetToolSupport {
 				MAX_LIMIT
 			)
 		);
-		return ToolSchemas.bucketIdAnd(extra, "field");
+		return ToolSchemas.bucketIdAnd(extras, "field");
 	}
 
 	@Override
-	public JsonNode call(Authorization auth, JsonNode args) {
-		String bucketId = ToolArgs.requireString(args, "bucket_id");
-		String field = ToolArgs.requireString(args, "field");
-		int limit = Math.max(1, Math.min(MAX_LIMIT, ToolArgs.optInt(args, "limit", 10)));
-		List<String> constraints = ConstraintParser.parse(args != null ? args.get("constraints") : null);
+	public McpToolResult tool(McpToolRequest request) {
+		String bucketId = requireString(request, "bucket_id");
+		String field = requireString(request, "field");
+		int limit = Math.max(1, Math.min(MAX_LIMIT, optInt(request, "limit", 10)));
+		List<String> constraints = ConstraintParser.parse(request.arguments().get("constraints"));
 		Map<String, String> options = new LinkedHashMap<>();
 		options.put("id", "terms");
 		options.put("type", CountFacet.TYPE);
 		options.put("field", field);
 		options.put("limit", Integer.toString(limit));
-		return runFacet(auth, bucketId, constraints, options);
+		return runFacet(request, bucketId, constraints, options);
 	}
 }
