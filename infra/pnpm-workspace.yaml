@@ -7,3 +7,5 @@ catalog:
 allowBuilds:
   '@pulumi/aws-native': false
   protobufjs: false
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
