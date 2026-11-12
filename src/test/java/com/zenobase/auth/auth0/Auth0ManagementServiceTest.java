@@ -258,6 +258,14 @@ public class Auth0ManagementServiceTest {
 		}
 
 		@Test
+		public void returnsNullWhenNoMetadataDocumentClientMatches() {
+			when(client.clients()).thenReturn(clientsClient);
+			when(clientsClient.list(any(ListClientsRequestParameters.class))).thenReturn(page(List.of()));
+
+			assertThat(service.getApplicationName(new Identity("https://example.com/client.json"))).isNull();
+		}
+
+		@Test
 		public void returnsNullOnException() {
 			when(client.clients()).thenReturn(clientsClient);
 			when(clientsClient.get(anyString())).thenThrow(new RuntimeException("Auth0 down"));
