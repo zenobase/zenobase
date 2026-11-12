@@ -198,7 +198,7 @@ public class BucketController extends ControllerSupport {
 			sendNotFound(res);
 			return;
 		}
-		if (!bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
+		if (!bucket.hasRole(auth, Role.OWNER) && !isFirstPartySuperuser(users, auth)) {
 			sendForbidden(res);
 			return;
 		}

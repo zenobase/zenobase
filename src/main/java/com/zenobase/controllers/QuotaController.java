@@ -63,7 +63,7 @@ public class QuotaController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
-		if (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal())) {
+		if (!isFirstPartySuperuser(users, auth)) {
 			sendForbidden(res);
 			return;
 		}

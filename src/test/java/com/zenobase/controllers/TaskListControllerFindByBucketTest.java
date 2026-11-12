@@ -100,6 +100,17 @@ public class TaskListControllerFindByBucketTest extends TaskListControllerTestSu
 		}
 	}
 
+	@Test
+	public void testScopedSuperuser() {
+		Identity superuser = new Identity();
+		when(auth.current(any())).thenReturn(new Authorization(superuser, null, "read"));
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(users.isSuperuser(superuser)).thenReturn(true);
+		try (Http1ClientResponse result = call(bucket.getId(), 0, 10)) {
+			assertThat(result).hasStatus(403);
+		}
+	}
+
 	private Http1ClientResponse call(String bucketId, int offset, int limit) {
 		return client
 			.get("/buckets/" + bucketId + "/tasks/")

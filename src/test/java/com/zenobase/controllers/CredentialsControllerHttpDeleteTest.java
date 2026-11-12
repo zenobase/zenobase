@@ -67,6 +67,18 @@ public class CredentialsControllerHttpDeleteTest extends CredentialsControllerTe
 		}
 	}
 
+	@Test
+	public void testAsScopedSuperuser() {
+		Identity superuser = new Identity();
+		when(auth.current(any())).thenReturn(new Authorization(superuser, null, "read"));
+		when(repository.find(credentials.getId())).thenReturn(credentials.copy());
+		when(users.isSuperuser(superuser)).thenReturn(true);
+		try (Http1ClientResponse result = call(credentials.getId())) {
+			assertThat(result).hasStatus(403);
+			verifyNoInteractions(dispatcher);
+		}
+	}
+
 	private Http1ClientResponse call(String credentialsId) {
 		return client.delete("/credentials/" + credentialsId).request();
 	}

@@ -127,7 +127,7 @@ public class UserController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
-		if (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal())) {
+		if (!isFirstPartySuperuser(users, auth)) {
 			sendForbidden(res);
 			return;
 		}
@@ -150,7 +150,7 @@ public class UserController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
-		if (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal())) {
+		if (!isFirstPartySuperuser(users, auth)) {
 			sendForbidden(res);
 			return;
 		}
