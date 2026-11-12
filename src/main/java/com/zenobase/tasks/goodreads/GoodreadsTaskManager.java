@@ -106,9 +106,15 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 			"Expected application/xml but got <%s>",
 			response.getHeader("Content-Type")
 		);
+		return parseXml(getBody(response));
+	}
+
+	static Document parseXml(String xml) {
 		try {
-			InputSource source = new InputSource(new StringReader(getBody(response)));
-			return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(source);
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			InputSource source = new InputSource(new StringReader(xml));
+			return factory.newDocumentBuilder().parse(source);
 		} catch (SAXException | IOException | ParserConfigurationException e) {
 			throw new RuntimeException("Couldn't parse response", e);
 		}

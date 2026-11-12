@@ -70,6 +70,8 @@ public class AuthorizationContext {
 
 	private @Nullable Authorization validateJwt(String token) {
 		try {
+			// Unverified decode only to pick the validator by issuer; the validator verifies the signature below.
+			// nosemgrep: java.java-jwt.security.audit.jwt-decode-without-verify.java-jwt-decode-without-verify
 			DecodedJWT decoded = JWT.decode(token);
 			String issuer = decoded.getIssuer();
 			TokenValidator validator = validatorsByIssuer.get(issuer);
