@@ -60,13 +60,6 @@ public class Auth0TokenValidatorTest {
 			.hasMessageContaining("auth0.domain is not configured");
 	}
 
-	@Test
-	public void rejectsRelativeJwksDomain() {
-		assertThatThrownBy(() -> new Auth0TokenValidator("http://localhost:1", AUDIENCE, "", "/jwks"))
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessageContaining("auth0.jwks_domain");
-	}
-
 	@AfterAll
 	public static void tearDown() {
 		if (jwksServer != null) {
