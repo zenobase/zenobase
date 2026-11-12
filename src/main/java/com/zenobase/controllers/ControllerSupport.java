@@ -6,6 +6,7 @@ import com.google.common.base.MoreObjects;
 import com.zenobase.auth.UserStateCache;
 import com.zenobase.json.Nodes;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.repositories.UserRepository;
 import io.helidon.http.HeaderNames;
 import io.helidon.http.Status;
 import io.helidon.webserver.http.ServerRequest;
@@ -26,6 +27,11 @@ public abstract class ControllerSupport implements CustomHeaders {
 
 	protected @Nullable Authorization getCurrentAuthorization(ServerRequest req) {
 		return authContext.current(req);
+	}
+
+	/** Superusers only count when authenticated first-party; scoped (external) tokens never do. */
+	protected static boolean isFirstPartySuperuser(UserRepository users, Authorization auth) {
+		return auth.getScope() == null && users.isSuperuser(auth.getPrincipal());
 	}
 
 	protected boolean sendForbiddenIfSuspended(Authorization auth, ServerResponse res) {

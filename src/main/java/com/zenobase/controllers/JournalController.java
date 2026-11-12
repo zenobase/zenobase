@@ -108,7 +108,7 @@ public class JournalController extends ControllerSupport {
 			sendNotFound(res, "command not found");
 			return;
 		}
-		if (!command.isPermitted(auth) && (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal()))) {
+		if (!command.isPermitted(auth) && !isFirstPartySuperuser(users, auth)) {
 			sendForbidden(res);
 			return;
 		}
