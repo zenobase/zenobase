@@ -2,8 +2,8 @@
 	"name": "zenobase",
 	"private": true,
 	"devDependencies": {
-		"prettier": "3.9.9",
-		"prettier-plugin-java": "2.10.4"
+		"prettier": "3.9.10",
+		"prettier-plugin-java": "2.11.0"
 	},
 	"packageManager": "pnpm@11.28.0+sha512.8ed239371de82244b6cccf9e2023c18ea8439961f2ec3fe898913b9f7ee2e76ca0a45717580aca3c7997c135f6d4f5de4524cbeee1a2ccac430c03d134e2a48c",
 	"engines": {
