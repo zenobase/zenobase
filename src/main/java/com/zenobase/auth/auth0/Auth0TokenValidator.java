@@ -50,14 +50,8 @@ public class Auth0TokenValidator {
 		@Named("auth0.external_audience") String externalAudience,
 		@Named("auth0.jwks_domain") String jwksDomain
 	) {
-		Preconditions.checkState(
-			!domain.isBlank(),
-			"auth0.domain is not configured (see conf/application-local.yaml.template)"
-		);
-		Preconditions.checkState(
-			!internalAudience.isBlank(),
-			"auth0.audience is not configured (see conf/application-local.yaml.template)"
-		);
+		Preconditions.checkState(!domain.isBlank(), "auth0.domain is not configured");
+		Preconditions.checkState(!internalAudience.isBlank(), "auth0.audience is not configured");
 		String jwksUrl = (jwksDomain.isBlank() ? domain : jwksDomain) + "/.well-known/jwks.json";
 		JwkProvider jwkProvider;
 		try {
