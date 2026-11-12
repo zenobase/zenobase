@@ -3,7 +3,6 @@ package com.zenobase.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.zenobase.auth.IdentityProvider;
 import com.zenobase.commands.UpdateExternalClientGrantsCommand;
 import com.zenobase.common.PartialList;
 import com.zenobase.json.Nodes;
@@ -42,7 +41,6 @@ public class ExternalClientController extends ControllerSupport {
 	private final ExternalClientRepository clients;
 	private final BucketRepository buckets;
 	private final UserRepository users;
-	private final IdentityProvider identityProvider;
 
 	@Inject
 	public ExternalClientController(
@@ -50,15 +48,13 @@ public class ExternalClientController extends ControllerSupport {
 		CommandDispatcher dispatcher,
 		ExternalClientRepository clients,
 		BucketRepository buckets,
-		UserRepository users,
-		IdentityProvider identityProvider
+		UserRepository users
 	) {
 		super(auth);
 		this.dispatcher = dispatcher;
 		this.clients = clients;
 		this.buckets = buckets;
 		this.users = users;
-		this.identityProvider = identityProvider;
 	}
 
 	/**
@@ -165,11 +161,6 @@ public class ExternalClientController extends ControllerSupport {
 			return;
 		}
 		Identity client = new Identity(req.path().pathParameters().get("clientId"));
-		// Existence check up front. Without this, an authenticated user could pass any Auth0 client_id in the URL
-		// (e.g. the SPA's or the M2M client_id) and trigger {@link IdentityProvider#deleteApplication} below, since
-		// the safety query would correctly see zero references for a first-party client_id (it never gets recorded
-		// in external_clients) and we'd happily delete a production Auth0 Application. Returning 404 here keeps the
-		// behavior in line with {@link #put}.
 		if (clients.find(principal, client) == null) {
 			sendNotFound(res, "connected app not found");
 			return;
@@ -179,14 +170,8 @@ public class ExternalClientController extends ControllerSupport {
 		}
 		// Snapshot to empty (audited) and then delete the row.
 		dispatcher.dispatch(new UpdateExternalClientGrantsCommand(auth.getPrincipal(), principal, client, List.of()));
+		// The Auth0 Application is left alone: it may be shared by other users (CIMD registers one per client URL).
 		clients.delete(principal, client);
-		// Delete the corresponding Auth0 Application — but only if no other user still has a row pointing at the same
-		// client_id. MCP DCR usually mints a fresh app per installation so this is almost always the last reference,
-		// but the (user, client) composite key permits sharing, so we guard against breaking another user's integration.
-		// Best-effort: a failed Auth0 call must not fail the revoke (matches the deleteUser pattern).
-		if (clients.find(new ExternalClientQuery().clientEqualTo(client), 0, 1).getTotal() == 0) {
-			identityProvider.deleteApplication(client);
-		}
 		sendNoContent(res);
 	}
 

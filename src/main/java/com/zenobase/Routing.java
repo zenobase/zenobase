@@ -179,8 +179,8 @@ class Routing {
 		var externalClients = injector.getInstance(ExternalClientController.class);
 		routing.get("/external-clients/", externalClients::listAll);
 		routing.get("/users/{userId}/external-clients/", externalClients::list);
-		routing.put("/users/{userId}/external-clients/{clientId}", externalClients::put);
-		routing.delete("/users/{userId}/external-clients/{clientId}", externalClients::revoke);
+		routing.put("/users/{userId}/external-clients/{+clientId}", externalClients::put);
+		routing.delete("/users/{userId}/external-clients/{+clientId}", externalClients::revoke);
 
 		// MCP
 		var mcp = injector.getInstance(McpController.class);

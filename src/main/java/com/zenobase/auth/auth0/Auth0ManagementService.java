@@ -12,7 +12,6 @@ import jakarta.inject.Named;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,43 +155,19 @@ public class Auth0ManagementService implements IdentityProvider {
 	@Override
 	public @Nullable String getApplicationName(Identity application) {
 		try {
+			if (application.id().startsWith("https://")) {
+				// CIMD client_ids are URLs; Auth0 stores them as external_client_id on an Application with its own id.
+				var params = ListClientsRequestParameters.builder()
+					.externalClientId(application.id())
+					.fields("name")
+					.build();
+				var iter = client.clients().list(params).iterator();
+				return iter.hasNext() ? iter.next().getName().orElse(null) : null;
+			}
 			return client.clients().get(application.id()).getName().orElse(null);
 		} catch (Exception e) {
 			logger.warn("Failed to look up Auth0 application name for {}", application.id(), e);
 			return null;
 		}
-	}
-
-	@Override
-	public void deleteApplication(Identity application) {
-		// Defense-in-depth against {@link com.zenobase.controllers.ExternalClientController#revoke} or any future
-		// caller reaching us with a first-party {@code client_id} (the SPA, the M2M client itself, manually-registered
-		// partner apps). Auth0 sets {@code is_first_party=false} on DCR-registered Applications and {@code true} on
-		// manually-registered ones, so we GET the Application and refuse unless the flag is explicitly false. Fail
-		// safe if the GET errors or the flag is absent — better a logged refusal than a nuked production app.
-		try {
-			GetClientResponseContent response = client.clients().get(application.id());
-			if (!isExternalApplication(response.getIsFirstParty())) {
-				logger.error(
-					"Refusing to delete Auth0 application {} (is_first_party={})",
-					application.id(),
-					response.getIsFirstParty().orElse(null)
-				);
-				return;
-			}
-			client.clients().delete(application.id());
-			logger.info("Deleted Auth0 application {}", application.id());
-		} catch (Exception e) {
-			logger.error("Failed to delete Auth0 application {}", application.id(), e);
-		}
-	}
-
-	/**
-	 * Returns true only when {@code is_first_party} is explicitly {@code false} — an absent flag is treated as
-	 * first-party so an SDK regression or unexpected response shape can't lead us to delete a production Application.
-	 * Behavior is covered via {@link #deleteApplication}.
-	 */
-	private static boolean isExternalApplication(Optional<Boolean> firstPartyFlag) {
-		return firstPartyFlag.equals(Optional.of(false));
 	}
 }

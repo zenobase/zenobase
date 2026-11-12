@@ -14,8 +14,6 @@ public interface IdentityProvider {
 
 	void deletePasskey(User user, String passkeyId);
 
-	void deleteApplication(Identity client);
-
 	@Nullable
 	String getApplicationName(Identity client);
 }
