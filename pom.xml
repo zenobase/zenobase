@@ -34,6 +34,16 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- Jackson 3 is pulled in transitively by logstash-logback-encoder 9.0 (jackson-core 3.0.1).
+                 Override for CWE-770 in UTF8DataInputJsonParser (SNYK-JAVA-TOOLSJACKSONCORE-20059180), fixed in 3.2.3.
+                 Remove once logstash-logback-encoder ships jackson-core >= 3.2.3. -->
+            <dependency>
+                <groupId>tools.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>3.2.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
