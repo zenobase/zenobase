@@ -29,7 +29,6 @@ public abstract class ControllerSupport implements CustomHeaders {
 		return authContext.current(req);
 	}
 
-	/** Superusers only count when authenticated first-party; scoped (external) tokens never do. */
 	protected static boolean isFirstPartySuperuser(UserRepository users, Authorization auth) {
 		return auth.getScope() == null && users.isSuperuser(auth.getPrincipal());
 	}
