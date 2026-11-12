@@ -8,6 +8,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.RSAKeyProvider;
+import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.net.URI;
@@ -49,7 +50,9 @@ public class Auth0TokenValidator {
 		@Named("auth0.external_audience") String externalAudience,
 		@Named("auth0.jwks_domain") String jwksDomain
 	) {
-		String jwksUrl = (jwksDomain.isEmpty() ? domain : jwksDomain) + "/.well-known/jwks.json";
+		Preconditions.checkState(!domain.isBlank(), "auth0.domain is not configured");
+		Preconditions.checkState(!internalAudience.isBlank(), "auth0.audience is not configured");
+		String jwksUrl = (jwksDomain.isBlank() ? domain : jwksDomain) + "/.well-known/jwks.json";
 		JwkProvider jwkProvider;
 		try {
 			jwkProvider = new JwkProviderBuilder(URI.create(jwksUrl).toURL())

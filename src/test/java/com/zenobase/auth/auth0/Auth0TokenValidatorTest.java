@@ -1,6 +1,7 @@
 package com.zenobase.auth.auth0;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -50,6 +51,13 @@ public class Auth0TokenValidatorTest {
 
 		String domain = "http://localhost:" + jwksPort;
 		validator = new Auth0TokenValidator(domain, AUDIENCE, EXTERNAL_AUDIENCE, "");
+	}
+
+	@Test
+	public void rejectsBlankDomain() {
+		assertThatThrownBy(() -> new Auth0TokenValidator("", AUDIENCE, "", ""))
+			.isInstanceOf(IllegalStateException.class)
+			.hasMessageContaining("auth0.domain is not configured");
 	}
 
 	@AfterAll

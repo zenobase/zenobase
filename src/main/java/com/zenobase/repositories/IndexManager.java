@@ -42,6 +42,10 @@ public class IndexManager implements Closeable {
 		@Named("aws.region") String snapshotRegion,
 		@Named("opensearch.snapshot_role_arn") String snapshotRoleArn
 	) {
+		Preconditions.checkState(
+			snapshotBucket.isEmpty() || !snapshotRegion.isBlank(),
+			"aws.region is required when opensearch.snapshot.bucket is set"
+		);
 		client = clientFactory.createClient();
 		var cluster = new Cluster(client);
 		while (!cluster.isReady()) {
