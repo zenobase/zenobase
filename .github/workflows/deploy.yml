@@ -20,7 +20,7 @@ jobs:
         steps:
             - uses: actions/checkout@v7
 
-            - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+            - uses: aws-actions/configure-aws-credentials@v6.3.0
               with:
                   role-to-assume: ${{ vars.AWS_ROLE_ARN }}
                   aws-region: ${{ env.AWS_REGION }}
@@ -39,7 +39,7 @@ jobs:
                       exit 1
                   fi
 
-            - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+            - uses: pnpm/action-setup@v6.1.1
               with:
                   package_json_file: infra/package.json
 
@@ -61,7 +61,7 @@ jobs:
                   restore-keys: |
                       pulumi-plugins-${{ runner.os }}-
 
-            - uses: pulumi/actions@96c7761824268174e0d2a4e8c7d75671eebd24a7 # v7.1.0
+            - uses: pulumi/actions@v7.1.0
               env:
                   PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
               with:
