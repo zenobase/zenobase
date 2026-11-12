@@ -4,6 +4,7 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+import com.zenobase.auth.auth0.Auth0TokenAuthorizer;
 import com.zenobase.commands.Command;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
@@ -32,6 +33,17 @@ public class CredentialsListControllerHttpPostTest extends CredentialsListContro
 			assertThat(result).hasStatus(201);
 			assertThat(result).hasHeader("Location", "/credentials/" + credentials.getId());
 			assertThat(result).hasHeader(COMMAND_ID, commandId);
+		}
+	}
+
+	@Test
+	public void testExternalTokenForbidden() {
+		when(auth.current(any())).thenReturn(
+			new Authorization(user.asIdentity(), null, Auth0TokenAuthorizer.EXTERNAL_SCOPE)
+		);
+		try (Http1ClientResponse result = call(form)) {
+			assertThat(result).hasStatus(403);
+			verifyNoInteractions(dispatcher);
 		}
 	}
 
