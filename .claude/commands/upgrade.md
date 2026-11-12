@@ -24,13 +24,20 @@ decisions on any major-version bumps, follow-up notes.
 ./policy --policy-pack-config ./policy/config.json` from `infra/`) and triage
   any new findings — new pack versions add rules, and the pack is mandatory so
   new violations block `./deploy.sh`
-- **GitHub Actions** in `.github/workflows/`
+- **GitHub Actions** in `.github/workflows/` — third-party actions use exact
+  versions, GitHub-provided ones (`actions/*`) use major versions only. After
+  editing refs, run `gh actions-lock --no-narrow` (never without `--no-narrow`:
+  it rewrites refs) and `gh actions-lock --verify`, and commit `actions.lock`
+  with the workflow change. `gh` needs network access to GitHub, so run it
+  outside the sandbox if blocked. The lockfile doesn't cover container images
+  (see the OpenSearch service below).
 - **Java version** — when a new LTS is available, update `maven.compiler.source`
   in `pom.xml`, the `eclipse-temurin` tag in `docker/Dockerfile`, and
-  `java-version` in the workflow files together
+  `java-version` in the workflow files together (then re-run
+  `gh actions-lock --no-narrow`)
 - **Docker base image patch** — patch-level `eclipse-temurin` bumps (same Java
   major); also keep the OpenSearch image in `OpenSearchTestSupport.java` and
   the CI service definitions in sync with the `opensearch-java` client version
   in `pom.xml`
 - **Node.js / pnpm** — `.nvmrc`, the `engines` field in `package.json`, and
-  GitHub Actions
+  GitHub Actions (then re-run `gh actions-lock --no-narrow`)
