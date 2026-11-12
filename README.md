@@ -5,7 +5,7 @@ Java 25 / Helidon SE backend for [zenobase/zenobase-web](https://github.com/zeno
 ## Getting Started
 
 1. Install Java 25
-2. Install Node.js (see `.nvmrc`) with pnpm via Corepack (`corepack enable`)
+2. Install Node.js (see `.nvmrc`) and pnpm (`npm install -g pnpm`; the version is pinned in `package.json`)
 3. Run `pnpm install` to install Prettier
 4. Copy `conf/application-local.yaml.template` to `conf/application-local.yaml`, and optionally set API keys for third-party integrations
 5. `./run.sh` builds and starts a backend container on http://localhost:9000, including OpenSearch and localauth0 containers

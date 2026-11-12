@@ -33,7 +33,7 @@ The following AWS resources are shared with the frontend, and not managed by Pul
     rm session-manager-plugin.pkg
     ```
 - Pulumi (`brew install pulumi`) with a Pulumi Cloud account
-- Node.js (see `../.nvmrc`) with pnpm via Corepack (`corepack enable`)
+- Node.js (see `../.nvmrc`) and pnpm (`npm install -g pnpm`; the version is pinned in `package.json`)
 
 ## AWS: GitHub OIDC Identity Provider
 
