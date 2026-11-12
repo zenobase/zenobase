@@ -40,7 +40,7 @@ class StationsResult {
 
 	private static Device parseDevice(JsonNode node) {
 		String id = node.path("_id").textValue();
-		String label = node.path("module_name").textValue();
+		String label = getLabel(node, id);
 		DateTime created = getTimestamp(node.path("date_setup"), DateTimeZone.UTC);
 		DateTime updated = getTimestamp(
 			node.path("last_status_store"),
@@ -53,7 +53,7 @@ class StationsResult {
 
 	private static Device parseModule(Device device, JsonNode node) {
 		String moduleId = node.path("_id").textValue();
-		String moduleLabel = node.path("module_name").textValue();
+		String moduleLabel = getLabel(node, moduleId);
 		List<String> types = parseTypes(node.path("data_type"));
 		return new Device(
 			device.getId(),
@@ -64,6 +64,11 @@ class StationsResult {
 			device.getLocation(),
 			types
 		);
+	}
+
+	private static String getLabel(JsonNode node, String id) {
+		String label = node.path("module_name").textValue();
+		return label != null ? label : id; // modules are not guaranteed to be named
 	}
 
 	private static DateTimeZone getTimezone(JsonNode node) {

@@ -2,6 +2,7 @@ package com.zenobase.tasks.netatmo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
 import com.zenobase.models.Location;
 import com.zenobase.tasks.ResultTestSupport;
@@ -47,6 +48,16 @@ public class StationsResultTest extends ResultTestSupport {
 		assertThat(dev1.supports("Temperature")).as("supports temperature").isTrue();
 		assertThat(dev1.supports("Noise")).as("supports temperature").isFalse();
 		assertThat(dev1.supports("Rain")).as("supports rain").isFalse();
+	}
+
+	@Test
+	public void testUnnamedModule() {
+		ObjectNode node = readObject("StationsResultTest.json");
+		ObjectNode module = (ObjectNode) node.path("body").path("devices").path(0).path("modules").path(0);
+		module.remove("module_name");
+		Device device = Iterables.get(new StationsResult(node, true).getDevices(), 1);
+		assertThat(device.getModuleId()).as("module id").isEqualTo("02:00:00:00:7b:a2");
+		assertThat(device.getLabel()).as("label").isEqualTo("02:00:00:00:7b:a2");
 	}
 
 	@Test
