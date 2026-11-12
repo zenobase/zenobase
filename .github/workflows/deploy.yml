@@ -39,7 +39,7 @@ jobs:
                       exit 1
                   fi
 
-            - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+            - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
               with:
                   package_json_file: infra/package.json
 
@@ -61,7 +61,7 @@ jobs:
                   restore-keys: |
                       pulumi-plugins-${{ runner.os }}-
 
-            - uses: pulumi/actions@8e5e406f4007fca908480587cb9893c07090f58d # v7.0.0
+            - uses: pulumi/actions@96c7761824268174e0d2a4e8c7d75671eebd24a7 # v7.1.0
               env:
                   PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
               with:

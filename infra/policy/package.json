@@ -2,10 +2,10 @@
     "name": "zenobase-compliance-policies",
     "version": "0.0.1",
     "main": "index.ts",
-    "packageManager": "pnpm@11.28.0+sha512.8ed239371de82244b6cccf9e2023c18ea8439961f2ec3fe898913b9f7ee2e76ca0a45717580aca3c7997c135f6d4f5de4524cbeee1a2ccac430c03d134e2a48c",
+    "packageManager": "pnpm@11.28.11+sha512.740184d10f81f5d5b165be88560ee7ba62406c4134896abc27a580109eec2f47c1e41d91251c944c2cababcb1c22461799ebb72de2ec625af2030b0e36c735a3",
     "engines": {
-        "node": "24.21.0",
-        "pnpm": "11.28.0"
+        "node": "26.13.1",
+        "pnpm": "11.28.11"
     },
     "files": [
         "index.ts",

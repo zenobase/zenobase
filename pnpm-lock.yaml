@@ -8,25 +8,25 @@ importers:
     .:
         devDependencies:
             prettier:
-                specifier: 3.9.9
-                version: 3.9.9
+                specifier: 3.9.10
+                version: 3.9.10
             prettier-plugin-java:
-                specifier: 2.10.4
-                version: 2.10.4(prettier@3.9.9)
+                specifier: 2.11.0
+                version: 2.11.0(prettier@3.9.10)
 
 packages:
-    prettier-plugin-java@2.10.4:
+    prettier-plugin-java@2.11.0:
         resolution:
             {
-                integrity: sha512-Hinkucn49lx848MnWEktfGozLPp9dMYtdKPG+Z3pridBv71PJIVibe4jp0Lzb+rcA3eMZfU5+oWtJoI2oQ2XTg==,
+                integrity: sha512-pLwm2wHvVvW5eVVLf1cq2orY2ATaIj5ngN8hJ5ZdXYzUHzxrfaZkk2xmu8Mz/duBXAc2xT/cUH5+dK414HQSTw==,
             }
         peerDependencies:
             prettier: ^3.0.0
 
-    prettier@3.9.9:
+    prettier@3.9.10:
         resolution:
             {
-                integrity: sha512-Z/CJHIkdujO/OtN7nXUii0Rf3VT5SRuhjBA82Xvu2XhBUgX3nhP67T0LHceBdQLex7OOFGTox+Q5Yg8Jk2Qivg==,
+                integrity: sha512-skGHTH1Yb9QvaTC4hWnRTzEYtCpApF0UMBPz+t/0ZPzP8ihefo/btKd+QA7pUE0fEwA1SbS/NmhyEcstdXOIdA==,
             }
         engines: { node: ">=14" }
         hasBin: true
@@ -38,11 +38,11 @@ packages:
             }
 
 snapshots:
-    prettier-plugin-java@2.10.4(prettier@3.9.9):
+    prettier-plugin-java@2.11.0(prettier@3.9.10):
         dependencies:
-            prettier: 3.9.9
+            prettier: 3.9.10
             web-tree-sitter: 0.27.0
 
-    prettier@3.9.9: {}
+    prettier@3.9.10: {}
 
     web-tree-sitter@0.27.0: {}
