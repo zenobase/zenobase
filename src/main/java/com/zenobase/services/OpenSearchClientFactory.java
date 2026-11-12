@@ -1,5 +1,6 @@
 package com.zenobase.services;
 
+import com.google.common.base.Preconditions;
 import com.zenobase.common.ConfigChecks;
 import com.zenobase.json.Nodes;
 import jakarta.inject.Inject;
@@ -29,7 +30,11 @@ public class OpenSearchClientFactory implements ClientFactory {
 	@Inject
 	public OpenSearchClientFactory(@Named("opensearch.host") String host, @Named("aws.region") String region) {
 		this.host = ConfigChecks.requireHttpUrl("opensearch.host", host);
-		this.region = host.startsWith("https") ? ConfigChecks.requireNonBlank("aws.region", region) : region;
+		this.region = region;
+		Preconditions.checkState(
+			!host.startsWith("https") || !region.isBlank(),
+			"aws.region is required when opensearch.host is https"
+		);
 	}
 
 	@Override

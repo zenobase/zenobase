@@ -8,6 +8,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.RSAKeyProvider;
+import com.google.common.base.Preconditions;
 import com.zenobase.common.ConfigChecks;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -50,8 +51,14 @@ public class Auth0TokenValidator {
 		@Named("auth0.external_audience") String externalAudience,
 		@Named("auth0.jwks_domain") String jwksDomain
 	) {
-		ConfigChecks.requireNonBlank("auth0.domain", domain);
-		ConfigChecks.requireNonBlank("auth0.audience", internalAudience);
+		Preconditions.checkState(
+			!domain.isBlank(),
+			"auth0.domain is not configured (see conf/application-local.yaml.template)"
+		);
+		Preconditions.checkState(
+			!internalAudience.isBlank(),
+			"auth0.audience is not configured (see conf/application-local.yaml.template)"
+		);
 		// The issuer tolerates a bare hostname, but the JWKS endpoint must be a full URL.
 		String jwksBase = jwksDomain.isBlank()
 			? ConfigChecks.requireHttpUrl("auth0.domain (used for JWKS since auth0.jwks_domain is empty)", domain)

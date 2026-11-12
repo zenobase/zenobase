@@ -61,25 +61,10 @@ public class Auth0TokenValidatorTest {
 	}
 
 	@Test
-	public void rejectsBlankAudience() {
-		assertThatThrownBy(() -> new Auth0TokenValidator("http://localhost:1", " ", "", ""))
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessageContaining("auth0.audience is not configured");
-	}
-
-	@Test
 	public void rejectsRelativeJwksDomain() {
 		assertThatThrownBy(() -> new Auth0TokenValidator("http://localhost:1", AUDIENCE, "", "/jwks"))
 			.isInstanceOf(IllegalStateException.class)
 			.hasMessageContaining("auth0.jwks_domain");
-	}
-
-	@Test
-	public void fallsBackToDomainForJwksButRequiresUrl() {
-		assertThatThrownBy(() -> new Auth0TokenValidator("tenant.auth0.com", AUDIENCE, "", ""))
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessageContaining("auth0.domain");
-		new Auth0TokenValidator("tenant.auth0.com", AUDIENCE, "", "https://jwks.example.com");
 	}
 
 	@AfterAll

@@ -1,5 +1,6 @@
 package com.zenobase.common;
 
+import com.google.common.base.Preconditions;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
@@ -14,17 +15,9 @@ public final class ConfigChecks {
 
 	private ConfigChecks() {}
 
-	/** Returns {@code value} if it is non-blank, otherwise throws naming {@code key}. */
-	public static String requireNonBlank(String key, String value) {
-		if (value == null || value.isBlank()) {
-			throw new IllegalStateException(key + " is not configured (" + HINT + ")");
-		}
-		return value;
-	}
-
 	/** Returns {@code value} if it is an absolute http(s) URL with a host, otherwise throws naming {@code key}. */
 	public static String requireHttpUrl(String key, String value) {
-		requireNonBlank(key, value);
+		Preconditions.checkState(!value.isBlank(), "%s is not configured (%s)", key, HINT);
 		URI uri;
 		try {
 			uri = new URI(value.strip());
