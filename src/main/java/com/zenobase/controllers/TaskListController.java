@@ -152,6 +152,10 @@ public class TaskListController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
+		if (auth.getScope() != null) {
+			sendForbidden(res);
+			return;
+		}
 		var form = new CreateTaskForm(body(req));
 		if (!form.valid()) {
 			sendBadRequest(res, "bad request");

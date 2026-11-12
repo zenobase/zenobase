@@ -3,6 +3,7 @@ package com.zenobase.controllers;
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
+import com.zenobase.auth.auth0.Auth0TokenAuthorizer;
 import com.zenobase.commands.Command;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
@@ -90,6 +91,18 @@ public class TaskControllerHttpDeleteTest extends TaskControllerTestSupport {
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		try (Http1ClientResponse result = call(task.getId())) {
 			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, commandId).isEmpty();
+		}
+	}
+
+	@Test
+	public void testDeleteTaskExternalTokenForbidden() {
+		bucket.addRole(user.asIdentity(), Role.OWNER);
+		when(auth.current(any())).thenReturn(
+			new Authorization(user.asIdentity(), null, Auth0TokenAuthorizer.EXTERNAL_SCOPE)
+		);
+		try (Http1ClientResponse result = call(task.getId())) {
+			assertThat(result).hasStatus(403);
+			verifyNoInteractions(dispatcher);
 		}
 	}
 

@@ -147,6 +147,10 @@ public class TaskController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
+		if (auth.getScope() != null) {
+			sendForbidden(res);
+			return;
+		}
 		Task task = tasks.find(taskId);
 		if (task == null) {
 			sendNotFound(res);

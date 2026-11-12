@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import com.zenobase.auth.auth0.Auth0TokenAuthorizer;
 import com.zenobase.commands.Command;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
@@ -37,6 +38,18 @@ public class TaskListControllerHttpPostTest extends TaskListControllerTestSuppor
 			assertThat(result).hasStatus(201).hasContent(task.toJson());
 			assertThat(result).hasHeader("Location", "/tasks/" + task.getId());
 			assertThat(result).hasHeader(COMMAND_ID, commandId);
+		}
+	}
+
+	@Test
+	public void testExternalTokenForbidden() {
+		bucket.addRole(user.asIdentity(), Role.OWNER);
+		when(auth.current(any())).thenReturn(
+			new Authorization(user.asIdentity(), null, Auth0TokenAuthorizer.EXTERNAL_SCOPE)
+		);
+		try (Http1ClientResponse result = call(form)) {
+			assertThat(result).hasStatus(403);
+			verifyNoInteractions(dispatcher);
 		}
 	}
 

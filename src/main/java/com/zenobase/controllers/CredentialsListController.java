@@ -114,6 +114,10 @@ public class CredentialsListController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
+		if (auth.getScope() != null) {
+			sendForbidden(res);
+			return;
+		}
 		var form = new CreateCredentialsForm(body(req));
 		if (!form.valid()) {
 			sendBadRequest(res, "bad request");
