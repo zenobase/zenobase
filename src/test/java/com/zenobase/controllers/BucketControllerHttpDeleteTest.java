@@ -55,6 +55,18 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 	}
 
 	@Test
+	public void testDeleteBucketSignedInAsScopedSuperuser() {
+		Identity superuser = new Identity();
+		when(auth.current(any())).thenReturn(new Authorization(superuser, null, "read"));
+		when(users.isSuperuser(superuser)).thenReturn(true);
+		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
+		try (Http1ClientResponse result = call(bucket.getId())) {
+			assertThat(result).hasStatus(403);
+			verifyNoInteractions(dispatcher);
+		}
+	}
+
+	@Test
 	public void testDeleteBucketNotFound() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		try (Http1ClientResponse result = call(bucket.getId())) {

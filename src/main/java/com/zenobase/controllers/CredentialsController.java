@@ -124,7 +124,7 @@ public class CredentialsController extends ControllerSupport {
 			sendNotFound(res);
 			return;
 		}
-		if (!credentials.isPermitted(auth) && !users.isSuperuser(auth.getPrincipal())) {
+		if (!credentials.isPermitted(auth) && (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal()))) {
 			sendForbidden(res);
 			return;
 		}

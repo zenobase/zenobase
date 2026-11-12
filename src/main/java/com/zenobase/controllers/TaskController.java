@@ -68,7 +68,7 @@ public class TaskController extends ControllerSupport {
 			sendNotFound(res);
 			return;
 		}
-		if (!task.isPermitted(auth) && !users.isSuperuser(auth.getPrincipal())) {
+		if (!task.isPermitted(auth) && (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal()))) {
 			sendForbidden(res);
 			return;
 		}

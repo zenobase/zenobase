@@ -100,7 +100,7 @@ public class TaskListController extends ControllerSupport {
 			sendNotFound(res, "bucket not found");
 			return;
 		}
-		if (!bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
+		if (!bucket.hasRole(auth, Role.OWNER) && (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal()))) {
 			sendForbidden(res);
 			return;
 		}

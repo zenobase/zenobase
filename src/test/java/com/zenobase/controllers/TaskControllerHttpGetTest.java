@@ -124,6 +124,17 @@ public class TaskControllerHttpGetTest extends TaskControllerTestSupport {
 		}
 	}
 
+	@Test
+	public void testGetTaskAsScopedSuperuser() {
+		Identity superuser = new Identity();
+		when(auth.current(any())).thenReturn(new Authorization(superuser, null, "read"));
+		when(tasks.find(task.getId())).thenReturn(task);
+		when(users.isSuperuser(superuser)).thenReturn(true);
+		try (Http1ClientResponse result = call(task.getId())) {
+			assertThat(result).hasStatus(403);
+		}
+	}
+
 	private Http1ClientResponse call(String taskId) {
 		return client.get("/tasks/" + taskId).request();
 	}
