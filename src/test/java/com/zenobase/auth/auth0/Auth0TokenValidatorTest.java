@@ -1,6 +1,7 @@
 package com.zenobase.auth.auth0;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -50,6 +51,35 @@ public class Auth0TokenValidatorTest {
 
 		String domain = "http://localhost:" + jwksPort;
 		validator = new Auth0TokenValidator(domain, AUDIENCE, EXTERNAL_AUDIENCE, "");
+	}
+
+	@Test
+	public void rejectsBlankDomain() {
+		assertThatThrownBy(() -> new Auth0TokenValidator("", AUDIENCE, "", ""))
+			.isInstanceOf(IllegalStateException.class)
+			.hasMessageContaining("auth0.domain is not configured");
+	}
+
+	@Test
+	public void rejectsBlankAudience() {
+		assertThatThrownBy(() -> new Auth0TokenValidator("http://localhost:1", " ", "", ""))
+			.isInstanceOf(IllegalStateException.class)
+			.hasMessageContaining("auth0.audience is not configured");
+	}
+
+	@Test
+	public void rejectsRelativeJwksDomain() {
+		assertThatThrownBy(() -> new Auth0TokenValidator("http://localhost:1", AUDIENCE, "", "/jwks"))
+			.isInstanceOf(IllegalStateException.class)
+			.hasMessageContaining("auth0.jwks_domain");
+	}
+
+	@Test
+	public void fallsBackToDomainForJwksButRequiresUrl() {
+		assertThatThrownBy(() -> new Auth0TokenValidator("tenant.auth0.com", AUDIENCE, "", ""))
+			.isInstanceOf(IllegalStateException.class)
+			.hasMessageContaining("auth0.domain");
+		new Auth0TokenValidator("tenant.auth0.com", AUDIENCE, "", "https://jwks.example.com");
 	}
 
 	@AfterAll

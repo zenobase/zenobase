@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.Uninterruptibles;
+import com.zenobase.common.ConfigChecks;
 import com.zenobase.jobs.SnapshotManager;
 import com.zenobase.models.Alias;
 import com.zenobase.models.Event;
@@ -42,6 +43,9 @@ public class IndexManager implements Closeable {
 		@Named("aws.region") String snapshotRegion,
 		@Named("opensearch.snapshot_role_arn") String snapshotRoleArn
 	) {
+		if (!snapshotBucket.isEmpty()) {
+			ConfigChecks.requireNonBlank("aws.region (required with opensearch.snapshot.bucket)", snapshotRegion);
+		}
 		client = clientFactory.createClient();
 		var cluster = new Cluster(client);
 		while (!cluster.isReady()) {
