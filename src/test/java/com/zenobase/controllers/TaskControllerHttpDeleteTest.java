@@ -93,6 +93,18 @@ public class TaskControllerHttpDeleteTest extends TaskControllerTestSupport {
 		}
 	}
 
+	@Test
+	public void testDeleteTaskAsScopedSuperuser() {
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity(), null, "read"));
+		when(tasks.find(task.getId())).thenReturn(task);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
+		try (Http1ClientResponse result = call(task.getId())) {
+			assertThat(result).hasStatus(403);
+			verifyNoInteractions(dispatcher);
+		}
+	}
+
 	private Http1ClientResponse call(String taskId) {
 		return client.delete("/tasks/" + taskId).request();
 	}
