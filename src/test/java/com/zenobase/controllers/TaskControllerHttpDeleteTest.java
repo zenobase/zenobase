@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import com.zenobase.commands.Command;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
+import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.tasks.Task;
@@ -55,6 +56,16 @@ public class TaskControllerHttpDeleteTest extends TaskControllerTestSupport {
 		when(dispatcher.dispatch(any(Command.class))).thenReturn("c");
 		try (Http1ClientResponse result = call(task.getId())) {
 			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, "c").isEmpty();
+		}
+	}
+
+	@Test
+	public void testDeleteTaskBucketNotFoundForbidden() {
+		when(auth.current(any())).thenReturn(new Authorization(new Identity()));
+		when(tasks.find(task.getId())).thenReturn(task);
+		try (Http1ClientResponse result = call(task.getId())) {
+			assertThat(result).hasStatus(403);
+			verifyNoInteractions(dispatcher);
 		}
 	}
 

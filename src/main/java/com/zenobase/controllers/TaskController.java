@@ -153,7 +153,8 @@ public class TaskController extends ControllerSupport {
 			return;
 		}
 		Bucket bucket = buckets.find(task.getBucketId());
-		if (bucket != null && !bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
+		boolean permitted = bucket != null ? bucket.hasRole(auth, Role.OWNER) : task.isPermitted(auth);
+		if (!permitted && !users.isSuperuser(auth.getPrincipal())) {
 			sendForbidden(res);
 			return;
 		}

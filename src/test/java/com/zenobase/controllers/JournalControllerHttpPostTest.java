@@ -44,6 +44,18 @@ public class JournalControllerHttpPostTest extends JournalControllerTestSupport 
 	}
 
 	@Test
+	public void testUndoAsScopedSuperuser() {
+		Identity superuser = new Identity();
+		when(auth.current(any())).thenReturn(new Authorization(superuser, null, "read"));
+		when(commands.find(command.getId())).thenReturn(command);
+		when(users.isSuperuser(superuser)).thenReturn(true);
+		try (Http1ClientResponse result = call(new UndoForm(command.getId()).toJson())) {
+			assertThat(result).hasStatus(403);
+			verifyNoInteractions(dispatcher);
+		}
+	}
+
+	@Test
 	public void testUndoUnauthorized() {
 		when(auth.current(any())).thenReturn(null);
 		try (Http1ClientResponse result = call(new UndoForm(command.getId()).toJson())) {
