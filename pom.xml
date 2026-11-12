@@ -304,6 +304,7 @@
                                 <exclude>**/target/**</exclude>
                                 <exclude>**/node_modules/**</exclude>
                                 <exclude>infra/**</exclude>
+                                <exclude>.claude/**</exclude>
                             </excludes>
                             <prettier>
                                 <devDependencies>
