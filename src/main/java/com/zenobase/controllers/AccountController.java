@@ -24,8 +24,6 @@ import com.zenobase.services.UserLookup;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,22 +79,9 @@ public class AccountController extends ControllerSupport {
 		if (!user.is(auth.getPrincipal()) && sendForbiddenIfSuspended(auth, res)) {
 			return;
 		}
-		// Snapshot the client_ids this user has connected before dispatch — afterwards the rows are gone and we
-		// can't look them up. We need them to issue best-effort Auth0 Application deletes below.
-		List<Identity> connectedClientIds = new ArrayList<>();
-		externalClients.find(new ExternalClientQuery().userEqualTo(user.asIdentity()), client ->
-			connectedClientIds.add(client.getClient())
-		);
 		Command command = buildCloseAccountCommand(auth.getPrincipal(), user);
 		String commandId = dispatcher.dispatch(command);
 		identityProvider.deleteUser(user);
-		// For each external client this user had, drop the corresponding Auth0 Application — but only if no other
-		// user still references the same client_id. Same safety check as ExternalClientController.revoke.
-		for (Identity clientId : connectedClientIds) {
-			if (externalClients.find(new ExternalClientQuery().clientEqualTo(clientId), 0, 1).getTotal() == 0) {
-				identityProvider.deleteApplication(clientId);
-			}
-		}
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
 	}

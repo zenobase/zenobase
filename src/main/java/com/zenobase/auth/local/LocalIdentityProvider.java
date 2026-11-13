@@ -24,9 +24,6 @@ public class LocalIdentityProvider implements IdentityProvider {
 	public void deletePasskey(User user, String passkeyId) {}
 
 	@Override
-	public void deleteApplication(Identity application) {}
-
-	@Override
 	public @Nullable String getApplicationName(Identity application) {
 		return null;
 	}

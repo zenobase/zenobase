@@ -14,7 +14,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
-import com.zenobase.auth.IdentityProvider;
 import com.zenobase.commands.UpdateExternalClientGrantsCommand;
 import com.zenobase.json.NodeList;
 import com.zenobase.json.Nodes;
@@ -32,6 +31,8 @@ import com.zenobase.repositories.UserRepository;
 import com.zenobase.services.CommandDispatcher;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import io.helidon.webserver.http.HttpRouting;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -44,7 +45,6 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 	private final ExternalClientRepository clients = mock(ExternalClientRepository.class);
 	private final BucketRepository buckets = mock(BucketRepository.class);
 	private final UserRepository users = mock(UserRepository.class);
-	private final IdentityProvider identityProvider = mock(IdentityProvider.class);
 
 	private final User user = new User("tester");
 	private final Identity userIdentity = user.asIdentity();
@@ -60,7 +60,6 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 				bind(ExternalClientRepository.class).toInstance(clients);
 				bind(BucketRepository.class).toInstance(buckets);
 				bind(UserRepository.class).toInstance(users);
-				bind(IdentityProvider.class).toInstance(identityProvider);
 				bind(ExternalClientController.class).in(Singleton.class);
 			}
 		};
@@ -70,8 +69,8 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 	protected void routing(HttpRouting.Builder builder, Injector injector) {
 		ExternalClientController controller = injector.getInstance(ExternalClientController.class);
 		builder.get("/users/{userId}/external-clients/", controller::list);
-		builder.put("/users/{userId}/external-clients/{clientId}", controller::put);
-		builder.delete("/users/{userId}/external-clients/{clientId}", controller::revoke);
+		builder.put("/users/{userId}/external-clients/{+clientId}", controller::put);
+		builder.delete("/users/{userId}/external-clients/{+clientId}", controller::revoke);
 	}
 
 	@Test
@@ -195,10 +194,6 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 	public void testRevokeDispatchesEmptySnapshotAndDeletes() {
 		when(auth.current(any())).thenReturn(new Authorization(userIdentity));
 		when(clients.find(userIdentity, clientIdentity)).thenReturn(client());
-		// No other user references this client_id — safety check returns 0.
-		when(clients.find(any(ExternalClientQuery.class), anyInt(), anyInt())).thenReturn(
-			new ExternalClientList(new NodeList(List.of(), 0))
-		);
 
 		try (
 			Http1ClientResponse result = client
@@ -209,40 +204,40 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 		}
 		verify(dispatcher).dispatch(any(UpdateExternalClientGrantsCommand.class));
 		verify(clients).delete(userIdentity, clientIdentity);
-		verify(identityProvider).deleteApplication(clientIdentity);
 	}
 
 	@Test
-	public void testRevokeSkipsAuth0DeleteWhenAnotherUserStillReferencesClient() {
+	public void testRevokeMetadataDocumentClient() {
+		Identity cimdClient = new Identity("https://claude.ai/oauth/claude-code-client-metadata");
 		when(auth.current(any())).thenReturn(new Authorization(userIdentity));
-		when(clients.find(userIdentity, clientIdentity)).thenReturn(client());
-		// Another user still has a row pointing at this client_id — safety check returns >0.
-		ExternalClient otherUserRow = new ExternalClient(
-			new Identity("someone-else"),
-			clientIdentity,
-			"Claude Desktop",
-			new DateTime(2026, 5, 1, 0, 0, DateTimeZone.UTC)
-		);
-		when(clients.find(any(ExternalClientQuery.class), anyInt(), anyInt())).thenReturn(
-			new ExternalClientList(new NodeList(List.of(otherUserRow.toJson()), 1))
+		when(clients.find(userIdentity, cimdClient)).thenReturn(
+			new ExternalClient(
+				userIdentity,
+				cimdClient,
+				"Claude Code",
+				new DateTime(2026, 5, 1, 0, 0, DateTimeZone.UTC)
+			)
 		);
 
 		try (
 			Http1ClientResponse result = client
-				.delete("/users/" + user.getId() + "/external-clients/claude-desktop")
+				.delete()
+				.skipUriEncoding(true)
+				.path(
+					"/users/" +
+						user.getId() +
+						"/external-clients/" +
+						URLEncoder.encode(cimdClient.id(), StandardCharsets.UTF_8)
+				)
 				.request()
 		) {
 			assertThat(result).hasStatus(204);
 		}
-		verify(clients).delete(userIdentity, clientIdentity);
-		verify(identityProvider, never()).deleteApplication(any());
+		verify(clients).delete(userIdentity, cimdClient);
 	}
 
 	@Test
 	public void testRevoke404WhenClientUnknown() {
-		// Regression guard: without the existence check at the top of revoke(), a logged-in user could pass any
-		// Auth0 client_id (e.g. the SPA's) in the URL and trigger an Auth0 Application delete, since the safety
-		// query would (correctly) report zero references for first-party client_ids.
 		when(auth.current(any())).thenReturn(new Authorization(userIdentity));
 		when(clients.find(userIdentity, clientIdentity)).thenReturn(null);
 
@@ -255,7 +250,6 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 		}
 		verify(dispatcher, never()).dispatch(any());
 		verify(clients, never()).delete(any(), any());
-		verify(identityProvider, never()).deleteApplication(any());
 	}
 
 	@Test

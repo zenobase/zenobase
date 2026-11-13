@@ -13,9 +13,4 @@ public class ExternalClientQuery extends QuerySupport {
 		equalTo(ExternalClient.USER, user.id());
 		return this;
 	}
-
-	public ExternalClientQuery clientEqualTo(Identity client) {
-		equalTo(ExternalClient.CLIENT, client.id());
-		return this;
-	}
 }

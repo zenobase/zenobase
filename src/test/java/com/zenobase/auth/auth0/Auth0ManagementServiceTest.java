@@ -9,8 +9,10 @@ import com.auth0.client.mgmt.ManagementApi;
 import com.auth0.client.mgmt.UsersClient;
 import com.auth0.client.mgmt.core.SyncPagingIterable;
 import com.auth0.client.mgmt.types.AuthenticationMethodTypeEnum;
+import com.auth0.client.mgmt.types.Client;
 import com.auth0.client.mgmt.types.GetClientResponseContent;
 import com.auth0.client.mgmt.types.GetUserAuthenticationMethodResponseContent;
+import com.auth0.client.mgmt.types.ListClientsRequestParameters;
 import com.auth0.client.mgmt.types.ListUsersRequestParameters;
 import com.auth0.client.mgmt.types.UpdateUserRequestContent;
 import com.auth0.client.mgmt.types.UserAuthenticationMethod;
@@ -241,58 +243,34 @@ public class Auth0ManagementServiceTest {
 		}
 
 		@Test
+		public void looksUpMetadataDocumentClientByExternalId() {
+			String url = "https://claude.ai/oauth/claude-code-client-metadata";
+			when(client.clients()).thenReturn(clientsClient);
+			when(clientsClient.list(any(ListClientsRequestParameters.class))).thenReturn(
+				page(List.of(Client.builder().name("Claude Code").build()))
+			);
+
+			assertThat(service.getApplicationName(new Identity(url))).isEqualTo("Claude Code");
+			verify(clientsClient).list(
+				argThat((ListClientsRequestParameters p) -> url.equals(p.getExternalClientId().getValueOrNull()))
+			);
+			verify(clientsClient, never()).get(anyString());
+		}
+
+		@Test
+		public void returnsNullWhenNoMetadataDocumentClientMatches() {
+			when(client.clients()).thenReturn(clientsClient);
+			when(clientsClient.list(any(ListClientsRequestParameters.class))).thenReturn(page(List.of()));
+
+			assertThat(service.getApplicationName(new Identity("https://example.com/client.json"))).isNull();
+		}
+
+		@Test
 		public void returnsNullOnException() {
 			when(client.clients()).thenReturn(clientsClient);
 			when(clientsClient.get(anyString())).thenThrow(new RuntimeException("Auth0 down"));
 
 			assertThat(service.getApplicationName(new Identity("client-1"))).isNull();
-		}
-	}
-
-	@Nested
-	class DeleteApplication {
-
-		@Test
-		public void deletesExternalApplication() {
-			when(client.clients()).thenReturn(clientsClient);
-			GetClientResponseContent response = GetClientResponseContent.builder().isFirstParty(false).build();
-			when(clientsClient.get("client-1")).thenReturn(response);
-
-			service.deleteApplication(new Identity("client-1"));
-
-			verify(clientsClient).delete("client-1");
-		}
-
-		@Test
-		public void refusesToDeleteFirstPartyApplication() {
-			when(client.clients()).thenReturn(clientsClient);
-			GetClientResponseContent response = GetClientResponseContent.builder().isFirstParty(true).build();
-			when(clientsClient.get("client-1")).thenReturn(response);
-
-			service.deleteApplication(new Identity("client-1"));
-
-			verify(clientsClient, never()).delete(anyString());
-		}
-
-		@Test
-		public void refusesWhenFirstPartyFlagAbsent() {
-			when(client.clients()).thenReturn(clientsClient);
-			GetClientResponseContent response = GetClientResponseContent.builder().build();
-			when(clientsClient.get("client-1")).thenReturn(response);
-
-			service.deleteApplication(new Identity("client-1"));
-
-			verify(clientsClient, never()).delete(anyString());
-		}
-
-		@Test
-		public void swallowsExceptionsAndDoesNotDelete() {
-			when(client.clients()).thenReturn(clientsClient);
-			when(clientsClient.get(anyString())).thenThrow(new RuntimeException("Auth0 down"));
-
-			service.deleteApplication(new Identity("client-1"));
-
-			verify(clientsClient, never()).delete(anyString());
 		}
 	}
 }
