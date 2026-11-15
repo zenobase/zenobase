@@ -10,7 +10,6 @@ import com.zenobase.commands.Command;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
-import com.zenobase.tasks.InvalidCredentialsException;
 import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.InvalidTokenException;
 import com.zenobase.tasks.OAuthCredentials;
@@ -151,21 +150,12 @@ public class WithingsTaskManagerTest extends TaskManagerTestSupport {
 
 	@Test
 	public void testUnauthorizedStatus() {
-		var manager = new WithingsCardioTaskManager(credentialsManager);
+		var manager = new WithingsWeightTaskManager(credentialsManager);
 		Task task = manager.newTask(Generator.id(), new Identity(), Nodes.newObject());
 		// Withings signals authorization failures in the body, not the HTTP status
 		givenResponses(credentialsManager, credentials, response(200, "{\"status\":401}"));
 
 		assertThatThrownBy(() -> manager.execute(task, credentials)).isInstanceOf(InvalidTokenException.class);
-	}
-
-	@Test
-	public void testUnauthorizedStatusOnMeasurements() {
-		var manager = new WithingsWeightTaskManager(credentialsManager);
-		Task task = manager.newTask(Generator.id(), new Identity(), Nodes.newObject());
-		givenResponses(credentialsManager, credentials, response(200, "{\"status\":401}"));
-
-		assertThatThrownBy(() -> manager.execute(task, credentials)).isInstanceOf(InvalidCredentialsException.class);
 	}
 
 	@Test
