@@ -45,12 +45,16 @@ public class ResultTestSupport {
 		}
 	}
 
-	private byte[] readBytes(String filename) throws IOException {
+	protected byte[] readBytes(String filename) throws IOException {
 		return ByteStreams.toByteArray(openStream(filename));
 	}
 
 	private InputStream openStream(String filename) {
-		return getClass().getResourceAsStream(filename);
+		InputStream in = getClass().getResourceAsStream(filename);
+		if (in == null) {
+			throw new AssertionError("Missing fixture: " + filename);
+		}
+		return in;
 	}
 
 	protected static DateTime dateTime(String value) {
