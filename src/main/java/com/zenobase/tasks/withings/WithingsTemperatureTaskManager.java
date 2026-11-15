@@ -6,7 +6,6 @@ import com.zenobase.commands.Command;
 import com.zenobase.common.Units;
 import com.zenobase.json.UnitField;
 import com.zenobase.models.Identity;
-import com.zenobase.tasks.InvalidCredentialsException;
 import com.zenobase.tasks.OAuthCredentials;
 import jakarta.inject.Inject;
 import javax.measure.quantity.Temperature;
@@ -57,9 +56,6 @@ public class WithingsTemperatureTaskManager extends WithingsTaskManagerSupport<W
 			task.getUnit(),
 			task.getTimezone()
 		);
-		if (result.getStatus() == 401) {
-			throw new InvalidCredentialsException(credentials);
-		}
 		checkStatus(result, request, credentials);
 		return createCommand(task, credentials, token, result);
 	}
