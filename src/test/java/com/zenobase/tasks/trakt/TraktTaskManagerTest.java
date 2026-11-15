@@ -64,6 +64,18 @@ public class TraktTaskManagerTest extends TaskManagerTestSupport {
 	}
 
 	@Test
+	public void testNoMarkerImportsAllHistory() {
+		givenFixtures();
+		Task unmarked = manager.newTask(Generator.id(), new Identity(), Nodes.newObject());
+
+		Command commands = manager.execute(unmarked, credentials);
+		Task updated = apply(commands, unmarked);
+
+		assertThat(events(commands)).hasSize(4);
+		assertThat(updated.getMarker()).as("latest watch").isEqualTo("2015-04-14T23:30:00.000-07:00");
+	}
+
+	@Test
 	public void testPagesUntilAPartialPage() {
 		givenResponses(
 			credentialsManager,

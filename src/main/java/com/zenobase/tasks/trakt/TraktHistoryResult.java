@@ -42,7 +42,7 @@ class TraktHistoryResult {
 	private @Nullable Event newEvent(JsonNode node) {
 		DateTime t = dateTimeValue(node.path("watched_at"));
 		Event event = null;
-		if (t.isAfter(after)) {
+		if (after == null || t.isAfter(after)) {
 			event = new Event();
 			event.setValue(Event.TIMESTAMP, t);
 			if (!node.path("movie").isMissingNode()) {
