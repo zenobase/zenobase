@@ -43,7 +43,7 @@ public class BucketRefreshJobTest {
 
 		job.run();
 
-		verify(refresher).refresh(task);
+		verify(refresher).refresh(task, bucket);
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class BucketRefreshJobTest {
 		job.run();
 
 		verify(tasks, never()).find(any(TaskQuery.class), any(), eq(0), eq(100));
-		verify(refresher, never()).refresh(any());
+		verify(refresher, never()).refresh(any(), any());
 	}
 
 	@Test
@@ -72,7 +72,7 @@ public class BucketRefreshJobTest {
 
 		job.run();
 
-		verify(refresher, never()).refresh(any());
+		verify(refresher, never()).refresh(any(), any());
 	}
 
 	@Test
@@ -88,11 +88,11 @@ public class BucketRefreshJobTest {
 		when(tasks.find(eq(new TaskQuery().bucketEqualTo(bucket.getId())), any(), eq(0), eq(100))).thenReturn(
 			DefaultPartialList.of(List.of(task), 1)
 		);
-		doThrow(new MissingCredentialsException("foo")).when(refresher).refresh(task);
+		doThrow(new MissingCredentialsException("foo")).when(refresher).refresh(task, bucket);
 
 		job.run();
 
-		verify(refresher).refresh(task);
+		verify(refresher).refresh(task, bucket);
 	}
 
 	@Test
@@ -108,10 +108,10 @@ public class BucketRefreshJobTest {
 		when(tasks.find(eq(new TaskQuery().bucketEqualTo(bucket.getId())), any(), eq(0), eq(100))).thenReturn(
 			DefaultPartialList.of(List.of(task), 1)
 		);
-		doThrow(new RuntimeException("boom")).when(refresher).refresh(task);
+		doThrow(new RuntimeException("boom")).when(refresher).refresh(task, bucket);
 
 		job.run();
 
-		verify(refresher).refresh(task);
+		verify(refresher).refresh(task, bucket);
 	}
 }

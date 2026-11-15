@@ -11,6 +11,8 @@ import io.sentry.ISpan;
 import io.sentry.Sentry;
 import io.sentry.SpanStatus;
 import jakarta.inject.Inject;
+import java.util.function.Supplier;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +39,14 @@ public class TaskRefresher {
 	}
 
 	public void refresh(Task task) {
+		refresh(task, () -> buckets.find(task.getBucketId()));
+	}
+
+	public void refresh(Task task, Bucket bucket) {
+		refresh(task, () -> bucket);
+	}
+
+	private void refresh(Task task, Supplier<@Nullable Bucket> bucket) {
 		String lockId = "task:" + task.getId();
 		if (!bus.tryLock(lockId)) {
 			logger.info("Skipping refresh: already in flight for {}", task.getId());
@@ -50,7 +60,7 @@ public class TaskRefresher {
 		span.setData("task.id", task.getId());
 		span.setData("task.type", task.getType());
 		try {
-			doRefresh(task);
+			doRefresh(task, bucket.get());
 			span.setStatus(SpanStatus.OK);
 		} catch (CredentialsException e) {
 			// User needs to re-authorize: a known soft condition, not an internal error.
@@ -66,9 +76,8 @@ public class TaskRefresher {
 		}
 	}
 
-	private void doRefresh(Task task) {
+	private void doRefresh(Task task, @Nullable Bucket bucket) {
 		logger.info("Refreshing: {}", task.getId());
-		Bucket bucket = buckets.find(task.getBucketId());
 		if (bucket == null) {
 			logger.warn("Task {} references a missing bucket: {}", task.getId(), task.getBucketId());
 			return;

@@ -43,6 +43,26 @@ public class TaskRefresherTest {
 		when(dispatcher.dispatch(ArgumentMatchers.any(Command.class))).thenReturn(commandId);
 
 		new TaskRefresher(registry, buckets, dispatcher, new LocalBus()).refresh(task);
+		verify(dispatcher).dispatch(command);
+	}
+
+	@Test
+	public void testPreloadedBucket() {
+		String taskType = "test";
+		User user = new User("tester");
+		Bucket bucket = new Bucket();
+		bucket.addRole(user.asIdentity(), Role.OWNER);
+		Task task = new Task(taskType, bucket.getId(), user.asIdentity());
+		Command command = mock(Command.class);
+
+		when(registry.exists(taskType)).thenReturn(true);
+		when(registry.find(taskType)).thenReturn(manager);
+		when(manager.execute(task)).thenReturn(command);
+
+		new TaskRefresher(registry, buckets, dispatcher, new LocalBus()).refresh(task, bucket);
+
+		verify(dispatcher).dispatch(command);
+		verifyNoInteractions(buckets);
 	}
 
 	@Test
