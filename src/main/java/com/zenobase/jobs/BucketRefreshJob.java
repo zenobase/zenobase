@@ -59,7 +59,7 @@ public class BucketRefreshJob extends Job {
 						0,
 						100
 					)) {
-						refresher.refresh(task);
+						refresher.refresh(task, bucket);
 						counter.incrementAndGet();
 					}
 				} catch (CredentialsException e) {
