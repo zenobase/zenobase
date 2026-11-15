@@ -36,7 +36,11 @@ abstract class OuraTaskManagerSupport extends OAuthTaskManager {
 			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
+				.set(
+					Task.MARKER,
+					task.getMarker(),
+					task.laterMarker(DateTime.parse(Objects.requireNonNull(task.getMarker())), getLatest(events))
+				)
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build()
 		);
@@ -54,7 +58,7 @@ abstract class OuraTaskManagerSupport extends OAuthTaskManager {
 		return command;
 	}
 
-	private static @Nullable String getMarker(Iterable<Event> events) {
+	private static @Nullable DateTime getLatest(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
 			DateTime time = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
@@ -62,6 +66,6 @@ abstract class OuraTaskManagerSupport extends OAuthTaskManager {
 				latest = time;
 			}
 		}
-		return latest != null ? latest.toString() : null;
+		return latest;
 	}
 }

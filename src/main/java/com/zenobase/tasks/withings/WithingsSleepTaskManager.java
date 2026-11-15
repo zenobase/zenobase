@@ -63,6 +63,14 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 		return createCommand(task, credentials, token, result.merge());
 	}
 
+	/** Withings returns whole sleep periods, which can end before the marker. */
+	@Override
+	@Nullable
+	String nextMarker(WithingsSleepTask task, WithingsResult result) {
+		String latest = result.getMarker();
+		return task.laterMarker(task.getFrom(), latest != null ? DateTime.parse(latest) : null);
+	}
+
 	private List<Event> execute(WithingsSleepTask task, OAuthCredentials credentials, DateTime from) {
 		OAuthRequest request = createRequest(from);
 		Response response = send(request, credentials);

@@ -129,6 +129,7 @@ public class WithingsTaskManagerTest extends TaskManagerTestSupport {
 			new Identity(),
 			Nodes.newObject().put("tag", "sleep").put("timezone", TIMEZONE).put("marker", daysAgo(8))
 		);
+		String marker = task.getMarker();
 		givenResponses(
 			credentialsManager,
 			credentials,
@@ -145,7 +146,23 @@ public class WithingsTaskManagerTest extends TaskManagerTestSupport {
 		assertThat(queryParam(requests.get(0), "enddate")).isEqualTo(queryParam(requests.get(1), "startdate"));
 
 		assertThat(events(commands)).as("merged sleep periods").hasSize(2);
-		assertThat(task.getMarker()).isEqualTo("2014-03-12T11:03:17.000-07:00");
+		assertThat(task.getMarker()).as("the fixture's periods all end before the marker").isEqualTo(marker);
+	}
+
+	@Test
+	public void testSleepWithoutPeriodsKeepsMarker() {
+		var manager = new WithingsSleepTaskManager(credentialsManager);
+		Task task = manager.newTask(
+			Generator.id(),
+			new Identity(),
+			Nodes.newObject().put("timezone", TIMEZONE).put("marker", daysAgo(1))
+		);
+		String marker = task.getMarker();
+		givenResponses(credentialsManager, credentials, response(200, "{\"status\":0,\"body\":{\"series\":[]}}"));
+
+		task = apply(manager.execute(task, credentials), task);
+
+		assertThat(task.getMarker()).isEqualTo(marker);
 	}
 
 	@Test

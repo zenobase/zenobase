@@ -18,6 +18,7 @@ import com.zenobase.tasks.Task;
 import java.util.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -70,12 +71,13 @@ abstract class WithingsTaskManagerSupport<T extends Task> extends OAuthTaskManag
 		}
 	}
 
-	protected Command createCommand(
-		Task task,
-		OAuthCredentials credentials,
-		Token expiredToken,
-		WithingsResult result
-	) {
+	/** The marker after a successful run, given the current task and the fetched result. */
+	@Nullable
+	String nextMarker(T task, WithingsResult result) {
+		return MoreObjects.firstNonNull(result.getMarker(), task.getMarker());
+	}
+
+	protected Command createCommand(T task, OAuthCredentials credentials, Token expiredToken, WithingsResult result) {
 		var command = new CompoundCommand(
 			task.getPrincipal(),
 			"ran " + getType() + " task",
@@ -85,7 +87,7 @@ abstract class WithingsTaskManagerSupport<T extends Task> extends OAuthTaskManag
 			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-				.set(Task.MARKER, task.getMarker(), MoreObjects.firstNonNull(result.getMarker(), task.getMarker()))
+				.set(Task.MARKER, task.getMarker(), nextMarker(task, result))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build()
 		);

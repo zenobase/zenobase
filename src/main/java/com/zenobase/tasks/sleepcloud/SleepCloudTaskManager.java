@@ -79,13 +79,18 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 		return createCommand(task, credentials, events, Objects.requireNonNull(token));
 	}
 
-	private Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
+	private Command createCommand(
+		SleepCloudTask task,
+		OAuthCredentials credentials,
+		List<Event> events,
+		Token expiredToken
+	) {
 		var command = new CompoundCommand(task.getPrincipal(), "ran sleepcloud task", "reverted sleepcloud task");
 		command.add(
 			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-				.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
+				.set(Task.MARKER, task.getMarker(), task.laterMarker(task.getFrom(), getLatest(events)))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build()
 		);
@@ -103,7 +108,7 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 		return command;
 	}
 
-	private static @Nullable String getMarker(Iterable<Event> events) {
+	private static @Nullable DateTime getLatest(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
 			DateTime end = Objects.requireNonNull(Ordering.natural().max(event.getValues(Event.TIMESTAMP)));
@@ -111,6 +116,6 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 				latest = end;
 			}
 		}
-		return latest != null ? latest.toString() : null;
+		return latest;
 	}
 }

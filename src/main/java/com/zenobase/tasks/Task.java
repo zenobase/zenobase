@@ -92,6 +92,15 @@ public class Task extends DomainNode {
 		setValue(MARKER, marker);
 	}
 
+	/**
+	 * Returns {@code latest} as the new marker, or the current marker if {@code latest} isn't after {@code current}
+	 * (the time the current marker stands for). Keeps the marker from moving backwards when a response only contains
+	 * records older than the marker, which would make the next run re-fetch history.
+	 */
+	public @Nullable String laterMarker(@Nullable DateTime current, @Nullable DateTime latest) {
+		return latest != null && (current == null || latest.isAfter(current)) ? latest.toString() : getMarker();
+	}
+
 	public @Nullable String getUndoId() {
 		return getValue(UNDO);
 	}

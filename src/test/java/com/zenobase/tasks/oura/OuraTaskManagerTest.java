@@ -84,6 +84,19 @@ public class OuraTaskManagerTest extends TaskManagerTestSupport {
 	}
 
 	@Test
+	public void testOlderRecordsKeepMarker() {
+		var manager = new OuraSleepTaskManager(credentialsManager);
+		String marker = "2018-12-21T12:00:00.000+02:00";
+		Task task = manager.newTask(Generator.id(), new Identity(), Nodes.newObject().put("marker", marker));
+		givenResponses(credentialsManager, credentials, successResponse("OuraSleepResultTest.json"));
+
+		task = apply(manager.execute(task, credentials), task);
+
+		assertThat(queryParam(onlyRequest(credentialsManager), "start_date")).isEqualTo("2018-12-21");
+		assertThat(task.getMarker()).as("all bedtimes end before the marker").isEqualTo(marker);
+	}
+
+	@Test
 	public void testEmpty() {
 		var manager = new OuraStepsTaskManager(credentialsManager);
 		Task task = manager.newTask(Generator.id(), new Identity(), settings());
