@@ -151,6 +151,22 @@ public class WithingsTaskManagerTest extends TaskManagerTestSupport {
 	}
 
 	@Test
+	public void testSleepWithoutPeriodsKeepsMarker() {
+		var manager = new WithingsSleepTaskManager(credentialsManager);
+		Task task = manager.newTask(
+			Generator.id(),
+			new Identity(),
+			Nodes.newObject().put("timezone", TIMEZONE).put("marker", daysAgo(1))
+		);
+		String marker = task.getMarker();
+		givenResponses(credentialsManager, credentials, response(200, "{\"status\":0,\"body\":{\"series\":[]}}"));
+
+		task = apply(manager.execute(task, credentials), task);
+
+		assertThat(task.getMarker()).isEqualTo(marker);
+	}
+
+	@Test
 	public void testUnauthorizedStatus() {
 		var manager = new WithingsCardioTaskManager(credentialsManager);
 		Task task = manager.newTask(Generator.id(), new Identity(), Nodes.newObject());

@@ -36,7 +36,11 @@ abstract class OuraTaskManagerSupport extends OAuthTaskManager {
 			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-				.set(Task.MARKER, task.getMarker(), task.laterMarker(parseMarker(task.getMarker()), getLatest(events)))
+				.set(
+					Task.MARKER,
+					task.getMarker(),
+					task.laterMarker(DateTime.parse(Objects.requireNonNull(task.getMarker())), getLatest(events))
+				)
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build()
 		);
@@ -52,10 +56,6 @@ abstract class OuraTaskManagerSupport extends OAuthTaskManager {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}
 		return command;
-	}
-
-	private static @Nullable DateTime parseMarker(@Nullable String marker) {
-		return marker != null ? DateTime.parse(marker) : null;
 	}
 
 	private static @Nullable DateTime getLatest(Iterable<Event> events) {
