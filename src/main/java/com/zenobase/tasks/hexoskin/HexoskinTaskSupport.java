@@ -6,6 +6,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.ISODateTimeFormat;
 import org.jspecify.annotations.Nullable;
 
 abstract class HexoskinTaskSupport extends Task {
@@ -32,7 +33,9 @@ abstract class HexoskinTaskSupport extends Task {
 	}
 
 	public long getStart() {
-		return (DateTime.parse(getMarker()).getMillis() * 256) / 1000;
+		// a bare date means midnight in the task's zone; explicit offsets are honored
+		DateTime start = ISODateTimeFormat.dateTimeParser().withZone(getZone()).parseDateTime(getMarker());
+		return (start.getMillis() * 256) / 1000;
 	}
 
 	public @Nullable String getTag() {

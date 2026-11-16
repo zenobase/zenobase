@@ -12,6 +12,7 @@ import com.zenobase.tasks.Task;
 import com.zenobase.tasks.Task.Status;
 import com.zenobase.tasks.TaskManagerTestSupport;
 import java.util.List;
+import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -27,7 +28,8 @@ public class HexoskinTaskManagerTest extends TaskManagerTestSupport {
 	@Test
 	public void testActivities() {
 		var manager = new HexoskinActivitiesTaskManager(credentialsManager);
-		Task task = newTask(manager, "2013-07-01T00:00:00Z");
+		Task task = newTask(manager, "2013-07-01");
+		assertThat(task.getMarker()).isEqualTo("2013-07-01");
 		givenProfileThen(successResponse("HexoskinActivitiesResultTest.json"));
 
 		Command commands = manager.execute(task, credentials);
@@ -38,12 +40,33 @@ public class HexoskinTaskManagerTest extends TaskManagerTestSupport {
 		assertThat(requests.get(0).getUrl()).isEqualTo("https://api.hexoskin.com/api/v1/profile/");
 		assertThat(requests.get(1).getUrl()).startsWith("https://api.hexoskin.com/api/v1/range/?");
 		assertThat(queryParam(requests.get(1), "include_metrics")).isEqualTo("44,71,2003,2038");
-		assertThat(queryParam(requests.get(1), "start__gt")).isNotEmpty();
+		assertThat(queryParam(requests.get(1), "start__gt"))
+			.as("midnight in the task's zone")
+			.isEqualTo(ticks("2013-07-01T00:00:00-07:00"));
 
 		assertThat(events(commands)).hasSize(7);
 		assertThat(task.getStatus()).isEqualTo(Status.SUCCESS);
 		assertThat(task.getMarker()).as("end of the latest activity").isEqualTo("2013-07-31T16:44:37.000-07:00");
 		assertThat(task.getUndoId()).isEqualTo(commands.getId());
+	}
+
+	@Test
+	public void testMarkerWithOffsetIsUnchanged() {
+		var manager = new HexoskinActivitiesTaskManager(credentialsManager);
+		Task task = manager.newTask(
+			Generator.id(),
+			new Identity(),
+			Nodes.newObject().put("tag", "Test").put("timezone", TIMEZONE).put("marker", "2013-07-01T00:00:00+09:00")
+		);
+		assertThat(task.getMarker()).isEqualTo("2013-07-01");
+		task.setMarker("2013-07-01T05:30:00.000+09:00");
+		givenProfileThen(response(200, "{\"meta\":{},\"objects\":[]}"));
+
+		manager.execute(task, credentials);
+
+		assertThat(queryParam(sentRequests(credentialsManager).get(1), "start__gt")).isEqualTo(
+			ticks("2013-07-01T05:30:00+09:00")
+		);
 	}
 
 	@Test
@@ -77,6 +100,10 @@ public class HexoskinTaskManagerTest extends TaskManagerTestSupport {
 
 		assertThat(events(commands)).isEmpty();
 		assertThat(task.getMarker()).isEqualTo("2014-03-01");
+	}
+
+	private static String ticks(String timestamp) {
+		return String.valueOf((DateTime.parse(timestamp).getMillis() * 256) / 1000);
 	}
 
 	private static Task newTask(HexoskinTaskManagerSupport<?> manager, String marker) {

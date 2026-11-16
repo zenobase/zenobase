@@ -15,6 +15,7 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.format.ISODateTimeFormat;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -66,8 +67,10 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 		return super.send(request, credentials);
 	}
 
-	protected LocalDate parseMarker(String marker) {
-		return marker != null ? DateTime.parse(marker).toLocalDate() : LocalDate.now().withDayOfMonth(1);
+	protected LocalDate parseMarker(@Nullable String marker, DateTimeZone zone) {
+		return marker != null
+			? ISODateTimeFormat.dateTimeParser().withOffsetParsed().parseLocalDate(marker)
+			: LocalDate.now(zone).withDayOfMonth(1);
 	}
 
 	protected Command createCommand(Task task, List<Event> events) {
