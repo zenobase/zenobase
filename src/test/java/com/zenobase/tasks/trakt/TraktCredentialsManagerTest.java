@@ -1,22 +1,52 @@
 package com.zenobase.tasks.trakt;
 
+import static com.zenobase.tasks.RecordingTransport.bodyParams;
+import static com.zenobase.tasks.RecordingTransport.queryParams;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import com.zenobase.models.Identity;
 import com.zenobase.repositories.CredentialsRepository;
+import com.zenobase.tasks.OAuth2CredentialsManagerTestSupport;
+import com.zenobase.tasks.OAuthCredentials;
+import com.zenobase.tasks.OAuthCredentialsManager;
 import java.net.URI;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
 
-public class TraktCredentialsManagerTest {
+public class TraktCredentialsManagerTest extends OAuth2CredentialsManagerTestSupport {
 
 	private final TraktCredentialsManager manager = new TraktCredentialsManager(
 		mock(CredentialsRepository.class),
 		"client",
-		"https://api.example.com"
-	);
+		HOST
+	) {
+		@Override
+		protected Response execute(OAuthRequest request) {
+			return transport.execute(request);
+		}
+	};
+
+	@Override
+	protected OAuthCredentialsManager manager() {
+		return manager;
+	}
+
+	@Override
+	protected String tokenEndpoint() {
+		return "https://api.trakt.tv/oauth/token";
+	}
+
+	/** PKCE: the code verifier stands in for the client secret. */
+	@Override
+	protected void assertTokenRequest(OAuthRequest request, Map<String, String> params, OAuthCredentials credentials) {
+		assertThat(params)
+			.containsEntry("client_id", "client")
+			.containsEntry("code_verifier", credentials.getToken().getSecret())
+			.doesNotContainKey("client_secret");
+	}
 
 	@Test
 	public void newCredentialsUsesPkce() {
@@ -26,12 +56,10 @@ public class TraktCredentialsManagerTest {
 		assertThat(verifier).matches("[A-Za-z0-9_-]{43}");
 		var url = URI.create(credentials.getAuthorizationUrl());
 		assertThat(url.getHost()).isEqualTo("auth.trakt.tv");
-		var query = URLDecoder.decode(url.getRawQuery(), StandardCharsets.UTF_8);
-		assertThat(query)
-			.contains("client_id=client")
-			.contains("redirect_uri=https://api.example.com/oauth/callback/-")
-			.contains("code_challenge=" + TraktCredentialsManager.codeChallenge(verifier))
-			.contains("code_challenge_method=S256");
+		assertThat(queryParams(url))
+			.containsEntry("client_id", "client")
+			.containsEntry("code_challenge", TraktCredentialsManager.codeChallenge(verifier))
+			.containsEntry("code_challenge_method", "S256");
 	}
 
 	@Test
@@ -52,5 +80,23 @@ public class TraktCredentialsManagerTest {
 		assertThat(TraktCredentialsManager.codeChallenge("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk")).isEqualTo(
 			"E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
 		);
+	}
+
+	@Test
+	public void reauthorizeExchangesRefreshTokenWithoutSecret() {
+		OAuthRequest request = refreshExpiredToken();
+
+		assertThat(request.getHeaders())
+			.containsEntry("trakt-api-version", "2")
+			.containsEntry("trakt-api-key", "client");
+		assertThat(bodyParams(request)).containsEntry("client_id", "client").doesNotContainKey("client_secret");
+	}
+
+	@Test
+	public void sendPassesApiKeyAndBearerHeaders() {
+		assertThat(sendWithToken().getHeaders())
+			.containsEntry("trakt-api-version", "2")
+			.containsEntry("trakt-api-key", "client")
+			.containsEntry("Authorization", "Bearer t");
 	}
 }
