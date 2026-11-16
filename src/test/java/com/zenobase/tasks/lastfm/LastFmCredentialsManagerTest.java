@@ -34,7 +34,12 @@ public class LastFmCredentialsManagerTest {
 	@Test
 	public void authorizeExchangesTokenForSession() {
 		OAuthCredentials credentials = manager.newCredentials(new Identity());
-		transport.reply(200, "{\"session\":{\"name\":\"bob\",\"key\":\"session-key\"}}");
+		transport.reply(
+			200,
+			"""
+			{"session": {"name": "bob", "key": "session-key"}}
+			"""
+		);
 
 		Command command = manager.authorize(credentials, Nodes.newObject("token", "tok"));
 

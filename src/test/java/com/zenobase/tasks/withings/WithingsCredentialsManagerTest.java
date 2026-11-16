@@ -43,7 +43,9 @@ public class WithingsCredentialsManagerTest extends OAuth2CredentialsManagerTest
 	@Override
 	protected String tokenResponse() {
 		// Withings wraps the token in a status envelope, and signals errors in the status rather than the HTTP code
-		return "{\"status\":0,\"body\":" + TOKEN_RESPONSE + "}";
+		return """
+		{"status": 0, "body": %s}
+		""".formatted(TOKEN_RESPONSE);
 	}
 
 	@Override
@@ -87,7 +89,12 @@ public class WithingsCredentialsManagerTest extends OAuth2CredentialsManagerTest
 	public void reauthorizeRejectsErrorStatus() {
 		// OAuthTaskManager turns this into an InvalidTokenException, which resets the credentials
 		OAuthCredentials credentials = authorizedCredentials(expiredToken());
-		transport.reply(200, "{\"status\":401,\"body\":{}}");
+		transport.reply(
+			200,
+			"""
+			{"status": 401, "body": {}}
+			"""
+		);
 
 		assertThatThrownBy(() -> manager.reauthorize(credentials)).isInstanceOf(IllegalArgumentException.class);
 	}
