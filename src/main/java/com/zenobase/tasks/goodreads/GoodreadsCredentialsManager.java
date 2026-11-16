@@ -46,6 +46,7 @@ public class GoodreadsCredentialsManager extends OAuthCredentialsManager {
 			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
 			return null;
 		}
+		checkRequestToken(credentials, code);
 		Token token = getAccessToken(credentials, code);
 		return UpdateCredentialsCommand.builder(credentials)
 			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
