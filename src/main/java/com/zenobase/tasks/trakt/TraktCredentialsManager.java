@@ -84,7 +84,7 @@ public class TraktCredentialsManager extends OAuthCredentialsManager {
 		request.addBodyParameter(OAuthConstants.REDIRECT_URI, buildCallback(callbackUrl, credentials));
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
 		request.addBodyParameter("code_verifier", Objects.requireNonNull(credentials.getToken()).getSecret());
-		return new OAuth2TokenExtractor().extract(request.send().getBody());
+		return new OAuth2TokenExtractor().extract(execute(request).getBody());
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public class TraktCredentialsManager extends OAuthCredentialsManager {
 			((ExpiringToken) Objects.requireNonNull(credentials.getToken())).getRefreshToken()
 		);
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
-		credentials.setToken(new OAuth2TokenExtractor().extract(request.send().getBody()));
+		credentials.setToken(new OAuth2TokenExtractor().extract(execute(request).getBody()));
 	}
 
 	@Override

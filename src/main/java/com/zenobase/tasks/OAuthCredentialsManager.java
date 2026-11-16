@@ -10,6 +10,7 @@ import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.Api;
+import org.scribe.model.OAuthConfig;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -134,6 +135,14 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 
 	public Response send(OAuthRequest request, OAuthCredentials credentials) {
 		sign(request, credentials);
+		return execute(request);
+	}
+
+	/**
+	 * Sends a request over the network. CustomApi20 token exchanges go through here too, but Scribe's OAuth 1.0a token
+	 * requests (Goodreads) don't.
+	 */
+	protected Response execute(OAuthRequest request) {
 		return request.send();
 	}
 
@@ -143,12 +152,18 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 
 	protected OAuthService getService(OAuthCredentials credentials) {
 		var builder = new ServiceBuilder()
-			.provider(provider)
+			.provider(this::createService)
 			.apiKey(apiKey)
 			.apiSecret(apiSecret)
 			.callback(buildCallback(callbackUrl, credentials));
 		configure(builder);
 		return builder.build();
+	}
+
+	private OAuthService createService(OAuthConfig config) {
+		return provider instanceof CustomApi20 api
+			? api.createService(config, this::execute)
+			: provider.createService(config);
 	}
 
 	protected String buildCallback(String baseUrl, OAuthCredentials credentials) {

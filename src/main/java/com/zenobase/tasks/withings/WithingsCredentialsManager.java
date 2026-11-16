@@ -81,7 +81,7 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 		request.addBodyParameter("client_id", getApiKey());
 		request.addBodyParameter("client_secret", getApiSecret());
 		request.addBodyParameter("refresh_token", refreshToken);
-		Response response = request.send();
+		Response response = execute(request);
 		if (response.isSuccessful()) {
 			credentials.setToken(new WithingsAccessTokenExtractor().extract(response.getBody()));
 		} else {

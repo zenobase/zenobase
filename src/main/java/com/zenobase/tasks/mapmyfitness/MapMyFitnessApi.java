@@ -4,7 +4,6 @@ import com.zenobase.common.UriBuilder;
 import com.zenobase.tasks.CustomApi20;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
 
 public class MapMyFitnessApi extends CustomApi20 {
 
@@ -25,8 +24,7 @@ public class MapMyFitnessApi extends CustomApi20 {
 	}
 
 	@Override
-	protected Response send(OAuthRequest request, OAuthConfig config) {
+	protected void configureAccessTokenRequest(OAuthRequest request, OAuthConfig config) {
 		request.addHeader("Api-Key", config.getApiKey());
-		return super.send(request, config);
 	}
 }
