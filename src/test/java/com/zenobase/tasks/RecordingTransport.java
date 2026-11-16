@@ -68,14 +68,12 @@ public class RecordingTransport {
 		return toMap(URLEncodedUtils.parse(uri, StandardCharsets.UTF_8));
 	}
 
-	/** Repeats of a parameter with the same value collapse into one entry; differing values are comma-joined. */
+	/** Fails on a repeated parameter, which some providers reject or resolve unpredictably. */
 	private static Map<String, String> toMap(List<NameValuePair> params) {
-		return params
-			.stream()
-			.collect(
-				Collectors.toMap(NameValuePair::getName, NameValuePair::getValue, (a, b) ->
-					a.equals(b) ? a : a + "," + b
-				)
-			);
+		return params.stream().collect(
+			Collectors.toMap(NameValuePair::getName, NameValuePair::getValue, (a, b) -> {
+				throw new AssertionError("Repeated parameter: " + params);
+			})
+		);
 	}
 }

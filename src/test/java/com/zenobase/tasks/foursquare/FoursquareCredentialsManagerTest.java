@@ -33,7 +33,7 @@ public class FoursquareCredentialsManagerTest extends OAuth2CredentialsManagerTe
 
 	@Override
 	protected String tokenEndpoint() {
-		return "https://foursquare.com/oauth2/access_token?grant_type=authorization_code";
+		return "https://foursquare.com/oauth2/access_token";
 	}
 
 	@Override
