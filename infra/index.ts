@@ -79,7 +79,7 @@ const vpc = new aws.ec2.Vpc("zenobase-vpc", {
 
 const flowLogGroup = new aws.cloudwatch.LogGroup("zenobase-vpc-flow-logs", {
     name: "/zenobase/vpc-flow-logs",
-    retentionInDays: 30,
+    retentionInDays: 14,
 });
 
 const flowLogRole = new aws.iam.Role("zenobase-vpc-flow-logs-role", {
@@ -112,7 +112,7 @@ new aws.iam.RolePolicy("zenobase-vpc-flow-logs-policy", {
 
 new aws.ec2.FlowLog("zenobase-vpc-flow-log", {
     vpcId: vpc.id,
-    trafficType: "ALL",
+    trafficType: "REJECT", // ALB access logs already cover accepted inbound traffic
     logDestination: flowLogGroup.arn,
     iamRoleArn: flowLogRole.arn,
     tags: { Name: "zenobase" },
@@ -320,7 +320,7 @@ export const snykRoleArn = snykRole.arn;
 
 const osLogGroup = new aws.cloudwatch.LogGroup("zenobase-opensearch-logs", {
     name: "/zenobase/opensearch",
-    retentionInDays: 365,
+    retentionInDays: 30,
 });
 
 const ecsTaskRole = new aws.iam.Role("zenobase-ecs-task-role", {
