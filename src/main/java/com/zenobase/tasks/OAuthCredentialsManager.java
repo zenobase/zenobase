@@ -5,11 +5,14 @@ import com.google.common.base.Preconditions;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.models.Identity;
+import com.zenobase.oauth.ExpiringToken;
+import com.zenobase.oauth.OAuth2TokenExtractor;
 import com.zenobase.repositories.CredentialsRepository;
 import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.Api;
+import org.scribe.model.OAuthConfig;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -64,8 +67,14 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 	public OAuthCredentials newCredentials(Identity principal) {
 		var credentials = new OAuthCredentials(getType(), principal);
 		credentials.setToken(getRequestToken(credentials));
-		credentials.setAuthorizationUrl(getService(credentials).getAuthorizationUrl(credentials.getToken()));
+		credentials.setAuthorizationUrl(
+			getAuthorizationUrl(credentials, Objects.requireNonNull(credentials.getToken()))
+		);
 		return credentials;
+	}
+
+	public String getAuthorizationUrl(OAuthCredentials credentials, Token requestToken) {
+		return getService(credentials).getAuthorizationUrl(requestToken);
 	}
 
 	protected Token getRequestToken(OAuthCredentials credentials) {
@@ -73,13 +82,8 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 	}
 
 	@Override
-	public @Nullable Command authorize(Credentials credentials, ObjectNode config) {
-		return !config.isEmpty()
-			? authorize(credentials.as(OAuthCredentials.class), config)
-			: deauthorize(credentials.as(OAuthCredentials.class));
-	}
-
-	private @Nullable Command authorize(OAuthCredentials credentials, ObjectNode config) {
+	public @Nullable Command authorize(Credentials untyped, ObjectNode config) {
+		OAuthCredentials credentials = untyped.as(OAuthCredentials.class);
 		Preconditions.checkState(!credentials.isAuthorized());
 		String token = config.path("oauth_token").textValue();
 		String verifier = config.path("oauth_verifier").asText();
@@ -87,14 +91,7 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
 			return null;
 		}
-		Token credentialsToken = Objects.requireNonNull(credentials.getToken());
-		Preconditions.checkState(
-			credentialsToken.getToken().equals(token),
-			"Token matches in credentials %s, expected %s, got %s",
-			credentials.getId(),
-			credentialsToken.getToken(),
-			token
-		);
+		checkRequestToken(credentials, token);
 		return UpdateCredentialsCommand.builder(credentials)
 			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
 			.with(Credentials.CREDENTIALS)
@@ -102,21 +99,19 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 			.build();
 	}
 
-	public void reauthorize(Credentials credentials) {
-		throw new UnsupportedOperationException();
+	protected static void checkRequestToken(OAuthCredentials credentials, String token) {
+		Token requestToken = Objects.requireNonNull(credentials.getToken());
+		Preconditions.checkState(
+			requestToken.getToken().equals(token),
+			"Token mismatch in credentials %s, expected %s, got %s",
+			credentials.getId(),
+			requestToken.getToken(),
+			token
+		);
 	}
 
-	private Command deauthorize(OAuthCredentials credentials) {
-		Token token = getRequestToken(credentials);
-		return UpdateCredentialsCommand.builder(credentials)
-			.set(
-				Credentials.AUTHORIZATION_URL,
-				credentials.getAuthorizationUrl(),
-				getService(credentials).getAuthorizationUrl(token)
-			)
-			.with(Credentials.CREDENTIALS)
-			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-			.build();
+	public void reauthorize(Credentials credentials) {
+		throw new UnsupportedOperationException();
 	}
 
 	protected Token getAccessToken(OAuthCredentials credentials, String verifier) {
@@ -126,8 +121,31 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 		);
 	}
 
+	/**
+	 * Sends a refresh token request. A 400 or 401 response means the provider rejected the refresh token, so it
+	 * throws {@link InvalidTokenException}; any other failure, such as an outage, throws {@link InvalidStatusException}.
+	 */
+	protected ExpiringToken refresh(OAuthRequest request, OAuthCredentials credentials) {
+		Response response = execute(request);
+		if (response.isSuccessful()) {
+			return new OAuth2TokenExtractor().extract(response.getBody());
+		}
+		if (response.getCode() == 400 || response.getCode() == 401) {
+			throw new InvalidTokenException(credentials);
+		}
+		throw new InvalidStatusException(request.getCompleteUrl(), response.getCode(), response.getBody());
+	}
+
 	public Response send(OAuthRequest request, OAuthCredentials credentials) {
 		sign(request, credentials);
+		return execute(request);
+	}
+
+	/**
+	 * Sends a request over the network. CustomApi20 token exchanges go through here too, but Scribe's OAuth 1.0a token
+	 * requests (Goodreads) don't.
+	 */
+	protected Response execute(OAuthRequest request) {
 		return request.send();
 	}
 
@@ -137,12 +155,18 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 
 	protected OAuthService getService(OAuthCredentials credentials) {
 		var builder = new ServiceBuilder()
-			.provider(provider)
+			.provider(this::createService)
 			.apiKey(apiKey)
 			.apiSecret(apiSecret)
 			.callback(buildCallback(callbackUrl, credentials));
 		configure(builder);
 		return builder.build();
+	}
+
+	private OAuthService createService(OAuthConfig config) {
+		return provider instanceof CustomApi20 api
+			? api.createService(config, this::execute)
+			: provider.createService(config);
 	}
 
 	protected String buildCallback(String baseUrl, OAuthCredentials credentials) {

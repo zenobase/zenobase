@@ -50,8 +50,22 @@ public class SleepCloudTaskManagerTest extends TaskManagerTestSupport {
 		String marker = "2014-03-11T00:00:00.000-05:00";
 		task.setMarker(marker);
 
-		task = apply(manager.execute(task, credentials), task);
+		Command commands = manager.execute(task, credentials);
+		task = apply(commands, task);
 
+		assertThat(events(commands)).as("already imported").isEmpty();
 		assertThat(task.getMarker()).isEqualTo(marker);
+	}
+
+	@Test
+	public void testRecordsEndingAtOrBeforeMarkerAreDropped() {
+		Task task = manager.newTask(Generator.id(), new Identity(), Nodes.newObject().put("tag", "sleep"));
+		task.setMarker("2014-03-09T06:50:48.000-05:00"); // end of the second night
+
+		Command commands = manager.execute(task, credentials);
+		task = apply(commands, task);
+
+		assertThat(events(commands)).hasSize(1);
+		assertThat(DateTime.parse(task.getMarker())).isEqualTo(DateTime.parse("2014-03-10T06:26:50-05:00"));
 	}
 }

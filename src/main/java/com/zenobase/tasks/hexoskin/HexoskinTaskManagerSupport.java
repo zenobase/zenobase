@@ -5,19 +5,24 @@ import com.google.common.util.concurrent.RateLimiter;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventsCommand;
+import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
+import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.format.ISODateTimeFormat;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
+import org.scribe.model.Token;
 import org.scribe.model.Verb;
 
 abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends OAuthTaskManager {
@@ -38,6 +43,10 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 	}
 
 	private Command execute(T task, OAuthCredentials credentials) {
+		Token token = credentials.getToken();
+		if (credentials.isExpired()) {
+			reauthorize(credentials);
+		}
 		HexoskinProfileResult profile = getProfile(credentials);
 		List<Event> events = new ArrayList<>();
 		for (String path = getPath(task); path != null; ) {
@@ -47,7 +56,7 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 			events.addAll(result.getEvents());
 			path = result.next();
 		}
-		return createCommand(task, events);
+		return createCommand(task, credentials, token, events);
 	}
 
 	private HexoskinProfileResult getProfile(OAuthCredentials credentials) {
@@ -66,11 +75,18 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 		return super.send(request, credentials);
 	}
 
-	protected LocalDate parseMarker(String marker) {
-		return marker != null ? DateTime.parse(marker).toLocalDate() : LocalDate.now().withDayOfMonth(1);
+	protected LocalDate parseMarker(@Nullable String marker, DateTimeZone zone) {
+		return marker != null
+			? ISODateTimeFormat.dateTimeParser().withOffsetParsed().parseLocalDate(marker)
+			: LocalDate.now(zone).withDayOfMonth(1);
 	}
 
-	protected Command createCommand(Task task, List<Event> events) {
+	protected Command createCommand(
+		Task task,
+		OAuthCredentials credentials,
+		@Nullable Token expiredToken,
+		List<Event> events
+	) {
 		var command = new CompoundCommand(
 			task.getPrincipal(),
 			"ran " + getType() + " task",
@@ -84,6 +100,14 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build()
 		);
+		if (!Objects.equals(credentials.getToken(), expiredToken)) {
+			command.add(
+				UpdateCredentialsCommand.builder(credentials)
+					.with(Credentials.CREDENTIALS)
+					.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+					.build()
+			);
+		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}

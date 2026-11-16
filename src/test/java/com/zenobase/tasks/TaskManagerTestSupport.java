@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -18,13 +17,13 @@ import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import org.apache.hc.core5.http.NameValuePair;
-import org.apache.hc.core5.net.URLEncodedUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.mockito.ArgumentCaptor;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -38,6 +37,16 @@ import org.scribe.model.Token;
  */
 public abstract class TaskManagerTestSupport extends ResultTestSupport {
 
+	/** Fixes Joda's clock, so that managers paging up to "now" make a predictable number of requests. */
+	protected static void givenNow(DateTime now) {
+		DateTimeUtils.setCurrentMillisFixed(now.getMillis());
+	}
+
+	@AfterEach
+	public void resetClock() {
+		DateTimeUtils.setCurrentMillisSystem();
+	}
+
 	/** An HTTP 200 response whose body is the named fixture, resolved next to the test class. */
 	protected Response successResponse(String fixture) {
 		try {
@@ -48,11 +57,7 @@ public abstract class TaskManagerTestSupport extends ResultTestSupport {
 	}
 
 	protected Response response(int code, String body) {
-		Response response = mock(Response.class);
-		when(response.getCode()).thenReturn(code);
-		when(response.isSuccessful()).thenReturn(code >= 200 && code < 300);
-		when(response.getBody()).thenReturn(body);
-		return response;
+		return RecordingTransport.response(code, body);
 	}
 
 	/** Scripts the responses to successive {@code send()} calls; the last one repeats. */
@@ -93,13 +98,11 @@ public abstract class TaskManagerTestSupport extends ResultTestSupport {
 	}
 
 	protected static String queryParam(OAuthRequest request, String name) {
-		String url = request.getCompleteUrl();
-		return URLEncodedUtils.parse(URI.create(url), StandardCharsets.UTF_8)
-			.stream()
-			.filter(param -> param.getName().equals(name))
-			.map(NameValuePair::getValue)
-			.findFirst()
-			.orElseThrow(() -> new AssertionError("Missing query parameter '" + name + "' in " + url));
+		String value = RecordingTransport.queryParams(request).get(name);
+		if (value == null) {
+			throw new AssertionError("Missing query parameter '" + name + "' in " + request.getCompleteUrl());
+		}
+		return value;
 	}
 
 	/**

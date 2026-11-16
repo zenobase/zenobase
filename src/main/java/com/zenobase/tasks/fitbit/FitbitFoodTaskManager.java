@@ -33,7 +33,7 @@ public class FitbitFoodTaskManager extends FitbitTaskManagerSupport<FitbitFoodTa
 	@Override
 	public FitbitFoodTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = parseMarker(settings.path("marker").textValue()).toString();
-		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "steps");
+		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "food");
 		return new FitbitFoodTask(bucketId, principal, marker, tag);
 	}
 

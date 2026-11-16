@@ -46,7 +46,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 			MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC")
 		);
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
-		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "body");
+		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "track");
 		var task = new LastFmTask(bucketId, principal, marker);
 		task.setTag(tag);
 		task.setTimezone(timezone);

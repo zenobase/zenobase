@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.io.BaseEncoding;
 import com.zenobase.oauth.OAuth2TokenExtractor;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Function;
 import org.scribe.builder.api.DefaultApi20;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConfig;
@@ -30,6 +31,11 @@ public abstract class CustomApi20 extends DefaultApi20 {
 
 	@Override
 	public OAuthService createService(OAuthConfig config) {
+		return createService(config, OAuthRequest::send);
+	}
+
+	/** Like {@link #createService(OAuthConfig)}, but sends the access token request through {@code transport}. */
+	public OAuthService createService(OAuthConfig config, Function<OAuthRequest, Response> transport) {
 		return new OAuth20ServiceImpl(this, config) {
 			@Override
 			public Token getAccessToken(Token requestToken, Verifier verifier) {
@@ -48,8 +54,8 @@ public abstract class CustomApi20 extends DefaultApi20 {
 				if (config.hasScope()) {
 					addParameter(request, OAuthConstants.SCOPE, config.getScope());
 				}
-				configureAccessTokenRequest(request);
-				Response response = send(request, config);
+				configureAccessTokenRequest(request, config);
+				Response response = transport.apply(request);
 				return getAccessTokenExtractor().extract(response.getBody());
 			}
 
@@ -78,7 +84,7 @@ public abstract class CustomApi20 extends DefaultApi20 {
 		request.addHeader("Authorization", "Basic " + encoded);
 	}
 
-	protected void configureAccessTokenRequest(OAuthRequest request) {}
+	protected void configureAccessTokenRequest(OAuthRequest request, OAuthConfig config) {}
 
 	protected void addParameter(OAuthRequest request, String key, String value) {
 		if (getAccessTokenVerb() == Verb.POST) {
@@ -88,9 +94,5 @@ public abstract class CustomApi20 extends DefaultApi20 {
 		} else {
 			throw new IllegalArgumentException("Can't handle: " + getAccessTokenVerb());
 		}
-	}
-
-	protected Response send(OAuthRequest request, OAuthConfig config) {
-		return request.send();
 	}
 }

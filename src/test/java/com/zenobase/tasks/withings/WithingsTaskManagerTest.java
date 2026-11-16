@@ -145,8 +145,38 @@ public class WithingsTaskManagerTest extends TaskManagerTestSupport {
 		assertThat(requests.getFirst().getCompleteUrl()).contains("wbsapi.withings.net/v2/sleep");
 		assertThat(queryParam(requests.get(0), "enddate")).isEqualTo(queryParam(requests.get(1), "startdate"));
 
-		assertThat(events(commands)).as("merged sleep periods").hasSize(2);
-		assertThat(task.getMarker()).as("the fixture's periods all end before the marker").isEqualTo(marker);
+		assertThat(events(commands)).as("the fixture's periods all end before the marker").isEmpty();
+		assertThat(task.getMarker()).isEqualTo(marker);
+	}
+
+	@Test
+	public void testSleepDropsPeriodsEndingBeforeMarker() {
+		var manager = new WithingsSleepTaskManager(credentialsManager);
+		Task task = manager.newTask(
+			Generator.id(),
+			new Identity(),
+			Nodes.newObject().put("timezone", TIMEZONE).put("marker", daysAgo(1))
+		);
+		long now = DateTime.now().getMillis() / 1000;
+		long twoDaysAgo = now - 2 * 24 * 3600;
+		String series = String.format(
+			"[{\"startdate\":%d,\"state\":1,\"enddate\":%d},{\"startdate\":%d,\"state\":1,\"enddate\":%d}]",
+			twoDaysAgo - 3600,
+			twoDaysAgo,
+			now - 3600,
+			now - 60
+		);
+		givenResponses(
+			credentialsManager,
+			credentials,
+			response(200, "{\"status\":0,\"body\":{\"series\":" + series + "}}")
+		);
+
+		Command commands = manager.execute(task, credentials);
+		task = apply(commands, task);
+
+		assertThat(events(commands)).hasSize(1);
+		assertThat(DateTime.parse(task.getMarker()).getMillis()).isEqualTo((now - 60) * 1000);
 	}
 
 	@Test

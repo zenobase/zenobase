@@ -130,7 +130,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 			.set(
 				Credentials.AUTHORIZATION_URL,
 				e.getCredentials().getAuthorizationUrl(),
-				credentialsManager.getService(e.getCredentials()).getAuthorizationUrl(requestToken)
+				credentialsManager.getAuthorizationUrl(e.getCredentials(), requestToken)
 			)
 			.with(Credentials.CREDENTIALS)
 			.set(OAuthCredentials.TOKEN, e.getCredentials().getToken(), requestToken)

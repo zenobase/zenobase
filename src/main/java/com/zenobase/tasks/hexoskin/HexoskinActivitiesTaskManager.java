@@ -15,9 +15,9 @@ public class HexoskinActivitiesTaskManager extends HexoskinTaskManagerSupport<He
 
 	@Override
 	public HexoskinTaskSupport newTask(String bucketId, Identity principal, ObjectNode settings) {
-		String marker = parseMarker(settings.path("marker").textValue()).toString();
-		String tag = settings.path("tag").textValue();
 		DateTimeZone zone = DateTimeZone.forID(settings.path("timezone").textValue());
+		String marker = parseMarker(settings.path("marker").textValue(), zone).toString();
+		String tag = settings.path("tag").textValue();
 		return new HexoskinActivitiesTask(bucketId, principal, tag, zone, marker);
 	}
 

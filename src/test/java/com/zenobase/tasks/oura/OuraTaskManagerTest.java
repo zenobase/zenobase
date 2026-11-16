@@ -90,10 +90,26 @@ public class OuraTaskManagerTest extends TaskManagerTestSupport {
 		Task task = manager.newTask(Generator.id(), new Identity(), Nodes.newObject().put("marker", marker));
 		givenResponses(credentialsManager, credentials, successResponse("OuraSleepResultTest.json"));
 
-		task = apply(manager.execute(task, credentials), task);
+		Command commands = manager.execute(task, credentials);
+		task = apply(commands, task);
 
 		assertThat(queryParam(onlyRequest(credentialsManager), "start_date")).isEqualTo("2018-12-21");
-		assertThat(task.getMarker()).as("all bedtimes end before the marker").isEqualTo(marker);
+		assertThat(events(commands)).as("all bedtimes end before the marker").isEmpty();
+		assertThat(task.getMarker()).isEqualTo(marker);
+	}
+
+	@Test
+	public void testRecordsEndingAtOrBeforeMarkerAreDropped() {
+		var manager = new OuraSleepTaskManager(credentialsManager);
+		String marker = "2018-12-04T06:35:44.000+02:00"; // end of the second bedtime
+		Task task = manager.newTask(Generator.id(), new Identity(), Nodes.newObject().put("marker", marker));
+		givenResponses(credentialsManager, credentials, successResponse("OuraSleepResultTest.json"));
+
+		Command commands = manager.execute(task, credentials);
+		task = apply(commands, task);
+
+		assertThat(events(commands)).hasSize(1);
+		assertThat(task.getMarker()).isEqualTo("2018-12-21T07:29:00.000+02:00");
 	}
 
 	@Test
