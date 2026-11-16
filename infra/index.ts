@@ -20,6 +20,7 @@ const bastionEnabled = config.get("bastionEnabled") === "true";
 const fargateCpu = config.get("fargateCpu") || "1024";
 const fargateMemory = config.get("fargateMemory") || "2048";
 const opensearchInstanceType = config.get("opensearchInstanceType") || "t3.medium.search";
+const alarmEmail = config.get("alarmEmail");
 
 // ---------- GitHub Actions IAM Role ----------
 
@@ -76,7 +77,48 @@ const vpc = new aws.ec2.Vpc("zenobase-vpc", {
     tags: { Name: "zenobase" },
 });
 
-const igw = new aws.ec2.InternetGateway("zenobase-igw", {
+const flowLogGroup = new aws.cloudwatch.LogGroup("zenobase-vpc-flow-logs", {
+    name: "/zenobase/vpc-flow-logs",
+    retentionInDays: 30,
+});
+
+const flowLogRole = new aws.iam.Role("zenobase-vpc-flow-logs-role", {
+    assumeRolePolicy: pulumi.all([accountId]).apply(([account]) => JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [{
+            Action: "sts:AssumeRole",
+            Effect: "Allow",
+            Principal: { Service: "vpc-flow-logs.amazonaws.com" },
+            Condition: {
+                StringEquals: { "aws:SourceAccount": account },
+                ArnLike: { "aws:SourceArn": `arn:aws:ec2:${region}:${account}:vpc-flow-log/*` },
+            },
+        }],
+    })),
+    tags: { Name: "zenobase-vpc-flow-logs" },
+});
+
+new aws.iam.RolePolicy("zenobase-vpc-flow-logs-policy", {
+    role: flowLogRole.id,
+    policy: flowLogGroup.arn.apply(groupArn => JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [{
+            Effect: "Allow",
+            Action: ["logs:CreateLogStream", "logs:PutLogEvents", "logs:DescribeLogGroups", "logs:DescribeLogStreams"],
+            Resource: [groupArn, `${groupArn}:*`],
+        }],
+    })),
+});
+
+new aws.ec2.FlowLog("zenobase-vpc-flow-log", {
+    vpcId: vpc.id,
+    trafficType: "ALL",
+    logDestination: flowLogGroup.arn,
+    iamRoleArn: flowLogRole.arn,
+    tags: { Name: "zenobase" },
+});
+
+const igw =new aws.ec2.InternetGateway("zenobase-igw", {
     vpcId: vpc.id,
     tags: { Name: "zenobase" },
 });
@@ -222,7 +264,10 @@ if (bastionEnabled) {
 
 const ecrRepo = new aws.ecr.Repository("zenobase-api", {
     name: "zenobase-api",
-    imageTagMutability: "MUTABLE",
+    // build.yml also pushes a moving "latest" tag next to the immutable commit-SHA tag
+    imageTagMutability: "IMMUTABLE_WITH_EXCLUSION",
+    imageTagMutabilityExclusionFilters: [{ filter: "latest", filterType: "WILDCARD" }],
+    imageScanningConfiguration: { scanOnPush: true },
     encryptionConfigurations: [{ encryptionType: "AES256" }],
 });
 
@@ -275,18 +320,23 @@ export const snykRoleArn = snykRole.arn;
 
 const osLogGroup = new aws.cloudwatch.LogGroup("zenobase-opensearch-logs", {
     name: "/zenobase/opensearch",
-    retentionInDays: 30,
+    retentionInDays: 365,
 });
 
 const ecsTaskRole = new aws.iam.Role("zenobase-ecs-task-role", {
-    assumeRolePolicy: JSON.stringify({
+    assumeRolePolicy: pulumi.all([accountId]).apply(([account]) => JSON.stringify({
         Version: "2012-10-17",
         Statement: [{
             Action: "sts:AssumeRole",
             Effect: "Allow",
             Principal: { Service: "ecs-tasks.amazonaws.com" },
+            Condition: {
+                StringEquals: { "aws:SourceAccount": account },
+                // ECS doesn't support scoping SourceArn to a single cluster
+                ArnLike: { "aws:SourceArn": `arn:aws:ecs:${region}:${account}:*` },
+            },
         }],
-    }),
+    })),
     tags: { Name: "zenobase-ecs-task" },
 });
 
@@ -463,7 +513,13 @@ new aws.s3.BucketLifecycleConfiguration("zenobase-lb-logs-lifecycle", {
         id: "expire-logs",
         status: "Enabled",
         expiration: { days: 90 },
+        noncurrentVersionExpiration: { noncurrentDays: 7 },
     }],
+});
+
+new aws.s3.BucketVersioning("zenobase-lb-logs-versioning", {
+    bucket: albLogsBucket.id,
+    versioningConfiguration: { status: "Enabled" },
 });
 
 const elbAccount = aws.elb.getServiceAccount();
@@ -473,12 +529,22 @@ const albLogsBucketPolicy = new aws.s3.BucketPolicy("zenobase-lb-logs-policy", {
     policy: pulumi.all([albLogsBucket.arn, elbAccount.then(a => a.arn)]).apply(([bucketArn, elbArn]) =>
         JSON.stringify({
             Version: "2012-10-17",
-            Statement: [{
-                Effect: "Allow",
-                Principal: { AWS: elbArn },
-                Action: "s3:PutObject",
-                Resource: `${bucketArn}/*`,
-            }],
+            Statement: [
+                {
+                    Effect: "Allow",
+                    Principal: { AWS: elbArn },
+                    Action: "s3:PutObject",
+                    Resource: `${bucketArn}/*`,
+                },
+                {
+                    Sid: "DenyInsecureTransport",
+                    Effect: "Deny",
+                    Principal: "*",
+                    Action: "s3:*",
+                    Resource: [bucketArn, `${bucketArn}/*`],
+                    Condition: { Bool: { "aws:SecureTransport": "false" } },
+                },
+            ],
         }),
     ),
 });
@@ -488,6 +554,8 @@ const alb = new aws.lb.LoadBalancer("zenobase-alb", {
     loadBalancerType: "application",
     securityGroups: [albSg.id],
     subnets: [subnetA.id, subnetB.id],
+    dropInvalidHeaderFields: true,
+    enableDeletionProtection: true,
     accessLogs: {
         bucket: albLogsBucket.bucket,
         enabled: true,
@@ -617,6 +685,37 @@ new aws.wafv2.WebAclAssociation("zenobase-waf-alb", {
     webAclArn: waf.arn,
 });
 
+const wafLogGroup = new aws.cloudwatch.LogGroup("zenobase-waf-logs", {
+    name: "aws-waf-logs-zenobase", // WAF requires the aws-waf-logs- prefix
+    retentionInDays: 90,
+});
+
+const wafLogPolicy = new aws.cloudwatch.LogResourcePolicy("zenobase-waf-log-policy", {
+    policyName: "zenobase-waf-log-policy",
+    policyDocument: pulumi.all([accountId, wafLogGroup.arn]).apply(([account, groupArn]) => JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [{
+            Effect: "Allow",
+            Principal: { Service: "delivery.logs.amazonaws.com" },
+            Action: ["logs:CreateLogStream", "logs:PutLogEvents"],
+            Resource: `${groupArn}:*`,
+            Condition: {
+                StringEquals: { "aws:SourceAccount": account },
+                ArnLike: { "aws:SourceArn": `arn:aws:logs:${region}:${account}:*` },
+            },
+        }],
+    })),
+});
+
+new aws.wafv2.WebAclLoggingConfiguration("zenobase-waf-logging", {
+    resourceArn: waf.arn,
+    logDestinationConfigs: [wafLogGroup.arn],
+    redactedFields: [
+        { singleHeader: { name: "authorization" } },
+        { singleHeader: { name: "cookie" } },
+    ],
+}, { dependsOn: [wafLogPolicy] });
+
 // ---------- Secrets Manager ----------
 
 const apiConfig = new aws.secretsmanager.Secret("zenobase-prod-api-config", {
@@ -628,13 +727,14 @@ const apiConfig = new aws.secretsmanager.Secret("zenobase-prod-api-config", {
 
 new aws.cloudwatch.LogGroup("zenobase-api-logs", {
     name: "/zenobase/api",
-    retentionInDays: 30,
+    retentionInDays: 365,
 });
 
 // ---------- ECS Fargate ----------
 
 const cluster = new aws.ecs.Cluster("zenobase-cluster", {
     name: "zenobase",
+    settings: [{ name: "containerInsights", value: "enabled" }],
     tags: { Name: "zenobase" },
 });
 
@@ -788,6 +888,19 @@ new aws.ecs.Service("zenobase-service", {
 
 // ---------- CloudWatch Alarms ----------
 
+const alarmTopic = new aws.sns.Topic("zenobase-alarms", {
+    name: "zenobase-alarms",
+    tags: { Name: "zenobase-alarms" },
+});
+
+if (alarmEmail) {
+    new aws.sns.TopicSubscription("zenobase-alarms-email", {
+        topic: alarmTopic.arn,
+        protocol: "email",
+        endpoint: alarmEmail,
+    });
+}
+
 new aws.cloudwatch.MetricAlarm("zenobase-unhealthy-hosts", {
     alarmDescription: "ALB has unhealthy targets",
     namespace: "AWS/ApplicationELB",
@@ -802,6 +915,7 @@ new aws.cloudwatch.MetricAlarm("zenobase-unhealthy-hosts", {
     threshold: 1,
     comparisonOperator: "GreaterThanOrEqualToThreshold",
     treatMissingData: "breaching",
+    alarmActions: [alarmTopic.arn],
 });
 
 new aws.cloudwatch.MetricAlarm("zenobase-5xx-errors", {
@@ -817,6 +931,7 @@ new aws.cloudwatch.MetricAlarm("zenobase-5xx-errors", {
     threshold: 10,
     comparisonOperator: "GreaterThanOrEqualToThreshold",
     treatMissingData: "notBreaching",
+    alarmActions: [alarmTopic.arn],
 });
 
 // ---------- Exports ----------
