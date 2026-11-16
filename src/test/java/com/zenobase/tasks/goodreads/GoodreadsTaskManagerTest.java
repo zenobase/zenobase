@@ -58,6 +58,31 @@ public class GoodreadsTaskManagerTest extends TaskManagerTestSupport {
 	}
 
 	@Test
+	public void testStopsAfterLastReview() {
+		Task task = newTask(null);
+		String review =
+			"<review><id>%d</id><url>https://www.goodreads.com/review/show/%d</url>" +
+			"<started_at>Sun Apr 01 20:57:22 -0700 2018</started_at>" +
+			"<read_at>Sun Apr 08 20:57:22 -0700 2018</read_at></review>";
+		String lastPage =
+			"<GoodreadsResponse><reviews start=\"1\" end=\"2\" total=\"2\">" +
+			review.formatted(1, 1) +
+			review.formatted(2, 2) +
+			"</reviews></GoodreadsResponse>";
+		givenResponses(
+			credentialsManager,
+			credentials,
+			xml(successResponse("auth_user.xml")),
+			xml(response(200, lastPage))
+		);
+
+		Command commands = manager.execute(task, credentials);
+
+		assertThat(sentRequests(credentialsManager)).as("no request for a second page").hasSize(2);
+		assertThat(events(commands)).hasSize(2);
+	}
+
+	@Test
 	public void testRejectsNonXmlResponse() {
 		Task task = newTask(null);
 		Response html = successResponse("auth_user.xml");

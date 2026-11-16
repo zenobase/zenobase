@@ -36,7 +36,7 @@ public class GoodreadsReviewListResultTest extends ResultTestSupport {
 		expected.setValue(Event.AUTHOR, TESTER);
 		assertThat(actual.get(0)).isEqualTo(expected);
 
-		assertThat(result.getStartPage()).as("start page").isEqualTo(1);
-		assertThat(result.getEndPage()).as("end page").isEqualTo(5);
+		assertThat(result.getEnd()).as("end").isEqualTo(5);
+		assertThat(result.getTotal()).as("total").isEqualTo(32);
 	}
 }
