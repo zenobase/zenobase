@@ -43,6 +43,11 @@ public class OuraCredentialsManagerTest extends OAuth2CredentialsManagerTestSupp
 	}
 
 	@Test
+	public void reauthorizeThrowsInvalidTokenOnlyWhenRejected() {
+		assertRefreshFailures();
+	}
+
+	@Test
 	public void sendPassesTokenInBearerHeader() {
 		assertThat(sendWithToken().getHeaders()).containsEntry("Authorization", "Bearer t");
 	}

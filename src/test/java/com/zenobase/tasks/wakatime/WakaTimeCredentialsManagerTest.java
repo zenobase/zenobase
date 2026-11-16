@@ -44,6 +44,11 @@ public class WakaTimeCredentialsManagerTest extends OAuth2CredentialsManagerTest
 	}
 
 	@Test
+	public void reauthorizeThrowsInvalidTokenOnlyWhenRejected() {
+		assertRefreshFailures();
+	}
+
+	@Test
 	public void sendPassesTokenInBearerHeader() {
 		assertThat(sendWithToken().getHeaders()).containsEntry("Authorization", "Bearer t");
 	}

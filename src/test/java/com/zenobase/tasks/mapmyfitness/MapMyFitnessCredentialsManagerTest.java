@@ -52,6 +52,11 @@ public class MapMyFitnessCredentialsManagerTest extends OAuth2CredentialsManager
 	}
 
 	@Test
+	public void reauthorizeThrowsInvalidTokenOnlyWhenRejected() {
+		assertRefreshFailures();
+	}
+
+	@Test
 	public void sendPassesApiKeyAndBearerHeaders() {
 		assertThat(sendWithToken().getHeaders())
 			.containsEntry("Api-Key", "client")

@@ -5,6 +5,8 @@ import com.google.common.base.Preconditions;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.models.Identity;
+import com.zenobase.oauth.ExpiringToken;
+import com.zenobase.oauth.OAuth2TokenExtractor;
 import com.zenobase.repositories.CredentialsRepository;
 import java.util.Objects;
 import org.jspecify.annotations.Nullable;
@@ -131,6 +133,21 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 			Objects.requireNonNull(credentials.getToken()),
 			new Verifier(verifier)
 		);
+	}
+
+	/**
+	 * Sends a refresh token request. A 400 or 401 response means the provider rejected the refresh token, so it
+	 * throws {@link InvalidTokenException}; any other failure, such as an outage, throws {@link InvalidStatusException}.
+	 */
+	protected ExpiringToken refresh(OAuthRequest request, OAuthCredentials credentials) {
+		Response response = execute(request);
+		if (response.isSuccessful()) {
+			return new OAuth2TokenExtractor().extract(response.getBody());
+		}
+		if (response.getCode() == 400 || response.getCode() == 401) {
+			throw new InvalidTokenException(credentials);
+		}
+		throw new InvalidStatusException(request.getCompleteUrl(), response.getCode(), response.getBody());
 	}
 
 	public Response send(OAuthRequest request, OAuthCredentials credentials) {
