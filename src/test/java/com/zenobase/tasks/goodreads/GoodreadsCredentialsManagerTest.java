@@ -2,6 +2,7 @@ package com.zenobase.tasks.goodreads;
 
 import static com.zenobase.tasks.RecordingTransport.queryParams;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 import com.zenobase.json.Nodes;
@@ -40,6 +41,16 @@ public class GoodreadsCredentialsManagerTest {
 			manager.authorize(credentials, Nodes.newObject().put("oauth_token", "request").put("authorize", "0"))
 		).isNull();
 		assertThat(manager.authorize(credentials, Nodes.newObject().put("authorize", "1"))).isNull();
+	}
+
+	@Test
+	public void authorizeRejectsMismatchedToken() {
+		var credentials = new OAuthCredentials("goodreads", new Identity());
+		credentials.setToken(new Token("request", "request-secret"));
+
+		assertThatThrownBy(() ->
+			manager.authorize(credentials, Nodes.newObject().put("oauth_token", "other").put("authorize", "1"))
+		).isInstanceOf(IllegalStateException.class);
 	}
 
 	@Test

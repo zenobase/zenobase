@@ -94,19 +94,23 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 			logger.warn("Couldn't obtain {} credentials <{}>: {}", credentials.getType(), credentials.getId(), config);
 			return null;
 		}
-		Token credentialsToken = Objects.requireNonNull(credentials.getToken());
-		Preconditions.checkState(
-			credentialsToken.getToken().equals(token),
-			"Token matches in credentials %s, expected %s, got %s",
-			credentials.getId(),
-			credentialsToken.getToken(),
-			token
-		);
+		checkRequestToken(credentials, token);
 		return UpdateCredentialsCommand.builder(credentials)
 			.set(Credentials.AUTHORIZATION_URL, credentials.getAuthorizationUrl(), null)
 			.with(Credentials.CREDENTIALS)
 			.set(OAuthCredentials.TOKEN, credentials.getToken(), getAccessToken(credentials, verifier))
 			.build();
+	}
+
+	protected static void checkRequestToken(OAuthCredentials credentials, String token) {
+		Token requestToken = Objects.requireNonNull(credentials.getToken());
+		Preconditions.checkState(
+			requestToken.getToken().equals(token),
+			"Token mismatch in credentials %s, expected %s, got %s",
+			credentials.getId(),
+			requestToken.getToken(),
+			token
+		);
 	}
 
 	public void reauthorize(Credentials credentials) {
