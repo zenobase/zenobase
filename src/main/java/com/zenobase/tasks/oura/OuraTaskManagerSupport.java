@@ -26,7 +26,12 @@ abstract class OuraTaskManagerSupport extends OAuthTaskManager {
 		super(type, credentialsManager);
 	}
 
+	/**
+	 * Oura returns whole days starting at the marker's date, so drop the records that were imported by an earlier run.
+	 */
 	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
+		DateTime marker = DateTime.parse(Objects.requireNonNull(task.getMarker()));
+		events.removeIf(event -> !getEnd(event).isAfter(marker));
 		var command = new CompoundCommand(
 			task.getPrincipal(),
 			"ran " + getType() + " task",
@@ -36,11 +41,7 @@ abstract class OuraTaskManagerSupport extends OAuthTaskManager {
 			UpdateTaskCommand.builder(task)
 				.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 				.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-				.set(
-					Task.MARKER,
-					task.getMarker(),
-					task.laterMarker(DateTime.parse(Objects.requireNonNull(task.getMarker())), getLatest(events))
-				)
+				.set(Task.MARKER, task.getMarker(), task.laterMarker(marker, getLatest(events)))
 				.set(Task.UNDO, task.getUndoId(), command.getId())
 				.build()
 		);
@@ -61,11 +62,15 @@ abstract class OuraTaskManagerSupport extends OAuthTaskManager {
 	private static @Nullable DateTime getLatest(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
-			DateTime time = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
-			if (time != null && (latest == null || time.isAfter(latest))) {
+			DateTime time = getEnd(event);
+			if (latest == null || time.isAfter(latest)) {
 				latest = time;
 			}
 		}
 		return latest;
+	}
+
+	private static DateTime getEnd(Event event) {
+		return Objects.requireNonNull(Ordering.natural().max(event.getValues(Event.TIMESTAMP)));
 	}
 }

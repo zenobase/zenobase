@@ -2,6 +2,7 @@ package com.zenobase.tasks.withings;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.Ordering;
 import com.zenobase.commands.Command;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -60,7 +61,15 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 		) {
 			result.add(execute(task, credentials, from));
 		}
-		return createCommand(task, credentials, token, result.merge());
+		WithingsSleepResult merged = result.merge();
+		// Withings returns whole sleep periods, so drop the ones that were imported by an earlier run
+		DateTime from = Objects.requireNonNull(task.getFrom());
+		merged
+			.getEvents()
+			.removeIf(
+				event -> !Objects.requireNonNull(Ordering.natural().max(event.getValues(Event.TIMESTAMP))).isAfter(from)
+			);
+		return createCommand(task, credentials, token, merged);
 	}
 
 	/** Withings returns whole sleep periods, which can end before the marker. */
