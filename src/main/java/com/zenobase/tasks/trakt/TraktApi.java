@@ -13,10 +13,16 @@ public class TraktApi extends CustomApi20 {
 
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
-		return new UriBuilder("https://trakt.tv/oauth/authorize")
+		throw new UnsupportedOperationException("Trakt requires a PKCE code challenge");
+	}
+
+	public static String getAuthorizationUrl(String clientId, String callback, String codeChallenge) {
+		return new UriBuilder("https://auth.trakt.tv/oauth/authorize")
 			.addParameter("response_type", "code")
-			.addParameter("client_id", config.getApiKey())
-			.addParameter("redirect_uri", config.getCallback())
+			.addParameter("client_id", clientId)
+			.addParameter("redirect_uri", callback)
+			.addParameter("code_challenge", codeChallenge)
+			.addParameter("code_challenge_method", "S256")
 			.build();
 	}
 }

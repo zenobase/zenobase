@@ -13,6 +13,6 @@ public class TraktTesting extends TaskTestingSupport {
 
 	@Override
 	protected TraktCredentialsManager newCredentialsManager() {
-		return new TraktCredentialsManager(repository, apiKey, apiSecret, callbackUrl);
+		return new TraktCredentialsManager(repository, apiKey, callbackUrl);
 	}
 }
