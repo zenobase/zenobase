@@ -7,11 +7,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 import com.zenobase.repositories.CredentialsRepository;
+import com.zenobase.tasks.InvalidStatusException;
+import com.zenobase.tasks.InvalidTokenException;
 import com.zenobase.tasks.OAuth2CredentialsManagerTestSupport;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthCredentialsManager;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -44,7 +48,10 @@ public class WithingsCredentialsManagerTest extends OAuth2CredentialsManagerTest
 	protected String tokenResponse() {
 		// Withings wraps the token in a status envelope, and signals errors in the status rather than the HTTP code
 		return """
-		{"status": 0, "body": %s}
+		{
+			"status": 0,
+			"body": %s
+		}
 		""".formatted(TOKEN_RESPONSE);
 	}
 
@@ -85,18 +92,26 @@ public class WithingsCredentialsManagerTest extends OAuth2CredentialsManagerTest
 		assertThat(credentials.getToken().getToken()).isEqualTo("old-access");
 	}
 
-	@Test
-	public void reauthorizeRejectsErrorStatus() {
-		// OAuthTaskManager turns this into an InvalidTokenException, which resets the credentials
+	@ParameterizedTest
+	@ValueSource(ints = { 401, 503 })
+	public void reauthorizeRejectsInvalidRefreshToken(int status) {
 		OAuthCredentials credentials = authorizedCredentials(expiredToken());
-		transport.reply(
-			200,
-			"""
-			{"status": 401, "body": {}}
-			"""
-		);
+		replyStatus(status);
 
-		assertThatThrownBy(() -> manager.reauthorize(credentials)).isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> manager.reauthorize(credentials)).isInstanceOf(InvalidTokenException.class);
+	}
+
+	@ParameterizedTest
+	@ValueSource(ints = { 522, 601, 2554 })
+	public void reauthorizeKeepsTokenOnOtherErrorStatus(int status) {
+		OAuthCredentials credentials = authorizedCredentials(expiredToken());
+		replyStatus(status);
+
+		assertThatThrownBy(() -> manager.reauthorize(credentials)).isInstanceOfSatisfying(
+			InvalidStatusException.class,
+			e -> assertThat(e.getStatus()).isEqualTo(status)
+		);
+		assertThat(credentials.getToken().getToken()).isEqualTo("old-access");
 	}
 
 	@Test
@@ -105,5 +120,17 @@ public class WithingsCredentialsManagerTest extends OAuth2CredentialsManagerTest
 
 		assertThat(queryParams(request)).containsEntry("access_token", "t");
 		assertThat(request.getHeaders()).doesNotContainKey("Authorization");
+	}
+
+	private void replyStatus(int status) {
+		transport.reply(
+			200,
+			"""
+			{
+				"status": %d,
+				"body": {}
+			}
+			""".formatted(status)
+		);
 	}
 }
