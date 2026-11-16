@@ -37,6 +37,6 @@ public abstract class LazyList<T extends DomainNode> extends AbstractList<T> imp
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(nodes);
+		return Objects.hashCode(nodes);
 	}
 }
