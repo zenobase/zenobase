@@ -82,13 +82,8 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 	}
 
 	@Override
-	public @Nullable Command authorize(Credentials credentials, ObjectNode config) {
-		return !config.isEmpty()
-			? authorize(credentials.as(OAuthCredentials.class), config)
-			: deauthorize(credentials.as(OAuthCredentials.class));
-	}
-
-	private @Nullable Command authorize(OAuthCredentials credentials, ObjectNode config) {
+	public @Nullable Command authorize(Credentials untyped, ObjectNode config) {
+		OAuthCredentials credentials = untyped.as(OAuthCredentials.class);
 		Preconditions.checkState(!credentials.isAuthorized());
 		String token = config.path("oauth_token").textValue();
 		String verifier = config.path("oauth_verifier").asText();
@@ -117,19 +112,6 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 
 	public void reauthorize(Credentials credentials) {
 		throw new UnsupportedOperationException();
-	}
-
-	private Command deauthorize(OAuthCredentials credentials) {
-		Token token = getRequestToken(credentials);
-		return UpdateCredentialsCommand.builder(credentials)
-			.set(
-				Credentials.AUTHORIZATION_URL,
-				credentials.getAuthorizationUrl(),
-				getAuthorizationUrl(credentials, token)
-			)
-			.with(Credentials.CREDENTIALS)
-			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
-			.build();
 	}
 
 	protected Token getAccessToken(OAuthCredentials credentials, String verifier) {
