@@ -76,6 +76,12 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 			}
 			cursor = result.getCursor();
 		} while (cursor != null);
+		// Records modified since the marker include older nights that were imported by an earlier run. Events have
+		// random ids, so an edited night can't replace its earlier import and would only add a duplicate.
+		DateTime from = task.getFrom();
+		if (from != null) {
+			events.removeIf(event -> !getEnd(event).isAfter(from));
+		}
 		return createCommand(task, credentials, events, Objects.requireNonNull(token));
 	}
 
@@ -111,11 +117,15 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 	private static @Nullable DateTime getLatest(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
-			DateTime end = Objects.requireNonNull(Ordering.natural().max(event.getValues(Event.TIMESTAMP)));
+			DateTime end = getEnd(event);
 			if (latest == null || end.isAfter(latest)) {
 				latest = end;
 			}
 		}
 		return latest;
+	}
+
+	private static DateTime getEnd(Event event) {
+		return Objects.requireNonNull(Ordering.natural().max(event.getValues(Event.TIMESTAMP)));
 	}
 }
