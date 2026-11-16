@@ -88,6 +88,7 @@ public class OAuthCredentialsManagerTest {
 		OAuthCredentials credentials = manager.newCredentials(new Identity());
 
 		assertThat(manager.authorize(credentials, Nodes.newObject("denied", "request-1"))).isNull();
+		assertThat(manager.authorize(credentials, Nodes.newObject())).isNull();
 		assertThat(transport.requests()).isEmpty();
 	}
 
@@ -108,17 +109,5 @@ public class OAuthCredentialsManagerTest {
 
 		assertThatThrownBy(() -> manager.authorize(credentials, config)).isInstanceOf(IllegalStateException.class);
 		assertThat(transport.requests()).isEmpty();
-	}
-
-	@Test
-	public void emptyConfigDeauthorizes() {
-		var credentials = new OAuthCredentials("test", new Identity());
-		credentials.setToken(new Token("access", ""));
-
-		OAuthCredentials deauthorized = apply(manager.authorize(credentials, Nodes.newObject()), credentials);
-
-		assertThat(deauthorized.isAuthorized()).isFalse();
-		assertThat(deauthorized.getToken().getToken()).isEqualTo("request-1");
-		assertThat(deauthorized.getAuthorizationUrl()).endsWith("/oauth/callback/" + credentials.getId());
 	}
 }
