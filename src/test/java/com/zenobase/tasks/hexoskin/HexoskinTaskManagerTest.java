@@ -13,6 +13,8 @@ import com.zenobase.tasks.Task.Status;
 import com.zenobase.tasks.TaskManagerTestSupport;
 import java.util.List;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -66,6 +68,19 @@ public class HexoskinTaskManagerTest extends TaskManagerTestSupport {
 
 		assertThat(queryParam(sentRequests(credentialsManager).get(1), "start__gt")).isEqualTo(
 			ticks("2013-07-01T05:30:00+09:00")
+		);
+	}
+
+	@Test
+	public void testDefaultMarkerIsStartOfMonthInTaskZone() {
+		var manager = new HexoskinSleepTaskManager(credentialsManager);
+		Task task = manager.newTask(
+			Generator.id(),
+			new Identity(),
+			Nodes.newObject().put("tag", "Test").put("timezone", TIMEZONE)
+		);
+		assertThat(task.getMarker()).isEqualTo(
+			LocalDate.now(DateTimeZone.forID(TIMEZONE)).withDayOfMonth(1).toString()
 		);
 	}
 
