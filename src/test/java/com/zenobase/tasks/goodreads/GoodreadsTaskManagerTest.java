@@ -68,6 +68,16 @@ public class GoodreadsTaskManagerTest extends TaskManagerTestSupport {
 	}
 
 	@Test
+	public void testRejectsMissingContentType() {
+		Task task = newTask(null);
+		givenResponses(credentialsManager, credentials, successResponse("auth_user.xml"));
+
+		assertThatThrownBy(() -> manager.execute(task, credentials))
+			.isInstanceOf(IllegalStateException.class)
+			.hasMessageContaining("Expected application/xml but got <null>");
+	}
+
+	@Test
 	public void parseXml() {
 		assertThat(GoodreadsTaskManager.parseXml("<a><b>c</b></a>").getDocumentElement().getTagName()).isEqualTo("a");
 	}
