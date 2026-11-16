@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.net.URLEncodedUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.mockito.ArgumentCaptor;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -37,6 +40,16 @@ import org.scribe.model.Token;
  * method lets us feed recorded JSON fixtures into the manager and assert on the {@link Command}s it emits.
  */
 public abstract class TaskManagerTestSupport extends ResultTestSupport {
+
+	/** Fixes Joda's clock, so that managers paging up to "now" make a predictable number of requests. */
+	protected static void givenNow(DateTime now) {
+		DateTimeUtils.setCurrentMillisFixed(now.getMillis());
+	}
+
+	@AfterEach
+	public void resetClock() {
+		DateTimeUtils.setCurrentMillisSystem();
+	}
 
 	/** An HTTP 200 response whose body is the named fixture, resolved next to the test class. */
 	protected Response successResponse(String fixture) {
