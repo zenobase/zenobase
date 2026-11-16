@@ -26,8 +26,9 @@ public abstract class OAuth2CredentialsManagerTestSupport {
 
 	protected static final String HOST = "https://api.example.com";
 	protected static final String FIXED_CALLBACK = HOST + "/oauth/callback/-";
-	protected static final String TOKEN_RESPONSE =
-		"{\"access_token\":\"new-access\",\"refresh_token\":\"new-refresh\",\"expires_in\":3600}";
+	protected static final String TOKEN_RESPONSE = """
+	{"access_token": "new-access", "refresh_token": "new-refresh", "expires_in": 3600}
+	""";
 
 	protected final RecordingTransport transport = new RecordingTransport();
 
