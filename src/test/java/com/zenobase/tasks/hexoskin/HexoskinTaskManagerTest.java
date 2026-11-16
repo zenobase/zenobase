@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import com.zenobase.commands.Command;
+import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
@@ -115,6 +116,18 @@ public class HexoskinTaskManagerTest extends TaskManagerTestSupport {
 
 		assertThat(events(commands)).isEmpty();
 		assertThat(task.getMarker()).isEqualTo("2014-03-01");
+	}
+
+	@Test
+	public void testExpiredTokenIsRefreshed() {
+		expireToken(credentialsManager, credentials);
+		var manager = new HexoskinSleepTaskManager(credentialsManager);
+		Task task = newTask(manager, "2014-03-01T00:00:00Z");
+		givenProfileThen(response(200, "{\"meta\":{},\"objects\":[]}"));
+
+		Command commands = manager.execute(task, credentials);
+
+		assertThat(commands(commands, UpdateCredentialsCommand.class)).hasSize(1);
 	}
 
 	private static String ticks(String timestamp) {
