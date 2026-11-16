@@ -27,7 +27,7 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 
 	@Override
 	public WithingsSleepTask newTask(String bucketId, Identity principal, ObjectNode settings) {
-		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "steps");
+		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "sleep");
 		DateTimeZone timezone = DateTimeZone.forID(
 			MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC")
 		);
