@@ -50,12 +50,13 @@ class GoodreadsReviewListResult extends XmlResultSupport {
 		this.tag = tag;
 	}
 
-	public int getStartPage() {
-		return Integer.parseInt(selectText("/GoodreadsResponse/reviews/@start"));
+	/** Index of the last review on this page (1-based), not a page number. */
+	public int getEnd() {
+		return Integer.parseInt(selectText("/GoodreadsResponse/reviews/@end"));
 	}
 
-	public int getEndPage() {
-		return Integer.parseInt(selectText("/GoodreadsResponse/reviews/@end"));
+	public int getTotal() {
+		return Integer.parseInt(selectText("/GoodreadsResponse/reviews/@total"));
 	}
 
 	public List<Event> getEvents(@Nullable DateTime from) {
