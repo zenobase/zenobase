@@ -118,7 +118,7 @@ new aws.ec2.FlowLog("zenobase-vpc-flow-log", {
     tags: { Name: "zenobase" },
 });
 
-const igw =new aws.ec2.InternetGateway("zenobase-igw", {
+const igw = new aws.ec2.InternetGateway("zenobase-igw", {
     vpcId: vpc.id,
     tags: { Name: "zenobase" },
 });
