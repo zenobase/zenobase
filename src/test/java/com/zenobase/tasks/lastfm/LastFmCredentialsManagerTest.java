@@ -37,7 +37,12 @@ public class LastFmCredentialsManagerTest {
 		transport.reply(
 			200,
 			"""
-			{"session": {"name": "bob", "key": "session-key"}}
+			{
+				"session": {
+					"name": "bob",
+					"key": "session-key"
+				}
+			}
 			"""
 		);
 
