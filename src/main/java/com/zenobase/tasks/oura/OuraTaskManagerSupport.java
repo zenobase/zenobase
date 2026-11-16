@@ -11,6 +11,7 @@ import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import org.joda.time.DateTime;
@@ -59,15 +60,8 @@ abstract class OuraTaskManagerSupport extends OAuthTaskManager {
 		return command;
 	}
 
-	private static @Nullable DateTime getLatest(Iterable<Event> events) {
-		DateTime latest = null;
-		for (Event event : events) {
-			DateTime time = getEnd(event);
-			if (latest == null || time.isAfter(latest)) {
-				latest = time;
-			}
-		}
-		return latest;
+	private static @Nullable DateTime getLatest(List<Event> events) {
+		return events.stream().map(OuraTaskManagerSupport::getEnd).max(Comparator.naturalOrder()).orElse(null);
 	}
 
 	private static DateTime getEnd(Event event) {
