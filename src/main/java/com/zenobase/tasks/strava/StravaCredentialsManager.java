@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.oauth.ExpiringToken;
-import com.zenobase.oauth.OAuth2TokenExtractor;
 import com.zenobase.repositories.CredentialsRepository;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
@@ -76,7 +75,7 @@ public class StravaCredentialsManager extends OAuthCredentialsManager {
 		);
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
 		request.addBodyParameter(OAuthConstants.CLIENT_SECRET, getApiSecret());
-		credentials.setToken(new OAuth2TokenExtractor().extract(request.send().getBody()));
+		credentials.setToken(refresh(request, credentials));
 	}
 
 	@Override

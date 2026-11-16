@@ -50,6 +50,11 @@ public class NetatmoCredentialsManagerTest extends OAuth2CredentialsManagerTestS
 	}
 
 	@Test
+	public void reauthorizeThrowsInvalidTokenOnlyWhenRejected() {
+		assertRefreshFailures();
+	}
+
+	@Test
 	public void sendPassesTokenAsQueryParameter() {
 		OAuthRequest request = sendWithToken();
 

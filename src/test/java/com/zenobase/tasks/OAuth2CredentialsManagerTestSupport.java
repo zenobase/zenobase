@@ -3,6 +3,7 @@ package com.zenobase.tasks;
 import static com.zenobase.tasks.RecordingTransport.bodyParams;
 import static com.zenobase.tasks.RecordingTransport.queryParams;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateCredentialsCommand;
@@ -106,6 +107,24 @@ public abstract class OAuth2CredentialsManagerTestSupport {
 			.containsEntry("refresh_token", "old-refresh");
 		assertNewToken(credentials);
 		return request;
+	}
+
+	/** Checks that a failed refresh throws InvalidTokenException (which resets the credentials) only on rejection. */
+	protected void assertRefreshFailures() {
+		assertThat(refreshFailure(400, "{\"error\": \"invalid_grant\"}")).isInstanceOf(InvalidTokenException.class);
+		assertThat(refreshFailure(401, "")).isInstanceOf(InvalidTokenException.class);
+		assertThat(refreshFailure(429, "")).isInstanceOf(InvalidStatusException.class);
+		assertThat(refreshFailure(503, "<html>Service Unavailable</html>")).isInstanceOf(InvalidStatusException.class);
+	}
+
+	private Throwable refreshFailure(int status, String body) {
+		OAuthCredentials credentials = authorizedCredentials(expiredToken());
+		transport.reply(status, body);
+
+		Throwable thrown = catchThrowable(() -> manager().reauthorize(credentials));
+
+		assertThat(credentials.getToken().getToken()).isEqualTo("old-access");
+		return thrown;
 	}
 
 	/** Sends an API request with access token {@code t}, returning it as signed. */

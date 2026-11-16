@@ -93,6 +93,11 @@ public class TraktCredentialsManagerTest extends OAuth2CredentialsManagerTestSup
 	}
 
 	@Test
+	public void reauthorizeThrowsInvalidTokenOnlyWhenRejected() {
+		assertRefreshFailures();
+	}
+
+	@Test
 	public void sendPassesApiKeyAndBearerHeaders() {
 		assertThat(sendWithToken().getHeaders())
 			.containsEntry("trakt-api-version", "2")

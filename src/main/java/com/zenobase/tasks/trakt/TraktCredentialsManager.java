@@ -122,7 +122,7 @@ public class TraktCredentialsManager extends OAuthCredentialsManager {
 			((ExpiringToken) Objects.requireNonNull(credentials.getToken())).getRefreshToken()
 		);
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
-		credentials.setToken(new OAuth2TokenExtractor().extract(execute(request).getBody()));
+		credentials.setToken(refresh(request, credentials));
 	}
 
 	@Override
