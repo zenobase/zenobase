@@ -78,7 +78,7 @@ public class WakaTimeCredentialsManager extends OAuthCredentialsManager {
 		);
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
 		request.addBodyParameter(OAuthConstants.CLIENT_SECRET, getApiSecret());
-		credentials.setToken(new OAuth2TokenExtractor().extract(request.send().getBody()));
+		credentials.setToken(new OAuth2TokenExtractor().extract(execute(request).getBody()));
 	}
 
 	@Override

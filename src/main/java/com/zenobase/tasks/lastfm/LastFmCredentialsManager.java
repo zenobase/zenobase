@@ -74,7 +74,7 @@ public class LastFmCredentialsManager extends OAuthCredentialsManager {
 		request.addQuerystringParameter("api_key", apiKey);
 		request.addQuerystringParameter("api_sig", signature.sign(request.getQuerystringParameters()));
 		request.addQuerystringParameter("format", "json");
-		Response response = request.send();
+		Response response = execute(request);
 		ObjectNode result = Nodes.readObject(response.getBody());
 		String token = result.path("session").path("key").textValue();
 		String scope = result.path("session").path("name").textValue();

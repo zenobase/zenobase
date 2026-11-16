@@ -35,7 +35,7 @@ public class WithingsApi extends CustomApi20 {
 	}
 
 	@Override
-	protected void configureAccessTokenRequest(OAuthRequest request) {
+	protected void configureAccessTokenRequest(OAuthRequest request, OAuthConfig config) {
 		addParameter(request, "action", "requesttoken");
 	}
 }
