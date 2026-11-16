@@ -64,8 +64,14 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 	public OAuthCredentials newCredentials(Identity principal) {
 		var credentials = new OAuthCredentials(getType(), principal);
 		credentials.setToken(getRequestToken(credentials));
-		credentials.setAuthorizationUrl(getService(credentials).getAuthorizationUrl(credentials.getToken()));
+		credentials.setAuthorizationUrl(
+			getAuthorizationUrl(credentials, Objects.requireNonNull(credentials.getToken()))
+		);
 		return credentials;
+	}
+
+	public String getAuthorizationUrl(OAuthCredentials credentials, Token requestToken) {
+		return getService(credentials).getAuthorizationUrl(requestToken);
 	}
 
 	protected Token getRequestToken(OAuthCredentials credentials) {
@@ -112,7 +118,7 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 			.set(
 				Credentials.AUTHORIZATION_URL,
 				credentials.getAuthorizationUrl(),
-				getService(credentials).getAuthorizationUrl(token)
+				getAuthorizationUrl(credentials, token)
 			)
 			.with(Credentials.CREDENTIALS)
 			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)

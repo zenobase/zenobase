@@ -12,6 +12,11 @@ import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthCredentialsManager;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 import org.scribe.model.OAuthConstants;
@@ -27,19 +32,59 @@ public class TraktCredentialsManager extends OAuthCredentialsManager {
 
 	public static final String TYPE = "trakt";
 
+	private final String callbackUrl;
+
 	@Inject
 	public TraktCredentialsManager(
 		CredentialsRepository integrations,
 		@Named("trakt.api.key") String apiKey,
-		@Named("trakt.api.secret") String apiSecret,
 		@Named("api.hostname") String callbackUrl
 	) {
-		super(TYPE, integrations, new TraktApi(), apiKey, apiSecret, callbackUrl);
+		super(TYPE, integrations, new TraktApi(), apiKey, "", callbackUrl);
+		this.callbackUrl = callbackUrl;
+	}
+
+	/** Trakt uses PKCE instead of a client secret; the pending token's secret holds the code verifier. */
+	@Override
+	protected Token getRequestToken(OAuthCredentials credentials) {
+		return new Token("", newCodeVerifier());
 	}
 
 	@Override
-	protected Token getRequestToken(OAuthCredentials integration) {
-		return Token.empty();
+	public String getAuthorizationUrl(OAuthCredentials credentials, Token requestToken) {
+		return TraktApi.getAuthorizationUrl(
+			getApiKey(),
+			buildCallback(callbackUrl, credentials),
+			codeChallenge(requestToken.getSecret())
+		);
+	}
+
+	static String newCodeVerifier() {
+		var bytes = new byte[32];
+		new SecureRandom().nextBytes(bytes);
+		return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+	}
+
+	static String codeChallenge(String verifier) {
+		try {
+			var digest = MessageDigest.getInstance("SHA-256").digest(verifier.getBytes(StandardCharsets.US_ASCII));
+			return Base64.getUrlEncoder().withoutPadding().encodeToString(digest);
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	@Override
+	protected Token getAccessToken(OAuthCredentials credentials, String code) {
+		var request = new OAuthRequest(Verb.POST, "https://api.trakt.tv/oauth/token");
+		request.addHeader("User-Agent", "zeno");
+		request.addHeader("Accept", "application/json");
+		request.addBodyParameter("grant_type", "authorization_code");
+		request.addBodyParameter(OAuthConstants.CODE, code);
+		request.addBodyParameter(OAuthConstants.REDIRECT_URI, buildCallback(callbackUrl, credentials));
+		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
+		request.addBodyParameter("code_verifier", Objects.requireNonNull(credentials.getToken()).getSecret());
+		return new OAuth2TokenExtractor().extract(request.send().getBody());
 	}
 
 	@Override
@@ -77,7 +122,6 @@ public class TraktCredentialsManager extends OAuthCredentialsManager {
 			((ExpiringToken) Objects.requireNonNull(credentials.getToken())).getRefreshToken()
 		);
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
-		request.addBodyParameter(OAuthConstants.CLIENT_SECRET, getApiSecret());
 		credentials.setToken(new OAuth2TokenExtractor().extract(request.send().getBody()));
 	}
 

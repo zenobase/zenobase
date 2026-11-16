@@ -85,7 +85,6 @@ strava:
 trakt:
   api:
     key: ""
-    secret: ""
 
 wakatime:
   api:
