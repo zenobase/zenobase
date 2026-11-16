@@ -166,6 +166,17 @@ public class WithingsTaskManagerTest extends TaskManagerTestSupport {
 	}
 
 	@Test
+	public void testSleepDefaultsTag() {
+		var task = new WithingsSleepTaskManager(credentialsManager).newTask(
+			Generator.id(),
+			new Identity(),
+			Nodes.newObject()
+		);
+
+		assertThat(task.getTag()).isEqualTo("sleep");
+	}
+
+	@Test
 	public void testUnauthorizedStatus() {
 		var manager = new WithingsWeightTaskManager(credentialsManager);
 		Task task = manager.newTask(Generator.id(), new Identity(), Nodes.newObject());
