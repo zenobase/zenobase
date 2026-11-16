@@ -101,10 +101,11 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 
 	private static Document parseDocument(Response response) {
 		Preconditions.checkState(response.getCode() == 200, "Expected 200 but got <%s>", response.getCode());
+		String contentType = response.getHeader("Content-Type");
 		Preconditions.checkState(
-			response.getHeader("Content-Type").startsWith("application/xml"),
+			contentType != null && contentType.startsWith("application/xml"),
 			"Expected application/xml but got <%s>",
-			response.getHeader("Content-Type")
+			contentType
 		);
 		return parseXml(getBody(response));
 	}
