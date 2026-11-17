@@ -103,10 +103,8 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 		Token requestToken = Objects.requireNonNull(credentials.getToken());
 		Preconditions.checkState(
 			requestToken.getToken().equals(token),
-			"Token mismatch in credentials %s, expected %s, got %s",
-			credentials.getId(),
-			requestToken.getToken(),
-			token
+			"Token mismatch in credentials %s",
+			credentials.getId()
 		);
 	}
 
