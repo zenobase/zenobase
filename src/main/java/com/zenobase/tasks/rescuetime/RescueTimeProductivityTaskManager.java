@@ -10,6 +10,7 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.common.Urls;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
@@ -85,7 +86,7 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		Preconditions.checkState(
 			response.getCode() == 200,
 			"Couldn't request <%s>: %s",
-			request.getCompleteUrl(),
+			Urls.redact(request.getCompleteUrl()),
 			response.getCode()
 		);
 		ObjectNode node = parseObject(response);
@@ -93,7 +94,7 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		Preconditions.checkState(
 			result.isSuccess(),
 			"Request <%s> failed: %s",
-			request.getCompleteUrl(),
+			Urls.redact(request.getCompleteUrl()),
 			response.getCode()
 		);
 		return result.getEvents();

@@ -1,5 +1,6 @@
 package com.zenobase.tasks;
 
+import com.zenobase.common.Urls;
 import java.io.Serial;
 
 public class InvalidStatusException extends RuntimeException {
@@ -10,7 +11,7 @@ public class InvalidStatusException extends RuntimeException {
 	private final int status;
 
 	public InvalidStatusException(String url, int status, String body) {
-		super(String.format("Request for <%s> returned status <%d>: %s", url, status, body));
+		super(String.format("Request for <%s> returned status <%d>: %s", Urls.redact(url), status, body));
 		this.status = status;
 	}
 

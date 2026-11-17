@@ -8,6 +8,7 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.common.Urls;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
@@ -77,7 +78,11 @@ public class LastFmTaskManager extends OAuthTaskManager {
 					task.getTag(),
 					task.getTimezone()
 				);
-				Preconditions.checkState(result.isSuccess(), "Request for %s failed", request.getCompleteUrl());
+				Preconditions.checkState(
+					result.isSuccess(),
+					"Request for %s failed",
+					Urls.redact(request.getCompleteUrl())
+				);
 				events.addAll(result.getEvents());
 				if (!result.hasNext()) {
 					break;
@@ -121,7 +126,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 				if (result.isSuccess()) {
 					result.get().apply(event);
 				} else if (!result.isNotFound()) {
-					logger.warn("Request for {} failed: {}", request.getCompleteUrl(), response.getBody());
+					logger.warn("Request for {} failed: {}", Urls.redact(request.getCompleteUrl()), response.getBody());
 				}
 			}
 		}
