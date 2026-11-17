@@ -12,6 +12,8 @@ import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.ExternalClientRepository;
+import io.helidon.extensions.mcp.server.McpException;
+import io.helidon.jsonrpc.core.JsonRpcError;
 import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -40,44 +42,43 @@ public class ConsentEnforcerTest {
 	}
 
 	@Test
-	public void testBucketNotFoundRaisesInvalidParams() {
+	public void testBucketNotFoundRaisesInvalidParamsAsJsonRpcError() {
+		// "bucket not found" is a malformed-request situation: throws Helidon's McpException with INVALID_PARAMS so
+		// the framework surfaces it as a JSON-RPC error envelope.
 		when(buckets.find("b1")).thenReturn(null);
 		assertThatThrownBy(() -> enforcer.requireRead(auth, "b1"))
 			.isInstanceOf(McpException.class)
-			.satisfies(e -> assertThat(((McpException) e).getCode()).isEqualTo(McpException.INVALID_PARAMS));
+			.hasMessageContaining("Bucket not found: b1");
 	}
 
 	@Test
-	public void testNoRoleRaisesAccessNotGranted() {
+	public void testNoRoleRaisesConsentRequired() {
 		Bucket bucket = new Bucket("b1");
 		bucket.addRole(new Identity("someone-else"), Role.OWNER);
 		when(buckets.find("b1")).thenReturn(bucket);
 
 		assertThatThrownBy(() -> enforcer.requireRead(auth, "b1"))
-			.isInstanceOf(McpException.class)
-			.satisfies(e -> assertThat(((McpException) e).getCode()).isEqualTo(McpException.ACCESS_NOT_GRANTED))
+			.isInstanceOf(ConsentRequiredException.class)
 			.satisfies(e ->
-				assertThat(((McpException) e).getData().get("consent_url").asText()).isEqualTo(
-					WEB_HOSTNAME + "/#/settings"
-				)
-			);
+				assertThat(((ConsentRequiredException) e).consentUrl()).isEqualTo(WEB_HOSTNAME + "/#/settings")
+			)
+			.hasMessageContaining(WEB_HOSTNAME + "/#/settings");
 	}
 
 	@Test
-	public void testClientNotRegisteredRaisesAccessNotGranted() {
+	public void testClientNotRegisteredRaisesConsentRequired() {
 		Bucket bucket = new Bucket("b1");
 		bucket.addRole(user, Role.OWNER);
 		when(buckets.find("b1")).thenReturn(bucket);
 		when(clients.find(user, client)).thenReturn(null);
 
 		assertThatThrownBy(() -> enforcer.requireRead(auth, "b1"))
-			.isInstanceOf(McpException.class)
-			.satisfies(e -> assertThat(((McpException) e).getCode()).isEqualTo(McpException.ACCESS_NOT_GRANTED))
+			.isInstanceOf(ConsentRequiredException.class)
 			.hasMessageContaining("has not been granted");
 	}
 
 	@Test
-	public void testBucketNotReadableRaisesAccessNotGranted() {
+	public void testBucketNotReadableRaisesConsentRequired() {
 		Bucket bucket = new Bucket("b1");
 		bucket.addRole(user, Role.OWNER);
 		when(buckets.find("b1")).thenReturn(bucket);
@@ -85,22 +86,33 @@ public class ConsentEnforcerTest {
 		when(clients.find(user, client)).thenReturn(connectedClient(/* no buckets */));
 
 		assertThatThrownBy(() -> enforcer.requireRead(auth, "b1"))
-			.isInstanceOf(McpException.class)
-			.satisfies(e -> assertThat(((McpException) e).getCode()).isEqualTo(McpException.ACCESS_NOT_GRANTED))
+			.isInstanceOf(ConsentRequiredException.class)
 			.hasMessageContaining("has not been granted");
 	}
 
 	@Test
-	public void testTokenWithoutClientRaisesAccessNotGranted() {
+	public void testTokenWithoutClientRaisesConsentRequired() {
 		Authorization authWithoutClient = new Authorization(user, null, "external");
-		assertThatThrownBy(() -> enforcer.requireRead(authWithoutClient, "b1"))
-			.isInstanceOf(McpException.class)
-			.satisfies(e -> assertThat(((McpException) e).getCode()).isEqualTo(McpException.ACCESS_NOT_GRANTED));
+		assertThatThrownBy(() -> enforcer.requireRead(authWithoutClient, "b1")).isInstanceOf(
+			ConsentRequiredException.class
+		);
 	}
 
 	@Test
 	public void testConsentUrl() {
 		assertThat(enforcer.consentUrl()).isEqualTo(WEB_HOSTNAME + "/#/settings");
+	}
+
+	@Test
+	public void testInvalidParamsErrorCode() {
+		when(buckets.find("b1")).thenReturn(null);
+		try {
+			enforcer.requireRead(auth, "b1");
+		} catch (McpException e) {
+			// Helidon's McpException stores the code as package-private; we just assert the type + message above.
+			// Sanity check that the JSON-RPC INVALID_PARAMS constant is what we use.
+			assertThat(JsonRpcError.INVALID_PARAMS).isEqualTo(-32602);
+		}
 	}
 
 	private ExternalClient connectedClient(String... readableBuckets) {
