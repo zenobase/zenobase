@@ -6,11 +6,14 @@ import com.zenobase.filters.*;
 import com.zenobase.mcp.McpController;
 import com.zenobase.mcp.ProtectedResourceMetadataController;
 import com.zenobase.services.QuotaException;
+import com.zenobase.tasks.InvalidStatusException;
 import io.helidon.http.HeaderNames;
 import io.helidon.http.HttpException;
 import io.helidon.webserver.http.HttpRouting;
+import io.helidon.webserver.http.ServerResponse;
 import io.sentry.Sentry;
 import org.opensearch.client.opensearch._types.OpenSearchException;
+import org.scribe.exceptions.OAuthConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,11 +56,15 @@ class Routing {
 			});
 			ControllerSupport.sendInternalServerError(res, "internal error");
 		});
-		routing.error(Exception.class, (req, res, e) -> {
-			logger.warn("Unhandled exception", e);
-			Sentry.captureException(e);
-			ControllerSupport.sendInternalServerError(res, "internal error");
+		routing.error(OAuthConnectionException.class, (req, res, e) -> sendExternalServiceUnavailable(res, e));
+		routing.error(InvalidStatusException.class, (req, res, e) -> {
+			if (e.isTransient()) {
+				sendExternalServiceUnavailable(res, e);
+			} else {
+				sendUnhandled(res, e);
+			}
 		});
+		routing.error(Exception.class, (req, res, e) -> sendUnhandled(res, e));
 
 		// Robots
 		routing.get("/robots.txt", (req, res) -> {
@@ -189,5 +196,16 @@ class Routing {
 
 		var protectedResource = injector.getInstance(ProtectedResourceMetadataController.class);
 		routing.get("/.well-known/oauth-protected-resource", protectedResource::get);
+	}
+
+	private static void sendExternalServiceUnavailable(ServerResponse res, Exception e) {
+		logger.warn("External service unavailable: {}", e.getMessage());
+		ControllerSupport.sendServiceUnavailable(res, "external service unavailable");
+	}
+
+	private static void sendUnhandled(ServerResponse res, Exception e) {
+		logger.warn("Unhandled exception", e);
+		Sentry.captureException(e);
+		ControllerSupport.sendInternalServerError(res, "internal error");
 	}
 }

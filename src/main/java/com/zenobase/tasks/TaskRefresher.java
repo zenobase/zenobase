@@ -67,7 +67,7 @@ public class TaskRefresher {
 			span.setStatus(SpanStatus.UNAUTHENTICATED);
 			throw e;
 		} catch (RuntimeException e) {
-			span.setStatus(SpanStatus.INTERNAL_ERROR);
+			span.setStatus(ExternalServiceErrors.isTransient(e) ? SpanStatus.UNAVAILABLE : SpanStatus.INTERNAL_ERROR);
 			span.setThrowable(e);
 			throw e;
 		} finally {

@@ -18,4 +18,9 @@ public class InvalidStatusException extends RuntimeException {
 	public int getStatus() {
 		return status;
 	}
+
+	/** An outage or rate limit on the provider's side that will likely clear up on a later refresh. */
+	public boolean isTransient() {
+		return status >= 500 || status == 429;
+	}
 }

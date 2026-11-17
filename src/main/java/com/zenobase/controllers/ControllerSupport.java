@@ -107,6 +107,10 @@ public abstract class ControllerSupport implements CustomHeaders {
 		sendError(res, Status.INTERNAL_SERVER_ERROR_500, message);
 	}
 
+	public static void sendServiceUnavailable(ServerResponse res, String message) {
+		sendError(res, Status.SERVICE_UNAVAILABLE_503, message);
+	}
+
 	public static void sendError(ServerResponse res, Status status, String message) {
 		res.status(status);
 		res.header(HeaderNames.CONTENT_TYPE, "application/json");

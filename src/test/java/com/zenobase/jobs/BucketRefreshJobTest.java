@@ -13,11 +13,15 @@ import com.zenobase.queries.TaskQuery;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.TaskRepository;
 import com.zenobase.repositories.UserRepository;
+import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.MissingCredentialsException;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskRefresher;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class BucketRefreshJobTest {
 
@@ -75,28 +79,17 @@ public class BucketRefreshJobTest {
 		verify(refresher, never()).refresh(any(), any());
 	}
 
-	@Test
-	public void testMissingCredentials() {
-		var owner = new User("alice");
-		owner.setQuota(100);
-		var bucket = new Bucket("bucket-1");
-		bucket.addRole(owner.asIdentity(), Role.OWNER);
-		var task = new Task("foo", bucket.getId(), owner.asIdentity());
-
-		doCallback(bucket).when(buckets).find(any(), any());
-		when(users.find(owner.asIdentity())).thenReturn(owner);
-		when(tasks.find(eq(new TaskQuery().bucketEqualTo(bucket.getId())), any(), eq(0), eq(100))).thenReturn(
-			DefaultPartialList.of(List.of(task), 1)
+	static Stream<RuntimeException> failures() {
+		return Stream.of(
+			new MissingCredentialsException("foo"),
+			new InvalidStatusException("https://example.com", 503, "unavailable"),
+			new RuntimeException("boom")
 		);
-		doThrow(new MissingCredentialsException("foo")).when(refresher).refresh(task, bucket);
-
-		job.run();
-
-		verify(refresher).refresh(task, bucket);
 	}
 
-	@Test
-	public void testRuntimeException() {
+	@ParameterizedTest
+	@MethodSource("failures")
+	public void testFailure(RuntimeException failure) {
 		var owner = new User("alice");
 		owner.setQuota(100);
 		var bucket = new Bucket("bucket-1");
@@ -108,7 +101,7 @@ public class BucketRefreshJobTest {
 		when(tasks.find(eq(new TaskQuery().bucketEqualTo(bucket.getId())), any(), eq(0), eq(100))).thenReturn(
 			DefaultPartialList.of(List.of(task), 1)
 		);
-		doThrow(new RuntimeException("boom")).when(refresher).refresh(task, bucket);
+		doThrow(failure).when(refresher).refresh(task, bucket);
 
 		job.run();
 
