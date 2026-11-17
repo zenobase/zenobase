@@ -78,7 +78,7 @@ public class TaskRefresher {
 	}
 
 	/** Whether the provider failed in a way that a later refresh will likely get past, e.g. an outage. */
-	public static boolean isTransient(RuntimeException e) {
+	public static boolean isTransient(Throwable e) {
 		return (
 			(e instanceof InvalidStatusException status && status.isTransient()) ||
 			e instanceof OAuthConnectionException

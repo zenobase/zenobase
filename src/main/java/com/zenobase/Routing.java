@@ -6,8 +6,10 @@ import com.zenobase.filters.*;
 import com.zenobase.mcp.McpController;
 import com.zenobase.mcp.ProtectedResourceMetadataController;
 import com.zenobase.services.QuotaException;
+import com.zenobase.tasks.TaskRefresher;
 import io.helidon.http.HeaderNames;
 import io.helidon.http.HttpException;
+import io.helidon.http.Status;
 import io.helidon.webserver.http.HttpRouting;
 import io.sentry.Sentry;
 import org.opensearch.client.opensearch._types.OpenSearchException;
@@ -54,6 +56,11 @@ class Routing {
 			ControllerSupport.sendInternalServerError(res, "internal error");
 		});
 		routing.error(Exception.class, (req, res, e) -> {
+			if (TaskRefresher.isTransient(e)) {
+				logger.warn("External service unavailable: {}", e.getMessage());
+				ControllerSupport.sendError(res, Status.SERVICE_UNAVAILABLE_503, "external service unavailable");
+				return;
+			}
 			logger.warn("Unhandled exception", e);
 			Sentry.captureException(e);
 			ControllerSupport.sendInternalServerError(res, "internal error");
