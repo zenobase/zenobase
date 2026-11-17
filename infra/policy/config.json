@@ -1,12 +1,4 @@
 {
-    "aws-ecr-repository-disallow-mutable-image": {
-        "reason": "zenobase-api tags must stay MUTABLE: Snyk scans a fixed `latest` tag re-pointed on every release.",
-        "excludeFor": ["^zenobase-api$"]
-    },
-    "aws-ecr-repository-configure-image-scan": {
-        "reason": "zenobase-api images are scanned out-of-band by Snyk, not ECR scan-on-push, to avoid duplicate triage.",
-        "excludeFor": ["^zenobase-api$"]
-    },
     "aws-ecr-repository-configure-customer-managed-key": {
         "reason": "zenobase-api uses explicit AES256 (always encrypted); a CMK would force repo replacement = image loss.",
         "excludeFor": ["^zenobase-api$"]
