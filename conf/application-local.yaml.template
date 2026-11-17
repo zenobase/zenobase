@@ -20,11 +20,6 @@ cors:
       - "http://localhost:8080"
       - "http://localhost:5173"
 
-fitbit:
-  api:
-    key: ""
-    secret: ""
-
 foursquare:
   api:
     key: ""
