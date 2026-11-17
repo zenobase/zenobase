@@ -85,7 +85,6 @@ jobs:
                   push: true
                   tags: |
                       ${{ steps.ecr-login.outputs.registry }}/zenobase-api:${{ github.sha }}
-                      ${{ steps.ecr-login.outputs.registry }}/zenobase-api:latest
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
 

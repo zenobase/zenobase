@@ -9,7 +9,7 @@ decisions on any major-version bumps, follow-up notes.
 - **Majors**: for each available major-version bump, summarize what changed
   (breaking changes, new features, migration effort) and ask whether to go
   ahead, skip, or defer. Record the decision and reasoning in the PR.
-- Check Snyk alerts on GitHub for any outstanding CVEs.
+- Check Semgrep (via its MCP server, e.g. `semgrep_findings`) for outstanding vulnerabilities, including supply-chain findings.
 
 ## Upgrades
 
