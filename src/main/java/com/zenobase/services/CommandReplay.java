@@ -3,15 +3,23 @@ package com.zenobase.services;
 import com.google.common.base.Stopwatch;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
+import com.zenobase.commands.DeleteCredentialsCommand;
+import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.NonExistentUserException;
 import com.zenobase.queries.CommandQuery;
 import com.zenobase.queries.UserQuery;
 import com.zenobase.repositories.CommandRepository;
+import com.zenobase.repositories.CredentialsRepository;
 import com.zenobase.repositories.IndexManager;
+import com.zenobase.repositories.TaskRepository;
 import com.zenobase.repositories.UserRepository;
+import com.zenobase.tasks.Credentials;
+import com.zenobase.tasks.Task;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -73,6 +81,7 @@ public class CommandReplay {
 				}
 				count.incrementAndGet();
 			});
+			dropFitbit();
 		} finally {
 			target.resumeRefresh();
 		}
@@ -87,6 +96,29 @@ public class CommandReplay {
 		if (failures.get() > 0) {
 			throw new IllegalStateException("Replay completed with one or more failures");
 		}
+	}
+
+	// Temporary migration: Fitbit is now part of Google Health. Delete this after the replay has run.
+	private void dropFitbit() {
+		var tasks = new TaskRepository(target);
+		var credentials = new CredentialsRepository(target);
+		tasks.refresh();
+		credentials.refresh();
+		List<Task> removedTasks = new ArrayList<>();
+		tasks.findAll(SearchOrder.asc(Task.CREATED, Task.ID), task -> {
+			if (task.getType().startsWith("fitbit-")) {
+				removedTasks.add(task);
+			}
+		});
+		List<Credentials> removedCredentials = new ArrayList<>();
+		credentials.findAll(SearchOrder.asc(Credentials.CREATED, Credentials.ID), c -> {
+			if (c.getType().equals("fitbit")) {
+				removedCredentials.add(c);
+			}
+		});
+		removedTasks.forEach(task -> dispatcher.dispatch(new DeleteTaskCommand(task.getPrincipal(), task)));
+		removedCredentials.forEach(c -> dispatcher.dispatch(new DeleteCredentialsCommand(c.getPrincipal(), c)));
+		logger.warn("Dropped {} Fitbit tasks and {} credentials", removedTasks.size(), removedCredentials.size());
 	}
 
 	private static Set<String> loadIdentities(IndexManager indexManager) {
