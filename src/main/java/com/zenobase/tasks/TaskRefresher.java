@@ -13,6 +13,7 @@ import io.sentry.SpanStatus;
 import jakarta.inject.Inject;
 import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
+import org.scribe.exceptions.OAuthConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,13 +68,21 @@ public class TaskRefresher {
 			span.setStatus(SpanStatus.UNAUTHENTICATED);
 			throw e;
 		} catch (RuntimeException e) {
-			span.setStatus(SpanStatus.INTERNAL_ERROR);
+			span.setStatus(isTransient(e) ? SpanStatus.UNAVAILABLE : SpanStatus.INTERNAL_ERROR);
 			span.setThrowable(e);
 			throw e;
 		} finally {
 			span.finish();
 			bus.unlock(lockId);
 		}
+	}
+
+	/** Whether the provider failed in a way that a later refresh will likely get past, e.g. an outage. */
+	public static boolean isTransient(RuntimeException e) {
+		return (
+			(e instanceof InvalidStatusException status && status.isTransient()) ||
+			e instanceof OAuthConnectionException
+		);
 	}
 
 	private void doRefresh(Task task, @Nullable Bucket bucket) {

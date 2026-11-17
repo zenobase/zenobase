@@ -62,15 +62,17 @@ public class BucketRefreshJob extends Job {
 						refresher.refresh(task, bucket);
 						counter.incrementAndGet();
 					}
-				} catch (CredentialsException e) {
-					logger.warn(
-						"Couldn't refresh bucket {} for {}: {}",
-						bucket.getId(),
-						owner.getName(),
-						e.getMessage()
-					);
 				} catch (RuntimeException e) {
-					logger.error("Couldn't refresh bucket {} for {}", bucket.getId(), owner.getName(), e);
+					if (e instanceof CredentialsException || TaskRefresher.isTransient(e)) {
+						logger.warn(
+							"Couldn't refresh bucket {} for {}: {}",
+							bucket.getId(),
+							owner.getName(),
+							e.getMessage()
+						);
+					} else {
+						logger.error("Couldn't refresh bucket {} for {}", bucket.getId(), owner.getName(), e);
+					}
 				}
 			}
 		});
