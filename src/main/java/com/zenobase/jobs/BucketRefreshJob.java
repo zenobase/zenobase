@@ -10,6 +10,7 @@ import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.TaskRepository;
 import com.zenobase.repositories.UserRepository;
 import com.zenobase.tasks.CredentialsException;
+import com.zenobase.tasks.ExternalServiceErrors;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskRefresher;
 import jakarta.inject.Inject;
@@ -63,7 +64,7 @@ public class BucketRefreshJob extends Job {
 						counter.incrementAndGet();
 					}
 				} catch (RuntimeException e) {
-					if (e instanceof CredentialsException || TaskRefresher.isTransient(e)) {
+					if (e instanceof CredentialsException || ExternalServiceErrors.isTransient(e)) {
 						logger.warn(
 							"Couldn't refresh bucket {} for {}: {}",
 							bucket.getId(),

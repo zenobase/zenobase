@@ -1,7 +1,5 @@
 package com.zenobase.tasks;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -14,16 +12,12 @@ import com.zenobase.models.User;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.LocalBus;
-import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentMatchers;
-import org.scribe.exceptions.OAuthConnectionException;
 
 public class TaskRefresherTest {
 
@@ -205,20 +199,5 @@ public class TaskRefresherTest {
 
 		new TaskRefresher(registry, buckets, dispatcher, new LocalBus()).refresh(task);
 		verifyNoInteractions(dispatcher);
-	}
-
-	@ParameterizedTest
-	@CsvSource({ "503, true", "500, true", "429, true", "404, false", "400, false" })
-	public void testIsTransientStatus(int status, boolean expected) {
-		assertEquals(
-			expected,
-			TaskRefresher.isTransient(new InvalidStatusException("https://example.com", status, ""))
-		);
-	}
-
-	@Test
-	public void testIsTransientConnectionFailure() {
-		assertTrue(TaskRefresher.isTransient(new OAuthConnectionException(new IOException("timeout"))));
-		assertFalse(TaskRefresher.isTransient(new RuntimeException("boom")));
 	}
 }
