@@ -1,4 +1,8 @@
 {
+    "aws-ecr-repository-configure-image-scan": {
+        "reason": "zenobase-api images are not scanned on push; dependency vulnerabilities are tracked in Semgrep.",
+        "excludeFor": ["^zenobase-api$"]
+    },
     "aws-ecr-repository-configure-customer-managed-key": {
         "reason": "zenobase-api uses explicit AES256 (always encrypted); a CMK would force repo replacement = image loss.",
         "excludeFor": ["^zenobase-api$"]

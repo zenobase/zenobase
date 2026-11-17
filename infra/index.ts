@@ -245,7 +245,6 @@ if (bastionEnabled) {
 const ecrRepo = new aws.ecr.Repository("zenobase-api", {
     name: "zenobase-api",
     imageTagMutability: "IMMUTABLE",
-    imageScanningConfiguration: { scanOnPush: true },
     encryptionConfigurations: [{ encryptionType: "AES256" }],
 });
 
