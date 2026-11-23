@@ -82,34 +82,23 @@ public class SchedulerTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(classes = { RuntimeException.class, StackOverflowError.class })
+	@ValueSource(classes = { RuntimeException.class, StackOverflowError.class, InterruptedException.class })
 	public void testScheduledRunnableSwallowsJobThrowables(Class<? extends Throwable> type) {
 		var throwing = mock(Job.class);
 		when(throwing.getLabel()).thenReturn("throwing");
 		when(throwing.getBegin()).thenReturn(new LocalTime(2, 0));
 		when(throwing.getPeriod()).thenReturn(Period.hours(6));
-		doThrow(type).when(throwing).run();
+		doAnswer(invocation -> {
+			throw type.getDeclaredConstructor().newInstance();
+		})
+			.when(throwing)
+			.run();
 
 		var runnable = captureScheduledRunnable(throwing);
 		runnable.run();
 		runnable.run();
 		verify(throwing, times(2)).run();
-	}
-
-	@Test
-	public void testScheduledRunnableRestoresInterruptFlag() {
-		var interrupted = mock(Job.class);
-		when(interrupted.getLabel()).thenReturn("interrupted");
-		when(interrupted.getBegin()).thenReturn(new LocalTime(2, 0));
-		when(interrupted.getPeriod()).thenReturn(Period.hours(6));
-		doAnswer(invocation -> {
-			throw new InterruptedException();
-		})
-			.when(interrupted)
-			.run();
-
-		captureScheduledRunnable(interrupted).run();
-		assertThat(Thread.interrupted()).isTrue();
+		assertThat(Thread.interrupted()).isEqualTo(type == InterruptedException.class);
 	}
 
 	@Test
