@@ -34,52 +34,25 @@ public class QuotaController extends ControllerSupport {
 
 	public void get(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
-		Identity principal = new UserLookup(users).getIdentity(userId);
-		if (principal == null) {
-			sendNotFound(res, "user not found");
-			return;
-		}
-		if (!principal.equals(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstParty(auth);
+		Identity principal = requireFound(new UserLookup(users).getIdentity(userId), "user not found");
+		requireSelfOrSuperuser(users, auth, principal);
 		sendOk(res, quotas.getQuota(principal).toJson());
 	}
 
 	public void post(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
 		ObjectNode body = body(req);
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (!isFirstPartySuperuser(users, auth)) {
-			sendForbidden(res);
-			return;
-		}
-		Identity principal = new UserLookup(users).getIdentity(userId);
-		if (principal == null) {
-			sendNotFound(res, "user not found");
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
+		Identity principal = requireFound(new UserLookup(users).getIdentity(userId), "user not found");
 		int cost = body.path("cost").intValue();
 		if (cost == 0) {
 			sendBadRequest(res, "bad request");
 			return;
 		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		requireNotSuspended(auth);
 		Command command = new SpendQuotaCommand(principal, cost);
 		dispatcher.dispatch(command);
 		setHeader(res, COMMAND_ID, command.getId());

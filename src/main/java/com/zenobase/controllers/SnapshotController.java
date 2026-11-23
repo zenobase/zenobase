@@ -24,43 +24,22 @@ public class SnapshotController extends ControllerSupport {
 	public void findAll(ServerRequest req, ServerResponse res) {
 		int offset = Integer.parseInt(req.query().first("offset").orElse("0"));
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (!isFirstPartySuperuser(users, auth)) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
 		sendOk(res, SnapshotList.toJson(manager.findAll(offset, limit)));
 	}
 
 	public void snapshot(ServerRequest req, ServerResponse res) {
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (!isFirstPartySuperuser(users, auth)) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
 		manager.snapshot();
 		sendNoContent(res);
 	}
 
 	public void delete(ServerRequest req, ServerResponse res) {
 		String snapshotId = req.path().pathParameters().get("snapshotId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (!isFirstPartySuperuser(users, auth)) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
 		manager.delete(snapshotId);
 		sendNoContent(res);
 	}

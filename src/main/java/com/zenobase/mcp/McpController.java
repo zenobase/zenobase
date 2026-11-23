@@ -82,10 +82,7 @@ public class McpController extends ControllerSupport {
 			challenge(res);
 			return;
 		}
-		if (!Auth0TokenAuthorizer.EXTERNAL_SCOPE.equals(auth.getScope())) {
-			res.status(Status.FORBIDDEN_403).send();
-			return;
-		}
+		requirePermission(Auth0TokenAuthorizer.EXTERNAL_SCOPE.equals(auth.getScope()));
 		res.header(HeaderNames.ALLOW, "POST");
 		res.status(Status.METHOD_NOT_ALLOWED_405).send();
 	}
@@ -103,14 +100,8 @@ public class McpController extends ControllerSupport {
 			challenge(res);
 			return;
 		}
-		if (!Auth0TokenAuthorizer.EXTERNAL_SCOPE.equals(auth.getScope())) {
-			res.status(Status.FORBIDDEN_403);
-			res.send();
-			return;
-		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		requirePermission(Auth0TokenAuthorizer.EXTERNAL_SCOPE.equals(auth.getScope()));
+		requireNotSuspended(auth);
 		Identity client = auth.getClient();
 		if (client == null) {
 			challenge(res);

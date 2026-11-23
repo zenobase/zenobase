@@ -38,10 +38,7 @@ public class UserListController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
-		if (!repository.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
+		requirePermission(repository.isSuperuser(auth.getPrincipal()));
 		UserQuery query = new UserQuery();
 		if (q != null) {
 			query = query.queryString(q);

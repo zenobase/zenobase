@@ -39,39 +39,17 @@ public class CredentialsController extends ControllerSupport {
 
 	public void get(ServerRequest req, ServerResponse res) {
 		String credentialsId = req.path().pathParameters().get("credentialsId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		Credentials credentials = this.credentials.find(credentialsId);
-		if (credentials == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (!credentials.isPermitted(auth)) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Credentials credentials = requireFound(this.credentials.find(credentialsId));
+		requirePermission(credentials.isPermitted(auth));
 		sendOk(res, credentials.sanitized().toJson());
 	}
 
 	public void update(ServerRequest req, ServerResponse res) {
 		String credentialsId = req.path().pathParameters().get("credentialsId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		Credentials credentials = this.credentials.find(credentialsId);
-		if (credentials == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (!credentials.isPermitted(auth)) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Credentials credentials = requireFound(this.credentials.find(credentialsId));
+		requirePermission(credentials.isPermitted(auth));
 		if (!registry.exists(credentials.getType())) {
 			sendBadRequest(res, "unsupported credentials type: " + credentials.getType());
 			return;
@@ -96,9 +74,7 @@ public class CredentialsController extends ControllerSupport {
 			sendBadRequest(res, "nothing to do");
 			return;
 		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		requireNotSuspended(auth);
 		try {
 			String commandId = dispatcher.dispatch(command);
 			setHeader(res, COMMAND_ID, commandId);
@@ -114,23 +90,10 @@ public class CredentialsController extends ControllerSupport {
 
 	public void delete(ServerRequest req, ServerResponse res) {
 		String credentialsId = req.path().pathParameters().get("credentialsId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		Credentials credentials = this.credentials.find(credentialsId);
-		if (credentials == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (!credentials.isPermitted(auth) && !isFirstPartySuperuser(users, auth)) {
-			sendForbidden(res);
-			return;
-		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Credentials credentials = requireFound(this.credentials.find(credentialsId));
+		requirePermission(credentials.isPermitted(auth) || isFirstPartySuperuser(users, auth));
+		requireNotSuspended(auth);
 		String commandId = dispatcher.dispatch(new DeleteCredentialsCommand(auth.getPrincipal(), credentials));
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);

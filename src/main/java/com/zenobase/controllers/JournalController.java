@@ -37,19 +37,8 @@ public class JournalController extends ControllerSupport {
 		String q = req.query().first("q").orElse(null);
 		int offset = Integer.parseInt(req.query().first("offset").orElse("0"));
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
-		if (!users.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
 		CommandQuery query = new CommandQuery();
 		if (q != null) {
 			query = query.queryString(q);
@@ -61,24 +50,10 @@ public class JournalController extends ControllerSupport {
 		String userId = req.path().pathParameters().get("userId");
 		int offset = Integer.parseInt(req.query().first("offset").orElse("0"));
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
-		Identity principal = new UserLookup(users).getIdentity(userId);
-		if (principal == null) {
-			sendNotFound(res, "user not found");
-			return;
-		}
-		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstParty(auth);
+		Identity principal = requireFound(new UserLookup(users).getIdentity(userId), "user not found");
+		requireSelfOrSuperuser(users, auth, principal);
 		sendOk(
 			res,
 			CommandList.toJson(
@@ -98,23 +73,13 @@ public class JournalController extends ControllerSupport {
 			sendBadRequest(res, "missing command");
 			return;
 		}
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		Command command = repository.find(Objects.requireNonNull(form.getCommandId()));
-		if (command == null) {
-			sendNotFound(res, "command not found");
-			return;
-		}
-		if (!command.isPermitted(auth) && !isFirstPartySuperuser(users, auth)) {
-			sendForbidden(res);
-			return;
-		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Command command = requireFound(
+			repository.find(Objects.requireNonNull(form.getCommandId())),
+			"command not found"
+		);
+		requirePermission(command.isPermitted(auth) || isFirstPartySuperuser(users, auth));
+		requireNotSuspended(auth);
 		String commandId = dispatcher.dispatch(command.reverse(auth.getPrincipal()));
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);

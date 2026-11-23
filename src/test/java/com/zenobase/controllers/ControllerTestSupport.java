@@ -18,7 +18,9 @@ public abstract class ControllerTestSupport implements CustomHeaders {
 	@org.junit.jupiter.api.BeforeEach
 	public void setUpClient() {
 		injector = Guice.createInjector(module());
-		HttpRouting.Builder routingBuilder = HttpRouting.builder();
+		HttpRouting.Builder routingBuilder = HttpRouting.builder().error(ResponseStatusException.class, (req, res, e) ->
+			e.send(res)
+		);
 		routing(routingBuilder, injector);
 		client = new DirectClient(routingBuilder);
 	}

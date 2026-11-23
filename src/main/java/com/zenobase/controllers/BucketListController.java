@@ -54,19 +54,8 @@ public class BucketListController extends ControllerSupport {
 		String q = req.query().first("q").orElse(null);
 		int offset = Integer.parseInt(req.query().first("offset").orElse("0"));
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
-		if (!users.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
 		BucketQuery query = new BucketQuery();
 		if (q != null) {
 			query = query.queryString(q);
@@ -81,32 +70,11 @@ public class BucketListController extends ControllerSupport {
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
 		boolean labelsOnly = Boolean.parseBoolean(req.query().first("labels_only").orElse("false"));
 		boolean includeArchived = Boolean.parseBoolean(req.query().first("include_archived").orElse("false"));
-		if (offset < 0 || offset > 1000) {
-			sendBadRequest(res, "expected offset in [0..1000]");
-			return;
-		}
-		if (limit < 0 || limit > 100) {
-			sendBadRequest(res, "expected limit in [0..100]");
-			return;
-		}
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
-		Identity principal = new UserLookup(users).getIdentity(userId);
-		if (principal == null) {
-			sendNotFound(res, "user not found");
-			return;
-		}
-		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
+		requirePaging(offset, limit);
+		Authorization auth = requireAuthorization(req);
+		requireFirstParty(auth);
+		Identity principal = requireFound(new UserLookup(users).getIdentity(userId), "user not found");
+		requireSelfOrSuperuser(users, auth, principal);
 		var query = new BucketQuery().principalEqualTo(principal).includeArchived(includeArchived);
 		var orderBy = order != null ? SearchOrder.valueOf(order, Bucket.SCHEMA) : BucketQuery.DEFAULT_ORDER;
 		PartialList<Bucket> found = buckets.find(query, orderBy, offset, limit);
@@ -148,9 +116,7 @@ public class BucketListController extends ControllerSupport {
 			sendBadRequest(res, "one or more aliases are invalid");
 			return;
 		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		requireNotSuspended(auth);
 		String commandId = dispatcher.dispatch(new CreateBucketCommand(auth.getPrincipal(), bucket));
 		setHeader(res, LOCATION, "/buckets/" + bucket.getId());
 		setHeader(res, COMMAND_ID, commandId);

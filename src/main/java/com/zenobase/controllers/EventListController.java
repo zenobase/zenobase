@@ -71,19 +71,8 @@ public class EventListController extends ControllerSupport {
 	public void find(ServerRequest req, ServerResponse res) {
 		String bucketId = req.path().pathParameters().get("bucketId");
 		Authorization auth = getCurrentAuthorization(req);
-		Bucket bucket = buckets.find(bucketId);
-		if (bucket == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (!bucket.hasRole(auth, Role.VIEWER)) {
-			if (auth == null) {
-				sendUnauthorized(res);
-			} else {
-				sendForbidden(res);
-			}
-			return;
-		}
+		Bucket bucket = requireFound(buckets.find(bucketId));
+		requireRole(bucket, auth, Role.VIEWER);
 		try {
 			List<String> constraints = getConstraints(req);
 			List<FacetOptions> facets = getFacets(req);
@@ -216,27 +205,11 @@ public class EventListController extends ControllerSupport {
 
 	public void post(ServerRequest req, ServerResponse res) {
 		String bucketId = req.path().pathParameters().get("bucketId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		Bucket bucket = buckets.find(bucketId);
-		if (bucket == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (!bucket.hasRole(auth, Role.OWNER)) {
-			sendForbidden(res);
-			return;
-		}
-		if (bucket.isArchived()) {
-			sendConflict(res, "bucket is archived");
-			return;
-		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Bucket bucket = requireFound(buckets.find(bucketId));
+		requireRole(bucket, auth, Role.OWNER);
+		requireNotArchived(bucket);
+		requireNotSuspended(auth);
 		ObjectNode body = body(req);
 		var nodes = EVENTS.getValues(body);
 		if (!nodes.isEmpty()) {
@@ -284,42 +257,16 @@ public class EventListController extends ControllerSupport {
 	}
 
 	public void countAll(ServerRequest req, ServerResponse res) {
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
-		if (!users.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
 		sendOk(res, toJson(events.size()));
 	}
 
 	public void countByUser(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
-		if (!users.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
-		Identity principal = new UserLookup(users).getIdentity(userId);
-		if (principal == null) {
-			sendNotFound(res, "user not found");
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
+		Identity principal = requireFound(new UserLookup(users).getIdentity(userId), "user not found");
 		sendOk(res, toJson(events.size(principal)));
 	}
 

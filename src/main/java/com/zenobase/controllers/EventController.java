@@ -36,59 +36,24 @@ public class EventController extends ControllerSupport {
 	public void get(ServerRequest req, ServerResponse res) {
 		String bucketId = req.path().pathParameters().get("bucketId");
 		String eventId = req.path().pathParameters().get("eventId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		Bucket bucket = buckets.find(bucketId);
-		if (bucket == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (!bucket.hasRole(auth, Role.VIEWER)) {
-			sendForbidden(res);
-			return;
-		}
-		Event event = events.find(bucketId, eventId);
-		if (event == null) {
-			sendNotFound(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Bucket bucket = requireFound(buckets.find(bucketId));
+		requireRole(bucket, auth, Role.VIEWER);
+		Event event = requireFound(events.find(bucketId, eventId));
 		sendOk(res, event.toJson());
 	}
 
 	public void update(ServerRequest req, ServerResponse res) {
 		String bucketId = req.path().pathParameters().get("bucketId");
 		String eventId = req.path().pathParameters().get("eventId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		Bucket bucket = buckets.find(bucketId);
-		if (bucket == null) {
-			sendNotFound(res, "bucket not found");
-			return;
-		}
-		if (!bucket.hasRole(auth, Role.OWNER)) {
-			sendForbidden(res);
-			return;
-		}
-		if (bucket.isArchived()) {
-			sendConflict(res, "bucket is archived");
-			return;
-		}
-		Event event = events.find(bucketId, eventId);
-		if (event == null) {
-			sendNotFound(res, "event not found");
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Bucket bucket = requireFound(buckets.find(bucketId), "bucket not found");
+		requireRole(bucket, auth, Role.OWNER);
+		requireNotArchived(bucket);
+		Event event = requireFound(events.find(bucketId, eventId), "event not found");
 		Event updated = new Event(body(req));
 		updated.setValue(Event.AUTHOR, auth.getPrincipal());
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		requireNotSuspended(auth);
 		try {
 			String commandId = dispatcher.dispatch(
 				new UpdateEventCommand(auth.getPrincipal(), bucketId, event, updated)
@@ -107,32 +72,12 @@ public class EventController extends ControllerSupport {
 	public void delete(ServerRequest req, ServerResponse res) {
 		String bucketId = req.path().pathParameters().get("bucketId");
 		String eventId = req.path().pathParameters().get("eventId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		Bucket bucket = buckets.find(bucketId);
-		if (bucket == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (!bucket.hasRole(auth, Role.OWNER)) {
-			sendForbidden(res);
-			return;
-		}
-		if (bucket.isArchived()) {
-			sendConflict(res, "bucket is archived");
-			return;
-		}
-		Event event = events.find(bucket.getId(), eventId);
-		if (event == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Bucket bucket = requireFound(buckets.find(bucketId));
+		requireRole(bucket, auth, Role.OWNER);
+		requireNotArchived(bucket);
+		Event event = requireFound(events.find(bucket.getId(), eventId));
+		requireNotSuspended(auth);
 		String commandId = dispatcher.dispatch(new DeleteEventCommand(auth.getPrincipal(), bucketId, event));
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);

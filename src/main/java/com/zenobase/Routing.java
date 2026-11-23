@@ -32,6 +32,7 @@ class Routing {
 		routing.addFilter(injector.getInstance(ExternalGrantFilter.class));
 
 		// Error handlers
+		routing.error(ResponseStatusException.class, (req, res, e) -> e.send(res));
 		routing.error(HttpException.class, (req, res, e) -> {
 			ControllerSupport.sendError(res, e.status(), String.valueOf(e.getMessage()));
 		});
