@@ -5,8 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class LocalBus implements Bus {
 
-	private boolean readOnly;
-	private boolean schedulerDisabled;
+	private volatile boolean readOnly;
+	private volatile boolean schedulerDisabled;
 	private final Set<String> locks = ConcurrentHashMap.newKeySet();
 
 	@Override
