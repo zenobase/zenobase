@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 
 public class SchedulerTest {
@@ -80,16 +81,24 @@ public class SchedulerTest {
 		assertThat(job.ran).isFalse();
 	}
 
-	@Test
-	public void testScheduledRunnableSwallowsJobExceptions() {
+	@ParameterizedTest
+	@ValueSource(classes = { RuntimeException.class, StackOverflowError.class, InterruptedException.class })
+	public void testScheduledRunnableSwallowsJobThrowables(Class<? extends Throwable> type) {
 		var throwing = mock(Job.class);
 		when(throwing.getLabel()).thenReturn("throwing");
 		when(throwing.getBegin()).thenReturn(new LocalTime(2, 0));
 		when(throwing.getPeriod()).thenReturn(Period.hours(6));
-		doThrow(new RuntimeException("boom")).when(throwing).run();
+		doAnswer(invocation -> {
+			throw type.getDeclaredConstructor().newInstance();
+		})
+			.when(throwing)
+			.run();
 
-		captureScheduledRunnable(throwing).run();
-		verify(throwing).run();
+		var runnable = captureScheduledRunnable(throwing);
+		runnable.run();
+		runnable.run();
+		verify(throwing, times(2)).run();
+		assertThat(Thread.interrupted()).isEqualTo(type == InterruptedException.class);
 	}
 
 	@Test
