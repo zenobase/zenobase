@@ -97,6 +97,22 @@ public class SchedulerTest {
 	}
 
 	@Test
+	public void testScheduledRunnableRestoresInterruptFlag() {
+		var interrupted = mock(Job.class);
+		when(interrupted.getLabel()).thenReturn("interrupted");
+		when(interrupted.getBegin()).thenReturn(new LocalTime(2, 0));
+		when(interrupted.getPeriod()).thenReturn(Period.hours(6));
+		doAnswer(invocation -> {
+			throw new InterruptedException();
+		})
+			.when(interrupted)
+			.run();
+
+		captureScheduledRunnable(interrupted).run();
+		assertThat(Thread.interrupted()).isTrue();
+	}
+
+	@Test
 	public void testCloseShutsDownExecutor() {
 		new Scheduler(bus, Set.of(), executor).close();
 		verify(executor).shutdownNow();
