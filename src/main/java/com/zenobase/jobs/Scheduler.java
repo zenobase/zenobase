@@ -48,10 +48,14 @@ public class Scheduler {
 				try (ISentryLifecycleToken ignored = txn.makeCurrent()) {
 					job.run();
 					txn.setStatus(SpanStatus.OK);
-				} catch (Exception e) {
+				} catch (Throwable t) {
+					// An escaping throwable would make scheduleAtFixedRate silently cancel all future runs.
+					if (t instanceof InterruptedException) {
+						Thread.currentThread().interrupt();
+					}
 					txn.setStatus(SpanStatus.INTERNAL_ERROR);
-					txn.setThrowable(e);
-					logger.error("Could not run job: {}", job.getLabel(), e);
+					txn.setThrowable(t);
+					logger.error("Could not run job: {}", job.getLabel(), t);
 				} finally {
 					txn.finish();
 				}
