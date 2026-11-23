@@ -52,6 +52,8 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 	protected void routing(HttpRouting.Builder builder, Injector injector) {
 		AccountController controller = injector.getInstance(AccountController.class);
 		builder.delete("/users/{userId}", controller::close);
+		builder.get("/users/{userId}/passkeys", controller::listPasskeys);
+		builder.delete("/users/{userId}/passkeys/{passkeyId}", controller::deletePasskey);
 	}
 
 	@BeforeEach
