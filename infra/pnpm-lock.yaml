@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@pulumi/pulumi':
-      specifier: ^3.274.1
-      version: 3.274.1
+      specifier: ^3.277.0
+      version: 3.277.0
     '@types/node':
       specifier: ^26.6.6
       version: 26.6.6
@@ -21,11 +21,11 @@ importers:
   .:
     dependencies:
       '@pulumi/aws':
-        specifier: ^7.54.0
-        version: 7.54.0(typescript@6.0.3)
+        specifier: ^7.55.0
+        version: 7.55.0(typescript@6.0.3)
       '@pulumi/pulumi':
         specifier: 'catalog:'
-        version: 3.274.1(typescript@6.0.3)
+        version: 3.277.0(typescript@6.0.3)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -47,7 +47,7 @@ importers:
         version: 1.21.0(typescript@6.0.3)
       '@pulumi/pulumi':
         specifier: 'catalog:'
-        version: 3.274.1(typescript@6.0.3)
+        version: 3.277.0(typescript@6.0.3)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -235,8 +235,8 @@ packages:
   '@pulumi/aws@6.68.0':
     resolution: {integrity: sha512-uehJNSviSq3garkLXsy1zZzI7V6clBDQq8G83PSpNfdePdGeKtuRoxMSsuqkgpGkue+cGjoxJtC6QwdtzgaKBQ==}
 
-  '@pulumi/aws@7.54.0':
-    resolution: {integrity: sha512-0asX0tYqnQFztv8k3kylli5ejXXXdttY0aVlVJ5CznEhecnQmE9Nt/XZjs/+4z5MXR7OYIdtomwwjPMt1+J8mw==}
+  '@pulumi/aws@7.55.0':
+    resolution: {integrity: sha512-lrCwgPGi6o10FR70UZrtvAkqYi9mgoK72z77iStfntHK1V+MH+R3+ZhlWMjpriKwtRADlffUwnmp6bQsNpSa4w==}
 
   '@pulumi/compliance-policy-manager@0.1.6':
     resolution: {integrity: sha512-sMMQLacdQj9wSmyMUjMNxb03Iywh9wSGptNrFYVNd9elCpfEJv8+Opn9Z+AzYKrsBFTpOwV8efND0Y4UkWwVaQ==}
@@ -244,8 +244,8 @@ packages:
   '@pulumi/policy@1.21.0':
     resolution: {integrity: sha512-tLczMS7S2UUpc1qO9xvGY54GumUShTNxm/BY/T1fb0Hp/ILScxXzrmLpkbt4KUGZAcX/EdGLVuMGHyhreqbfvg==}
 
-  '@pulumi/pulumi@3.274.1':
-    resolution: {integrity: sha512-L9WHM4W7y9BmGwTZ0n5yUEVo7zhb6BXocNFPv3VtwEH3DZUzJ6N+VTiLvo1HbSMnZJJVS0jFL4zMmOm80Lbzeg==}
+  '@pulumi/pulumi@3.277.0':
+    resolution: {integrity: sha512-EvvBo55xmGByLRWjIqp24k4vzmPoKmZ6nTmK8EHzRb9veLCNISN3/Fq4RlJxrEt5+HmNkZveEasI+z0UCgkMxw==}
     engines: {node: '>=22'}
     peerDependencies:
       ts-node: '>= 7.0.1 < 12'
@@ -769,7 +769,7 @@ snapshots:
       '@pulumi/aws-native': 1.25.0(typescript@6.0.3)
       '@pulumi/compliance-policy-manager': 0.1.6(typescript@6.0.3)
       '@pulumi/policy': 1.21.0(typescript@6.0.3)
-      '@pulumi/pulumi': 3.274.1(typescript@6.0.3)
+      '@pulumi/pulumi': 3.277.0(typescript@6.0.3)
     transitivePeerDependencies:
       - supports-color
       - ts-node
@@ -777,7 +777,7 @@ snapshots:
 
   '@pulumi/aws-native@1.25.0(typescript@6.0.3)':
     dependencies:
-      '@pulumi/pulumi': 3.274.1(typescript@6.0.3)
+      '@pulumi/pulumi': 3.277.0(typescript@6.0.3)
     transitivePeerDependencies:
       - supports-color
       - ts-node
@@ -785,16 +785,16 @@ snapshots:
 
   '@pulumi/aws@6.68.0(typescript@6.0.3)':
     dependencies:
-      '@pulumi/pulumi': 3.274.1(typescript@6.0.3)
+      '@pulumi/pulumi': 3.277.0(typescript@6.0.3)
       mime: 2.6.0
     transitivePeerDependencies:
       - supports-color
       - ts-node
       - typescript
 
-  '@pulumi/aws@7.54.0(typescript@6.0.3)':
+  '@pulumi/aws@7.55.0(typescript@6.0.3)':
     dependencies:
-      '@pulumi/pulumi': 3.274.1(typescript@6.0.3)
+      '@pulumi/pulumi': 3.277.0(typescript@6.0.3)
       mime: 2.6.0
     transitivePeerDependencies:
       - supports-color
@@ -814,14 +814,14 @@ snapshots:
   '@pulumi/policy@1.21.0(typescript@6.0.3)':
     dependencies:
       '@grpc/grpc-js': 1.14.4
-      '@pulumi/pulumi': 3.274.1(typescript@6.0.3)
+      '@pulumi/pulumi': 3.277.0(typescript@6.0.3)
       google-protobuf: 3.21.4
     transitivePeerDependencies:
       - supports-color
       - ts-node
       - typescript
 
-  '@pulumi/pulumi@3.274.1(typescript@6.0.3)':
+  '@pulumi/pulumi@3.277.0(typescript@6.0.3)':
     dependencies:
       '@grpc/grpc-js': 1.14.4
       '@logdna/tail-file': 2.2.0
