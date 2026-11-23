@@ -49,8 +49,7 @@ public class QuotaController extends ControllerSupport {
 		Identity principal = requireFound(new UserLookup(users).getIdentity(userId), "user not found");
 		int cost = body.path("cost").intValue();
 		if (cost == 0) {
-			sendBadRequest(res, "bad request");
-			return;
+			throw ResponseStatusException.badRequest("bad request");
 		}
 		requireNotSuspended(auth);
 		Command command = new SpendQuotaCommand(principal, cost);

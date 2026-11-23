@@ -124,20 +124,16 @@ public class AccountController extends ControllerSupport {
 		try {
 			identityProvider.deletePasskey(user, passkeyId);
 		} catch (IllegalArgumentException e) {
-			sendNotFound(res);
-			return;
+			throw ResponseStatusException.notFound();
 		} catch (ManagementApiException e) {
 			if (e.statusCode() == 404) {
-				sendNotFound(res);
-				return;
+				throw ResponseStatusException.notFound();
 			}
 			logger.error("Passkey delete failed for user {}", user.getId(), e);
-			sendInternalServerError(res, "failed to delete passkey");
-			return;
+			throw ResponseStatusException.internalServerError("failed to delete passkey");
 		} catch (RuntimeException e) {
 			logger.error("Passkey delete failed for user {}", user.getId(), e);
-			sendInternalServerError(res, "failed to delete passkey");
-			return;
+			throw ResponseStatusException.internalServerError("failed to delete passkey");
 		}
 		sendNoContent(res);
 	}

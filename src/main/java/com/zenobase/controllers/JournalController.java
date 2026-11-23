@@ -70,8 +70,7 @@ public class JournalController extends ControllerSupport {
 	public void post(ServerRequest req, ServerResponse res) {
 		UndoForm form = new UndoForm(body(req));
 		if (!form.valid()) {
-			sendBadRequest(res, "missing command");
-			return;
+			throw ResponseStatusException.badRequest("missing command");
 		}
 		Authorization auth = requireAuthorization(req);
 		Command command = requireFound(

@@ -35,8 +35,7 @@ public class UserListController extends ControllerSupport {
 
 		Authorization auth = getCurrentAuthorization(req);
 		if (auth == null || auth.getScope() != null) {
-			sendUnauthorized(res);
-			return;
+			throw ResponseStatusException.unauthorized();
 		}
 		requirePermission(repository.isSuperuser(auth.getPrincipal()));
 		UserQuery query = new UserQuery();

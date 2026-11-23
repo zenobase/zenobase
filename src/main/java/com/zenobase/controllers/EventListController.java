@@ -82,7 +82,7 @@ public class EventListController extends ControllerSupport {
 				getStreaming(req, res, bucketId, constraints);
 			}
 		} catch (IllegalArgumentException e) {
-			sendBadRequest(res, "Invalid parameters");
+			throw ResponseStatusException.badRequest("Invalid parameters");
 		}
 	}
 
@@ -138,10 +138,11 @@ public class EventListController extends ControllerSupport {
 		} catch (OpenSearchException e) {
 			if (Search.hasCauseOfType(e, "too_many_buckets")) {
 				logger.warn("Search failed due to too many buckets in <{}>", bucketId, e);
-				sendBadRequest(res, "One or more aggregations create too many bins; try setting larger intervals");
-			} else {
-				throw e;
+				throw ResponseStatusException.badRequest(
+					"One or more aggregations create too many bins; try setting larger intervals"
+				);
 			}
+			throw e;
 		}
 	}
 
@@ -155,7 +156,7 @@ public class EventListController extends ControllerSupport {
 			streamEventChunks(res, bucketId, constraints);
 			return;
 		}
-		sendBadRequest(res, "Can't accept <" + accept + ">");
+		throw ResponseStatusException.badRequest("Can't accept <" + accept + ">");
 	}
 
 	private void streamEventChunks(ServerResponse res, String bucketId, Iterable<String> constraints) {

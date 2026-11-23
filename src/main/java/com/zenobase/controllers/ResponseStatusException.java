@@ -46,6 +46,10 @@ public final class ResponseStatusException extends RuntimeException {
 		return new ResponseStatusException(Status.CONFLICT_409, message);
 	}
 
+	public static ResponseStatusException internalServerError(String message) {
+		return new ResponseStatusException(Status.INTERNAL_SERVER_ERROR_500, message);
+	}
+
 	public void send(ServerResponse res) {
 		String message = getMessage();
 		if (message == null) {

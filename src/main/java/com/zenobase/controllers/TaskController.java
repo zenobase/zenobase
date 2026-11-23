@@ -92,13 +92,11 @@ public class TaskController extends ControllerSupport {
 			requireNotArchived(bucket);
 		}
 		if (!registry.exists(task.getType())) {
-			sendBadRequest(res, "unsupported task type: " + task.getType());
-			return;
+			throw ResponseStatusException.badRequest("unsupported task type: " + task.getType());
 		}
 		ObjectNode body = body(req);
 		if (body.size() != 1) {
-			sendBadRequest(res, "no data");
-			return;
+			throw ResponseStatusException.badRequest("no data");
 		}
 		Command command = null;
 		ObjectNode settings = Task.SETTINGS.getValue(body);
@@ -106,8 +104,7 @@ public class TaskController extends ControllerSupport {
 			command = UpdateTaskCommand.builder(task).set(Task.SETTINGS, task.getSettings(), settings).build();
 		}
 		if (command == null) {
-			sendBadRequest(res, "nothing to do");
-			return;
+			throw ResponseStatusException.badRequest("nothing to do");
 		}
 		requireNotSuspended(auth);
 		String commandId = dispatcher.dispatch(command);

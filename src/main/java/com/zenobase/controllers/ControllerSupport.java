@@ -137,34 +137,10 @@ public abstract class ControllerSupport implements CustomHeaders {
 		res.status(Status.NO_CONTENT_204).send();
 	}
 
-	protected static void sendNotFound(ServerResponse res) {
-		res.status(Status.NOT_FOUND_404).send();
-	}
-
-	protected static void sendUnauthorized(ServerResponse res) {
-		res.status(Status.UNAUTHORIZED_401).send();
-	}
-
-	// Error response helpers (also used by filters)
-
-	public static void sendBadRequest(ServerResponse res, String message) {
-		sendError(res, Status.BAD_REQUEST_400, message);
-	}
-
-	public static void sendBadRequest(ServerResponse res, JsonNode json) {
-		res.status(Status.BAD_REQUEST_400).send(json);
-	}
+	// Error response helpers for filters and routing error handlers; controllers throw ResponseStatusException
 
 	public static void sendForbidden(ServerResponse res, String message) {
 		sendError(res, Status.FORBIDDEN_403, message);
-	}
-
-	public static void sendNotFound(ServerResponse res, String message) {
-		sendError(res, Status.NOT_FOUND_404, message);
-	}
-
-	public static void sendConflict(ServerResponse res, String message) {
-		sendError(res, Status.CONFLICT_409, message);
 	}
 
 	public static void sendInternalServerError(ServerResponse res, String message) {

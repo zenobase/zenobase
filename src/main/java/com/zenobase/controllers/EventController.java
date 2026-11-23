@@ -62,8 +62,7 @@ public class EventController extends ControllerSupport {
 			sendNoContent(res);
 		} catch (OpenSearchException e) {
 			if (e.status() == 409) {
-				sendConflict(res, "event is stale");
-				return;
+				throw ResponseStatusException.conflict("event is stale");
 			}
 			throw e;
 		}

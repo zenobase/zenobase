@@ -51,28 +51,23 @@ public class CredentialsController extends ControllerSupport {
 		Credentials credentials = requireFound(this.credentials.find(credentialsId));
 		requirePermission(credentials.isPermitted(auth));
 		if (!registry.exists(credentials.getType())) {
-			sendBadRequest(res, "unsupported credentials type: " + credentials.getType());
-			return;
+			throw ResponseStatusException.badRequest("unsupported credentials type: " + credentials.getType());
 		}
 		CredentialsManager manager = registry.find(credentials.getType());
 		ObjectNode body = body(req);
 		if (body.size() != 1) {
-			sendBadRequest(res, "expected a single property");
-			return;
+			throw ResponseStatusException.badRequest("expected a single property");
 		}
 		ObjectNode config = Credentials.CREDENTIALS.getValue(body);
 		if (config == null) {
-			sendBadRequest(res, "no credentials specified");
-			return;
+			throw ResponseStatusException.badRequest("no credentials specified");
 		}
 		if (credentials.isAuthorized()) {
-			sendBadRequest(res, "credentials are already authorized");
-			return;
+			throw ResponseStatusException.badRequest("credentials are already authorized");
 		}
 		Command command = manager.authorize(credentials, config);
 		if (command == null) {
-			sendBadRequest(res, "nothing to do");
-			return;
+			throw ResponseStatusException.badRequest("nothing to do");
 		}
 		requireNotSuspended(auth);
 		try {
@@ -81,10 +76,9 @@ public class CredentialsController extends ControllerSupport {
 			sendNoContent(res);
 		} catch (OpenSearchException e) {
 			if (e.status() == 409) {
-				sendConflict(res, "credentials are stale");
-			} else {
-				throw e;
+				throw ResponseStatusException.conflict("credentials are stale");
 			}
+			throw e;
 		}
 	}
 

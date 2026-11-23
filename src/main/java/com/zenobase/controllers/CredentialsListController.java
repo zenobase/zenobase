@@ -74,17 +74,14 @@ public class CredentialsListController extends ControllerSupport {
 		requireFirstParty(auth);
 		var form = new CreateCredentialsForm(body(req));
 		if (!form.valid()) {
-			sendBadRequest(res, "bad request");
-			return;
+			throw ResponseStatusException.badRequest("bad request");
 		}
 		if (!registry.exists(form.getType())) {
-			sendBadRequest(res, "unknown type");
-			return;
+			throw ResponseStatusException.badRequest("unknown type");
 		}
 		CredentialsManager manager = registry.find(form.getType());
 		if (credentials.find(auth.getPrincipal(), form.getType()) != null) {
-			sendBadRequest(res, "already connected");
-			return;
+			throw ResponseStatusException.badRequest("already connected");
 		}
 		requireNotSuspended(auth);
 		Credentials credentials = manager.newCredentials(auth.getPrincipal());

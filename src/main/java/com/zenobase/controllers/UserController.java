@@ -75,7 +75,7 @@ public class UserController extends ControllerSupport {
 			updateOptedOut(req, res, form, user);
 			return;
 		}
-		sendBadRequest(res, "invalid update request");
+		throw ResponseStatusException.badRequest("invalid update request");
 	}
 
 	private void updateEmail(ServerRequest req, ServerResponse res, UpdateUserForm form, User user) {
@@ -84,8 +84,7 @@ public class UserController extends ControllerSupport {
 		requirePermission(user.is(auth.getPrincipal()) || users.isSuperuser(auth.getPrincipal()));
 		String email = form.getEmail();
 		if (email == null || email.isEmpty()) {
-			sendBadRequest(res, "invalid email address");
-			return;
+			throw ResponseStatusException.badRequest("invalid email address");
 		}
 		requireNotSuspended(auth);
 		String userName = Objects.requireNonNull(user.getName());

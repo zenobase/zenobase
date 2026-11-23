@@ -94,19 +94,16 @@ public class TaskListController extends ControllerSupport {
 		requireFirstParty(auth);
 		var form = new CreateTaskForm(body(req));
 		if (!form.valid()) {
-			sendBadRequest(res, "bad request");
-			return;
+			throw ResponseStatusException.badRequest("bad request");
 		}
 		Bucket bucket = buckets.find(form.getBucketId());
 		if (bucket == null) {
-			sendBadRequest(res, "bucket not found");
-			return;
+			throw ResponseStatusException.badRequest("bucket not found");
 		}
 		requireRole(bucket, auth, Role.OWNER);
 		requireNotArchived(bucket);
 		if (!registry.exists(form.getType())) {
-			sendBadRequest(res, "unknown task type");
-			return;
+			throw ResponseStatusException.badRequest("unknown task type");
 		}
 		TaskManager manager = registry.find(form.getType());
 		ObjectNode settings = form.getSettings();

@@ -98,8 +98,7 @@ public class BucketListController extends ControllerSupport {
 	public void post(ServerRequest req, ServerResponse res) {
 		Authorization auth = getCurrentAuthorization(req);
 		if (auth == null || auth.getScope() != null) {
-			sendUnauthorized(res);
-			return;
+			throw ResponseStatusException.unauthorized();
 		}
 		var form = new CreateBucketForm(body(req));
 		Bucket bucket = form.hasId() ? new Bucket(form.getId()) : new Bucket();
@@ -109,12 +108,10 @@ public class BucketListController extends ControllerSupport {
 		bucket.setAliases(form.getIncluded());
 		bucket.addRole(auth.getPrincipal(), Role.OWNER);
 		if (!bucket.valid()) {
-			sendBadRequest(res, "not valid");
-			return;
+			throw ResponseStatusException.badRequest("not valid");
 		}
 		if (!new AliasValidator(buckets).checkPermissions(bucket, auth)) {
-			sendBadRequest(res, "one or more aliases are invalid");
-			return;
+			throw ResponseStatusException.badRequest("one or more aliases are invalid");
 		}
 		requireNotSuspended(auth);
 		String commandId = dispatcher.dispatch(new CreateBucketCommand(auth.getPrincipal(), bucket));

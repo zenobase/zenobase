@@ -122,31 +122,25 @@ public class BucketController extends ControllerSupport {
 		requireRole(bucket, auth, Role.OWNER);
 		Bucket updated = new Bucket(body(req));
 		if (!updated.valid()) {
-			sendBadRequest(res, "bucket not valid");
-			return;
+			throw ResponseStatusException.badRequest("bucket not valid");
 		}
 		if (bucket.isArchived() && updated.isArchived()) {
-			sendConflict(res, "bucket is archived");
-			return;
+			throw ResponseStatusException.conflict("bucket is archived");
 		}
 		if (!updated.getPrincipals(Role.OWNER).equals(bucket.getPrincipals(Role.OWNER))) {
-			sendBadRequest(res, "bucket owner can't change");
-			return;
+			throw ResponseStatusException.badRequest("bucket owner can't change");
 		}
 		if (updated.getPrincipals().size() > 1) {
 			User user = users.find(auth.getPrincipal());
 			if (user == null || !user.isVerified()) {
-				sendForbidden(res, "not permitted to add or remove roles");
-				return;
+				throw ResponseStatusException.forbidden("not permitted to add or remove roles");
 			}
 		}
 		if (bucket.getAliases().isEmpty() != updated.getAliases().isEmpty()) {
-			sendBadRequest(res, "can't change bucket type");
-			return;
+			throw ResponseStatusException.badRequest("can't change bucket type");
 		}
 		if (!new AliasValidator(buckets).checkPermissions(updated, auth)) {
-			sendBadRequest(res, "one or more aliases are invalid");
-			return;
+			throw ResponseStatusException.badRequest("one or more aliases are invalid");
 		}
 		requireNotSuspended(auth);
 		try {
@@ -155,8 +149,7 @@ public class BucketController extends ControllerSupport {
 			sendNoContent(res);
 		} catch (OpenSearchException e) {
 			if (e.status() == 409) {
-				sendConflict(res, "bucket is stale");
-				return;
+				throw ResponseStatusException.conflict("bucket is stale");
 			}
 			throw e;
 		}
@@ -168,8 +161,7 @@ public class BucketController extends ControllerSupport {
 		Bucket bucket = requireFound(buckets.find(bucketId));
 		requirePermission(bucket.hasRole(auth, Role.OWNER) || isFirstPartySuperuser(users, auth));
 		if (buckets.isAliased(bucketId)) {
-			sendConflict(res, "bucket is aliased");
-			return;
+			throw ResponseStatusException.conflict("bucket is aliased");
 		}
 		requireNotSuspended(auth);
 		CompoundCommand command = new CompoundCommand(

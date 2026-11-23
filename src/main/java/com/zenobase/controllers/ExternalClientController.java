@@ -112,8 +112,7 @@ public class ExternalClientController extends ControllerSupport {
 		for (String bucketId : readableBuckets) {
 			Bucket bucket = buckets.find(bucketId);
 			if (bucket == null || !bucket.hasRole(new Authorization(principal), Role.OWNER)) {
-				sendBadRequest(res, "not the owner of bucket: " + bucketId);
-				return;
+				throw ResponseStatusException.badRequest("not the owner of bucket: " + bucketId);
 			}
 		}
 		dispatcher.dispatch(

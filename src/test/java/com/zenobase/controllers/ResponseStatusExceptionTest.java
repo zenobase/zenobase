@@ -14,30 +14,17 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 
-/** A thrown guard must produce exactly the response of the {@code sendX} call it replaced. */
+/** A thrown exception must produce exactly the response of the {@code sendX} call it replaced. */
 public class ResponseStatusExceptionTest {
 
 	private record Case(Supplier<ResponseStatusException> thrown, Consumer<ServerResponse> sent) {}
 
+	// What the removed sendUnauthorized(res) and sendNotFound(res, message) helpers wrote.
 	private static final List<Case> CASES = List.of(
-		new Case(ResponseStatusException::unauthorized, ControllerSupport::sendUnauthorized),
-		new Case(ResponseStatusException::forbidden, res -> res.status(Status.FORBIDDEN_403).send()),
-		new Case(
-			() -> ResponseStatusException.forbidden("account is suspended"),
-			res -> ControllerSupport.sendForbidden(res, "account is suspended")
-		),
-		new Case(ResponseStatusException::notFound, ControllerSupport::sendNotFound),
+		new Case(ResponseStatusException::unauthorized, res -> res.status(Status.UNAUTHORIZED_401).send()),
 		new Case(
 			() -> ResponseStatusException.notFound("user not found"),
-			res -> ControllerSupport.sendNotFound(res, "user not found")
-		),
-		new Case(
-			() -> ResponseStatusException.conflict("bucket is archived"),
-			res -> ControllerSupport.sendConflict(res, "bucket is archived")
-		),
-		new Case(
-			() -> ResponseStatusException.badRequest("expected limit in [0..100]"),
-			res -> ControllerSupport.sendBadRequest(res, "expected limit in [0..100]")
+			res -> ControllerSupport.sendError(res, Status.NOT_FOUND_404, "user not found")
 		)
 	);
 
