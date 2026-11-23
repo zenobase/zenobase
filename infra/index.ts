@@ -682,7 +682,8 @@ new aws.cloudwatch.LogGroup("zenobase-api-logs", {
 
 const cluster = new aws.ecs.Cluster("zenobase-cluster", {
     name: "zenobase",
-    settings: [{ name: "containerInsights", value: "enabled" }],
+    // Off: ~$10/month for 38 custom metrics; AWS/ECS, ALB and Zenobase/Jvm metrics already cover monitoring.
+    settings: [{ name: "containerInsights", value: "disabled" }],
     tags: { Name: "zenobase" },
 });
 
