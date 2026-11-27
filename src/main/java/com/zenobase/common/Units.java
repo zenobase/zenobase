@@ -1,7 +1,9 @@
 package com.zenobase.common;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.measure.quantity.DataAmount;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
@@ -69,101 +71,127 @@ public class Units {
 		UnitFormat.getInstance().label(NonSI.POUND.times(14), "st");
 	}
 
-	public static final Unit<DataAmount> BIT = valueOf("bit");
-	public static final Unit<DataAmount> B = valueOf("B");
-	public static final Unit<DataAmount> KB = valueOf("KB");
-	public static final Unit<DataAmount> MB = valueOf("MB");
-	public static final Unit<DataAmount> GB = valueOf("GB");
-	public static final Unit<DataAmount> TB = valueOf("TB");
-	public static final Unit<DataAmount> PB = valueOf("PB");
-	public static final Unit<DataAmount> KIB = valueOf("KiB");
-	public static final Unit<DataAmount> MIB = valueOf("MiB");
-	public static final Unit<DataAmount> GIB = valueOf("GiB");
-	public static final Unit<DataAmount> TIB = valueOf("TiB");
-	public static final Unit<DataAmount> PIB = valueOf("PiB");
+	private static final Set<String> KNOWN = new HashSet<>();
 
-	public static final Unit<VolumetricDensity> G_PER_L = valueOf("g/L");
-	public static final Unit<VolumetricDensity> MG_PER_L = valueOf("mg/L");
-	public static final Unit<VolumetricDensity> UG_PER_L = valueOf("ug/L");
-	public static final Unit<VolumetricDensity> NG_PER_L = valueOf("ng/L");
-	public static final Unit<VolumetricDensity> PG_PER_L = valueOf("pg/L");
-	public static final Unit<VolumetricDensity> G_PER_DL = valueOf("g/dL");
-	public static final Unit<VolumetricDensity> MG_PER_DL = valueOf("mg/dL");
-	public static final Unit<VolumetricDensity> UG_PER_DL = valueOf("ug/dL");
-	public static final Unit<VolumetricDensity> NG_PER_DL = valueOf("ng/dL");
-	public static final Unit<VolumetricDensity> PG_PER_DL = valueOf("pg/dL");
-	public static final Unit<VolumetricDensity> G_PER_ML = valueOf("g/mL");
-	public static final Unit<VolumetricDensity> MG_PER_ML = valueOf("mg/mL");
-	public static final Unit<VolumetricDensity> UG_PER_ML = valueOf("ug/mL");
-	public static final Unit<VolumetricDensity> NG_PER_ML = valueOf("ng/mL");
-	public static final Unit<VolumetricDensity> PG_PER_ML = valueOf("pg/mL");
+	public static final Unit<DataAmount> BIT = known("bit");
+	public static final Unit<DataAmount> B = known("B");
+	public static final Unit<DataAmount> KB = known("KB");
+	public static final Unit<DataAmount> MB = known("MB");
+	public static final Unit<DataAmount> GB = known("GB");
+	public static final Unit<DataAmount> TB = known("TB");
+	public static final Unit<DataAmount> PB = known("PB");
+	public static final Unit<DataAmount> KIB = known("KiB");
+	public static final Unit<DataAmount> MIB = known("MiB");
+	public static final Unit<DataAmount> GIB = known("GiB");
+	public static final Unit<DataAmount> TIB = known("TiB");
+	public static final Unit<DataAmount> PIB = known("PiB");
 
-	public static final Unit<Length> MM = valueOf("mm");
-	public static final Unit<Length> CM = valueOf("cm");
-	public static final Unit<Length> M = valueOf("m");
-	public static final Unit<Length> KM = valueOf("km");
-	public static final Unit<Length> IN = valueOf("in");
-	public static final Unit<Length> FT = valueOf("ft");
-	public static final Unit<Length> YD = valueOf("yd");
-	public static final Unit<Length> MI = valueOf("mi");
+	public static final Unit<VolumetricDensity> G_PER_L = known("g/L");
+	public static final Unit<VolumetricDensity> MG_PER_L = known("mg/L");
+	public static final Unit<VolumetricDensity> UG_PER_L = known("ug/L");
+	public static final Unit<VolumetricDensity> NG_PER_L = known("ng/L");
+	public static final Unit<VolumetricDensity> PG_PER_L = known("pg/L");
+	public static final Unit<VolumetricDensity> G_PER_DL = known("g/dL");
+	public static final Unit<VolumetricDensity> MG_PER_DL = known("mg/dL");
+	public static final Unit<VolumetricDensity> UG_PER_DL = known("ug/dL");
+	public static final Unit<VolumetricDensity> NG_PER_DL = known("ng/dL");
+	public static final Unit<VolumetricDensity> PG_PER_DL = known("pg/dL");
+	public static final Unit<VolumetricDensity> G_PER_ML = known("g/mL");
+	public static final Unit<VolumetricDensity> MG_PER_ML = known("mg/mL");
+	public static final Unit<VolumetricDensity> UG_PER_ML = known("ug/mL");
+	public static final Unit<VolumetricDensity> NG_PER_ML = known("ng/mL");
+	public static final Unit<VolumetricDensity> PG_PER_ML = known("pg/mL");
 
-	public static final Unit<LengthPerVolume> KPL = valueOf("kpl");
-	public static final Unit<LengthPerVolume> MPG = valueOf("mpg");
+	public static final Unit<Length> MM = known("mm");
+	public static final Unit<Length> CM = known("cm");
+	public static final Unit<Length> M = known("m");
+	public static final Unit<Length> KM = known("km");
+	public static final Unit<Length> IN = known("in");
+	public static final Unit<Length> FT = known("ft");
+	public static final Unit<Length> YD = known("yd");
+	public static final Unit<Length> MI = known("mi");
 
-	public static final Unit<Energy> J = valueOf("J");
-	public static final Unit<Energy> KJ = valueOf("kJ");
-	public static final Unit<Energy> CAL = valueOf("cal");
-	public static final Unit<Energy> KCAL = valueOf("kcal");
-	public static final Unit<Energy> KWH = valueOf("kWh");
+	public static final Unit<LengthPerVolume> KPL = known("kpl");
+	public static final Unit<LengthPerVolume> MPG = known("mpg");
 
-	public static final Unit<Frequency> BPM = valueOf("bpm");
-	public static final Unit<Frequency> RPM = valueOf("rpm");
-	public static final Unit<Frequency> HZ = valueOf("Hz");
+	public static final Unit<Energy> J = known("J");
+	public static final Unit<Energy> KJ = known("kJ");
+	public static final Unit<Energy> CAL = known("cal");
+	public static final Unit<Energy> KCAL = known("kcal");
+	public static final Unit<Energy> KWH = known("kWh");
 
-	public static final Unit<Pressure> PA = valueOf("Pa");
-	public static final Unit<Pressure> HPA = valueOf("hPa");
-	public static final Unit<Pressure> KPA = valueOf("kPa");
-	public static final Unit<Pressure> MMHG = valueOf("mmHg");
-	public static final Unit<Pressure> INHG = valueOf("inHg");
-	public static final Unit<Pressure> PSI = valueOf("psi");
-	public static final Unit<Pressure> CM_WG = valueOf("cm_wg");
+	public static final Unit<Frequency> BPM = known("bpm");
+	public static final Unit<Frequency> RPM = known("rpm");
+	public static final Unit<Frequency> HZ = known("Hz");
 
-	public static final Unit<Dimensionless> DB = valueOf("dB");
+	public static final Unit<Pressure> PA = known("Pa");
+	public static final Unit<Pressure> HPA = known("hPa");
+	public static final Unit<Pressure> KPA = known("kPa");
+	public static final Unit<Pressure> MMHG = known("mmHg");
+	public static final Unit<Pressure> INHG = known("inHg");
+	public static final Unit<Pressure> PSI = known("psi");
+	public static final Unit<Pressure> CM_WG = known("cm_wg");
 
-	public static final Unit<Temperature> K = valueOf("K");
-	public static final Unit<Temperature> C = valueOf("C");
-	public static final Unit<Temperature> F = valueOf("F");
+	public static final Unit<Dimensionless> DB = known("dB");
 
-	public static final Unit<Velocity> M_PER_S = valueOf("m/s");
-	public static final Unit<Velocity> KMH = valueOf("kmh");
-	public static final Unit<Velocity> MPH = valueOf("mph");
-	public static final Unit<Velocity> KN = valueOf("kn");
-	public static final Unit<Velocity> MACH = valueOf("Mach");
+	public static final Unit<Temperature> K = known("K");
+	public static final Unit<Temperature> C = known("C");
+	public static final Unit<Temperature> F = known("F");
 
-	public static final Unit<Pace> S_PER_KM = valueOf("s/km");
-	public static final Unit<Pace> S_PER_MI = valueOf("s/mi");
+	public static final Unit<Velocity> M_PER_S = known("m/s");
+	public static final Unit<Velocity> KMH = known("kmh");
+	public static final Unit<Velocity> MPH = known("mph");
+	public static final Unit<Velocity> KN = known("kn");
+	public static final Unit<Velocity> MACH = known("Mach");
 
-	public static final Unit<Volume> ML = valueOf("mL");
-	public static final Unit<Volume> CL = valueOf("cL");
-	public static final Unit<Volume> DL = valueOf("dL");
-	public static final Unit<Volume> L = valueOf("L");
-	public static final Unit<Volume> FL_OZ = valueOf("fl_oz");
-	public static final Unit<Volume> PT = valueOf("pt");
-	public static final Unit<Volume> QT = valueOf("qt");
-	public static final Unit<Volume> GAL = valueOf("gal");
+	public static final Unit<Pace> S_PER_KM = known("s/km");
+	public static final Unit<Pace> S_PER_MI = known("s/mi");
 
-	public static final Unit<Mass> NG = valueOf("ng");
-	public static final Unit<Mass> UG = valueOf("ug");
-	public static final Unit<Mass> MG = valueOf("mg");
-	public static final Unit<Mass> G = valueOf("g");
-	public static final Unit<Mass> KG = valueOf("kg");
-	public static final Unit<Mass> OZ = valueOf("oz");
-	public static final Unit<Mass> LB = valueOf("lb");
-	public static final Unit<Mass> ST = valueOf("st");
+	public static final Unit<Volume> ML = known("mL");
+	public static final Unit<Volume> CL = known("cL");
+	public static final Unit<Volume> DL = known("dL");
+	public static final Unit<Volume> L = known("L");
+	public static final Unit<Volume> FL_OZ = known("fl_oz");
+	public static final Unit<Volume> CUPS = known("cups");
+	public static final Unit<Volume> PT = known("pt");
+	public static final Unit<Volume> QT = known("qt");
+	public static final Unit<Volume> GAL = known("gal");
 
-	public static final Unit<Illuminance> LX = valueOf("lx");
+	public static final Unit<Mass> NG = known("ng");
+	public static final Unit<Mass> UG = known("ug");
+	public static final Unit<Mass> MG = known("mg");
+	public static final Unit<Mass> G = known("g");
+	public static final Unit<Mass> KG = known("kg");
+	public static final Unit<Mass> OZ = known("oz");
+	public static final Unit<Mass> LB = known("lb");
+	public static final Unit<Mass> ST = known("st");
+
+	public static final Unit<Illuminance> LX = known("lx");
+
+	static {
+		for (String alias : List.of("mbar", "bar", "°C", "°F")) {
+			known(alias);
+		}
+	}
 
 	private Units() {}
+
+	/**
+	 * Registers the symbol as accepted for new events, along with its canonical form (e.g. "kmh" and "km/h").
+	 */
+	private static <Q extends Quantity> Unit<Q> known(String s) {
+		Unit<Q> unit = valueOf(s);
+		KNOWN.add(s);
+		KNOWN.add(unit.toString());
+		return unit;
+	}
+
+	/**
+	 * Whether new events may use this symbol. Stored events may contain others that {@link #valueOf} still parses.
+	 */
+	public static boolean isKnown(String symbol) {
+		return KNOWN.contains(symbol);
+	}
 
 	/**
 	 * Obtain units from here to ensure the static initializers have registered any custom units.

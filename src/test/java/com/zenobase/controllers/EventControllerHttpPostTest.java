@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.commands.UpdateEventCommand;
 import com.zenobase.common.Generator;
+import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -40,6 +41,34 @@ public class EventControllerHttpPostTest extends EventControllerTestSupport {
 		when(dispatcher.dispatch(any(UpdateEventCommand.class))).thenReturn(commandId);
 		try (Http1ClientResponse result = call(bucket.getId(), from.getId(), to.toJson())) {
 			assertThat(result).hasStatus(204).hasHeader(COMMAND_ID, commandId).isEmpty();
+		}
+	}
+
+	@Test
+	public void testUpdateEventInvalidUnit() {
+		ObjectNode body = to.toJson();
+		body.set(Event.WEIGHT.getName(), Nodes.newObject("unit", "lbs").put("@value", 1));
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(bucket.getId(), from.getId())).thenReturn(from.copy());
+		try (Http1ClientResponse result = call(bucket.getId(), from.getId(), body)) {
+			assertThat(result).hasStatus(400);
+			verifyNoInteractions(dispatcher);
+		}
+	}
+
+	@Test
+	public void testUpdateEventKeepsLegacyUnit() {
+		from.toJson().set(Event.WEIGHT.getName(), Nodes.newObject("unit", "µg").put("@value", 1));
+		ObjectNode body = from.toJson().deepCopy();
+		Event.TAG.setValue(body, "bar");
+		((ObjectNode) body.get(Event.WEIGHT.getName())).put("@value", 1.0);
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(bucket.getId(), from.getId())).thenReturn(from.copy());
+		when(dispatcher.dispatch(any(UpdateEventCommand.class))).thenReturn(Generator.id());
+		try (Http1ClientResponse result = call(bucket.getId(), from.getId(), body)) {
+			assertThat(result).hasStatus(204);
 		}
 	}
 

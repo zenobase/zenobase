@@ -86,7 +86,7 @@ public class EventController extends ControllerSupport {
 		}
 		Event updated = new Event(body(req));
 		updated.setValue(Event.AUTHOR, auth.getPrincipal());
-		if (sendForbiddenIfSuspended(auth, res)) {
+		if (sendForbiddenIfSuspended(auth, res) || sendBadRequestIfInvalid(updated, event, res)) {
 			return;
 		}
 		try {

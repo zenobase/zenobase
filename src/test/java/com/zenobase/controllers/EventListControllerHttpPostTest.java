@@ -89,6 +89,30 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 	}
 
 	@Test
+	public void testCreateEventInvalidUnit() {
+		body.set(Event.VELOCITY.getName(), Nodes.newObject("unit", "kg").put("@value", 1));
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		try (Http1ClientResponse result = call(bucket, body)) {
+			assertThat(result).hasStatus(400);
+			verifyNoInteractions(dispatcher);
+		}
+	}
+
+	@Test
+	public void testCreateEventsInvalidUnit() {
+		ArrayNode eventsNode = body.putArray(EventListController.EVENTS.getName());
+		Event.TAG.setValue(eventsNode.addObject(), "a");
+		eventsNode.addObject().set(Event.WEIGHT.getName(), Nodes.newObject("unit", "lbs").put("@value", 1));
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		try (Http1ClientResponse result = call(bucket, body)) {
+			assertThat(result).hasStatus(400);
+			verifyNoInteractions(dispatcher);
+		}
+	}
+
+	@Test
 	public void testCreateEventBucketNotFound() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(null);

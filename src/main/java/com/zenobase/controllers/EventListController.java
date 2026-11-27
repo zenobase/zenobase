@@ -240,29 +240,26 @@ public class EventListController extends ControllerSupport {
 		ObjectNode body = body(req);
 		var nodes = EVENTS.getValues(body);
 		if (!nodes.isEmpty()) {
-			CreateEventsCommand command = newCreateEventsCommand(auth.getPrincipal(), bucketId, nodes);
-			String commandId = dispatcher.dispatch(command);
+			List<Event> events = toEvents(auth.getPrincipal(), nodes);
+			for (Event event : events) {
+				if (sendBadRequestIfInvalid(event, null, res)) {
+					return;
+				}
+			}
+			String commandId = dispatcher.dispatch(new CreateEventsCommand(auth.getPrincipal(), bucketId, events));
 			setHeader(res, COMMAND_ID, commandId);
 			sendNoContent(res);
 		} else {
-			CreateEventCommand command = newCreateEventCommand(auth.getPrincipal(), bucketId, body);
+			Event event = toEvent(auth.getPrincipal(), body);
+			if (sendBadRequestIfInvalid(event, null, res)) {
+				return;
+			}
+			CreateEventCommand command = new CreateEventCommand(auth.getPrincipal(), bucketId, event);
 			String commandId = dispatcher.dispatch(command);
 			setHeader(res, LOCATION, "/buckets/" + bucketId + "/" + command.getEvent().getId());
 			setHeader(res, COMMAND_ID, commandId);
 			sendCreated(res, command.getEvent().toJson());
 		}
-	}
-
-	private static CreateEventsCommand newCreateEventsCommand(
-		Identity principal,
-		String bucketId,
-		List<ObjectNode> nodes
-	) {
-		return new CreateEventsCommand(principal, bucketId, toEvents(principal, nodes));
-	}
-
-	private static CreateEventCommand newCreateEventCommand(Identity principal, String bucketId, ObjectNode node) {
-		return new CreateEventCommand(principal, bucketId, toEvent(principal, node));
 	}
 
 	private static List<Event> toEvents(Identity principal, List<ObjectNode> nodes) {

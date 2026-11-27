@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.zenobase.auth.UserStateCache;
 import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.UserRepository;
 import io.helidon.http.HeaderNames;
@@ -79,6 +80,15 @@ public abstract class ControllerSupport implements CustomHeaders {
 
 	protected static void sendForbidden(ServerResponse res) {
 		res.status(Status.FORBIDDEN_403).send();
+	}
+
+	protected static boolean sendBadRequestIfInvalid(Event event, @Nullable Event previous, ServerResponse res) {
+		String error = event.validate(previous);
+		if (error != null) {
+			sendBadRequest(res, error);
+			return true;
+		}
+		return false;
 	}
 
 	// Error response helpers (also used by filters)

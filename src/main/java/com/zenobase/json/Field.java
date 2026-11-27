@@ -193,6 +193,15 @@ public abstract class Field<T> {
 		}
 	}
 
+	/**
+	 * Checks a value submitted by a client; replayed commands are not validated.
+	 *
+	 * @return a message describing the first problem, or null if the value is acceptable
+	 */
+	public @Nullable String validate(ObjectNode node, @Nullable ObjectNode previous) {
+		return null;
+	}
+
 	public void prePersist(ObjectNode node) {}
 
 	public void postPersist(ObjectNode node) {}
