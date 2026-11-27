@@ -1,6 +1,7 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -20,8 +21,12 @@ import com.zenobase.services.LocalBus;
 import com.zenobase.testing.NodeAssert;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import io.helidon.webserver.http.HttpRouting;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,8 +36,11 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 
 	private static final String METADATA_URL = "http://169.254.169.254/latest/meta-data/";
 
+	private static final long LARGE_BODY_BYTES = 256L * 1024 * 1024;
+
 	private static HttpServer server;
 	private static String origin;
+	private static CompletableFuture<Long> largeBodyBytesWritten;
 
 	private final AuthorizationContext auth = mock(AuthorizationContext.class);
 	private final PublicAddressPolicy policy = mock(PublicAddressPolicy.class);
@@ -52,6 +60,28 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 			exchange.sendResponseHeaders(200, body.length);
 			exchange.getResponseBody().write(body);
 			exchange.getResponseBody().close();
+		});
+		server.createContext("/large", exchange -> {
+			String type = exchange.getRequestURI().getQuery();
+			exchange.getResponseHeaders().set("Content-Type", type != null ? type : "text/html; charset=UTF-8");
+			exchange.sendResponseHeaders(200, LARGE_BODY_BYTES);
+			long written = 0;
+			try (var out = exchange.getResponseBody()) {
+				byte[] head = "<html><head><title>Large</title></head><body>".getBytes();
+				out.write(head);
+				written += head.length;
+				byte[] chunk = new byte[64 * 1024];
+				Arrays.fill(chunk, (byte) 'x');
+				while (written < LARGE_BODY_BYTES) {
+					int n = (int) Math.min(chunk.length, LARGE_BODY_BYTES - written);
+					out.write(chunk, 0, n);
+					written += n;
+				}
+			} catch (IOException e) {
+				// client hung up
+			} finally {
+				largeBodyBytesWritten.complete(written);
+			}
 		});
 		server.createContext("/redirect", exchange -> {
 			exchange.getResponseHeaders().set("Location", METADATA_URL);
@@ -102,6 +132,29 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 			node.path("url").isEqualTo(url);
 			node.path("title").isEqualTo("Open Graph protocol");
 		}
+	}
+
+	@Test
+	public void testLargeBody() throws Exception {
+		largeBodyBytesWritten = new CompletableFuture<>();
+		try (Http1ClientResponse result = call(origin + "/large")) {
+			assertThat(result).hasStatus(200).asObjectNode().path("title").isEqualTo("Large");
+		}
+		assertThat(largeBodyBytesWritten.get(5, TimeUnit.SECONDS)).isLessThan(LARGE_BODY_BYTES);
+	}
+
+	@Test
+	public void testNonHtml() throws Exception {
+		largeBodyBytesWritten = new CompletableFuture<>();
+		String url = origin + "/large?image/png";
+		try (Http1ClientResponse result = call(url)) {
+			assertThat(result)
+				.hasStatus(400)
+				.asObjectNode()
+				.path("message")
+				.isEqualTo("Couldn't parse resource: " + url);
+		}
+		assertThat(largeBodyBytesWritten.get(5, TimeUnit.SECONDS)).isLessThan(LARGE_BODY_BYTES);
 	}
 
 	@Test
