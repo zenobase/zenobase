@@ -163,6 +163,36 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 	}
 
 	@Test
+	public void testMissingUrl() {
+		try (Http1ClientResponse result = client.get("/og").request()) {
+			assertThat(result).hasStatus(400).asObjectNode().path("message").isEqualTo("URL is required");
+		}
+	}
+
+	@Test
+	public void testNotFound() {
+		String url = origin + "/missing";
+		try (Http1ClientResponse result = call(url)) {
+			assertThat(result)
+				.hasStatus(400)
+				.asObjectNode()
+				.path("message")
+				.isEqualTo("Couldn't retrieve resource: " + url);
+		}
+	}
+
+	@Test
+	public void testDefaultsToHttps() {
+		try (Http1ClientResponse result = call("invalid/")) {
+			assertThat(result)
+				.hasStatus(400)
+				.asObjectNode()
+				.path("message")
+				.isEqualTo("Couldn't retrieve resource: https://invalid/");
+		}
+	}
+
+	@Test
 	public void testInvalidHost() {
 		try (Http1ClientResponse result = call("http://invalid/")) {
 			assertThat(result).hasStatus(400);

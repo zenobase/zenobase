@@ -12,7 +12,19 @@ public class PublicAddressPolicyTest {
 	private final PublicAddressPolicy policy = new PublicAddressPolicy();
 
 	@ParameterizedTest
-	@ValueSource(strings = { "93.184.215.14", "8.8.8.8", "2606:4700:4700::1111", "2002:808:808::", "64:ff9b::808:808" })
+	@ValueSource(
+		strings = {
+			"93.184.215.14",
+			"8.8.8.8",
+			"2606:4700:4700::1111",
+			"2002:808:808::",
+			"64:ff9b::808:808",
+			"100.128.0.1",
+			"198.20.0.1",
+			"192.0.1.1",
+			"2001:db8::1",
+		}
+	)
 	public void testPublic(String address) throws UnknownHostException {
 		assertThat(policy.isAllowed(InetAddress.getByName(address))).isTrue();
 	}
@@ -30,6 +42,7 @@ public class PublicAddressPolicyTest {
 			"100.64.0.1",
 			"192.0.0.1",
 			"198.18.0.1",
+			"198.19.0.1",
 			"224.0.0.1",
 			"255.255.255.255",
 			"::",
