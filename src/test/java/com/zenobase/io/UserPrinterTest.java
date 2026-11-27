@@ -27,9 +27,13 @@ public class UserPrinterTest {
 		printer.flush();
 
 		assertThat(out.toString()).isEqualTo(
-			"\"id\",\"name\",\"email\",\"external_id\",\"verified\",\"suspended\",\"optedout\",\"superuser\",\"quota\",\"created\"\n" +
-				"\"u1\",\"Ann \"\"A\"\",\nJr\r\n\\ ü\",\"ann@example.com\",\"auth0|1\",\"true\",\"false\",\"false\",\"true\",\"100\",\"2020-01-02T03:04:00.000Z\"\n" +
-				"\"u2\",\"\",\"\",\"\",\"false\",\"false\",\"false\",\"false\",\"\",\"\"\n"
+			"""
+			"id","name","email","external_id","verified","suspended","optedout","superuser","quota","created"
+			"u1","Ann ""A"",
+			Jr\r
+			\\ ü","ann@example.com","auth0|1","true","false","false","true","100","2020-01-02T03:04:00.000Z"
+			"u2","","","","false","false","false","false","",""
+			"""
 		);
 	}
 }
