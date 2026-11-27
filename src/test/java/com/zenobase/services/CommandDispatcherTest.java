@@ -1,5 +1,6 @@
 package com.zenobase.services;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.zenobase.commands.Command;
@@ -8,12 +9,25 @@ import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.TestCommand;
 import com.zenobase.models.Identity;
 import com.zenobase.repositories.CommandRepository;
+import java.time.Duration;
+import java.util.List;
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
+import org.opensearch.client.opensearch._types.ErrorResponse;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 
 public class CommandDispatcherTest {
 
 	static final Identity TESTER = new Identity("tester");
+
+	final CommandHandlerRegistry handlers = mock(CommandHandlerRegistry.class);
+	final CommandRepository repository = mock(CommandRepository.class);
+	final CommandDispatcher retrying = new CommandDispatcher(
+		handlers,
+		repository,
+		mock(QuotaManager.class),
+		List.of(Duration.ZERO, Duration.ZERO)
+	);
 
 	@Test
 	public void test() {
@@ -95,5 +109,110 @@ public class CommandDispatcherTest {
 		verifyNoInteractions(repository);
 
 		verify(handlers, times(5)).execute(any(TestCommand.class));
+	}
+
+	@Test
+	public void testJournalRetry() {
+		Command command = new TestCommand(TESTER, "abc");
+		doThrow(new RuntimeException("timeout")).doNothing().when(repository).put(command);
+
+		retrying.dispatch(command);
+
+		verify(repository, times(2)).put(command);
+		verify(handlers).execute(command);
+		verifyNoMoreInteractions(handlers);
+	}
+
+	@Test
+	public void testJournalRetryConflict() {
+		Command command = new TestCommand(TESTER, "abc");
+		doThrow(new RuntimeException("timeout")).doThrow(conflict()).when(repository).put(command);
+
+		retrying.dispatch(command);
+
+		verify(repository, times(2)).put(command);
+		verify(handlers).execute(command);
+		verifyNoMoreInteractions(handlers);
+	}
+
+	@Test
+	public void testJournalConflict() {
+		Command command = new TestCommand(TESTER, "abc");
+		OpenSearchException conflict = conflict();
+		doThrow(conflict).when(repository).put(command);
+
+		assertSame(conflict, assertThrows(OpenSearchException.class, () -> retrying.dispatch(command)));
+
+		verify(repository).put(command);
+		verify(handlers).execute(command);
+		verifyNoMoreInteractions(handlers);
+	}
+
+	@Test
+	public void testJournalFailureReverts() {
+		Command command = new TestCommand(TESTER, "abc");
+		RuntimeException failure = new RuntimeException("down");
+		doThrow(failure).when(repository).put(command);
+
+		assertSame(failure, assertThrows(RuntimeException.class, () -> retrying.dispatch(command)));
+
+		verify(repository, times(3)).put(command);
+		verify(handlers).execute(command);
+		verify(handlers).execute(argThat(c -> c instanceof TestCommand t && t.getTag().equals("cba")));
+	}
+
+	@Test
+	public void testJournalFailureRevertsCompoundCommand() {
+		Command c1 = new TestCommand(TESTER, "ab");
+		Command c2 = new TestCommand(TESTER, "cd");
+		CompoundCommand cc = new CompoundCommand(TESTER, "do both", "undo both");
+		cc.add(c1);
+		cc.add(c2);
+		doThrow(new RuntimeException("down")).when(repository).put(cc);
+
+		assertThrows(RuntimeException.class, () -> retrying.dispatch(cc));
+
+		var order = inOrder(handlers);
+		order.verify(handlers).execute(c1);
+		order.verify(handlers).execute(c2);
+		order.verify(handlers).execute(argThat(c -> c instanceof TestCommand t && t.getTag().equals("dc")));
+		order.verify(handlers).execute(argThat(c -> c instanceof TestCommand t && t.getTag().equals("ba")));
+		verifyNoMoreInteractions(handlers);
+	}
+
+	@Test
+	public void testJournalInterrupted() {
+		Command command = new TestCommand(TESTER, "abc");
+		doThrow(new RuntimeException("timeout")).doNothing().when(repository).put(command);
+
+		Thread.currentThread().interrupt();
+		assertThrows(RuntimeException.class, () -> retrying.dispatch(command));
+
+		assertTrue(Thread.interrupted());
+		verify(repository).put(command);
+		verify(handlers).execute(argThat(c -> c instanceof TestCommand t && t.getTag().equals("cba")));
+	}
+
+	@Test
+	public void testJournalFailureIrreversible() {
+		Command command = spy(new TestCommand(TESTER, "abc"));
+		doThrow(UnsupportedOperationException.class).when(command).reverse(any());
+		RuntimeException failure = new RuntimeException("down");
+		doThrow(failure).when(repository).put(command);
+
+		assertSame(failure, assertThrows(RuntimeException.class, () -> retrying.dispatch(command)));
+
+		assertInstanceOf(UnsupportedOperationException.class, failure.getSuppressed()[0]);
+		verify(repository, times(3)).put(command);
+		verify(handlers).execute(command);
+		verifyNoMoreInteractions(handlers);
+	}
+
+	private static OpenSearchException conflict() {
+		return new OpenSearchException(
+			ErrorResponse.of(r ->
+				r.status(409).error(e -> e.type("version_conflict_engine_exception").reason("version conflict"))
+			)
+		);
 	}
 }

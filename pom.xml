@@ -172,9 +172,8 @@
             <version>1.24.1</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>2.3</version>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-csv</artifactId>
         </dependency>
 
         <!-- CLI (for scripts, excluded from production via maven-jar-plugin) -->
