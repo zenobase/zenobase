@@ -8,6 +8,7 @@ on:
     pull_request:
         branches: [main]
         paths:
+            - ".github/workflows/check.yml"
             - "docker/**"
             - "src/**"
             - "!src/main/java/com/zenobase/scripts/**"
@@ -18,21 +19,6 @@ jobs:
         runs-on: ubuntu-26.04
         permissions:
             contents: read
-        services:
-            opensearch:
-                image: opensearchproject/opensearch:3.7.0
-                ports:
-                    - 9200:9200
-                env:
-                    discovery.type: single-node
-                    plugins.security.disabled: "true"
-                    DISABLE_INSTALL_DEMO_CONFIG: "true"
-                options: >-
-                    --health-cmd "curl -f http://localhost:9200/_cluster/health || exit 1"
-                    --health-interval 10s
-                    --health-timeout 5s
-                    --health-retries 10
-                    --health-start-period 30s
         steps:
             - uses: actions/checkout@v7
 
@@ -42,11 +28,8 @@ jobs:
                   java-version: 25
                   cache: maven
 
-            - name: Check formatting
-              run: ./mvnw -B spotless:check
-
-            - name: Test
-              run: ./mvnw -B verify
+            - name: Check formatting and test
+              run: ./mvnw -B spotless:check verify
 
             - name: Upload coverage to Codecov
               uses: codecov/codecov-action@v7.1.1
