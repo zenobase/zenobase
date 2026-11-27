@@ -107,7 +107,12 @@ public class CommandDispatcher {
 			apply(command.reverse(command.getPrincipal()));
 		} catch (RuntimeException e) {
 			failure.addSuppressed(e);
-			logger.error("Couldn't revert unjournaled command, re-journal by hand: {}", command.toJson(), failure);
+			logger.error(
+				"Couldn't revert unjournaled command {} ({})",
+				command.getId(),
+				command.getType().name(),
+				failure
+			);
 			Sentry.captureException(failure, scope -> {
 				scope.setTag("command.id", command.getId());
 				scope.setTag("command.type", command.getType().name());
