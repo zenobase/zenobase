@@ -30,22 +30,19 @@ public class OpenGraphController extends ControllerSupport {
 				get(res, "https://" + url);
 				return;
 			}
-			sendBadRequest(res, "URL is required");
-			return;
+			throw ResponseStatusException.badRequest("URL is required");
 		}
 		get(res, url);
 	}
 
 	private void get(ServerResponse res, String url) {
 		if (!isValid(url)) {
-			sendBadRequest(res, "Invalid URL: " + url);
-			return;
+			throw ResponseStatusException.badRequest("Invalid URL: " + url);
 		}
 		try {
 			var response = (ClassicHttpResponse) Request.get(url).execute().returnResponse();
 			if (response.getCode() != HttpStatus.SC_OK) {
-				sendBadRequest(res, "Couldn't retrieve resource: " + url);
-				return;
+				throw ResponseStatusException.badRequest("Couldn't retrieve resource: " + url);
 			}
 			HttpEntity entity = response.getEntity();
 			try {
@@ -53,12 +50,12 @@ public class OpenGraphController extends ControllerSupport {
 			} catch (IOException e) {
 				String message = "Couldn't parse resource: " + url;
 				logger.warn(message);
-				sendBadRequest(res, message);
+				throw ResponseStatusException.badRequest(message);
 			} finally {
 				EntityUtils.consume(entity);
 			}
 		} catch (IOException e) {
-			sendBadRequest(res, "Couldn't retrieve resource: " + url);
+			throw ResponseStatusException.badRequest("Couldn't retrieve resource: " + url);
 		}
 	}
 

@@ -8,6 +8,7 @@ import com.zenobase.auth.auth0.Auth0TokenValidator;
 import com.zenobase.commands.CreateExternalClientCommand;
 import com.zenobase.controllers.AuthorizationContext;
 import com.zenobase.controllers.ControllerSupport;
+import com.zenobase.controllers.ResponseStatusException;
 import com.zenobase.models.ExternalClient;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
@@ -79,13 +80,9 @@ public class McpController extends ControllerSupport {
 			auth != null
 		);
 		if (auth == null) {
-			challenge(res);
-			return;
+			throw challenge(res);
 		}
-		if (!Auth0TokenAuthorizer.EXTERNAL_SCOPE.equals(auth.getScope())) {
-			res.status(Status.FORBIDDEN_403).send();
-			return;
-		}
+		requirePermission(Auth0TokenAuthorizer.EXTERNAL_SCOPE.equals(auth.getScope()));
 		res.header(HeaderNames.ALLOW, "POST");
 		res.status(Status.METHOD_NOT_ALLOWED_405).send();
 	}
@@ -100,33 +97,23 @@ public class McpController extends ControllerSupport {
 			auth != null ? auth.getScope() : null
 		);
 		if (auth == null) {
-			challenge(res);
-			return;
+			throw challenge(res);
 		}
-		if (!Auth0TokenAuthorizer.EXTERNAL_SCOPE.equals(auth.getScope())) {
-			res.status(Status.FORBIDDEN_403);
-			res.send();
-			return;
-		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		requirePermission(Auth0TokenAuthorizer.EXTERNAL_SCOPE.equals(auth.getScope()));
+		requireNotSuspended(auth);
 		Identity client = auth.getClient();
 		if (client == null) {
-			challenge(res);
-			return;
+			throw challenge(res);
 		}
 		registerIfNew(auth.getPrincipal(), client);
 		JsonNode request;
 		try {
 			request = req.content().as(JsonNode.class);
 		} catch (Exception e) {
-			sendBadRequest(res, "Malformed JSON");
-			return;
+			throw ResponseStatusException.badRequest("Malformed JSON");
 		}
 		if (request == null) {
-			sendBadRequest(res, "Missing JSON body");
-			return;
+			throw ResponseStatusException.badRequest("Missing JSON body");
 		}
 		ObjectNode response = handler.handle(auth, request);
 		if (response == null) {
@@ -152,12 +139,12 @@ public class McpController extends ControllerSupport {
 		}
 	}
 
-	/** Sends a 401 with the RFC 9728 challenge header pointing at our protected-resource metadata. */
-	private void challenge(ServerResponse res) {
+	/** A 401 with the RFC 9728 challenge header pointing at our protected-resource metadata. */
+	private ResponseStatusException challenge(ServerResponse res) {
 		if (validator.externalAudience() != null) {
 			String metadataUrl = apiHostname + "/.well-known/oauth-protected-resource";
 			res.header(HeaderNames.WWW_AUTHENTICATE, "Bearer resource_metadata=\"" + metadataUrl + "\"");
 		}
-		res.status(Status.UNAUTHORIZED_401).send();
+		return ResponseStatusException.unauthorized();
 	}
 }

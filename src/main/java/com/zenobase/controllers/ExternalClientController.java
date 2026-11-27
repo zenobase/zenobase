@@ -26,12 +26,10 @@ import java.util.List;
 import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Lets a user see and manage which external clients (MCP apps, third-party REST integrations) have access to which
- * of their buckets. First-party auth only — rejects external-audience tokens via the {@code auth.getScope() != null}
- * check used elsewhere in the codebase.
+ * of their buckets. First-party auth only — rejects external-audience tokens via {@link #requireFirstParty}.
  */
 public class ExternalClientController extends ControllerSupport {
 
@@ -62,19 +60,8 @@ public class ExternalClientController extends ControllerSupport {
 	 * {@code principal} field so the admin can see which user owns the client.
 	 */
 	public void listAll(ServerRequest req, ServerResponse res) {
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
-		if (!users.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
 		int offset = Integer.parseInt(req.query().first("offset").orElse("0"));
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
 		PartialList<ExternalClient> all = clients.find(new ExternalClientQuery(), offset, limit);
@@ -91,11 +78,7 @@ public class ExternalClientController extends ControllerSupport {
 
 	/** {@code GET /users/{userId}/external-clients/} — list external clients with their readable bucket ids. */
 	public void list(ServerRequest req, ServerResponse res) {
-		Authorization auth = getCurrentAuthorization(req);
-		Identity principal = check(auth, req, res);
-		if (principal == null) {
-			return;
-		}
+		Identity principal = requireUser(requireAuthorization(req), req);
 		PartialList<ExternalClient> connected = clients.find(
 			new ExternalClientQuery().userEqualTo(principal),
 			0,
@@ -116,19 +99,11 @@ public class ExternalClientController extends ControllerSupport {
 	 * the new set.
 	 */
 	public void put(ServerRequest req, ServerResponse res) {
-		Authorization auth = getCurrentAuthorization(req);
-		Identity principal = check(auth, req, res);
-		if (principal == null || auth == null) {
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Identity principal = requireUser(auth, req);
 		Identity client = new Identity(req.path().pathParameters().get("clientId"));
-		if (clients.find(principal, client) == null) {
-			sendNotFound(res, "connected app not found");
-			return;
-		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		requireFound(clients.find(principal, client), "connected app not found");
+		requireNotSuspended(auth);
 		ObjectNode body = body(req);
 		List<String> readableBuckets = parseBucketIds(body, "readable_buckets");
 		// Validate that each requested bucket is one the user actually owns. Without this, the user could persist
@@ -137,8 +112,7 @@ public class ExternalClientController extends ControllerSupport {
 		for (String bucketId : readableBuckets) {
 			Bucket bucket = buckets.find(bucketId);
 			if (bucket == null || !bucket.hasRole(new Authorization(principal), Role.OWNER)) {
-				sendBadRequest(res, "not the owner of bucket: " + bucketId);
-				return;
+				throw ResponseStatusException.badRequest("not the owner of bucket: " + bucketId);
 			}
 		}
 		dispatcher.dispatch(
@@ -155,19 +129,11 @@ public class ExternalClientController extends ControllerSupport {
 
 	/** {@code DELETE /users/{userId}/external-clients/{clientId}} — revoke this client entirely. */
 	public void revoke(ServerRequest req, ServerResponse res) {
-		Authorization auth = getCurrentAuthorization(req);
-		Identity principal = check(auth, req, res);
-		if (principal == null || auth == null) {
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Identity principal = requireUser(auth, req);
 		Identity client = new Identity(req.path().pathParameters().get("clientId"));
-		if (clients.find(principal, client) == null) {
-			sendNotFound(res, "connected app not found");
-			return;
-		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		requireFound(clients.find(principal, client), "connected app not found");
+		requireNotSuspended(auth);
 		// Snapshot to empty (audited) and then delete the row.
 		dispatcher.dispatch(new UpdateExternalClientGrantsCommand(auth.getPrincipal(), principal, client, List.of()));
 		// The Auth0 Application is left alone: it may be shared by other users (CIMD registers one per client URL).
@@ -176,25 +142,11 @@ public class ExternalClientController extends ControllerSupport {
 	}
 
 	/** First-party auth + self-or-superuser path check, mirroring {@code BucketListController.findByUser}. */
-	private @Nullable Identity check(@Nullable Authorization auth, ServerRequest req, ServerResponse res) {
-		if (auth == null) {
-			sendUnauthorized(res);
-			return null;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return null;
-		}
+	private Identity requireUser(Authorization auth, ServerRequest req) {
+		requireFirstParty(auth);
 		String userId = req.path().pathParameters().get("userId");
-		Identity principal = new UserLookup(users).getIdentity(userId);
-		if (principal == null) {
-			sendNotFound(res, "user not found");
-			return null;
-		}
-		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return null;
-		}
+		Identity principal = requireFound(new UserLookup(users).getIdentity(userId), "user not found");
+		requireSelfOrSuperuser(users, auth, principal);
 		return principal;
 	}
 

@@ -68,6 +68,7 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 	@Override
 	protected void routing(HttpRouting.Builder builder, Injector injector) {
 		ExternalClientController controller = injector.getInstance(ExternalClientController.class);
+		builder.get("/external-clients/", controller::listAll);
 		builder.get("/users/{userId}/external-clients/", controller::list);
 		builder.put("/users/{userId}/external-clients/{+clientId}", controller::put);
 		builder.delete("/users/{userId}/external-clients/{+clientId}", controller::revoke);
@@ -275,6 +276,26 @@ public class ExternalClientControllerTest extends ControllerTestSupport {
 		try (Http1ClientResponse result = client.get("/users/other/external-clients/").request()) {
 			assertThat(result).hasStatus(200);
 		}
+	}
+
+	@Test
+	public void testListAllForbiddenForNonSuperuser() {
+		when(auth.current(any())).thenReturn(new Authorization(userIdentity));
+		try (Http1ClientResponse result = client.get("/external-clients/").request()) {
+			assertThat(result).hasStatus(403);
+		}
+		verify(clients, never()).find(any(ExternalClientQuery.class), anyInt(), anyInt());
+	}
+
+	@Test
+	public void testListAllForbiddenForExternalTokenOfSuperuser() {
+		Identity superuser = new Identity("admin");
+		when(auth.current(any())).thenReturn(new Authorization(superuser, clientIdentity, "external"));
+		when(users.isSuperuser(superuser)).thenReturn(true);
+		try (Http1ClientResponse result = client.get("/external-clients/").request()) {
+			assertThat(result).hasStatus(403);
+		}
+		verify(clients, never()).find(any(ExternalClientQuery.class), anyInt(), anyInt());
 	}
 
 	private ExternalClient client() {
