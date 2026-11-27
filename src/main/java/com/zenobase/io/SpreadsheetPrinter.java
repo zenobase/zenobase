@@ -1,7 +1,7 @@
 package com.zenobase.io;
 
-import au.com.bytecode.opencsv.CSVWriter;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.SequenceWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Joiner;
@@ -20,11 +20,11 @@ import org.jspecify.annotations.Nullable;
 
 public class SpreadsheetPrinter {
 
-	private final CSVWriter writer;
+	private final SequenceWriter writer;
 	private @Nullable ImmutableList<Field> fields;
 
-	public SpreadsheetPrinter(Writer out) {
-		writer = new CSVWriter(out, ',', '"', '"', "\n");
+	public SpreadsheetPrinter(Writer out) throws IOException {
+		writer = Csv.newWriter(out);
 	}
 
 	private static class Field {
@@ -103,14 +103,14 @@ public class SpreadsheetPrinter {
 		}
 	}
 
-	public void print(ArrayNode items) {
+	public void print(ArrayNode items) throws IOException {
 		if (fields == null) {
 			fields = getFields(items);
-			writer.writeNext(toString(fields));
+			writer.write(toString(fields));
 		}
 		for (JsonNode item : items) {
 			Preconditions.checkArgument(item.isObject());
-			writer.writeNext(toRow((ObjectNode) item));
+			writer.write(toRow((ObjectNode) item));
 		}
 	}
 

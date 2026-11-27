@@ -11,6 +11,7 @@ import jakarta.inject.Inject;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
@@ -60,7 +61,7 @@ public class UserListController extends ControllerSupport {
 			UserPrinter printer = new UserPrinter(writer);
 			repository.find(query, printer);
 			printer.flush();
-		} catch (IOException e) {
+		} catch (IOException | UncheckedIOException e) {
 			logger.warn("Error streaming users", e);
 		}
 	}

@@ -1,15 +1,16 @@
 package com.zenobase.scripts;
 
-import au.com.bytecode.opencsv.CSVReader;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Uninterruptibles;
+import com.zenobase.io.Csv;
+import java.io.IOException;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.stream.Stream;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 import software.amazon.awssdk.services.sesv2.SesV2Client;
@@ -44,7 +45,11 @@ public class BulkMail implements Callable<Integer> {
 
 	@Override
 	public Integer call() throws Exception {
-		var entries = readRecipients().map(this::toEntry).toList();
+		List<Recipient> recipients;
+		try (var reader = Files.newBufferedReader(recipientsFile, StandardCharsets.UTF_8)) {
+			recipients = readRecipients(reader);
+		}
+		var entries = recipients.stream().map(this::toEntry).toList();
 		try (var client = SesV2Client.create()) {
 			createTemplate(client);
 			sendEmails(client, entries);
@@ -52,24 +57,23 @@ public class BulkMail implements Callable<Integer> {
 		return 0;
 	}
 
-	private Stream<Recipient> readRecipients() throws Exception {
-		try (var reader = new CSVReader(Files.newBufferedReader(recipientsFile, StandardCharsets.UTF_8))) {
-			List<String[]> rows = reader.readAll();
-			Preconditions.checkArgument(!rows.isEmpty(), "File is empty: %s", recipientsFile);
-			String[] header = rows.getFirst();
-			int nameIdx = columnIndex(header, "name");
-			int emailIdx = columnIndex(header, "email");
-			int verifiedIdx = columnIndex(header, "verified");
-			int suspendedIdx = columnIndex(header, "suspended");
-			int optedoutIdx = columnIndex(header, "optedout");
-			return rows
-				.stream()
-				.skip(1)
-				.filter(r -> "true".equals(r[verifiedIdx]))
-				.filter(r -> !"true".equals(r[suspendedIdx]))
-				.filter(r -> !"true".equals(r[optedoutIdx]))
-				.map(r -> new Recipient(r[nameIdx], r[emailIdx]));
-		}
+	static List<Recipient> readRecipients(Reader reader) throws IOException {
+		List<String[]> rows = Csv.readAll(reader);
+		Preconditions.checkArgument(!rows.isEmpty(), "File is empty");
+		String[] header = rows.getFirst();
+		int nameIdx = columnIndex(header, "name");
+		int emailIdx = columnIndex(header, "email");
+		int verifiedIdx = columnIndex(header, "verified");
+		int suspendedIdx = columnIndex(header, "suspended");
+		int optedoutIdx = columnIndex(header, "optedout");
+		return rows
+			.stream()
+			.skip(1)
+			.filter(r -> "true".equals(r[verifiedIdx]))
+			.filter(r -> !"true".equals(r[suspendedIdx]))
+			.filter(r -> !"true".equals(r[optedoutIdx]))
+			.map(r -> new Recipient(r[nameIdx], r[emailIdx]))
+			.toList();
 	}
 
 	private static int columnIndex(String[] header, String name) {
