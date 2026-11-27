@@ -23,6 +23,7 @@ public class PublicAddressPolicyTest {
 			"198.20.0.1",
 			"192.0.1.1",
 			"2001:db8::1",
+			"2001:0:4136:e378:8000:63bf:f7f7:f7f7",
 		}
 	)
 	public void testPublic(String address) throws UnknownHostException {
@@ -54,6 +55,7 @@ public class PublicAddressPolicyTest {
 			"ff02::1",
 			"2002:a9fe:a9fe::",
 			"64:ff9b::a9fe:a9fe",
+			"2001:0:4136:e378:8000:63bf:f5ff:fffe",
 		}
 	)
 	public void testNonPublic(String address) throws UnknownHostException {

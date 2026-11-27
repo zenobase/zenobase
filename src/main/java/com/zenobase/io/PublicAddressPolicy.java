@@ -1,10 +1,9 @@
 package com.zenobase.io;
 
-import java.net.Inet4Address;
+import com.google.common.net.InetAddresses;
+import com.google.common.primitives.Ints;
 import java.net.Inet6Address;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Arrays;
 
 /**
  * Allows only publicly routable addresses, so that server-side fetches of user-supplied URLs can't reach loopback,
@@ -22,8 +21,7 @@ public class PublicAddressPolicy {
 		) {
 			return false;
 		}
-		byte[] b = address.getAddress();
-		return address instanceof Inet6Address ? isPublicIpv6(b) : isPublicIpv4(b);
+		return address instanceof Inet6Address ipv6 ? isPublicIpv6(ipv6) : isPublicIpv4(address.getAddress());
 	}
 
 	private static boolean isPublicIpv4(byte[] b) {
@@ -38,29 +36,22 @@ public class PublicAddressPolicy {
 		);
 	}
 
-	private boolean isPublicIpv6(byte[] b) {
+	private boolean isPublicIpv6(Inet6Address address) {
+		// IPv4-compatible, 6to4 and Teredo addresses
+		if (InetAddresses.hasEmbeddedIPv4ClientAddress(address)) {
+			return isAllowed(InetAddresses.getEmbeddedIPv4ClientAddress(address));
+		}
+		byte[] b = address.getAddress();
 		int first = b[0] & 0xff;
 		if ((first & 0xfe) == 0xfc) {
 			// unique local
 			return false;
 		}
-		if (first == 0x20 && b[1] == 0x02) {
-			// 6to4
-			return isAllowed(ipv4(b, 2));
-		}
 		if (first == 0x00 && b[1] == 0x64 && (b[2] & 0xff) == 0xff && (b[3] & 0xff) == 0x9b) {
-			// NAT64
-			return isAllowed(ipv4(b, 12));
+			// NAT64 (not covered by Guava)
+			return isAllowed(InetAddresses.fromInteger(Ints.fromBytes(b[12], b[13], b[14], b[15])));
 		}
-		// Reject IPv4-compatible (::/96) and other addresses in the reserved ::/8 block.
+		// Reserved ::/8 block
 		return first != 0x00;
-	}
-
-	private static InetAddress ipv4(byte[] b, int offset) {
-		try {
-			return Inet4Address.getByAddress(Arrays.copyOfRange(b, offset, offset + 4));
-		} catch (UnknownHostException e) {
-			throw new IllegalStateException(e);
-		}
 	}
 }
