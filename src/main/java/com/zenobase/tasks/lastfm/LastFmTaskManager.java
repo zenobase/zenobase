@@ -16,6 +16,7 @@ import com.zenobase.tasks.InvalidCredentialsException;
 import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
+import com.zenobase.tasks.RateLimiters;
 import com.zenobase.tasks.Task;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(LastFmTaskManager.class);
 
-	private final RateLimiter RATE_LIMIT = RateLimiter.create(5);
+	private final RateLimiter RATE_LIMIT = RateLimiters.create(5);
 
 	@Inject
 	public LastFmTaskManager(LastFmCredentialsManager credentialsManager) {

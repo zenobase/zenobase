@@ -12,7 +12,8 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskManager;
-import java.util.concurrent.TimeUnit;
+import jakarta.inject.Inject;
+import java.time.Duration;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -20,8 +21,16 @@ public class DemoTaskManager extends TaskManager {
 
 	private static final Resource SOURCE = new Resource("Zenobase", "https://zenobase.com/");
 
+	private final Duration delay;
+
+	@Inject
 	public DemoTaskManager() {
+		this(Duration.ofSeconds(3));
+	}
+
+	DemoTaskManager(Duration delay) {
 		super(DemoTask.TYPE);
+		this.delay = delay;
 	}
 
 	@Override
@@ -32,7 +41,7 @@ public class DemoTaskManager extends TaskManager {
 
 	@Override
 	public Command execute(Task task) {
-		Uninterruptibles.sleepUninterruptibly(3, TimeUnit.SECONDS);
+		Uninterruptibles.sleepUninterruptibly(delay);
 		return execute(task.as(DemoTask.class));
 	}
 

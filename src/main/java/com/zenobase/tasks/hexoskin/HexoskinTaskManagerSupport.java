@@ -11,6 +11,7 @@ import com.zenobase.models.Event;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
+import com.zenobase.tasks.RateLimiters;
 import com.zenobase.tasks.Task;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ import org.scribe.model.Verb;
 abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends OAuthTaskManager {
 
 	private static final String HOST = "https://api.hexoskin.com";
-	private static final RateLimiter RATE_LIMITER = RateLimiter.create(10); // actually 400 per hour per user
+	private static final RateLimiter RATE_LIMITER = RateLimiters.create(10); // actually 400 per hour per user
 
 	private final Class<T> taskClass;
 

@@ -9,6 +9,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
+import com.zenobase.tasks.RateLimiters;
 import com.zenobase.tasks.Task;
 import jakarta.inject.Inject;
 import java.time.Duration;
@@ -129,7 +130,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 
 	private class MeasurementsQuery {
 
-		private final RateLimiter rate = RateLimiter.create(4);
+		private final RateLimiter rate = RateLimiters.create(4);
 		private final Identity principal;
 		private final OAuthCredentials credentials;
 		private final Device device;

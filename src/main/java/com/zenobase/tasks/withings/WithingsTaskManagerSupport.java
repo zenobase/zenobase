@@ -13,6 +13,7 @@ import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.InvalidTokenException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
+import com.zenobase.tasks.RateLimiters;
 import com.zenobase.tasks.Task;
 import java.util.Objects;
 import org.joda.time.DateTime;
@@ -24,7 +25,7 @@ import org.scribe.model.Token;
 
 abstract class WithingsTaskManagerSupport<T extends Task> extends OAuthTaskManager {
 
-	private static final RateLimiter RATE_LIMITER = RateLimiter.create(2);
+	private static final RateLimiter RATE_LIMITER = RateLimiters.create(2);
 
 	private final Class<T> taskClass;
 
