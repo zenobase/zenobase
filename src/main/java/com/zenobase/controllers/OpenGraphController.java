@@ -71,7 +71,7 @@ public class OpenGraphController extends ControllerSupport {
 		if (url == null) {
 			throw ResponseStatusException.badRequest("URL is required");
 		}
-		get(res, url.startsWith("http") ? url : "https://" + url);
+		get(res, url.contains("://") ? url : "https://" + url);
 	}
 
 	private void get(ServerResponse res, String url) {
@@ -101,7 +101,10 @@ public class OpenGraphController extends ControllerSupport {
 	private static boolean isValid(String url) {
 		try {
 			URI uri = URI.create(url);
-			return ("http".equals(uri.getScheme()) || "https".equals(uri.getScheme())) && uri.getHost() != null;
+			return (
+				("http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme())) &&
+				uri.getHost() != null
+			);
 		} catch (IllegalArgumentException e) {
 			return false;
 		}

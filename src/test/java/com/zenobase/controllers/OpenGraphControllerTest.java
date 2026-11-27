@@ -105,6 +105,13 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 	}
 
 	@Test
+	public void testUppercaseScheme() {
+		try (Http1ClientResponse result = call(origin.replace("http", "HTTP") + "/ogp")) {
+			assertThat(result).hasStatus(200).asObjectNode().path("title").isEqualTo("Open Graph protocol");
+		}
+	}
+
+	@Test
 	public void testAnonymous() {
 		when(auth.current(any())).thenReturn(null);
 		try (Http1ClientResponse result = call(origin + "/ogp")) {
@@ -183,19 +190,12 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 
 	@Test
 	public void testDefaultsToHttps() {
-		try (Http1ClientResponse result = call("invalid/")) {
+		try (Http1ClientResponse result = call("http.invalid/")) {
 			assertThat(result)
 				.hasStatus(400)
 				.asObjectNode()
 				.path("message")
-				.isEqualTo("Couldn't retrieve resource: https://invalid/");
-		}
-	}
-
-	@Test
-	public void testInvalidHost() {
-		try (Http1ClientResponse result = call("http://invalid/")) {
-			assertThat(result).hasStatus(400);
+				.isEqualTo("Couldn't retrieve resource: https://http.invalid/");
 		}
 	}
 

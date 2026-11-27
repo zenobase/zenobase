@@ -4,12 +4,16 @@ import com.google.common.net.InetAddresses;
 import com.google.common.primitives.Ints;
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.util.Arrays;
 
 /**
  * Allows only publicly routable addresses, so that server-side fetches of user-supplied URLs can't reach loopback,
  * link-local (e.g. the ECS/EC2 metadata endpoints), private or other reserved networks.
  */
 public class PublicAddressPolicy {
+
+	/** 64:ff9b::/96 */
+	private static final byte[] NAT64_PREFIX = { 0x00, 0x64, (byte) 0xff, (byte) 0x9b, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	public boolean isAllowed(InetAddress address) {
 		if (
@@ -47,11 +51,13 @@ public class PublicAddressPolicy {
 			// unique local
 			return false;
 		}
-		if (first == 0x00 && b[1] == 0x64 && (b[2] & 0xff) == 0xff && (b[3] & 0xff) == 0x9b) {
-			// NAT64 (not covered by Guava)
-			return isAllowed(InetAddresses.fromInteger(Ints.fromBytes(b[12], b[13], b[14], b[15])));
+		if (first != 0x00) {
+			return true;
 		}
-		// Reserved ::/8 block
-		return first != 0x00;
+		// In the reserved ::/8 block, only the NAT64 well-known prefix (not covered by Guava) can map to a public address
+		return (
+			Arrays.equals(b, 0, NAT64_PREFIX.length, NAT64_PREFIX, 0, NAT64_PREFIX.length) &&
+			isAllowed(InetAddresses.fromInteger(Ints.fromBytes(b[12], b[13], b[14], b[15])))
+		);
 	}
 }

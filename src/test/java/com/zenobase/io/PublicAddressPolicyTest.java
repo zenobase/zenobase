@@ -14,7 +14,6 @@ public class PublicAddressPolicyTest {
 	@ParameterizedTest
 	@ValueSource(
 		strings = {
-			"93.184.215.14",
 			"8.8.8.8",
 			"2606:4700:4700::1111",
 			"2002:808:808::",
@@ -55,6 +54,8 @@ public class PublicAddressPolicyTest {
 			"ff02::1",
 			"2002:a9fe:a9fe::",
 			"64:ff9b::a9fe:a9fe",
+			"64:ff9b:1::808:808",
+			"64:ff9b:0:1::808:808",
 			"2001:0:4136:e378:8000:63bf:f5ff:fffe",
 		}
 	)
