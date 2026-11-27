@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.search.constraints.ExistsConstraintBuilder;
 import com.zenobase.search.constraints.MeasureConstraintBuilder;
 import com.zenobase.search.constraints.MeasureRangeConstraintBuilder;
@@ -13,6 +14,8 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
@@ -24,8 +27,11 @@ public class DecimalMeasureField<Q extends Quantity> extends Field<DecimalMeasur
 	public static final TokenField UNIT = new TokenField("unit");
 	public static final DecimalField VALUE_SI = new DecimalField("_value");
 
-	public DecimalMeasureField(String name) {
+	private final Unit<Q> referenceUnit;
+
+	public DecimalMeasureField(String name, Unit<Q> referenceUnit) {
 		super(name, DecimalMeasure.class.getGenericSuperclass(), "object");
+		this.referenceUnit = referenceUnit;
 		addConstraintBuilder(name, new ExistsConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new MeasureRangeConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new MeasureConstraintBuilder(getPath()));
@@ -78,6 +84,31 @@ public class DecimalMeasureField<Q extends Quantity> extends Field<DecimalMeasur
 		VALUE.setValue(node, value);
 		UNIT.setValue(node, unit.toString());
 		return node;
+	}
+
+	@Override
+	public @Nullable String validate(ObjectNode node, @Nullable ObjectNode previous) {
+		Set<String> previousUnits =
+			previous != null
+				? getNodes(previous)
+						.stream()
+						.map(n -> n.path(UNIT.getName()).asText())
+						.collect(Collectors.toSet())
+				: Set.of();
+		for (JsonNode childNode : getNodes(node)) {
+			JsonNode unitNode = childNode.path(UNIT.getName());
+			if (!childNode.path(VALUE.getName()).isNumber() || !unitNode.isTextual()) {
+				return getName() + " must be an object with a numeric " + VALUE.getName() + " and a " + UNIT.getName();
+			}
+			String unit = unitNode.textValue();
+			if (
+				!previousUnits.contains(unit) &&
+				(!Units.isKnown(unit) || !Units.valueOf(unit).isCompatible(referenceUnit))
+			) {
+				return "Unsupported " + getName() + " unit <" + unit + ">";
+			}
+		}
+		return null;
 	}
 
 	@Override

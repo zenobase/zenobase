@@ -6,6 +6,7 @@ import com.google.common.base.MoreObjects;
 import com.zenobase.auth.UserStateCache;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
+import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
@@ -77,6 +78,13 @@ public abstract class ControllerSupport implements CustomHeaders {
 	protected static void requireNotArchived(Bucket bucket) {
 		if (bucket.isArchived()) {
 			throw ResponseStatusException.conflict("bucket is archived");
+		}
+	}
+
+	protected static void requireValid(Event event, @Nullable Event previous) {
+		String error = event.validate(previous);
+		if (error != null) {
+			throw ResponseStatusException.badRequest(error);
 		}
 	}
 

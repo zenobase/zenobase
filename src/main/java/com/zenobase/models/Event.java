@@ -161,6 +161,22 @@ public class Event extends DomainNode {
 		return super.contains(field);
 	}
 
+	/**
+	 * Checks values submitted by a client. Units already used by the previous version of the event are accepted,
+	 * so events stored before the rules were tightened can still be edited.
+	 *
+	 * @return a message describing the first problem, or null if the event is acceptable
+	 */
+	public @Nullable String validate(@Nullable Event previous) {
+		for (Field<?> field : FIELDS) {
+			String error = field.validate(toJson(), previous != null ? previous.toJson() : null);
+			if (error != null) {
+				return error;
+			}
+		}
+		return null;
+	}
+
 	public void prePersist(String bucketId) {
 		setValue(Event.BUCKET, bucketId);
 		for (Field<?> field : FIELDS) {

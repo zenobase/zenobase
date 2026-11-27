@@ -54,6 +54,7 @@ public class EventController extends ControllerSupport {
 		Event updated = new Event(body(req));
 		updated.setValue(Event.AUTHOR, auth.getPrincipal());
 		requireNotSuspended(auth);
+		requireValid(updated, event);
 		try {
 			String commandId = dispatcher.dispatch(
 				new UpdateEventCommand(auth.getPrincipal(), bucketId, event, updated)
