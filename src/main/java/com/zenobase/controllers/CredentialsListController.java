@@ -42,27 +42,9 @@ public class CredentialsListController extends ControllerSupport {
 		String q = req.query().first("q").orElse(null);
 		int offset = Integer.parseInt(req.query().first("offset").orElse("0"));
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
-		if (offset < 0 || offset > 1000) {
-			sendBadRequest(res, "expected offset in [0..1000]");
-			return;
-		}
-		if (limit < 0 || limit > 100) {
-			sendBadRequest(res, "expected limit in [0..100]");
-			return;
-		}
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
-		if (!users.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
+		requirePaging(offset, limit);
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
 		var query = new CredentialsQuery();
 		if (q != null) {
 			query = query.queryString(q);
@@ -75,32 +57,11 @@ public class CredentialsListController extends ControllerSupport {
 		String q = req.query().first("q").orElse(null);
 		int offset = Integer.parseInt(req.query().first("offset").orElse("0"));
 		int limit = Integer.parseInt(req.query().first("limit").orElse("10"));
-		if (offset < 0 || offset > 1000) {
-			sendBadRequest(res, "expected offset in [0..1000]");
-			return;
-		}
-		if (limit < 0 || limit > 100) {
-			sendBadRequest(res, "expected limit in [0..100]");
-			return;
-		}
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
-		Identity principal = new UserLookup(users).getIdentity(userId);
-		if (principal == null) {
-			sendNotFound(res, "user not found");
-			return;
-		}
-		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
+		requirePaging(offset, limit);
+		Authorization auth = requireAuthorization(req);
+		requireFirstParty(auth);
+		Identity principal = requireFound(new UserLookup(users).getIdentity(userId), "user not found");
+		requireSelfOrSuperuser(users, auth, principal);
 		var query = new CredentialsQuery().principalEqualTo(principal).order(Credentials.TYPE.getName(), true);
 		if (q != null) {
 			query = query.queryString(q);
@@ -109,32 +70,20 @@ public class CredentialsListController extends ControllerSupport {
 	}
 
 	public void post(ServerRequest req, ServerResponse res) {
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstParty(auth);
 		var form = new CreateCredentialsForm(body(req));
 		if (!form.valid()) {
-			sendBadRequest(res, "bad request");
-			return;
+			throw ResponseStatusException.badRequest("bad request");
 		}
 		if (!registry.exists(form.getType())) {
-			sendBadRequest(res, "unknown type");
-			return;
+			throw ResponseStatusException.badRequest("unknown type");
 		}
 		CredentialsManager manager = registry.find(form.getType());
 		if (credentials.find(auth.getPrincipal(), form.getType()) != null) {
-			sendBadRequest(res, "already connected");
-			return;
+			throw ResponseStatusException.badRequest("already connected");
 		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		requireNotSuspended(auth);
 		Credentials credentials = manager.newCredentials(auth.getPrincipal());
 		String commandId = dispatcher.dispatch(new CreateCredentialsCommand(auth.getPrincipal(), credentials));
 		setHeader(res, COMMAND_ID, commandId);

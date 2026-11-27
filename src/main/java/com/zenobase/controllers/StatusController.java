@@ -29,19 +29,8 @@ public class StatusController extends ControllerSupport {
 	}
 
 	public void post(ServerRequest req, ServerResponse res) {
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
-		if (!users.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
 		JsonNode body = body(req);
 		setReadOnly(body.path("read_only"));
 		setSchedulerDisabled(body.path("scheduler_disabled"));

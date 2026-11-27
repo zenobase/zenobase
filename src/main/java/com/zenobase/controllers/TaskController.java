@@ -58,20 +58,9 @@ public class TaskController extends ControllerSupport {
 
 	public void get(ServerRequest req, ServerResponse res) {
 		String taskId = req.path().pathParameters().get("taskId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		Task task = tasks.find(taskId);
-		if (task == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (!task.isPermitted(auth) && !isFirstPartySuperuser(users, auth)) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Task task = requireFound(tasks.find(taskId));
+		requirePermission(task.isPermitted(auth) || isFirstPartySuperuser(users, auth));
 		if (task.isStale() && !bus.isReadOnly()) {
 			Bucket bucket = buckets.find(task.getBucketId());
 			if (bucket != null && bucket.isArchived()) {
@@ -95,33 +84,19 @@ public class TaskController extends ControllerSupport {
 
 	public void update(ServerRequest req, ServerResponse res) {
 		String taskId = req.path().pathParameters().get("taskId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		Task task = tasks.find(taskId);
-		if (task == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (!task.isPermitted(auth)) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Task task = requireFound(tasks.find(taskId));
+		requirePermission(task.isPermitted(auth));
 		Bucket bucket = buckets.find(task.getBucketId());
-		if (bucket != null && bucket.isArchived()) {
-			sendConflict(res, "bucket is archived");
-			return;
+		if (bucket != null) {
+			requireNotArchived(bucket);
 		}
 		if (!registry.exists(task.getType())) {
-			sendBadRequest(res, "unsupported task type: " + task.getType());
-			return;
+			throw ResponseStatusException.badRequest("unsupported task type: " + task.getType());
 		}
 		ObjectNode body = body(req);
 		if (body.size() != 1) {
-			sendBadRequest(res, "no data");
-			return;
+			throw ResponseStatusException.badRequest("no data");
 		}
 		Command command = null;
 		ObjectNode settings = Task.SETTINGS.getValue(body);
@@ -129,12 +104,9 @@ public class TaskController extends ControllerSupport {
 			command = UpdateTaskCommand.builder(task).set(Task.SETTINGS, task.getSettings(), settings).build();
 		}
 		if (command == null) {
-			sendBadRequest(res, "nothing to do");
-			return;
+			throw ResponseStatusException.badRequest("nothing to do");
 		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		requireNotSuspended(auth);
 		String commandId = dispatcher.dispatch(command);
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);
@@ -142,29 +114,13 @@ public class TaskController extends ControllerSupport {
 
 	public void delete(ServerRequest req, ServerResponse res) {
 		String taskId = req.path().pathParameters().get("taskId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
-		Task task = tasks.find(taskId);
-		if (task == null) {
-			sendNotFound(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstParty(auth);
+		Task task = requireFound(tasks.find(taskId));
 		Bucket bucket = buckets.find(task.getBucketId());
 		boolean permitted = bucket != null ? bucket.hasRole(auth, Role.OWNER) : task.isPermitted(auth);
-		if (!permitted && !isFirstPartySuperuser(users, auth)) {
-			sendForbidden(res);
-			return;
-		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		requirePermission(permitted || isFirstPartySuperuser(users, auth));
+		requireNotSuspended(auth);
 		String commandId = dispatcher.dispatch(new DeleteTaskCommand(auth.getPrincipal(), task));
 		setHeader(res, COMMAND_ID, commandId);
 		sendNoContent(res);

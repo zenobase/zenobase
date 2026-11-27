@@ -84,6 +84,16 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 	}
 
 	@Test
+	public void testUpdateEmailWithExternalTokenForbidden() {
+		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity(), new Identity("client"), "external"));
+		when(users.find(user.asIdentity())).thenReturn(user);
+		try (Http1ClientResponse result = call(user.getId(), new UpdateUserForm("jdoe@zenobase.com").toJson())) {
+			assertThat(result).hasStatus(403);
+			verifyNoInteractions(dispatcher);
+		}
+	}
+
+	@Test
 	public void testUpdateEmailWithInvalidAddress() {
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.asIdentity())).thenReturn(user);

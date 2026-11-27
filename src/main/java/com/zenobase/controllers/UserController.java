@@ -43,11 +43,7 @@ public class UserController extends ControllerSupport {
 	public void get(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
 		Authorization auth = getCurrentAuthorization(req);
-		User user = new UserLookup(users).getUser(userId);
-		if (user == null) {
-			sendNotFound(res);
-			return;
-		}
+		User user = requireFound(new UserLookup(users).getUser(userId));
 		sendOk(res, toJson(user, auth));
 	}
 
@@ -61,11 +57,7 @@ public class UserController extends ControllerSupport {
 	public void update(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
 		ObjectNode body = body(req);
-		User user = new UserLookup(users).getUser(userId);
-		if (user == null) {
-			sendNotFound(res, "user not found");
-			return;
-		}
+		User user = requireFound(new UserLookup(users).getUser(userId), "user not found");
 		UpdateUserForm form = new UpdateUserForm(body);
 		if (form.getEmail() != null) {
 			updateEmail(req, res, form, user);
@@ -83,27 +75,18 @@ public class UserController extends ControllerSupport {
 			updateOptedOut(req, res, form, user);
 			return;
 		}
-		sendBadRequest(res, "invalid update request");
+		throw ResponseStatusException.badRequest("invalid update request");
 	}
 
 	private void updateEmail(ServerRequest req, ServerResponse res, UpdateUserForm form, User user) {
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null || (!user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal()))) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstParty(auth);
+		requirePermission(user.is(auth.getPrincipal()) || users.isSuperuser(auth.getPrincipal()));
 		String email = form.getEmail();
 		if (email == null || email.isEmpty()) {
-			sendBadRequest(res, "invalid email address");
-			return;
+			throw ResponseStatusException.badRequest("invalid email address");
 		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		requireNotSuspended(auth);
 		String userName = Objects.requireNonNull(user.getName());
 		String userEmail = Objects.requireNonNull(user.getEmail());
 		String commandId = dispatcher.dispatch(
@@ -122,18 +105,9 @@ public class UserController extends ControllerSupport {
 	}
 
 	private void updateSuspension(ServerRequest req, ServerResponse res, User user, boolean suspended) {
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (!isFirstPartySuperuser(users, auth)) {
-			sendForbidden(res);
-			return;
-		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
+		requireNotSuspended(auth);
 		Command command = new SuspendUserCommand(
 			auth.getPrincipal(),
 			Objects.requireNonNull(user.getName()),
@@ -145,18 +119,9 @@ public class UserController extends ControllerSupport {
 	}
 
 	private void updateQuota(ServerRequest req, ServerResponse res, UpdateUserForm form, User user) {
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (!isFirstPartySuperuser(users, auth)) {
-			sendForbidden(res);
-			return;
-		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
+		requireNotSuspended(auth);
 		String commandId = dispatcher.dispatch(
 			new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), form.getQuota())
 		);
@@ -165,18 +130,10 @@ public class UserController extends ControllerSupport {
 	}
 
 	private void updateOptedOut(ServerRequest req, ServerResponse res, UpdateUserForm form, User user) {
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null || (!user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal()))) {
-			sendForbidden(res);
-			return;
-		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstParty(auth);
+		requirePermission(user.is(auth.getPrincipal()) || users.isSuperuser(auth.getPrincipal()));
+		requireNotSuspended(auth);
 		Command c = Objects.requireNonNull(form.isOptedOut())
 			? new OptOutCommand(auth.getPrincipal(), Objects.requireNonNull(user.getName()))
 			: new OptInCommand(auth.getPrincipal(), Objects.requireNonNull(user.getName()));

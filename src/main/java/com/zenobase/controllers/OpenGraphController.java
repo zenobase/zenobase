@@ -1,8 +1,8 @@
 package com.zenobase.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.zenobase.io.OpenGraph;
 import com.zenobase.io.PublicAddressPolicy;
-import com.zenobase.oauth.Authorization;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
 import jakarta.inject.Inject;
@@ -66,46 +66,36 @@ public class OpenGraphController extends ControllerSupport {
 	}
 
 	public void get(ServerRequest req, ServerResponse res) {
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
+		requireFirstParty(requireAuthorization(req));
 		String url = req.query().first("url").orElse(null);
 		if (url == null) {
-			sendBadRequest(res, "URL is required");
-			return;
+			throw ResponseStatusException.badRequest("URL is required");
 		}
 		get(res, url.startsWith("http") ? url : "https://" + url);
 	}
 
 	private void get(ServerResponse res, String url) {
 		if (!isValid(url)) {
-			sendBadRequest(res, "Invalid URL: " + url);
-			return;
+			throw ResponseStatusException.badRequest("Invalid URL: " + url);
 		}
+		JsonNode json;
 		try {
-			http.execute(new HttpGet(url), response -> {
+			json = http.execute(new HttpGet(url), response -> {
 				if (response.getCode() != HttpStatus.SC_OK) {
-					sendBadRequest(res, "Couldn't retrieve resource: " + url);
-					return null;
+					throw ResponseStatusException.badRequest("Couldn't retrieve resource: " + url);
 				}
 				try {
-					sendOk(res, OpenGraph.parse(url, response.getEntity().getContent()).toJson());
+					return OpenGraph.parse(url, response.getEntity().getContent()).toJson();
 				} catch (IOException e) {
 					String message = "Couldn't parse resource: " + url;
 					logger.warn(message);
-					sendBadRequest(res, message);
+					throw ResponseStatusException.badRequest(message);
 				}
-				return null;
 			});
 		} catch (IOException e) {
-			sendBadRequest(res, "Couldn't retrieve resource: " + url);
+			throw ResponseStatusException.badRequest("Couldn't retrieve resource: " + url);
 		}
+		sendOk(res, json);
 	}
 
 	private static boolean isValid(String url) {

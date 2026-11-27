@@ -57,19 +57,8 @@ public class BucketController extends ControllerSupport {
 
 	private void handleGet(ServerRequest req, ServerResponse res, String bucketId, boolean labelOnly) {
 		Authorization auth = getCurrentAuthorization(req);
-		Bucket bucket = buckets.find(bucketId);
-		if (bucket == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (!bucket.hasRole(auth, Role.VIEWER)) {
-			if (auth == null) {
-				sendUnauthorized(res);
-			} else {
-				sendForbidden(res);
-			}
-			return;
-		}
+		Bucket bucket = requireFound(buckets.find(bucketId));
+		requireRole(bucket, auth, Role.VIEWER);
 		if (bucket.getWidgets().isEmpty()) {
 			setDefaultDashboard(bucket);
 		}
@@ -128,59 +117,39 @@ public class BucketController extends ControllerSupport {
 
 	public void update(ServerRequest req, ServerResponse res) {
 		String bucketId = req.path().pathParameters().get("bucketId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		Bucket bucket = buckets.find(bucketId);
-		if (bucket == null) {
-			sendNotFound(res, "bucket not found");
-			return;
-		}
-		if (!bucket.hasRole(auth, Role.OWNER)) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Bucket bucket = requireFound(buckets.find(bucketId), "bucket not found");
+		requireRole(bucket, auth, Role.OWNER);
 		Bucket updated = new Bucket(body(req));
 		if (!updated.valid()) {
-			sendBadRequest(res, "bucket not valid");
-			return;
+			throw ResponseStatusException.badRequest("bucket not valid");
 		}
 		if (bucket.isArchived() && updated.isArchived()) {
-			sendConflict(res, "bucket is archived");
-			return;
+			throw ResponseStatusException.conflict("bucket is archived");
 		}
 		if (!updated.getPrincipals(Role.OWNER).equals(bucket.getPrincipals(Role.OWNER))) {
-			sendBadRequest(res, "bucket owner can't change");
-			return;
+			throw ResponseStatusException.badRequest("bucket owner can't change");
 		}
 		if (updated.getPrincipals().size() > 1) {
 			User user = users.find(auth.getPrincipal());
 			if (user == null || !user.isVerified()) {
-				sendForbidden(res, "not permitted to add or remove roles");
-				return;
+				throw ResponseStatusException.forbidden("not permitted to add or remove roles");
 			}
 		}
 		if (bucket.getAliases().isEmpty() != updated.getAliases().isEmpty()) {
-			sendBadRequest(res, "can't change bucket type");
-			return;
+			throw ResponseStatusException.badRequest("can't change bucket type");
 		}
 		if (!new AliasValidator(buckets).checkPermissions(updated, auth)) {
-			sendBadRequest(res, "one or more aliases are invalid");
-			return;
+			throw ResponseStatusException.badRequest("one or more aliases are invalid");
 		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		requireNotSuspended(auth);
 		try {
 			String commandId = dispatcher.dispatch(new UpdateBucketCommand(auth.getPrincipal(), bucket, updated));
 			setHeader(res, COMMAND_ID, commandId);
 			sendNoContent(res);
 		} catch (OpenSearchException e) {
 			if (e.status() == 409) {
-				sendConflict(res, "bucket is stale");
-				return;
+				throw ResponseStatusException.conflict("bucket is stale");
 			}
 			throw e;
 		}
@@ -188,27 +157,13 @@ public class BucketController extends ControllerSupport {
 
 	public void delete(ServerRequest req, ServerResponse res) {
 		String bucketId = req.path().pathParameters().get("bucketId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		Bucket bucket = buckets.find(bucketId);
-		if (bucket == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (!bucket.hasRole(auth, Role.OWNER) && !isFirstPartySuperuser(users, auth)) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Bucket bucket = requireFound(buckets.find(bucketId));
+		requirePermission(bucket.hasRole(auth, Role.OWNER) || isFirstPartySuperuser(users, auth));
 		if (buckets.isAliased(bucketId)) {
-			sendConflict(res, "bucket is aliased");
-			return;
+			throw ResponseStatusException.conflict("bucket is aliased");
 		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		requireNotSuspended(auth);
 		CompoundCommand command = new CompoundCommand(
 			auth.getPrincipal(),
 			"deleted bucket and associated data",
