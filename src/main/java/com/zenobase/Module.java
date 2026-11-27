@@ -37,7 +37,6 @@ import com.zenobase.services.*;
 import com.zenobase.tasks.*;
 import com.zenobase.tasks.demo.DemoCredentialsManager;
 import com.zenobase.tasks.demo.DemoTaskManager;
-import com.zenobase.tasks.fitbit.*;
 import com.zenobase.tasks.foursquare.FoursquareCredentialsManager;
 import com.zenobase.tasks.foursquare.FoursquareTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareVenues;
@@ -225,7 +224,6 @@ class Module extends AbstractModule {
 	private void bindCredentialsManagers() {
 		var credentials = Multibinder.newSetBinder(binder(), new TypeLiteral<CredentialsManager>() {});
 		credentials.addBinding().to(DemoCredentialsManager.class);
-		bindIfConfigured("fitbit", FitbitCredentialsManager.class, credentials);
 		bindIfConfigured("foursquare", FoursquareCredentialsManager.class, credentials);
 		bindIfConfigured("goodreads", GoodreadsCredentialsManager.class, credentials);
 		bindIfConfigured("google", GoogleCredentialsManager.class, credentials);
@@ -245,13 +243,6 @@ class Module extends AbstractModule {
 	private void bindTaskManagers() {
 		var tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
 		tasks.addBinding().to(DemoTaskManager.class);
-		bindIfConfigured("fitbit", FitbitActivitiesTaskManager.class, tasks);
-		bindIfConfigured("fitbit", FitbitBurnTaskManager.class, tasks);
-		bindIfConfigured("fitbit", FitbitCardioTaskManager.class, tasks);
-		bindIfConfigured("fitbit", FitbitStepsTaskManager.class, tasks);
-		bindIfConfigured("fitbit", FitbitSleepTaskManager.class, tasks);
-		bindIfConfigured("fitbit", FitbitWeightTaskManager.class, tasks);
-		bindIfConfigured("fitbit", FitbitFoodTaskManager.class, tasks);
 		bindIfConfigured("foursquare", FoursquareTaskManager.class, tasks);
 		bindIfConfigured("goodreads", GoodreadsTaskManager.class, tasks);
 		bindIfConfigured("google", SleepCloudTaskManager.class, tasks);
@@ -358,7 +349,6 @@ class Module extends AbstractModule {
 
 		// Integration API keys (only when their prefix is configured)
 		for (String prefix : List.of(
-			"fitbit",
 			"foursquare",
 			"goodreads",
 			"google",
