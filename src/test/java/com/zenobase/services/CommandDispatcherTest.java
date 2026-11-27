@@ -162,6 +162,25 @@ public class CommandDispatcherTest {
 	}
 
 	@Test
+	public void testJournalFailureRevertsCompoundCommand() {
+		Command c1 = new TestCommand(TESTER, "ab");
+		Command c2 = new TestCommand(TESTER, "cd");
+		CompoundCommand cc = new CompoundCommand(TESTER, "do both", "undo both");
+		cc.add(c1);
+		cc.add(c2);
+		doThrow(new RuntimeException("down")).when(repository).put(cc);
+
+		assertThrows(RuntimeException.class, () -> retrying.dispatch(cc));
+
+		var order = inOrder(handlers);
+		order.verify(handlers).execute(c1);
+		order.verify(handlers).execute(c2);
+		order.verify(handlers).execute(argThat(c -> c instanceof TestCommand t && t.getTag().equals("dc")));
+		order.verify(handlers).execute(argThat(c -> c instanceof TestCommand t && t.getTag().equals("ba")));
+		verifyNoMoreInteractions(handlers);
+	}
+
+	@Test
 	public void testJournalInterrupted() {
 		Command command = new TestCommand(TESTER, "abc");
 		doThrow(new RuntimeException("timeout")).doNothing().when(repository).put(command);
