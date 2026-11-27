@@ -162,6 +162,19 @@ public class CommandDispatcherTest {
 	}
 
 	@Test
+	public void testJournalInterrupted() {
+		Command command = new TestCommand(TESTER, "abc");
+		doThrow(new RuntimeException("timeout")).doNothing().when(repository).put(command);
+
+		Thread.currentThread().interrupt();
+		assertThrows(RuntimeException.class, () -> retrying.dispatch(command));
+
+		assertTrue(Thread.interrupted());
+		verify(repository).put(command);
+		verify(handlers).execute(argThat(c -> c instanceof TestCommand t && t.getTag().equals("cba")));
+	}
+
+	@Test
 	public void testJournalFailureIrreversible() {
 		Command command = spy(new TestCommand(TESTER, "abc"));
 		doThrow(UnsupportedOperationException.class).when(command).reverse(any());
