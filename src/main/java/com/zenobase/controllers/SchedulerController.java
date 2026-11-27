@@ -25,15 +25,8 @@ public class SchedulerController extends ControllerSupport {
 	}
 
 	public void findAll(ServerRequest req, ServerResponse res) {
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (!isFirstPartySuperuser(users, auth)) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
 		sendOk(res, toJson(scheduler.findJobs()));
 	}
 

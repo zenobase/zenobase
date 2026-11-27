@@ -71,19 +71,8 @@ public class EventListController extends ControllerSupport {
 	public void find(ServerRequest req, ServerResponse res) {
 		String bucketId = req.path().pathParameters().get("bucketId");
 		Authorization auth = getCurrentAuthorization(req);
-		Bucket bucket = buckets.find(bucketId);
-		if (bucket == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (!bucket.hasRole(auth, Role.VIEWER)) {
-			if (auth == null) {
-				sendUnauthorized(res);
-			} else {
-				sendForbidden(res);
-			}
-			return;
-		}
+		Bucket bucket = requireFound(buckets.find(bucketId));
+		requireRole(bucket, auth, Role.VIEWER);
 		try {
 			List<String> constraints = getConstraints(req);
 			List<FacetOptions> facets = getFacets(req);
@@ -93,7 +82,7 @@ public class EventListController extends ControllerSupport {
 				getStreaming(req, res, bucketId, constraints);
 			}
 		} catch (IllegalArgumentException e) {
-			sendBadRequest(res, "Invalid parameters");
+			throw ResponseStatusException.badRequest("Invalid parameters");
 		}
 	}
 
@@ -149,10 +138,11 @@ public class EventListController extends ControllerSupport {
 		} catch (OpenSearchException e) {
 			if (Search.hasCauseOfType(e, "too_many_buckets")) {
 				logger.warn("Search failed due to too many buckets in <{}>", bucketId, e);
-				sendBadRequest(res, "One or more aggregations create too many bins; try setting larger intervals");
-			} else {
-				throw e;
+				throw ResponseStatusException.badRequest(
+					"One or more aggregations create too many bins; try setting larger intervals"
+				);
 			}
+			throw e;
 		}
 	}
 
@@ -166,7 +156,7 @@ public class EventListController extends ControllerSupport {
 			streamEventChunks(res, bucketId, constraints);
 			return;
 		}
-		sendBadRequest(res, "Can't accept <" + accept + ">");
+		throw ResponseStatusException.badRequest("Can't accept <" + accept + ">");
 	}
 
 	private void streamEventChunks(ServerResponse res, String bucketId, Iterable<String> constraints) {
@@ -216,44 +206,24 @@ public class EventListController extends ControllerSupport {
 
 	public void post(ServerRequest req, ServerResponse res) {
 		String bucketId = req.path().pathParameters().get("bucketId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		Bucket bucket = buckets.find(bucketId);
-		if (bucket == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (!bucket.hasRole(auth, Role.OWNER)) {
-			sendForbidden(res);
-			return;
-		}
-		if (bucket.isArchived()) {
-			sendConflict(res, "bucket is archived");
-			return;
-		}
-		if (sendForbiddenIfSuspended(auth, res)) {
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		Bucket bucket = requireFound(buckets.find(bucketId));
+		requireRole(bucket, auth, Role.OWNER);
+		requireNotArchived(bucket);
+		requireNotSuspended(auth);
 		ObjectNode body = body(req);
 		var nodes = EVENTS.getValues(body);
 		if (!nodes.isEmpty()) {
 			List<Event> events = toEvents(auth.getPrincipal(), nodes);
 			for (Event event : events) {
-				if (sendBadRequestIfInvalid(event, null, res)) {
-					return;
-				}
+				requireValid(event, null);
 			}
 			String commandId = dispatcher.dispatch(new CreateEventsCommand(auth.getPrincipal(), bucketId, events));
 			setHeader(res, COMMAND_ID, commandId);
 			sendNoContent(res);
 		} else {
 			Event event = toEvent(auth.getPrincipal(), body);
-			if (sendBadRequestIfInvalid(event, null, res)) {
-				return;
-			}
+			requireValid(event, null);
 			CreateEventCommand command = new CreateEventCommand(auth.getPrincipal(), bucketId, event);
 			String commandId = dispatcher.dispatch(command);
 			setHeader(res, LOCATION, "/buckets/" + bucketId + "/" + command.getEvent().getId());
@@ -281,42 +251,16 @@ public class EventListController extends ControllerSupport {
 	}
 
 	public void countAll(ServerRequest req, ServerResponse res) {
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
-		if (!users.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
 		sendOk(res, toJson(events.size()));
 	}
 
 	public void countByUser(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		if (auth.getScope() != null) {
-			sendForbidden(res);
-			return;
-		}
-		if (!users.isSuperuser(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
-		Identity principal = new UserLookup(users).getIdentity(userId);
-		if (principal == null) {
-			sendNotFound(res, "user not found");
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		requireFirstPartySuperuser(users, auth);
+		Identity principal = requireFound(new UserLookup(users).getIdentity(userId), "user not found");
 		sendOk(res, toJson(events.size(principal)));
 	}
 

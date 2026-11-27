@@ -62,22 +62,12 @@ public class AccountController extends ControllerSupport {
 
 	public void close(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		User user = new UserLookup(users).getUser(userId);
-		if (user == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (auth.getScope() != null || (!user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal()))) {
-			sendForbidden(res);
-			return;
-		}
-		if (!user.is(auth.getPrincipal()) && sendForbiddenIfSuspended(auth, res)) {
-			return;
+		Authorization auth = requireAuthorization(req);
+		User user = requireFound(new UserLookup(users).getUser(userId));
+		requireFirstParty(auth);
+		requirePermission(user.is(auth.getPrincipal()) || users.isSuperuser(auth.getPrincipal()));
+		if (!user.is(auth.getPrincipal())) {
+			requireNotSuspended(auth);
 		}
 		Command command = buildCloseAccountCommand(auth.getPrincipal(), user);
 		String commandId = dispatcher.dispatch(command);
@@ -113,20 +103,10 @@ public class AccountController extends ControllerSupport {
 
 	public void listPasskeys(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		User user = new UserLookup(users).getUser(userId);
-		if (user == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (auth.getScope() != null || !user.is(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		User user = requireFound(new UserLookup(users).getUser(userId));
+		requireFirstParty(auth);
+		requirePermission(user.is(auth.getPrincipal()));
 		ArrayNode passkeys = Nodes.newArray();
 		for (Passkey passkey : identityProvider.listPasskeys(user)) {
 			passkeys.add(toJson(passkey));
@@ -137,37 +117,23 @@ public class AccountController extends ControllerSupport {
 	public void deletePasskey(ServerRequest req, ServerResponse res) {
 		String userId = req.path().pathParameters().get("userId");
 		String passkeyId = req.path().pathParameters().get("passkeyId");
-		Authorization auth = getCurrentAuthorization(req);
-		if (auth == null) {
-			sendUnauthorized(res);
-			return;
-		}
-		User user = new UserLookup(users).getUser(userId);
-		if (user == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (auth.getScope() != null || !user.is(auth.getPrincipal())) {
-			sendForbidden(res);
-			return;
-		}
+		Authorization auth = requireAuthorization(req);
+		User user = requireFound(new UserLookup(users).getUser(userId));
+		requireFirstParty(auth);
+		requirePermission(user.is(auth.getPrincipal()));
 		try {
 			identityProvider.deletePasskey(user, passkeyId);
 		} catch (IllegalArgumentException e) {
-			sendNotFound(res);
-			return;
+			throw ResponseStatusException.notFound();
 		} catch (ManagementApiException e) {
 			if (e.statusCode() == 404) {
-				sendNotFound(res);
-				return;
+				throw ResponseStatusException.notFound();
 			}
 			logger.error("Passkey delete failed for user {}", user.getId(), e);
-			sendInternalServerError(res, "failed to delete passkey");
-			return;
+			throw ResponseStatusException.internalServerError("failed to delete passkey");
 		} catch (RuntimeException e) {
 			logger.error("Passkey delete failed for user {}", user.getId(), e);
-			sendInternalServerError(res, "failed to delete passkey");
-			return;
+			throw ResponseStatusException.internalServerError("failed to delete passkey");
 		}
 		sendNoContent(res);
 	}

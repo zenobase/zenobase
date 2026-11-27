@@ -5,7 +5,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.zenobase.auth.UserStateCache;
 import com.zenobase.json.Nodes;
+import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.repositories.UserRepository;
 import io.helidon.http.HeaderNames;
@@ -34,12 +37,84 @@ public abstract class ControllerSupport implements CustomHeaders {
 		return auth.getScope() == null && users.isSuperuser(auth.getPrincipal());
 	}
 
-	protected boolean sendForbiddenIfSuspended(Authorization auth, ServerResponse res) {
-		if (authContext.userState(auth.getPrincipal()) == UserStateCache.UserState.SUSPENDED) {
-			sendForbidden(res, "account is suspended");
-			return true;
+	// Guards: each throws a ResponseStatusException, which writes the same response as the matching sendX helper.
+
+	protected Authorization requireAuthorization(ServerRequest req) {
+		Authorization auth = getCurrentAuthorization(req);
+		if (auth == null) {
+			throw ResponseStatusException.unauthorized();
 		}
-		return false;
+		return auth;
+	}
+
+	/** Rejects tokens issued to external clients (MCP, third-party integrations). */
+	protected static void requireFirstParty(Authorization auth) {
+		if (auth.getScope() != null) {
+			throw ResponseStatusException.forbidden();
+		}
+	}
+
+	protected static void requireFirstPartySuperuser(UserRepository users, Authorization auth) {
+		requirePermission(isFirstPartySuperuser(users, auth));
+	}
+
+	protected static void requireSelfOrSuperuser(UserRepository users, Authorization auth, Identity principal) {
+		requirePermission(auth.getPrincipal().equals(principal) || users.isSuperuser(auth.getPrincipal()));
+	}
+
+	protected static void requirePermission(boolean permitted) {
+		if (!permitted) {
+			throw ResponseStatusException.forbidden();
+		}
+	}
+
+	/** Anonymous callers get a 401 rather than a 403, so they know to sign in. */
+	protected static void requireRole(Bucket bucket, @Nullable Authorization auth, Role role) {
+		if (!bucket.hasRole(auth, role)) {
+			throw auth == null ? ResponseStatusException.unauthorized() : ResponseStatusException.forbidden();
+		}
+	}
+
+	protected static void requireNotArchived(Bucket bucket) {
+		if (bucket.isArchived()) {
+			throw ResponseStatusException.conflict("bucket is archived");
+		}
+	}
+
+	protected static void requireValid(Event event, @Nullable Event previous) {
+		String error = event.validate(previous);
+		if (error != null) {
+			throw ResponseStatusException.badRequest(error);
+		}
+	}
+
+	protected void requireNotSuspended(Authorization auth) {
+		if (authContext.userState(auth.getPrincipal()) == UserStateCache.UserState.SUSPENDED) {
+			throw ResponseStatusException.forbidden("account is suspended");
+		}
+	}
+
+	protected static <T> T requireFound(@Nullable T value) {
+		if (value == null) {
+			throw ResponseStatusException.notFound();
+		}
+		return value;
+	}
+
+	protected static <T> T requireFound(@Nullable T value, String message) {
+		if (value == null) {
+			throw ResponseStatusException.notFound(message);
+		}
+		return value;
+	}
+
+	protected static void requirePaging(int offset, int limit) {
+		if (offset < 0 || offset > 1000) {
+			throw ResponseStatusException.badRequest("expected offset in [0..1000]");
+		}
+		if (limit < 0 || limit > 100) {
+			throw ResponseStatusException.badRequest("expected limit in [0..100]");
+		}
 	}
 
 	protected static ObjectNode body(ServerRequest req) {
@@ -70,47 +145,10 @@ public abstract class ControllerSupport implements CustomHeaders {
 		res.status(Status.NO_CONTENT_204).send();
 	}
 
-	protected static void sendNotFound(ServerResponse res) {
-		res.status(Status.NOT_FOUND_404).send();
-	}
-
-	protected static void sendUnauthorized(ServerResponse res) {
-		res.status(Status.UNAUTHORIZED_401).send();
-	}
-
-	protected static void sendForbidden(ServerResponse res) {
-		res.status(Status.FORBIDDEN_403).send();
-	}
-
-	protected static boolean sendBadRequestIfInvalid(Event event, @Nullable Event previous, ServerResponse res) {
-		String error = event.validate(previous);
-		if (error != null) {
-			sendBadRequest(res, error);
-			return true;
-		}
-		return false;
-	}
-
-	// Error response helpers (also used by filters)
-
-	public static void sendBadRequest(ServerResponse res, String message) {
-		sendError(res, Status.BAD_REQUEST_400, message);
-	}
-
-	public static void sendBadRequest(ServerResponse res, JsonNode json) {
-		res.status(Status.BAD_REQUEST_400).send(json);
-	}
+	// Error response helpers for filters and routing error handlers; controllers throw ResponseStatusException
 
 	public static void sendForbidden(ServerResponse res, String message) {
 		sendError(res, Status.FORBIDDEN_403, message);
-	}
-
-	public static void sendNotFound(ServerResponse res, String message) {
-		sendError(res, Status.NOT_FOUND_404, message);
-	}
-
-	public static void sendConflict(ServerResponse res, String message) {
-		sendError(res, Status.CONFLICT_409, message);
 	}
 
 	public static void sendInternalServerError(ServerResponse res, String message) {

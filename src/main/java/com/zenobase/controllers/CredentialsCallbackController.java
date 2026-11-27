@@ -25,8 +25,7 @@ public class CredentialsCallbackController extends ControllerSupport {
 	public void callback(ServerRequest req, ServerResponse res) {
 		String id = req.path().pathParameters().get("id");
 		if (!"-".equals(id) && !Generator.isValidId(id)) {
-			sendNotFound(res);
-			return;
+			throw ResponseStatusException.notFound();
 		}
 		res.status(Status.create(303));
 		res.header(HeaderNames.LOCATION, String.format("%s/#/credentials/%s?%s", webHostname, id, toQueryString(req)));

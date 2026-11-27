@@ -26,19 +26,8 @@ public class BucketSchemaController extends ControllerSupport {
 	public void get(ServerRequest req, ServerResponse res) {
 		String bucketId = req.path().pathParameters().get("bucketId");
 		Authorization auth = getCurrentAuthorization(req);
-		Bucket bucket = buckets.find(bucketId);
-		if (bucket == null) {
-			sendNotFound(res);
-			return;
-		}
-		if (!bucket.hasRole(auth, Role.VIEWER)) {
-			if (auth == null) {
-				sendUnauthorized(res);
-			} else {
-				sendForbidden(res);
-			}
-			return;
-		}
+		Bucket bucket = requireFound(buckets.find(bucketId));
+		requireRole(bucket, auth, Role.VIEWER);
 		sendOk(res, JsonSchema.forFields(events.fields(bucketId), Event.READ_ONLY_FIELDS).toJson());
 	}
 }

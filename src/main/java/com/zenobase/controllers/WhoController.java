@@ -26,8 +26,7 @@ public class WhoController extends ControllerSupport {
 		}
 		User user = users.find(auth.getPrincipal());
 		if (user == null) {
-			sendUnauthorized(res);
-			return;
+			throw ResponseStatusException.unauthorized();
 		}
 		sendOk(res, new UserProfile(user).toJson());
 	}
