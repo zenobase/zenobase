@@ -1,6 +1,5 @@
 package com.zenobase.common;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,7 +16,6 @@ import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
 import javax.measure.quantity.Volume;
 import javax.measure.quantity.VolumetricDensity;
-import javax.measure.unit.Dimension;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
@@ -211,20 +209,5 @@ public class Units {
 
 	public static boolean isDimensionless(Unit<?> unit) {
 		return Unit.ONE.equals(unit);
-	}
-
-	public static <Q extends Quantity> List<Unit<Q>> getUnits(Dimension dimension, Class<Q> type) {
-		List<Unit<Q>> units = new ArrayList<>();
-		for (Unit<?> unit : SI.getInstance().getUnits()) {
-			if (unit.getDimension().equals(dimension)) {
-				units.add(unit.asType(type));
-			}
-		}
-		for (Unit<?> unit : NonSI.getInstance().getUnits()) {
-			if (unit.getDimension().equals(dimension)) {
-				units.add(unit.asType(type));
-			}
-		}
-		return units;
 	}
 }
