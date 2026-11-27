@@ -11,11 +11,11 @@ import com.zenobase.search.constraints.MeasureConstraintBuilder;
 import com.zenobase.search.constraints.MeasureRangeConstraintBuilder;
 import com.zenobase.search.constraints.TermConstraintBuilder;
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
@@ -88,12 +88,13 @@ public class DecimalMeasureField<Q extends Quantity> extends Field<DecimalMeasur
 
 	@Override
 	public @Nullable String validate(ObjectNode node, @Nullable ObjectNode previous) {
-		Set<String> previousUnits = new HashSet<>();
-		if (previous != null) {
-			for (JsonNode childNode : getNodes(previous)) {
-				previousUnits.add(childNode.path(UNIT.getName()).asText());
-			}
-		}
+		Set<String> previousUnits =
+			previous != null
+				? getNodes(previous)
+						.stream()
+						.map(n -> n.path(UNIT.getName()).asText())
+						.collect(Collectors.toSet())
+				: Set.of();
 		for (JsonNode childNode : getNodes(node)) {
 			JsonNode unitNode = childNode.path(UNIT.getName());
 			if (!childNode.path(VALUE.getName()).isNumber() || !unitNode.isTextual()) {

@@ -7,6 +7,7 @@ import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import java.math.BigDecimal;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -59,21 +60,11 @@ public class DecimalMeasureFieldTest {
 	@CsvSource(
 		delimiter = '|',
 		value = {
-			"velocity | {\"@value\":1,\"unit\":\"kmh\"}",
-			"velocity | {\"@value\":1,\"unit\":\"km/h\"}",
-			"velocity | [{\"@value\":1,\"unit\":\"mph\"},{\"@value\":2.5,\"unit\":\"m/s\"}]",
-			"temperature | {\"@value\":-1,\"unit\":\"°F\"}",
-			"volume | {\"@value\":1,\"unit\":\"cups\"}",
-		}
-	)
-	public void testValidateAccepts(String fieldName, String json) {
-		assertThat(validate(fieldName, json)).isNull();
-	}
-
-	@ParameterizedTest
-	@CsvSource(
-		delimiter = '|',
-		value = {
+			"velocity | {\"@value\":1,\"unit\":\"kmh\"} |",
+			"velocity | {\"@value\":1,\"unit\":\"km/h\"} |",
+			"velocity | [{\"@value\":1,\"unit\":\"mph\"},{\"@value\":2.5,\"unit\":\"m/s\"}] |",
+			"temperature | {\"@value\":-1,\"unit\":\"°F\"} |",
+			"volume | {\"@value\":1,\"unit\":\"cups\"} |",
 			"velocity | {\"@value\":1,\"unit\":\"kg\"} | Unsupported velocity unit <kg>",
 			"velocity | [{\"@value\":1,\"unit\":\"mph\"},{\"@value\":1,\"unit\":\"m/s²\"}] | Unsupported velocity unit <m/s²>",
 			"weight | {\"@value\":1,\"unit\":\"µg\"} | Unsupported weight unit <µg>",
@@ -83,14 +74,10 @@ public class DecimalMeasureFieldTest {
 			"weight | 1 | weight must be an object with a numeric @value and a unit",
 		}
 	)
-	public void testValidateRejects(String fieldName, String json, String expected) {
-		assertThat(validate(fieldName, json)).isEqualTo(expected);
-	}
-
-	private static String validate(String fieldName, String json) {
+	public void testValidate(String fieldName, String json, @Nullable String expected) {
 		ObjectNode node = Nodes.newObject();
 		node.set(fieldName, Nodes.read(json));
-		return field(fieldName).validate(node, null);
+		assertThat(field(fieldName).validate(node, null)).isEqualTo(expected);
 	}
 
 	private static DecimalMeasureField<?> field(String name) {
