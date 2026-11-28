@@ -66,7 +66,7 @@ public class TaskRefresher {
 			// User needs to re-authorize: a known soft condition, not an internal error.
 			span.setStatus(SpanStatus.UNAUTHENTICATED);
 			throw e;
-		} catch (RuntimeException e) {
+		} catch (RuntimeException | Error e) {
 			span.setStatus(ExternalServiceErrors.isTransient(e) ? SpanStatus.UNAVAILABLE : SpanStatus.INTERNAL_ERROR);
 			span.setThrowable(e);
 			throw e;

@@ -63,7 +63,9 @@ public class BucketRefreshJob extends Job {
 						refresher.refresh(task, bucket);
 						counter.incrementAndGet();
 					}
-				} catch (RuntimeException e) {
+				} catch (VirtualMachineError e) {
+					throw e;
+				} catch (RuntimeException | Error e) {
 					if (e instanceof CredentialsException || ExternalServiceErrors.isTransient(e)) {
 						logger.warn(
 							"Couldn't refresh bucket {} for {}: {}",
