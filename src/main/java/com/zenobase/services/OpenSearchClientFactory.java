@@ -49,20 +49,27 @@ public class OpenSearchClientFactory implements ClientFactory {
 		SdkHttpClient httpClient = AwsCrtHttpClient.builder().connectionTimeout(Duration.ofSeconds(30)).build();
 		var options = AwsSdk2TransportOptions.builder().setMapper(new JacksonJsonpMapper(Nodes.MAPPER));
 		if ("https".equals(uri.getScheme())) {
-			return new OpenSearchClient(
-				new AwsSdk2Transport(httpClient, uri.getHost(), "es", Region.of(region), options.build())
-			);
+			return createClient(httpClient, uri.getHost(), Region.of(region), options.build());
 		}
 		// Local cluster without the security plugin: it ignores the SigV4 header, so any credentials and region will do.
 		options.setCredentials(StaticCredentialsProvider.create(AwsBasicCredentials.create("local", "local")));
+		return createClient(new PlainHttpClient(httpClient), uri.getAuthority(), Region.US_EAST_1, options.build());
+	}
+
+	private static OpenSearchClient createClient(
+		SdkHttpClient httpClient,
+		String host,
+		Region region,
+		AwsSdk2TransportOptions options
+	) {
 		return new OpenSearchClient(
-			new AwsSdk2Transport(
-				new PlainHttpClient(httpClient),
-				uri.getAuthority(),
-				"es",
-				Region.US_EAST_1,
-				options.build()
-			)
+			new AwsSdk2Transport(httpClient, host, "es", region, options) {
+				// AwsSdk2Transport doesn't close the HTTP client it's given.
+				@Override
+				public void close() {
+					httpClient.close();
+				}
+			}
 		);
 	}
 
