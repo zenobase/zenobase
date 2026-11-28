@@ -24,6 +24,10 @@ jobs:
             id-token: write
             contents: read
         steps:
+            # Pull the image OpenSearchTestSupport starts while Maven builds and runs unit tests
+            - name: Pre-pull OpenSearch image
+              run: docker pull -q opensearchproject/opensearch:3.7.0 > /dev/null 2>&1 &
+
             - uses: actions/checkout@v7
 
             - uses: actions/setup-java@v6
