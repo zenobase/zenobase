@@ -2,10 +2,12 @@ package com.zenobase.jobs;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
+import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.queries.BucketQuery;
 import com.zenobase.queries.TaskQuery;
+import com.zenobase.queries.UserQuery;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.TaskRepository;
 import com.zenobase.repositories.UserRepository;
@@ -14,7 +16,8 @@ import com.zenobase.tasks.ExternalServiceErrors;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskRefresher;
 import jakarta.inject.Inject;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.joda.time.LocalTime;
@@ -50,9 +53,12 @@ public class BucketRefreshJob extends Job {
 		Stopwatch timer = Stopwatch.createStarted();
 		var counter = new AtomicInteger();
 		logger.warn("Refreshing buckets...");
+		// Only users with a quota get their buckets refreshed; load them once rather than per bucket.
+		Map<Identity, User> owners = new HashMap<>();
+		users.find(new UserQuery().hasQuota(), user -> owners.put(user.asIdentity(), user));
 		buckets.find(new BucketQuery().isRefreshable().includeArchived(false), bucket -> {
-			User owner = users.find(Objects.requireNonNull(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER))));
-			if (owner != null && hasRefreshPrivilege(owner)) {
+			User owner = owners.get(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)));
+			if (owner != null) {
 				try {
 					for (Task task : tasks.find(
 						new TaskQuery().bucketEqualTo(bucket.getId()),
@@ -78,9 +84,5 @@ public class BucketRefreshJob extends Job {
 			}
 		});
 		logger.warn("Refreshed {} buckets in {} ms", counter, timer.elapsed(TimeUnit.MILLISECONDS));
-	}
-
-	private boolean hasRefreshPrivilege(User user) {
-		return user.getQuota() != null;
 	}
 }

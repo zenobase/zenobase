@@ -7,9 +7,11 @@ import static org.mockito.Mockito.*;
 
 import com.zenobase.common.DefaultPartialList;
 import com.zenobase.models.Bucket;
+import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.queries.TaskQuery;
+import com.zenobase.queries.UserQuery;
 import com.zenobase.repositories.BucketRepository;
 import com.zenobase.repositories.TaskRepository;
 import com.zenobase.repositories.UserRepository;
@@ -40,7 +42,7 @@ public class BucketRefreshJobTest {
 		var task = new Task("foo", bucket.getId(), owner.asIdentity());
 
 		doCallback(bucket).when(buckets).find(any(), any());
-		when(users.find(owner.asIdentity())).thenReturn(owner);
+		doCallback(owner).when(users).find(eq(new UserQuery().hasQuota()), any());
 		when(tasks.find(eq(new TaskQuery().bucketEqualTo(bucket.getId())), any(), eq(0), eq(100))).thenReturn(
 			DefaultPartialList.of(List.of(task), 1)
 		);
@@ -48,34 +50,19 @@ public class BucketRefreshJobTest {
 		job.run();
 
 		verify(refresher).refresh(task, bucket);
+		verify(users, never()).find(any(Identity.class));
 	}
 
 	@Test
-	public void testInsufficientQuota() {
-		var owner = new User("alice");
+	public void testOwnerWithoutQuota() {
 		var bucket = new Bucket("bucket-1");
-		bucket.addRole(owner.asIdentity(), Role.OWNER);
+		bucket.addRole(new User("alice").asIdentity(), Role.OWNER);
 
 		doCallback(bucket).when(buckets).find(any(), any());
-		when(users.find(owner.asIdentity())).thenReturn(owner);
 
 		job.run();
 
 		verify(tasks, never()).find(any(TaskQuery.class), any(), eq(0), eq(100));
-		verify(refresher, never()).refresh(any(), any());
-	}
-
-	@Test
-	public void testMissingOwner() {
-		var owner = new User("alice");
-		var bucket = new Bucket("bucket-1");
-
-		bucket.addRole(owner.asIdentity(), Role.OWNER);
-		doCallback(bucket).when(buckets).find(any(), any());
-		when(users.find(owner.asIdentity())).thenReturn(null);
-
-		job.run();
-
 		verify(refresher, never()).refresh(any(), any());
 	}
 
@@ -97,7 +84,7 @@ public class BucketRefreshJobTest {
 		var task = new Task("foo", bucket.getId(), owner.asIdentity());
 
 		doCallback(bucket).when(buckets).find(any(), any());
-		when(users.find(owner.asIdentity())).thenReturn(owner);
+		doCallback(owner).when(users).find(eq(new UserQuery().hasQuota()), any());
 		when(tasks.find(eq(new TaskQuery().bucketEqualTo(bucket.getId())), any(), eq(0), eq(100))).thenReturn(
 			DefaultPartialList.of(List.of(task), 1)
 		);
