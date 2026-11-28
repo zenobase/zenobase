@@ -46,9 +46,15 @@ public class OpenSearchClientFactory implements ClientFactory {
 
 	public static OpenSearchClient createClient(String host, String region) {
 		var uri = URI.create(host);
+		boolean https = "https".equals(uri.getScheme());
+		Preconditions.checkArgument(
+			!https || (region != null && !region.isBlank()),
+			"A region (aws.region or AWS_REGION) is required for %s",
+			host
+		);
 		SdkHttpClient httpClient = AwsCrtHttpClient.builder().connectionTimeout(Duration.ofSeconds(30)).build();
 		var options = AwsSdk2TransportOptions.builder().setMapper(new JacksonJsonpMapper(Nodes.MAPPER));
-		if ("https".equals(uri.getScheme())) {
+		if (https) {
 			return createClient(httpClient, uri.getHost(), Region.of(region), options.build());
 		}
 		// Local cluster without the security plugin: it ignores the SigV4 header, so any credentials and region will do.
