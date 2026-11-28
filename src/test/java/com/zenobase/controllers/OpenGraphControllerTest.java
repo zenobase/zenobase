@@ -11,6 +11,8 @@ import static org.mockito.Mockito.when;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.zenobase.io.PublicAddressPolicy;
 import com.zenobase.models.Identity;
@@ -24,7 +26,6 @@ import io.helidon.webserver.http.HttpRouting;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
@@ -36,7 +37,7 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 
 	private static final String METADATA_URL = "http://169.254.169.254/latest/meta-data/";
 
-	private static final long LARGE_BODY_BYTES = 256L * 1024 * 1024;
+	private static final long LARGE_BODY_BYTES = 16L * 1024 * 1024;
 
 	private static HttpServer server;
 	private static String origin;
@@ -49,52 +50,59 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 	public static void startServer() throws Exception {
 		server = HttpServer.create(new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0);
 		origin = "http://127.0.0.1:" + server.getAddress().getPort();
-		server.createContext("/ogp", exchange -> {
-			byte[] body = (
+		server.createContext("/ogp", exchange ->
+			respond(
+				exchange,
+				"text/html",
 				"<html><head>" +
-				"<meta property=\"og:title\" content=\"Open Graph protocol\">" +
-				"<title>Open Graph protocol</title>" +
-				"</head><body></body></html>"
-			).getBytes();
-			exchange.getResponseHeaders().set("Content-Type", "text/html");
-			exchange.sendResponseHeaders(200, body.length);
-			exchange.getResponseBody().write(body);
-			exchange.getResponseBody().close();
-		});
-		server.createContext("/large", exchange -> {
-			String type = exchange.getRequestURI().getQuery();
-			exchange.getResponseHeaders().set("Content-Type", type != null ? type : "text/html; charset=UTF-8");
-			exchange.sendResponseHeaders(200, LARGE_BODY_BYTES);
-			long written = 0;
-			try (var out = exchange.getResponseBody()) {
-				byte[] head = "<html><head><title>Large</title></head><body>".getBytes();
-				out.write(head);
-				written += head.length;
-				byte[] chunk = new byte[64 * 1024];
-				Arrays.fill(chunk, (byte) 'x');
-				while (written < LARGE_BODY_BYTES) {
-					int n = (int) Math.min(chunk.length, LARGE_BODY_BYTES - written);
-					out.write(chunk, 0, n);
-					written += n;
-				}
-			} catch (IOException e) {
-				// client hung up
-			} finally {
-				largeBodyBytesWritten.complete(written);
-			}
-		});
-		server.createContext("/untyped", exchange -> {
-			byte[] body = "<title>Untyped</title>".getBytes();
-			exchange.sendResponseHeaders(200, body.length);
-			exchange.getResponseBody().write(body);
-			exchange.getResponseBody().close();
-		});
+					"<meta property=\"og:title\" content=\"Open Graph protocol\">" +
+					"<title>Open Graph protocol</title>" +
+					"</head><body></body></html>"
+			)
+		);
+		server.createContext("/untyped", exchange -> respond(exchange, null, "<title>Untyped</title>"));
+		server.createContext("/large", largeBody("text/html; charset=UTF-8"));
+		server.createContext("/large.png", largeBody("image/png"));
 		server.createContext("/redirect", exchange -> {
 			exchange.getResponseHeaders().set("Location", METADATA_URL);
 			exchange.sendResponseHeaders(302, -1);
 			exchange.close();
 		});
 		server.start();
+	}
+
+	private static void respond(HttpExchange exchange, String type, String body) throws IOException {
+		byte[] bytes = body.getBytes();
+		if (type != null) {
+			exchange.getResponseHeaders().set("Content-Type", type);
+		}
+		exchange.sendResponseHeaders(200, bytes.length);
+		try (var out = exchange.getResponseBody()) {
+			out.write(bytes);
+		}
+	}
+
+	/** Serves a title followed by filler, recording how much was written before the client hung up. */
+	private static HttpHandler largeBody(String type) {
+		return exchange -> {
+			exchange.getResponseHeaders().set("Content-Type", type);
+			exchange.sendResponseHeaders(200, LARGE_BODY_BYTES);
+			byte[] head = "<html><head><title>Large</title></head><body>".getBytes();
+			byte[] chunk = new byte[64 * 1024];
+			long written = 0;
+			try (var out = exchange.getResponseBody()) {
+				out.write(head);
+				written += head.length;
+				while (written < LARGE_BODY_BYTES) {
+					int n = (int) Math.min(chunk.length, LARGE_BODY_BYTES - written);
+					out.write(chunk, 0, n);
+					written += n;
+				}
+			} catch (IOException hungUp) {
+			} finally {
+				largeBodyBytesWritten.complete(written);
+			}
+		};
 	}
 
 	@AfterAll
@@ -106,6 +114,7 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 
 	@BeforeEach
 	public void setUp() throws Exception {
+		largeBodyBytesWritten = new CompletableFuture<>();
 		when(auth.current(any())).thenReturn(new Authorization(new Identity("user-1")));
 		InetAddress testServer = InetAddress.getByName("127.0.0.1");
 		when(policy.isAllowed(any())).thenAnswer(invocation -> testServer.equals(invocation.getArgument(0)));
@@ -142,7 +151,6 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 
 	@Test
 	public void testLargeBody() throws Exception {
-		largeBodyBytesWritten = new CompletableFuture<>();
 		try (Http1ClientResponse result = call(origin + "/large")) {
 			assertThat(result).hasStatus(200).asObjectNode().path("title").isEqualTo("Large");
 		}
@@ -151,8 +159,7 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 
 	@Test
 	public void testNonHtml() throws Exception {
-		largeBodyBytesWritten = new CompletableFuture<>();
-		String url = origin + "/large?image/png";
+		String url = origin + "/large.png";
 		try (Http1ClientResponse result = call(url)) {
 			assertThat(result)
 				.hasStatus(400)

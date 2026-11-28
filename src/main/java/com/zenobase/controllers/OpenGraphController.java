@@ -13,7 +13,8 @@ import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.Locale;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.hc.client5.http.SystemDefaultDnsResolver;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -44,6 +45,14 @@ public class OpenGraphController extends ControllerSupport {
 	private static final long DEADLINE_SECONDS = 10;
 	private static final int MAX_BYTES = 512 * 1024;
 	private static final Set<String> HTML_TYPES = Set.of("text/html", "application/xhtml+xml");
+	private static final ScheduledThreadPoolExecutor DEADLINES = new ScheduledThreadPoolExecutor(
+		1,
+		Thread.ofPlatform().name("og-deadline").daemon().factory()
+	);
+
+	static {
+		DEADLINES.setRemoveOnCancelPolicy(true);
+	}
 
 	private final CloseableHttpClient http;
 
@@ -91,10 +100,7 @@ public class OpenGraphController extends ControllerSupport {
 			throw ResponseStatusException.badRequest("Invalid URL: " + url);
 		}
 		HttpGet request = new HttpGet(url);
-		var deadline = CompletableFuture.runAsync(
-			request::cancel,
-			CompletableFuture.delayedExecutor(DEADLINE_SECONDS, TimeUnit.SECONDS)
-		);
+		ScheduledFuture<?> deadline = DEADLINES.schedule(request::cancel, DEADLINE_SECONDS, TimeUnit.SECONDS);
 		JsonNode json;
 		try {
 			json = http.execute(request, response -> {
