@@ -37,6 +37,11 @@ public class UserQuery extends QuerySupport {
 		return this;
 	}
 
+	public UserQuery hasQuota() {
+		notNull(User.QUOTA);
+		return this;
+	}
+
 	public UserQuery createdBefore(DateTime time) {
 		lessThan(User.CREATED, time);
 		return this;

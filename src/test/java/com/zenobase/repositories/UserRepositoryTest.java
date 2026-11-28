@@ -75,6 +75,17 @@ public class UserRepositoryTest extends OpenSearchTestSupport {
 		verifyInteractions(callback, expected);
 	}
 
+	@Test
+	public void testFindWithQuota() {
+		List<User> users = fill(2);
+		User user = users.get(1);
+		user.setQuota(100);
+		repository.update(user);
+		assertThat(repository.find(new UserQuery().hasQuota(), 0, 10))
+			.hasTotal(1)
+			.isEqualTo(List.of(user));
+	}
+
 	private List<User> fill(int size) {
 		List<User> users = Lists.newArrayListWithCapacity(size);
 		for (int i = 0; i < size; ++i) {
