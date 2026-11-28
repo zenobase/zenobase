@@ -15,6 +15,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
+import com.zenobase.tasks.RateLimiters;
 import com.zenobase.tasks.Task;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import org.scribe.model.Verb;
 
 public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 
-	private final RateLimiter rateLimit = RateLimiter.create(10);
+	private final RateLimiter rateLimit = RateLimiters.create(10);
 
 	@Inject
 	public RescueTimeProductivityTaskManager(RescueTimeCredentialsManager credentialsManager) {

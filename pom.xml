@@ -434,6 +434,9 @@
                 <configuration>
                     <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
                     <excludedGroups>integration,manual</excludedGroups>
+                    <systemPropertyVariables>
+                        <zenobase.rateLimits.disabled>true</zenobase.rateLimits.disabled>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>

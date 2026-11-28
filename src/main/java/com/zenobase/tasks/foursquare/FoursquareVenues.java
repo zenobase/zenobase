@@ -7,6 +7,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.RateLimiter;
 import com.zenobase.json.Nodes;
+import com.zenobase.tasks.RateLimiters;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.time.Duration;
@@ -18,7 +19,7 @@ import org.apache.hc.core5.util.Timeout;
 
 public class FoursquareVenues {
 
-	private static final RateLimiter RATE_LIMITER = RateLimiter.create(10);
+	private static final RateLimiter RATE_LIMITER = RateLimiters.create(10);
 
 	private final String apiKey;
 	private final String apiSecret;

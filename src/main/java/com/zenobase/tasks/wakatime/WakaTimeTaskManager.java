@@ -15,6 +15,7 @@ import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
+import com.zenobase.tasks.RateLimiters;
 import com.zenobase.tasks.Task;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import org.scribe.model.Verb;
 
 public class WakaTimeTaskManager extends OAuthTaskManager {
 
-	private static final RateLimiter RATE_LIMITER = RateLimiter.create(5);
+	private static final RateLimiter RATE_LIMITER = RateLimiters.create(5);
 	private static final String HOST = "https://wakatime.com/api/v1";
 
 	@Inject

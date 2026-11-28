@@ -7,6 +7,7 @@ import com.zenobase.models.Event;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
+import com.zenobase.tasks.RateLimiters;
 import com.zenobase.tasks.Task;
 import java.util.List;
 import java.util.Objects;
@@ -20,7 +21,7 @@ import org.scribe.model.Verb;
 
 abstract class MapMyFitnessTaskManagerSupport extends OAuthTaskManager {
 
-	private static final RateLimiter RATE_LIMITER = RateLimiter.create(10);
+	private static final RateLimiter RATE_LIMITER = RateLimiters.create(10);
 	protected static final String HOST = "https://oauth2-api.mapmyapi.com";
 
 	public MapMyFitnessTaskManagerSupport(String type, MapMyFitnessCredentialsManager credentialsManager) {

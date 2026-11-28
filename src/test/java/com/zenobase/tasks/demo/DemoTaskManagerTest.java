@@ -11,6 +11,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.Task.Status;
 import com.zenobase.tasks.TaskManagerTestSupport;
+import java.time.Duration;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ public class DemoTaskManagerTest extends TaskManagerTestSupport {
 
 	@Test
 	public void test() {
-		var manager = new DemoTaskManager();
+		var manager = new DemoTaskManager(Duration.ZERO);
 		Identity principal = new Identity();
 		Task task = manager.newTask(Generator.id(), principal, Nodes.newObject());
 

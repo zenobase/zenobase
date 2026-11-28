@@ -12,6 +12,7 @@ import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
+import com.zenobase.tasks.RateLimiters;
 import com.zenobase.tasks.Task;
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +31,7 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 
 	private static final Logger logger = LoggerFactory.getLogger(FitbitTaskManagerSupport.class);
 
-	private static final RateLimiter RATE_LIMITER = RateLimiter.create(10); // actually 400 per hour per user
+	private static final RateLimiter RATE_LIMITER = RateLimiters.create(10); // actually 400 per hour per user
 
 	private final Class<T> taskClass;
 

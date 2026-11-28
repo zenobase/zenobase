@@ -12,6 +12,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
+import com.zenobase.tasks.RateLimiters;
 import com.zenobase.tasks.Task;
 import jakarta.inject.Inject;
 import java.io.IOException;
@@ -33,7 +34,7 @@ import org.xml.sax.SAXException;
 
 public class GoodreadsTaskManager extends OAuthTaskManager {
 
-	private static final RateLimiter RATE_LIMITER = RateLimiter.create(1);
+	private static final RateLimiter RATE_LIMITER = RateLimiters.create(1);
 	private static final String HOST = "https://www.goodreads.com";
 	private static final int MAX_PAGES = 10;
 
