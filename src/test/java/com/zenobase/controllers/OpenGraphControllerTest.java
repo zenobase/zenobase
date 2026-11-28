@@ -54,10 +54,12 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 			respond(
 				exchange,
 				"text/html",
-				"<html><head>" +
-					"<meta property=\"og:title\" content=\"Open Graph protocol\">" +
-					"<title>Open Graph protocol</title>" +
-					"</head><body></body></html>"
+				"""
+				<html><head>
+				<meta property="og:title" content="Open Graph protocol">
+				<title>Open Graph protocol</title>
+				</head><body></body></html>
+				"""
 			)
 		);
 		server.createContext("/untyped", exchange -> respond(exchange, null, "<title>Untyped</title>"));
