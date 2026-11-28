@@ -89,6 +89,17 @@
             <groupId>org.opensearch.client</groupId>
             <artifactId>opensearch-java</artifactId>
             <version>3.11.0</version>
+            <!-- Only the Apache transports use these; we use AwsSdk2Transport. httpcore5 stays: the generic client needs it. -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents.client5</groupId>
+                    <artifactId>httpclient5</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents.core5</groupId>
+                    <artifactId>httpcore5-h2</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Google Guava -->
@@ -226,7 +237,7 @@
             <version>4.2.0</version>
         </dependency>
 
-        <!-- HTTP client (httpcore5 and httpclient5 are transitive via opensearch-java) -->
+        <!-- HTTP client for scripts and outbound fetches -->
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5-fluent</artifactId>
