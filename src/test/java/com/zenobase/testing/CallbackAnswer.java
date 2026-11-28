@@ -30,7 +30,8 @@ public class CallbackAnswer<T> implements Answer<Callback<T>> {
 		return null;
 	}
 
-	public static <T> Stubber doCallback(T value) {
-		return doAnswer(new CallbackAnswer<>(List.of(value)));
+	@SafeVarargs
+	public static <T> Stubber doCallback(T... values) {
+		return doAnswer(new CallbackAnswer<>(List.of(values)));
 	}
 }
