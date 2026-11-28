@@ -56,7 +56,13 @@ services:
             - "9000:9000"
         volumes:
             - ./docker/config/logback.xml:/etc/app/logback.xml:ro
-            - ./conf/application-local.yaml:/etc/app/prod.yaml:ro
+            # Fail instead of creating an empty directory when the gitignored file is missing
+            - type: bind
+              source: ./conf/application-local.yaml
+              target: /etc/app/prod.yaml
+              read_only: true
+              bind:
+                  create_host_path: false
         deploy:
             resources:
                 limits:
