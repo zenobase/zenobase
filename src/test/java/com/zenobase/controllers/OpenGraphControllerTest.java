@@ -83,6 +83,12 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 				largeBodyBytesWritten.complete(written);
 			}
 		});
+		server.createContext("/untyped", exchange -> {
+			byte[] body = "<title>Untyped</title>".getBytes();
+			exchange.sendResponseHeaders(200, body.length);
+			exchange.getResponseBody().write(body);
+			exchange.getResponseBody().close();
+		});
 		server.createContext("/redirect", exchange -> {
 			exchange.getResponseHeaders().set("Location", METADATA_URL);
 			exchange.sendResponseHeaders(302, -1);
@@ -155,6 +161,13 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 				.isEqualTo("Couldn't parse resource: " + url);
 		}
 		assertThat(largeBodyBytesWritten.get(5, TimeUnit.SECONDS)).isLessThan(LARGE_BODY_BYTES);
+	}
+
+	@Test
+	public void testMissingContentType() {
+		try (Http1ClientResponse result = call(origin + "/untyped")) {
+			assertThat(result).hasStatus(200).asObjectNode().path("title").isEqualTo("Untyped");
+		}
 	}
 
 	@Test
