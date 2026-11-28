@@ -6,16 +6,17 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.net.URI;
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
-import org.apache.hc.client5.http.config.RequestConfig;
-import org.apache.hc.core5.http.HttpHost;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.transport.aws.AwsSdk2Transport;
 import org.opensearch.client.transport.aws.AwsSdk2TransportOptions;
-import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.http.ExecutableHttpRequest;
+import software.amazon.awssdk.http.HttpExecuteRequest;
+import software.amazon.awssdk.http.SdkHttpClient;
 import software.amazon.awssdk.http.crt.AwsCrtHttpClient;
 import software.amazon.awssdk.regions.Region;
 
@@ -45,32 +46,42 @@ public class OpenSearchClientFactory implements ClientFactory {
 
 	public static OpenSearchClient createClient(String host, String region) {
 		var uri = URI.create(host);
-		var mapper = new JacksonJsonpMapper(Nodes.MAPPER);
+		SdkHttpClient httpClient = AwsCrtHttpClient.builder().connectionTimeout(Duration.ofSeconds(30)).build();
+		var options = AwsSdk2TransportOptions.builder().setMapper(new JacksonJsonpMapper(Nodes.MAPPER));
 		if ("https".equals(uri.getScheme())) {
-			var httpClient = AwsCrtHttpClient.builder().connectionTimeout(Duration.ofSeconds(30)).build();
-			var transport = new AwsSdk2Transport(
-				httpClient,
-				uri.getHost(),
-				"es",
-				Region.of(region),
-				AwsSdk2TransportOptions.builder().setMapper(mapper).build()
+			return new OpenSearchClient(
+				new AwsSdk2Transport(httpClient, uri.getHost(), "es", Region.of(region), options.build())
 			);
-			return new OpenSearchClient(transport);
 		}
-		var httpHost = HttpHost.create(uri);
+		// Local cluster without the security plugin: it ignores the SigV4 header, so any credentials and region will do.
+		options.setCredentials(StaticCredentialsProvider.create(AwsBasicCredentials.create("local", "local")));
 		return new OpenSearchClient(
-			ApacheHttpClient5TransportBuilder.builder(httpHost)
-				.setMapper(mapper)
-				.setHttpClientConfigCallback(builder ->
-					builder
-						.addRequestInterceptorFirst((request, entity, context) ->
-							request.setHeader("Accept-Encoding", "gzip")
-						)
-						.setDefaultRequestConfig(
-							RequestConfig.custom().setResponseTimeout(60, TimeUnit.SECONDS).build()
-						)
-				)
-				.build()
+			new AwsSdk2Transport(
+				new PlainHttpClient(httpClient),
+				uri.getAuthority(),
+				"es",
+				Region.US_EAST_1,
+				options.build()
+			)
 		);
+	}
+
+	/** {@link AwsSdk2Transport} always builds {@code https://} URIs; this downgrades them for a local cluster. */
+	private record PlainHttpClient(SdkHttpClient delegate) implements SdkHttpClient {
+		@Override
+		public ExecutableHttpRequest prepareRequest(HttpExecuteRequest request) {
+			return delegate.prepareRequest(
+				HttpExecuteRequest.builder()
+					.request(request.httpRequest().toBuilder().protocol("http").build())
+					.contentStreamProvider(request.contentStreamProvider().orElse(null))
+					.metricCollector(request.metricCollector().orElse(null))
+					.build()
+			);
+		}
+
+		@Override
+		public void close() {
+			delegate.close();
+		}
 	}
 }

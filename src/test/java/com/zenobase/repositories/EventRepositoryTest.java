@@ -22,6 +22,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 
 public class EventRepositoryTest extends OpenSearchTestSupport {
 
@@ -164,7 +165,10 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		repository.update(bucket.getId(), current, current);
 
 		stale.addValue(Event.TAG, "conflict");
-		assertThatThrownBy(() -> repository.update(bucket.getId(), stale, stale)).hasMessageContaining("409 Conflict");
+		assertThatThrownBy(() -> repository.update(bucket.getId(), stale, stale)).isInstanceOfSatisfying(
+			OpenSearchException.class,
+			e -> assertThat(e.status()).isEqualTo(409)
+		);
 	}
 
 	@Test
