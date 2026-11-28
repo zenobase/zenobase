@@ -23,22 +23,11 @@ jobs:
         permissions:
             id-token: write
             contents: read
-        services:
-            opensearch:
-                image: opensearchproject/opensearch:3.7.0
-                ports:
-                    - 9200:9200
-                env:
-                    discovery.type: single-node
-                    plugins.security.disabled: "true"
-                    DISABLE_INSTALL_DEMO_CONFIG: "true"
-                options: >-
-                    --health-cmd "curl -f http://localhost:9200/_cluster/health || exit 1"
-                    --health-interval 10s
-                    --health-timeout 5s
-                    --health-retries 10
-                    --health-start-period 30s
         steps:
+            # Pull the image OpenSearchTestSupport starts while Maven builds and runs unit tests
+            - name: Pre-pull OpenSearch image
+              run: docker pull -q opensearchproject/opensearch:3.7.0 > /dev/null 2>&1 &
+
             - uses: actions/checkout@v7
 
             - uses: actions/setup-java@v6
@@ -47,11 +36,8 @@ jobs:
                   java-version: 25
                   cache: maven
 
-            - name: Check formatting
-              run: ./mvnw -B spotless:check
-
-            - name: Test
-              run: ./mvnw -B verify
+            - name: Check formatting and test
+              run: ./mvnw -B spotless:check verify
 
             - name: Upload coverage to Codecov
               uses: codecov/codecov-action@v7.1.1
@@ -59,9 +45,6 @@ jobs:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   files: target/site/jacoco/jacoco.xml
                   flags: backend
-
-            - name: Package
-              run: ./mvnw -B package -DskipTests
 
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v6.3.0
